@@ -103,7 +103,7 @@ public Plugin myinfo =
 {
 	name	=	"Fire Players Stats",
 	author	=	"OkyHp",
-	version	=	"0.0.1 BETA",
+	version	=	"0.0.2 BETA",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 

@@ -26,7 +26,7 @@ public void __pl_fire_players_stats_SetNTVOptional()
 	MarkNativeAsOptional("FPS_GetPoints");
 	MarkNativeAsOptional("FPS_GetLevel");
 	MarkNativeAsOptional("FPS_GetRanks");
-	MarkNativeAsOptional("FPS_GetMexRanks");
+	MarkNativeAsOptional("FPS_GetMaxRanks");
 }
 #endif
 
@@ -188,4 +188,4 @@ native void FPS_GetRanks(int iClient, char[] szBufferRank, int iMaxLength);
  *	--------------------------------
  *	@return				Количетсво всех рангов.
  */
-native int FPS_GetMexRanks();
+native int FPS_GetMaxRanks();

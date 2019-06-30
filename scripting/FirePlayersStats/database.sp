@@ -244,8 +244,6 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 		#if DEBUG == 1
 			FPS_Log("SQL_Callback_LoadPlayerData >> %N: points: %f | kills: %i, deaths: %i, assists: %i, round_max_kills: %i, round_win: %i, round_lose: %i, playtime: %i", iClient, g_fPlayerPoints[iClient], g_iPlayerData[iClient][KILLS], g_iPlayerData[iClient][DEATHS], g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], g_iPlayerData[iClient][PLAYTIME])
 		#endif
-
-		CallForward_OnFPSClientLoaded(iClient, g_fPlayerPoints[iClient]);
 	}
 	else
 	{
@@ -258,8 +256,9 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 	g_iPlayerSessionData[iClient][PLAYTIME] = GetTime();
 	CheckRank(iClient);
 	GetPlayerPosition(iClient);
-
 	g_bStatsLoad[iClient] = true;
+
+	CallForward_OnFPSClientLoaded(iClient, g_fPlayerPoints[iClient]);
 }
 
 void SavePlayerData(int iClient)
