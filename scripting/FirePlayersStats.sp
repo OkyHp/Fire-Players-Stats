@@ -46,6 +46,10 @@
 #include <FirePlayersStats>
 #include <csgo_colors>
 
+#if FPS_INC_VER < 1
+	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
+#endif
+
 #define UID(%0)				GetClientUserId(%0)
 #define CID(%0)				GetClientOfUserId(%0)
 #define SZF(%0)				%0, sizeof(%0)
