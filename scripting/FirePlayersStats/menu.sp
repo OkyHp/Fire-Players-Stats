@@ -221,7 +221,7 @@ void ShowTopMenu(int iClient, int iMenuType)
 	Panel hPanel = new Panel();
 	SetGlobalTransTarget(iClient);
 
-	FormatEx(SZF(szBuffer), "%t", "TopTitle", !iMenuType ? "TopTen" : "TopTime");
+	FormatEx(SZF(szBuffer), "%t\n ", "TopTitle", !iMenuType ? "TopTen" : "TopTime");
 	hPanel.SetTitle(szBuffer);
 
 	int i;
