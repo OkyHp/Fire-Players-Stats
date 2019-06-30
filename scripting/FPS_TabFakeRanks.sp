@@ -13,20 +13,36 @@ public Plugin myinfo =
 {
 	name	=	"FPS Tab Fake Ranks",
 	author	=	"OkyHp",
-	version	=	"0.0.1",
+	version	=	"0.0.3",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
 public void OnPluginStart()
 {
-	if(GetEngineVersion() != Engine_CSGO || FPS_GetMaxRanks() != 18)
+	if(GetEngineVersion() != Engine_CSGO)
 	{
-		SetFailState("Game is not CS: GO or the number of ranks is not equal to 18");
+		SetFailState("This plugin works only on CS:GO");
 	}
 
 	m_iCompetitiveRanking = FindSendPropInfo("CCSPlayerResource", "m_iCompetitiveRanking");
 
 	HookEvent("begin_new_match", Event_GameStart, EventHookMode_PostNoCopy);
+
+	if (FPS_StatsLoad())
+	{
+		FPS_OnFPSStatsLoaded();
+	}
+}
+
+public void FPS_OnFPSStatsLoaded()
+{
+	for (int i = 1; i < MaxClients; ++i)
+	{
+		if (FPS_ClientLoaded(i))
+		{
+			GetPlayerData(i);
+		}
+	}
 }
 
 public void OnMapStart()
@@ -50,6 +66,11 @@ public void Event_GameStart(Handle hEvent, const char[] szName, bool bDontBroadc
 }
 
 public void FPS_OnClientLoaded(int iClient, float fPoints)
+{
+	GetPlayerData(iClient);
+}
+
+void GetPlayerData(int iClient)
 {
 	g_iPlayerRanks[iClient] = FPS_GetLevel(iClient);
 	UpdateFakeRanks();

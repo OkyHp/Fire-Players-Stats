@@ -5,7 +5,7 @@
 
 public SharedPlugin __pl_fire_players_stats= 
 {
-	name = "Fire Players Stats",
+	name = "FirePlayersStats",
 	file = "FirePlayersStats.smx",
 	#if defined REQUIRE_PLUGIN
 		required = 1
@@ -183,9 +183,9 @@ native int FPS_GetLevel(int iClient);
  */
 native void FPS_GetRanks(int iClient, char[] szBufferRank, int iMaxLength);
 
-/**	--------------------------------
- *	Получить количетсво всех рангов.
- *	--------------------------------
- *	@return				Количетсво всех рангов.
+/**	--------------------------------------------------------------------
+ *	Получить количетсво всех рангов. Получает значение при старте карты.
+ *	--------------------------------------------------------------------
+ *	@return						Количетсво всех рангов.
  */
 native int FPS_GetMaxRanks();
