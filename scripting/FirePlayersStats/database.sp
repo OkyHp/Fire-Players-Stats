@@ -2,7 +2,7 @@ static Handle g_hTimerReconnectDB;
 
 void DatabaseConnect()
 {
-	static const char szSection[] = "fire_players_statis";
+	static const char szSection[] = "fire_players_stats";
 
 	if (g_hDatabase)
 	{

@@ -23,7 +23,7 @@
 
 В `addons/sourcemod/configs/databases.cfg` добавьте секцию с вашими настройками, пример:
 ```
-"fire_players_statis"
+"fire_players_stats"
 {
 	"driver"			"mysql"
 	"host"				""
