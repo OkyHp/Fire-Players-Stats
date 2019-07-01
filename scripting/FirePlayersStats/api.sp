@@ -118,14 +118,14 @@ public int Native_FPSGetDatabase(Handle hPlugin, int iNumParams)
 public int Native_FPSClientLoad(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	return (iClient && iClient <= MAXPLAYERS && g_bStatsLoad[iClient]);
+	return (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient]);
 }
 
 // void FPS_ClientReloadData(int iClient);
 public int Native_FPSClientReloadData(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	if (iClient && iClient <= MAXPLAYERS && g_bStatsLoad[iClient])
+	if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
 	{
 		#if DEBUG == 1
 			FPS_Log("Native_FPSClientReloadData >> LoadStats: %N", iClient)
@@ -145,7 +145,7 @@ public int Native_FPSDisableStatisPerRound(Handle hPlugin, int iNumParams)
 public int Native_FPSGetPlayedTime(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	if (iClient && iClient <= MAXPLAYERS && g_bStatsLoad[iClient])
+	if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
 	{
 		return (GetTime() - g_iPlayerSessionData[iClient][PLAYTIME]) + (GetNativeCell(2) ? 0 : g_iPlayerData[iClient][PLAYTIME]);
 	}
@@ -156,14 +156,14 @@ public int Native_FPSGetPlayedTime(Handle hPlugin, int iNumParams)
 public int Native_FPSGetPoints(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	return view_as<int>(iClient && iClient <= MAXPLAYERS && g_bStatsLoad[iClient] ? g_fPlayerPoints[iClient] : DEFAULT_POINTS);
+	return view_as<int>(iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient] ? g_fPlayerPoints[iClient] : DEFAULT_POINTS);
 }
 
 // int FPS_GetLevel(int iClient);
 public int Native_FPSGetLevel(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	if (iClient && iClient <= MAXPLAYERS && g_bStatsLoad[iClient])
+	if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
 	{
 		return g_iPlayerRanks[iClient];
 	}
@@ -174,7 +174,7 @@ public int Native_FPSGetLevel(Handle hPlugin, int iNumParams)
 public int Native_FPSGetRanks(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	if (iClient && iClient <= MAXPLAYERS && g_bStatsLoad[iClient])
+	if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
 	{
 		SetNativeString(2, g_sRankName[iClient], GetNativeCell(3), true);
 	}
