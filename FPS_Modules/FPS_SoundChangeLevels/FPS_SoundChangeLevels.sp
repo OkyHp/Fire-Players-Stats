@@ -3,7 +3,6 @@
 
 #include <sourcemod>
 #include <sdktools>
-//#include <sdkhooks>
 #include <FirePlayersStats>
 
 char g_sSounds[2][256];

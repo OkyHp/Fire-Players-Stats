@@ -30,7 +30,6 @@
 
 #include <sourcemod>
 #include <sdktools>
-//#include <sdkhooks>
 #include <FirePlayersStats>
 #include <csgo_colors>
 
