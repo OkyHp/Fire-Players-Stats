@@ -80,6 +80,11 @@ void CallForward_OnFPSLevelChange(int iClient, int iOldLevel, int iNewLevel)
 // Natives
 public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iErr_max)
 {
+	if(GetEngineVersion() != Engine_CSGO)
+	{
+		return APLRes_Failure;
+	}
+
 	g_bLateLoad = bLate;
 	CreateNative("FPS_StatsLoad",				Native_FPSStatsLoad);
 	CreateNative("FPS_GetDatabase",				Native_FPSGetDatabase);
@@ -112,14 +117,15 @@ public int Native_FPSGetDatabase(Handle hPlugin, int iNumParams)
 // bool FPS_ClientLoaded(int iClient);
 public int Native_FPSClientLoad(Handle hPlugin, int iNumParams)
 {
-	return g_bStatsLoad[GetNativeCell(1)];
+	int iClient = GetNativeCell(1);
+	return (iClient && iClient <= MAXPLAYERS && g_bStatsLoad[iClient]);
 }
 
 // void FPS_ClientReloadData(int iClient);
 public int Native_FPSClientReloadData(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	if (g_bStatsLoad[iClient])
+	if (iClient && iClient <= MAXPLAYERS && g_bStatsLoad[iClient])
 	{
 		#if DEBUG == 1
 			FPS_Log("Native_FPSClientReloadData >> LoadStats: %N", iClient)
@@ -139,7 +145,7 @@ public int Native_FPSDisableStatisPerRound(Handle hPlugin, int iNumParams)
 public int Native_FPSGetPlayedTime(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	if (g_bStatsLoad[iClient])
+	if (iClient && iClient <= MAXPLAYERS && g_bStatsLoad[iClient])
 	{
 		return (GetTime() - g_iPlayerSessionData[iClient][PLAYTIME]) + (GetNativeCell(2) ? 0 : g_iPlayerData[iClient][PLAYTIME]);
 	}
@@ -150,14 +156,14 @@ public int Native_FPSGetPlayedTime(Handle hPlugin, int iNumParams)
 public int Native_FPSGetPoints(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	return view_as<int>(g_bStatsLoad[iClient] ? g_fPlayerPoints[iClient] : DEFAULT_POINTS);
+	return view_as<int>(iClient && iClient <= MAXPLAYERS && g_bStatsLoad[iClient] ? g_fPlayerPoints[iClient] : DEFAULT_POINTS);
 }
 
 // int FPS_GetLevel(int iClient);
 public int Native_FPSGetLevel(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	if (g_bStatsLoad[iClient])
+	if (iClient && iClient <= MAXPLAYERS && g_bStatsLoad[iClient])
 	{
 		return g_iPlayerRanks[iClient];
 	}
@@ -168,7 +174,7 @@ public int Native_FPSGetLevel(Handle hPlugin, int iNumParams)
 public int Native_FPSGetRanks(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	if (g_bStatsLoad[iClient])
+	if (iClient && iClient <= MAXPLAYERS && g_bStatsLoad[iClient])
 	{
 		SetNativeString(2, g_sRankName[iClient], GetNativeCell(3), true);
 	}

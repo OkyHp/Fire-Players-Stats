@@ -102,17 +102,12 @@ public Plugin myinfo =
 {
 	name	=	"Fire Players Stats",
 	author	=	"OkyHp",
-	version	=	"0.0.2 BETA",
+	version	=	"0.0.3 BETA",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
 public void OnPluginStart()
 {
-	if(GetEngineVersion() != Engine_CSGO)
-	{
-		SetFailState("This plugin works only on CS:GO");
-	}
-
 	#if DEBUG == 1
 		BuildPath(Path_SM, SZF(g_sLogPath), "logs/FirePlayersStats.log");
 	#endif

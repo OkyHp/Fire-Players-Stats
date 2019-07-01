@@ -114,10 +114,7 @@ public void SQL_Default_Callback(Database hDatabase, DBResultSet hResult, const 
 	{
 		char szBuffer[128];
 		FormatEx(SZF(szBuffer), "SQL_Default_Callback #%i", QueryID);
-		if (!CheckDatabaseConnection(hDatabase, szError, szBuffer))
-		{
-			return;
-		}
+		CheckDatabaseConnection(hDatabase, szError, szBuffer);
 	}
 }
 
