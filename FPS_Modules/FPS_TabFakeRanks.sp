@@ -13,7 +13,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Tab Fake Ranks",
 	author	=	"OkyHp",
-	version	=	"0.0.3",
+	version	=	"1.0.0",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -89,6 +89,13 @@ void UpdateFakeRanks()
 
 public Action Timer_UpdateFakeRanks(Handle hTimer)
 {
-	StartMessageAll("ServerRankRevealAll") ? EndMessage() : UpdateFakeRanks();
+	if (StartMessageAll("ServerRankRevealAll"))
+	{
+		EndMessage();
+	}
+	else
+	{
+		UpdateFakeRanks();
+	}
 	return Plugin_Stop;
 }
