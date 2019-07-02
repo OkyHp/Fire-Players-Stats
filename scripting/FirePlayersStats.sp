@@ -3,7 +3,7 @@
  * - Перекинуть конфиг для юзания с под БД.
  * ----------------------------------------------------------------------------------------------
  * Ranks settings query: 
-		INSERT INTO `fps_test`.`fps_ranks` (`rank_id`, `rank_name`, `points`) 
+		INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) 
 		VALUES 
 			('1', 'Silver I', '650'),
 			('1', 'Silver II', '700'), 
@@ -102,7 +102,7 @@ public Plugin myinfo =
 {
 	name	=	"Fire Players Stats",
 	author	=	"OkyHp",
-	version	=	"0.0.3 BETA",
+	version	=	"0.0.4 BETA",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -116,6 +116,7 @@ public void OnPluginStart()
 	CreateGlobalForwards();
 	DatabaseConnect();
 	HookEvents();
+	SetCommands();
 
 	g_hWeaponsKV = new KeyValues("Weapons_Stats");
 

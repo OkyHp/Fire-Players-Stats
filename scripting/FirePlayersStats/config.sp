@@ -4,7 +4,8 @@ int			g_iServerID,
 			g_iMinPlayers,
 			g_iResetStatsTime,
 			g_iDeletePlayersTime,
-			g_iCalibrationFixTime;
+			g_iCalibrationFixTime,
+			g_iSaveInterval;
 bool		g_bShowStatsEveryone,
 			g_bBlockStatsOnWarmup;
 float		g_fDBRetryConnTime,
@@ -138,6 +139,13 @@ void SetCvars()
 	)).AddChangeHook(ChangeCvar_CalibrationFix);
 	g_iCalibrationFixTime = Convar.IntValue;
 
+	(Convar = CreateConVar(
+		"sm_fps_save_period",	"5", 
+		"Интервал раундов сохранения статистики.", 
+		_, true, 2.0, true, 10.0
+	)).AddChangeHook(ChangeCvar_SaveInterval);
+	g_iSaveInterval = Convar.IntValue;
+
 	AutoExecConfig(true, "FirePlayersStats");
 
 	LoadConfigKV();
@@ -191,4 +199,9 @@ public void ChangeCvar_EloCoeff(ConVar Convar, const char[] oldValue, const char
 public void ChangeCvar_CalibrationFix(ConVar Convar, const char[] oldValue, const char[] newValue)
 {	
 	g_iCalibrationFixTime = Convar.IntValue;
+}
+
+public void ChangeCvar_SaveInterval(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_iSaveInterval = Convar.IntValue;
 }

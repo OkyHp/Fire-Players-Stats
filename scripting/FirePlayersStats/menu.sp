@@ -1,33 +1,96 @@
-public void OnClientSayCommand_Post(int iClient, const char[] szCommand, const char[] sArgs)
+void SetCommands()
+{
+	RegConsoleCmd("sm_pos",			CommandPosition);
+	RegConsoleCmd("sm_position",	CommandPosition);
+	RegConsoleCmd("sm_top",			CommandTop);
+	RegConsoleCmd("sm_toptime",		CommandTopTime);
+	RegConsoleCmd("sm_stats",		CommandFpsMenu);
+	RegConsoleCmd("sm_fps",			CommandFpsMenu);
+	RegConsoleCmd("sm_rank",		CommandFpsMenu);
+}
+
+public Action CommandPosition(int iClient, int iArgs)
 {
 	if (g_bStatsLoad[iClient])
 	{
-		static const char szCommands[][] = {
-			"pos", "position", "top", "toptime", "stats", "fps", "rank"
-		};
-
-		if (!strcmp(sArgs[1], szCommands[0], false) || !strcmp(sArgs, szCommands[0], false) || !strcmp(sArgs[1], szCommands[1], false) || !strcmp(sArgs, szCommands[1], false))
-		{
-			ShowPosition(iClient);
-		}
-		else if (!strcmp(sArgs[1], szCommands[2], false) || !strcmp(sArgs, szCommands[2], false))
-		{
-			ShowTopMenu(iClient, 0);
-		}
-		else if (!strcmp(sArgs[1], szCommands[3], false) || !strcmp(sArgs, szCommands[3], false))
-		{
-			ShowTopMenu(iClient, 1);
-		}
-		else if (!strcmp(sArgs[1], szCommands[4], false) || !strcmp(sArgs, szCommands[4], false) || !strcmp(sArgs[1], szCommands[5], false) || !strcmp(sArgs, szCommands[5], false) || !strcmp(sArgs[1], szCommands[6], false) || !strcmp(sArgs, szCommands[6], false))
-		{
-			ShowFpsMenu(iClient);
-		}
-
-		return;
+		ShowPosition(iClient);
 	}
-
-	FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
+	else
+	{
+		FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
+	}
+	return Plugin_Handled;
 }
+
+public Action CommandTop(int iClient, int iArgs)
+{
+	if (g_bStatsLoad[iClient])
+	{
+		ShowTopMenu(iClient, 0);
+	}
+	else
+	{
+		FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
+	}
+	return Plugin_Handled;
+}
+
+public Action CommandTopTime(int iClient, int iArgs)
+{
+	if (g_bStatsLoad[iClient])
+	{
+		ShowTopMenu(iClient, 1);
+	}
+	else
+	{
+		FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
+	}
+	return Plugin_Handled;
+}
+
+public Action CommandFpsMenu(int iClient, int iArgs)
+{
+	if (g_bStatsLoad[iClient])
+	{
+		ShowFpsMenu(iClient);
+	}
+	else
+	{
+		FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
+	}
+	return Plugin_Handled;
+}
+
+// public void OnClientSayCommand_Post(int iClient, const char[] szCommand, const char[] sArgs)
+// {
+// 	if (g_bStatsLoad[iClient])
+// 	{
+// 		static const char szCommands[][] = {
+// 			"pos", "position", "top", "toptime", "stats", "fps", "rank"
+// 		};
+
+// 		if (!strcmp(sArgs[1], szCommands[0], false) || !strcmp(sArgs, szCommands[0], false) || !strcmp(sArgs[1], szCommands[1], false) || !strcmp(sArgs, szCommands[1], false))
+// 		{
+// 			ShowPosition(iClient);
+// 		}
+// 		else if (!strcmp(sArgs[1], szCommands[2], false) || !strcmp(sArgs, szCommands[2], false))
+// 		{
+// 			ShowTopMenu(iClient, 0);
+// 		}
+// 		else if (!strcmp(sArgs[1], szCommands[3], false) || !strcmp(sArgs, szCommands[3], false))
+// 		{
+// 			ShowTopMenu(iClient, 1);
+// 		}
+// 		else if (!strcmp(sArgs[1], szCommands[4], false) || !strcmp(sArgs, szCommands[4], false) || !strcmp(sArgs[1], szCommands[5], false) || !strcmp(sArgs, szCommands[5], false) || !strcmp(sArgs[1], szCommands[6], false) || !strcmp(sArgs, szCommands[6], false))
+// 		{
+// 			ShowFpsMenu(iClient);
+// 		}
+
+// 		return;
+// 	}
+
+// 	FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
+// }
 
 void ShowFpsMenu(int iClient)
 {
@@ -91,9 +154,12 @@ void ShowPlayerMenu(int iClient)
 	hPanel.CurrentKey = 1;
 	hPanel.DrawItem(szBuffer);
 
-	FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStats");
-	hPanel.CurrentKey = 2;
-	hPanel.DrawItem(szBuffer, iPlayedTime > g_iResetStatsTime ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	if (g_iResetStatsTime)
+	{
+		FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStats");
+		hPanel.CurrentKey = 2;
+		hPanel.DrawItem(szBuffer, iPlayedTime > g_iResetStatsTime ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	}
 
 	FormatEx(SZF(szBuffer), "%t", "Back");
 	hPanel.CurrentKey = 7;
@@ -200,8 +266,14 @@ public int Handler_PanelResetStats(Menu hPanel, MenuAction action, int iClient, 
 		if (iOption != 7 && iOption != 9)
 		{
 			ResetData(iClient);
-			SavePlayerData(iClient);
-			FPS_PrintToChat(iClient, "%t", "YourStatsReset");
+			int iAccountID = GetSteamAccountID(iClient, true);
+			if (iAccountID)
+			{
+				g_iPlayerAccountID[iClient] = iAccountID;
+				g_bStatsLoad[iClient] = true;
+				SavePlayerData(iClient);
+				FPS_PrintToChat(iClient, "%t", "YourStatsReset");
+			}
 			PlayItemSelectSound(iClient, false);
 		}
 		else

@@ -50,11 +50,6 @@ public void OnMapStart()
 	SDKHook(FindEntityByClassname(MaxClients + 1, "cs_player_manager"), SDKHook_ThinkPost, OnThinkPost);
 }
 
-public void OnMapEnd()
-{
-	SDKUnhook(FindEntityByClassname(MaxClients + 1, "cs_player_manager"), SDKHook_ThinkPost, OnThinkPost);
-}
-
 public void OnThinkPost(int iEntity)
 {
 	SetEntDataArray(iEntity, m_iCompetitiveRanking, g_iPlayerRanks, sizeof(g_iPlayerRanks));
@@ -98,4 +93,9 @@ public Action Timer_UpdateFakeRanks(Handle hTimer)
 		UpdateFakeRanks();
 	}
 	return Plugin_Stop;
+}
+
+public void OnClientDisconnect(int iClient)
+{
+	g_iPlayerRanks[iClient] = 0;
 }

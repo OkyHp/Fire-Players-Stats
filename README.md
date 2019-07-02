@@ -15,10 +15,10 @@
 ---
 
 **Команды плагина:** \
-**!position !pos** - Позиция игрока на сервере. \
-**!stats !rank !fps** - Главное меню статистики. \
-**!top** - Топ лучших игроков. \
-**!toptime** - Топ игроков по наиграному времени.
+**sm_pos sm_position** - Позиция игрока на сервере. \
+**sm_stats sm_rank sm_fps** - Главное меню статистики. \
+**sm_top** - Топ лучших игроков. \
+**sm_toptime** - Топ игроков по наиграному времени.
 
 ---
 
@@ -38,7 +38,7 @@
 
 Запрос для добавления стандартных настроек рангов:
 ```sql
-INSERT INTO `fps_test`.`fps_ranks` (`rank_id`, `rank_name`, `points`) 
+INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) 
 VALUES 
 	('1', 'Silver I', '0'),
 	('1', 'Silver II', '700'), 

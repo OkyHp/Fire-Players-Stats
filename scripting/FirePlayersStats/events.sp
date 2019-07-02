@@ -242,9 +242,9 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 		case 'e':
 		{
 			static int iSave;
-			if (g_bStatsActive)
+			if (g_bStatsActive && GameRules_GetProp("m_totalRoundsPlayed"))
 			{
-				bool bSave = !(++iSave%5);
+				bool bSave = !(++iSave%g_iSaveInterval);
 				int iTeam, iWinTeam = GetEventInt(hEvent, "winner");
 
 				for (int i = 1; i <= MaxClients; ++i)
