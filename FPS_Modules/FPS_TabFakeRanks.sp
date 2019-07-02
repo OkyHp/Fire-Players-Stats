@@ -52,7 +52,14 @@ public void OnMapStart()
 
 public void OnThinkPost(int iEntity)
 {
-	SetEntDataArray(iEntity, m_iCompetitiveRanking, g_iPlayerRanks, sizeof(g_iPlayerRanks));
+	//SetEntDataArray(iEntity, m_iCompetitiveRanking, g_iPlayerRanks, sizeof(g_iPlayerRanks));
+	for (int i = 1; i < MaxClients; ++i)
+	{
+		if(FPS_ClientLoaded(i))
+		{
+			SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iPlayerRanks[i]);
+		}
+	}
 }
 
 public void Event_GameStart(Handle hEvent, const char[] szName, bool bDontBroadcast)
@@ -95,7 +102,7 @@ public Action Timer_UpdateFakeRanks(Handle hTimer)
 	return Plugin_Stop;
 }
 
-public void OnClientDisconnect(int iClient)
-{
-	g_iPlayerRanks[iClient] = 0;
-}
+// public void OnClientDisconnect(int iClient)
+// {
+// 	g_iPlayerRanks[iClient] = 0;
+// }

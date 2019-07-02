@@ -86,17 +86,22 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				UNIQUE(`account_id`, `server_id`) \
 			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_weapons_stats` ( \
-				`id`			int 			NOT NULL AUTO_INCREMENT, \
-				`account_id`	int				NOT NULL, \
-				`server_id`		int				NOT NULL, \
-				`weapon`		varchar(64)		NOT NULL, \
-				`kills`			int				NOT NULL, \
-				`shoots`		int				NOT NULL, \
-				`hits`			int				NOT NULL, \
-				`headshots`		int				NOT NULL, \
+				`id`				int 			NOT NULL AUTO_INCREMENT, \
+				`account_id`		int				NOT NULL, \
+				`server_id`			int				NOT NULL, \
+				`weapon`			varchar(64)		NOT NULL, \
+				`kills`				int				NOT NULL, \
+				`shoots`			int				NOT NULL, \
+				`hits_head`			int				NOT NULL, \
+				`hits_body`			int				NOT NULL, \
+				`hits_left_arm`		int				NOT NULL, \
+				`hits_right_arm`	int				NOT NULL, \
+				`hits_left_leg`		int				NOT NULL, \
+				`hits_right_leg`	int				NOT NULL, \
+				`headshots`			int				NOT NULL, \
 				PRIMARY KEY (`id`), \
 				UNIQUE(`account_id`, `server_id`, `weapon`) \
-			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
+			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;"); // `hits`			int				NOT NULL, 
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_ranks` ( \
 				`id`			int 			NOT NULL AUTO_INCREMENT, \
 				`rank_id`		int 			NOT NULL, \
@@ -323,26 +328,42 @@ void SavePlayerData(int iClient)
 				#if DEBUG == 1
 					int i;
 				#endif
-				int iKills, iShoots, iHits, iHeadshots;
+				int iKills, iShoots, iHitsHead, iHitsBody, iHitsLeftArm, iHitsRightArm, iHitsLeftLeg, iHitsRightLeg, iHeadshots;
 				char szWeapon[32];
 				do {
-					iKills		= g_hWeaponsKV.GetNum("Kills");
-					iShoots		= g_hWeaponsKV.GetNum("Shoots");
-					iHits		= g_hWeaponsKV.GetNum("Hits");
+					iKills			= g_hWeaponsKV.GetNum("Kills");
+					iShoots			= g_hWeaponsKV.GetNum("Shoots");
+					//iHits			= g_hWeaponsKV.GetNum("Hits");
+					iHitsHead		= g_hWeaponsKV.GetNum("HitsHead");
+					iHitsBody		= g_hWeaponsKV.GetNum("HitsBody");
+					iHitsLeftArm	= g_hWeaponsKV.GetNum("HitsLeftArm");
+					iHitsRightArm	= g_hWeaponsKV.GetNum("HitsRightArm");
+					iHitsLeftLeg	= g_hWeaponsKV.GetNum("HitsLeftLeg");
+					iHitsRightLeg	= g_hWeaponsKV.GetNum("HitsRightLeg");
 					iHeadshots	= g_hWeaponsKV.GetNum("Headshots");
 					g_hWeaponsKV.GetSectionName(SZF(szWeapon));
 
 					g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_weapons_stats` ( \
-							`account_id`, `server_id`, `weapon`, `kills`, `shoots`, `hits`, `headshots` \
+							`account_id`, `server_id`, `weapon`, `kills`, `shoots`, \
+							`hits_head`, `hits_body`, `hits_left_arm`, `hits_right_arm`, \
+							`hits_left_leg`, `hits_right_leg`, `headshots` \
 						) VALUES \
-							(%i, %i, '%s', %i, %i, %i, %i) ON DUPLICATE KEY \
+							(%i, %i, '%s', %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
 						UPDATE \
 							`kills` = `kills` + %i, \
 							`shoots` = `shoots` + %i, \
-							`hits` = `hits` + %i, \
+							`hits_head` = `hits_head` + %i, \
+							`hits_body` = `hits_body` + %i, \
+							`hits_left_arm` = `hits_left_arm` + %i, \
+							`hits_right_arm` = `hits_right_arm` + %i, \
+							`hits_left_leg` = `hits_left_leg` + %i, \
+							`hits_right_leg` = `hits_right_leg` + %i, \
 							`headshots` = `headshots` + %i;", 
-						g_iPlayerAccountID[iClient], g_iServerID, szWeapon, iKills, iShoots, iHits, iHeadshots,
-						iKills, iShoots, iHits, iHeadshots);
+						g_iPlayerAccountID[iClient], g_iServerID, szWeapon, iKills, iShoots, 
+						iHitsHead, iHitsBody, iHitsLeftArm, iHitsRightArm, 
+						iHitsLeftLeg, iHitsRightLeg, iHeadshots,
+						iKills, iShoots, iHitsHead, iHitsBody, iHitsLeftArm, iHitsRightArm,
+						iHitsLeftLeg, iHitsRightLeg, iHeadshots);
 					#if DEBUG == 1
 						FPS_Log("SavePlayerData >> WeaponQuery#%i: %s", ++i, szQuery)
 					#endif

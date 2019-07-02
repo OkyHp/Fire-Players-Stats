@@ -1,3 +1,14 @@
+#define HITGROUP_GENERIC	0
+#define HITGROUP_HEAD		1
+#define HITGROUP_CHEST		2
+#define HITGROUP_STOMACH	3
+#define HITGROUP_LEFTARM	4    
+#define HITGROUP_RIGHTARM	5
+#define HITGROUP_LEFTLEG	6
+#define HITGROUP_RIGHTLEG	7
+#define HITGROUP_NECK		8
+#define HITGROUP_GEAR		10
+
 static int		iMaxRoundsKills[MAXPLAYERS+1];
 static float	fRoundPlayerPoints[MAXPLAYERS+1];
 
@@ -77,9 +88,19 @@ public void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroad
 			FPS_Log("----->> Event_PlayerHurt >>----- %s", szWeapon)
 		#endif
 
-		if (JumpToWeapons(iAttacker, szWeapon[7]))
+		int iHitgroup = hEvent.GetInt("hitgroup");
+		if (iHitgroup != HITGROUP_GENERIC && iHitgroup != HITGROUP_GEAR && JumpToWeapons(iAttacker, szWeapon[7]))
 		{
-			g_hWeaponsKV.SetNum("Hits", g_hWeaponsKV.GetNum("Hits", 0) + 1);
+			//g_hWeaponsKV.SetNum("Hits", g_hWeaponsKV.GetNum("Hits", 0) + 1);
+			switch(iHitgroup)
+			{
+				case HITGROUP_HEAD, HITGROUP_NECK: g_hWeaponsKV.SetNum("HitsHead", g_hWeaponsKV.GetNum("HitsHead", 0) + 1);
+				case HITGROUP_CHEST, HITGROUP_STOMACH: g_hWeaponsKV.SetNum("HitsBody", g_hWeaponsKV.GetNum("HitsBody", 0) + 1);
+				case HITGROUP_LEFTARM: g_hWeaponsKV.SetNum("HitsLeftArm", g_hWeaponsKV.GetNum("HitsLeftArm", 0) + 1);
+				case HITGROUP_RIGHTARM: g_hWeaponsKV.SetNum("HitsRightArm", g_hWeaponsKV.GetNum("HitsRightArm", 0) + 1);
+				case HITGROUP_LEFTLEG: g_hWeaponsKV.SetNum("HitsLeftLeg", g_hWeaponsKV.GetNum("HitsLeftLeg", 0) + 1);
+				case HITGROUP_RIGHTLEG: g_hWeaponsKV.SetNum("HitsRightLeg", g_hWeaponsKV.GetNum("HitsRightLeg", 0) + 1);
+			}
 		}
 	}
 }
