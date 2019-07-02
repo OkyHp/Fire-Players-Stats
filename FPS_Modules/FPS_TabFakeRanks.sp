@@ -52,7 +52,6 @@ public void OnMapStart()
 
 public void OnThinkPost(int iEntity)
 {
-	//SetEntDataArray(iEntity, m_iCompetitiveRanking, g_iPlayerRanks, sizeof(g_iPlayerRanks));
 	for (int i = 1; i < MaxClients; ++i)
 	{
 		if(FPS_ClientLoaded(i))
@@ -101,8 +100,3 @@ public Action Timer_UpdateFakeRanks(Handle hTimer)
 	}
 	return Plugin_Stop;
 }
-
-// public void OnClientDisconnect(int iClient)
-// {
-// 	g_iPlayerRanks[iClient] = 0;
-// }

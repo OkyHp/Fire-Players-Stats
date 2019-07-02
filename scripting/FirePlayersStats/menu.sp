@@ -295,19 +295,18 @@ void ShowTopMenu(int iClient, int iMenuType)
 
 	FormatEx(SZF(szBuffer), "%t\n ", "TopTitle", !iMenuType ? "TopTen" : "TopTime");
 	hPanel.SetTitle(szBuffer);
-
-	int i;
-	while(i < 10)
+	
+	for (int i = 0; i < 10; ++i)
 	{
-		if (g_iTopData[i][iMenuType])
+		if (!g_fTopData[i][iMenuType])
 		{
-			FormatEx(SZF(szBuffer), "%i. [%.2f] %s", i+1, !iMenuType ? g_fTopData[i][iMenuType] : (g_fTopData[i][iMenuType] / 60 / 60), g_sTopData[i][iMenuType]);
-			hPanel.DrawText(szBuffer);
-			++i;
+			break;
 		}
+		FormatEx(SZF(szBuffer), "%i. [%.2f] %s", i+1, !iMenuType ? g_fTopData[i][iMenuType] : (g_fTopData[i][iMenuType] / 60 / 60), g_sTopData[i][iMenuType]);
+		hPanel.DrawText(szBuffer);
 	}
 
-	if (!i)
+	if (!g_fTopData[0][iMenuType])
 	{
 		FormatEx(SZF(szBuffer), "%t", "NoPlayers");
 		hPanel.DrawText(szBuffer);

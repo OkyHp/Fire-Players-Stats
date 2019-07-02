@@ -425,7 +425,7 @@ void LoadTopData()
 		Transaction	hTxn = new Transaction();
 
 		g_hDatabase.Format(SZF(szQuery), "SELECT \
-				`s`.`account_id`, `p`.`nickname`, `s`.`points` \
+				`p`.`nickname`, `s`.`points` \
 			FROM \
 				`fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
@@ -436,7 +436,7 @@ void LoadTopData()
 		hTxn.AddQuery(szQuery);
 
 		g_hDatabase.Format(SZF(szQuery), "SELECT \
-				`s`.`account_id`, `p`.`nickname`, `s`.`playtime` \
+				`p`.`nickname`, `s`.`playtime` \
 			FROM \
 				`fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
@@ -463,9 +463,8 @@ public void SQL_TxnSuccess_TopData(Database hDatabase, any Data, int iNumQueries
 		int u = 0;
 		while(hResult[i].FetchRow())
 		{
-			g_iTopData[u][i] = hResult[i].FetchInt(0);
-			hResult[i].FetchString(1, g_sTopData[u][i], sizeof(g_sTopData[][]));
-			g_fTopData[u][i] = hResult[i].FetchFloat(2);
+			hResult[i].FetchString(0, g_sTopData[u][i], sizeof(g_sTopData[][]));
+			g_fTopData[u][i] = hResult[i].FetchFloat(1);
 			++u;
 		}
 	}

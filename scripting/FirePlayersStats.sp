@@ -76,7 +76,6 @@ KeyValues	g_hWeaponsKV;
 // Database vars
 Database	g_hDatabase;
 // Top Data
-int			g_iTopData[10][2];
 float		g_fTopData[10][2];
 char		g_sTopData[10][2][64];
 
@@ -102,7 +101,7 @@ public Plugin myinfo =
 {
 	name	=	"Fire Players Stats",
 	author	=	"OkyHp",
-	version	=	"0.0.5 BETA",
+	version	=	"0.0.6 BETA",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
