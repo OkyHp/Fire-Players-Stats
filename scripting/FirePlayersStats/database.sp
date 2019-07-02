@@ -316,8 +316,8 @@ void SavePlayerData(int iClient)
 		{
 			// char szPath[256];
 			// BuildPath(Path_SM, SZF(szPath), "configs/FirePlayersStats/test.ini");
-			g_hWeaponsKV.Rewind();
-			//g_hWeaponsKV.ExportToFile(szPath);
+			// g_hWeaponsKV.Rewind();
+			// g_hWeaponsKV.ExportToFile(szPath);
 
 			char szAccountID[32];
 			IntToString(g_iPlayerAccountID[iClient], SZF(szAccountID));
@@ -331,16 +331,16 @@ void SavePlayerData(int iClient)
 				int iKills, iShoots, iHitsHead, iHitsBody, iHitsLeftArm, iHitsRightArm, iHitsLeftLeg, iHitsRightLeg, iHeadshots;
 				char szWeapon[32];
 				do {
-					iKills			= g_hWeaponsKV.GetNum("Kills");
-					iShoots			= g_hWeaponsKV.GetNum("Shoots");
-					//iHits			= g_hWeaponsKV.GetNum("Hits");
-					iHitsHead		= g_hWeaponsKV.GetNum("HitsHead");
-					iHitsBody		= g_hWeaponsKV.GetNum("HitsBody");
-					iHitsLeftArm	= g_hWeaponsKV.GetNum("HitsLeftArm");
-					iHitsRightArm	= g_hWeaponsKV.GetNum("HitsRightArm");
-					iHitsLeftLeg	= g_hWeaponsKV.GetNum("HitsLeftLeg");
-					iHitsRightLeg	= g_hWeaponsKV.GetNum("HitsRightLeg");
-					iHeadshots	= g_hWeaponsKV.GetNum("Headshots");
+					iKills			= g_hWeaponsKV.GetNum("kills");
+					iShoots			= g_hWeaponsKV.GetNum("shoots");
+					//iHits			= g_hWeaponsKV.GetNum("hits");
+					iHitsHead		= g_hWeaponsKV.GetNum("hitsHead");
+					iHitsBody		= g_hWeaponsKV.GetNum("hitsBody");
+					iHitsLeftArm	= g_hWeaponsKV.GetNum("hitsLeftArm");
+					iHitsRightArm	= g_hWeaponsKV.GetNum("hitsRightArm");
+					iHitsLeftLeg	= g_hWeaponsKV.GetNum("hitsLeftLeg");
+					iHitsRightLeg	= g_hWeaponsKV.GetNum("hitsRightLeg");
+					iHeadshots	= g_hWeaponsKV.GetNum("headshots");
 					g_hWeaponsKV.GetSectionName(SZF(szWeapon));
 
 					g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_weapons_stats` ( \

@@ -54,7 +54,7 @@ public void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroad
 
 			if (JumpToWeapons(iClient, szWeapon[7]))
 			{
-				g_hWeaponsKV.SetNum("Shoots", g_hWeaponsKV.GetNum("Shoots", 0) + 1);
+				g_hWeaponsKV.SetNum("shoots", g_hWeaponsKV.GetNum("shoots", 0) + 1);
 			}
 		}
 	}
@@ -91,15 +91,15 @@ public void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroad
 		int iHitgroup = hEvent.GetInt("hitgroup");
 		if (iHitgroup != HITGROUP_GENERIC && iHitgroup != HITGROUP_GEAR && JumpToWeapons(iAttacker, szWeapon[7]))
 		{
-			//g_hWeaponsKV.SetNum("Hits", g_hWeaponsKV.GetNum("Hits", 0) + 1);
+			//g_hWeaponsKV.SetNum("hits", g_hWeaponsKV.GetNum("hits", 0) + 1);
 			switch(iHitgroup)
 			{
-				case HITGROUP_HEAD, HITGROUP_NECK: g_hWeaponsKV.SetNum("HitsHead", g_hWeaponsKV.GetNum("HitsHead", 0) + 1);
-				case HITGROUP_CHEST, HITGROUP_STOMACH: g_hWeaponsKV.SetNum("HitsBody", g_hWeaponsKV.GetNum("HitsBody", 0) + 1);
-				case HITGROUP_LEFTARM: g_hWeaponsKV.SetNum("HitsLeftArm", g_hWeaponsKV.GetNum("HitsLeftArm", 0) + 1);
-				case HITGROUP_RIGHTARM: g_hWeaponsKV.SetNum("HitsRightArm", g_hWeaponsKV.GetNum("HitsRightArm", 0) + 1);
-				case HITGROUP_LEFTLEG: g_hWeaponsKV.SetNum("HitsLeftLeg", g_hWeaponsKV.GetNum("HitsLeftLeg", 0) + 1);
-				case HITGROUP_RIGHTLEG: g_hWeaponsKV.SetNum("HitsRightLeg", g_hWeaponsKV.GetNum("HitsRightLeg", 0) + 1);
+				case HITGROUP_HEAD, HITGROUP_NECK: g_hWeaponsKV.SetNum("hitsHead", g_hWeaponsKV.GetNum("hitsHead", 0) + 1);
+				case HITGROUP_CHEST, HITGROUP_STOMACH: g_hWeaponsKV.SetNum("hitsBody", g_hWeaponsKV.GetNum("hitsBody", 0) + 1);
+				case HITGROUP_LEFTARM: g_hWeaponsKV.SetNum("hitsLeftArm", g_hWeaponsKV.GetNum("hitsLeftArm", 0) + 1);
+				case HITGROUP_RIGHTARM: g_hWeaponsKV.SetNum("hitsRightArm", g_hWeaponsKV.GetNum("hitsRightArm", 0) + 1);
+				case HITGROUP_LEFTLEG: g_hWeaponsKV.SetNum("hitsLeftLeg", g_hWeaponsKV.GetNum("hitsLeftLeg", 0) + 1);
+				case HITGROUP_RIGHTLEG: g_hWeaponsKV.SetNum("hitsRightLeg", g_hWeaponsKV.GetNum("hitsRightLeg", 0) + 1);
 			}
 		}
 	}
@@ -161,10 +161,10 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 
 				if (JumpToWeapons(iAttacker, szWeapon[7]))
 				{
-					g_hWeaponsKV.SetNum("Kills", g_hWeaponsKV.GetNum("Kills", 0) + 1);
+					g_hWeaponsKV.SetNum("kills", g_hWeaponsKV.GetNum("kills", 0) + 1);
 					if (bHeadshot)
 					{
-						g_hWeaponsKV.SetNum("Headshots", g_hWeaponsKV.GetNum("Headshots", 0) + 1);
+						g_hWeaponsKV.SetNum("headshots", g_hWeaponsKV.GetNum("headshots", 0) + 1);
 					}
 					#if DEBUG == 1
 						FPS_Log("Event_Death >> g_hWeaponsKV >> Kills (%s)", bHeadshot ? "HS" : "No HS")
