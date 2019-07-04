@@ -26,16 +26,22 @@
  */
 
 #pragma semicolon 1
-#pragma newdecls required
 
 #include <sourcemod>
 #include <sdktools>
 #include <FirePlayersStats>
 #include <csgo_colors>
 
+#undef REQUIRE_EXTENSIONS
+#tryinclude <SteamWorks>
+
+#pragma newdecls required
+
 #if FPS_INC_VER < 1
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
+
+#define PLUGIN_VERSION	"0.0.6 BETA"
 
 #define UID(%0)				GetClientUserId(%0)
 #define CID(%0)				GetClientOfUserId(%0)
@@ -101,7 +107,7 @@ public Plugin myinfo =
 {
 	name	=	"Fire Players Stats",
 	author	=	"OkyHp",
-	version	=	"0.0.6 BETA",
+	version	=	PLUGIN_VERSION,
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -141,7 +147,53 @@ public void OnMapStart()
 {
 	LoadRanksSettings();
 	LoadTopData();
+
+	#if defined _SteamWorks_Included
+	if (CanTestFeatures() && GetFeatureStatus(FeatureType_Native, "SteamWorks_CreateHTTPRequest") == FeatureStatus_Available)
+	{
+		SteamWorks_SteamServersConnected();
+	}
+	#endif
 }
+
+#if defined _SteamWorks_Included
+public int SteamWorks_SteamServersConnected()
+{
+	int iIP[4];
+	if (SteamWorks_GetPublicIP(iIP) && iIP[0] && iIP[1] && iIP[2] && iIP[3])
+	{
+		char	szIP[24],
+				szBuffer[256];
+		FormatEx(SZF(szIP), "%i.%i.%i.%i", iIP[0], iIP[1], iIP[2], iIP[3]);
+		Handle hRequest = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, "http://stats.tibari.ru/api/v1/add_server");
+		FormatEx(SZF(szBuffer), "key=%s&ip=%s&port=%i&version=%s&sm=%s", "c30facaa6f64ce25357e7c5ed1685afd", szIP, FindConVar("hostport").IntValue, PLUGIN_VERSION, SOURCEMOD_VERSION);
+		SteamWorks_SetHTTPRequestRawPostBody(hRequest, "application/x-www-form-urlencoded", SZF(szBuffer));
+		SteamWorks_SetHTTPCallbacks(hRequest, OnTransferComplete);
+		SteamWorks_SendHTTPRequest(hRequest);
+	}
+}
+
+public int OnTransferComplete(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode)
+{
+	delete hRequest;
+	int iStatus = view_as<int>(eStatusCode);
+	if (iStatus < 500)
+	{
+		switch(iStatus)
+		{
+			case 200:	LogAction(-1, -1, "[FPS Stats] Сервер успешно добавлен/обновлен");
+			case 400:	LogError("[FPS Stats] Не верный запрос");
+			case 403:	LogError("[FPS Stats] Не верный IP:PORT");
+			case 404:	LogError("[FPS Stats] Сервер или версия не найдены в базе данных");
+			case 406:	LogError("[FPS Stats] Не верный API KEY");
+			case 410:	LogError("[FPS Stats] Не верная версия Fire Players Stats");
+			case 413:	LogError("[FPS Stats] Не верный размер аргументов");
+			case 429:	return;
+			default:	LogError("[FPS Stats] Не известная ошибка: %i", iStatus);								
+		}
+	}
+}
+#endif
 
 public void OnMapEnd()
 {
