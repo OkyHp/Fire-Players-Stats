@@ -48,7 +48,7 @@
 #define SZF(%0)				%0, sizeof(%0)
 
 #define DEFAULT_POINTS		1000.0
-#define DEBUG				1	// Enable/Disable debug mod
+#define DEBUG				0	// Enable/Disable debug mod
 #define LOAD_TYPE			0	// Use forvard for load player stats:	0 - OnClientPostAdminCheck 
 								//										1 - OnClientAuthorized
 #define FPS_CHAT_PREFIX			" \x04[ \x02FPS \x04] \x01"
