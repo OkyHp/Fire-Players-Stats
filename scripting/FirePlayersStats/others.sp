@@ -36,9 +36,7 @@ bool JumpToWeapons(int iClient, const char[] szWeapon)
 		return false;
 	}
 
-	#if DEBUG == 1
-		FPS_Log("JumpToWeapons >> %N: %s -> %s", iClient, szAccountID, szWeapon)
-	#endif
+	FPS_Debug("JumpToWeapons >> %N: %s -> %s", iClient, szAccountID, szWeapon)
 		
 	return true;
 }
@@ -74,9 +72,7 @@ float StreakPoints(int iClient)
 			iStrick[iClient][0]++;
 		}
 		
-		#if DEBUG == 1
-			FPS_Log("StreakPoints >> %N: #%i %f", iClient, iStrick[iClient][0], g_fExtraPoints[iStrick[iClient][0] + 12])
-		#endif
+		FPS_Debug("StreakPoints >> %N: #%i %f", iClient, iStrick[iClient][0], g_fExtraPoints[iStrick[iClient][0] + 12])
 
 		return g_fExtraPoints[iStrick[iClient][0] + 12];
 	}
@@ -115,13 +111,9 @@ float GetWeaponExtraPoints(const char[] szWeapon)
 		g_hWeaponsConfigKV.Rewind();
 		if (g_hWeaponsConfigKV.JumpToKey("WeaponCoeff"))
 		{
-			#if DEBUG == 1
-				float fExtPoints = g_hWeaponsConfigKV.GetFloat(szWeapon, 1.0);
-				FPS_Log("GetWeaponExtraPoints >> %s -> %f", szWeapon, fExtPoints)
-				return fExtPoints;
-			#else
-				return g_hWeaponsConfigKV.GetFloat(szWeapon, 1.0);
-			#endif
+			float fExtPoints = g_hWeaponsConfigKV.GetFloat(szWeapon, 1.0);
+			FPS_Debug("GetWeaponExtraPoints >> %s -> %f", szWeapon, fExtPoints)
+			return fExtPoints;
 		}
 	}
 	return 1.0;
@@ -153,15 +145,11 @@ void CheckRank(int iClient)
 							FPS_PrintToChat(iClient, "%t", iLevel > g_iPlayerRanks[iClient] ? "RankUpped" : "RankDowned", g_sRankName[iClient]);
 							CallForward_OnFPSLevelChange(iClient, g_iPlayerRanks[iClient], iLevel);
 						}
-						#if DEBUG == 1
-							FPS_Log("CheckRank Pre (New level) >> %N: %i", iClient, iLevel)
-						#endif
+						FPS_Debug("CheckRank Pre (New level) >> %N: %i", iClient, iLevel)
 
 						g_iPlayerRanks[iClient] = iLevel;
 
-						#if DEBUG == 1
-							FPS_Log("CheckRank >> %N: %i | %s", iClient, g_iPlayerRanks[iClient], g_sRankName[iClient])
-						#endif
+						FPS_Debug("CheckRank >> %N: %i | %s", iClient, g_iPlayerRanks[iClient], g_sRankName[iClient])
 					}
 					return;
 				}
@@ -175,9 +163,7 @@ void CheckRank(int iClient)
 // Check grenade
 bool IsGrenade(const char[] szWeapon)
 {
-	#if DEBUG == 1
-		FPS_Log("IsGrenade >> %s", szWeapon)
-	#endif
+	FPS_Debug("IsGrenade >> %s", szWeapon)
 	return (szWeapon[0] == 'i' // inferno + incgrenade
 			|| szWeapon[4] == 'y' // decoy
 			|| (szWeapon[0] == 'h' && szWeapon[1] == 'e') // hegrenade + healthshot
@@ -191,9 +177,7 @@ bool IsGrenade(const char[] szWeapon)
 // Check knife
 bool IsKnife(const char[] szWeapon)
 {
-	#if DEBUG == 1
-		FPS_Log("IsKnife >> %s", szWeapon)
-	#endif
+	FPS_Debug("IsKnife >> %s", szWeapon)
 	return (szWeapon[0] == 'k' || szWeapon[2] == 'y');
 }
 

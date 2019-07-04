@@ -146,9 +146,7 @@ void LoadRanksSettings()
 		char szQuery[256];
 		g_hDatabase.Format(SZF(szQuery), "SELECT `rank_name`, `points` \
 			FROM `fps_ranks` WHERE `rank_id` = %i ORDER BY `points` ASC", g_iRanksID);
-		#if DEBUG == 1
-			FPS_Log("LoadRanksSettings >> Query: %s", szQuery)
-		#endif
+		FPS_Debug("LoadRanksSettings >> Query: %s", szQuery)
 		g_hDatabase.Query(SQL_Callback_LoadRanks, szQuery);
 	}
 }
@@ -182,9 +180,7 @@ public void SQL_Callback_LoadRanks(Database hDatabase, DBResultSet hResult, cons
 			}
 			g_iRanksCount = iLevel;
 
-			#if DEBUG == 1
-				FPS_Log("SQL_Callback_LoadRanks >> Catch KV >> %i", iLevel)
-			#endif
+			FPS_Debug("SQL_Callback_LoadRanks >> Catch KV >> %i", iLevel)
 		}
 		return;
 	}
@@ -199,9 +195,7 @@ public void SQL_Callback_LoadRanks(Database hDatabase, DBResultSet hResult, cons
 	}
 	g_iRanksCount = iLevel;
 
-	#if DEBUG == 1
-		FPS_Log("SQL_Callback_LoadRanks >> Database KV >> %i", iLevel)
-	#endif
+	FPS_Debug("SQL_Callback_LoadRanks >> Database KV >> %i", iLevel)
 
 	g_hRanksConfigKV.Rewind();
 	g_hRanksConfigKV.ExportToFile(szPath);
@@ -220,9 +214,7 @@ void LoadPlayerData(int iClient)
 				`fps_servers_stats` \
 			WHERE \
 				`server_id` = %i AND `account_id` = %i LIMIT 1", g_iServerID, g_iPlayerAccountID[iClient]);
-		#if DEBUG == 1
-			FPS_Log("LoadPlayerData >> Query: %s", szQuery)
-		#endif
+		FPS_Debug("LoadPlayerData >> Query: %s", szQuery)
 		g_hDatabase.Query(SQL_Callback_LoadPlayerData, szQuery, UID(iClient));
 	}
 }
@@ -243,16 +235,12 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 			g_iPlayerSessionData[iClient][i] = g_iPlayerData[iClient][i] = hResult.FetchInt(i+1);
 		}
 
-		#if DEBUG == 1
-			FPS_Log("SQL_Callback_LoadPlayerData >> %N: points: %f | kills: %i, deaths: %i, assists: %i, round_max_kills: %i, round_win: %i, round_lose: %i, playtime: %i", iClient, g_fPlayerPoints[iClient], g_iPlayerData[iClient][KILLS], g_iPlayerData[iClient][DEATHS], g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], g_iPlayerData[iClient][PLAYTIME])
-		#endif
+		FPS_Debug("SQL_Callback_LoadPlayerData >> %N: points: %f | kills: %i, deaths: %i, assists: %i, round_max_kills: %i, round_win: %i, round_lose: %i, playtime: %i", iClient, g_fPlayerPoints[iClient], g_iPlayerData[iClient][KILLS], g_iPlayerData[iClient][DEATHS], g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], g_iPlayerData[iClient][PLAYTIME])
 	}
 	else
 	{
 		g_fPlayerSessionPoints[iClient]	= g_fPlayerPoints[iClient] = DEFAULT_POINTS;
-		#if DEBUG == 1
-			FPS_Log("SQL_Callback_LoadPlayerData >> New player: %N", iClient)
-		#endif
+		FPS_Debug("SQL_Callback_LoadPlayerData >> New player: %N", iClient)
 	}
 
 	g_iPlayerSessionData[iClient][PLAYTIME] = GetTime();
@@ -283,9 +271,7 @@ void SavePlayerData(int iClient)
 				%i, '%s', '%s', '%s' \
 			) ON DUPLICATE KEY UPDATE `nickname` = '%s', `ip` = '%s';", 
 			g_iPlayerAccountID[iClient], szAuth, szName, szIp, szName, szIp);
-		#if DEBUG == 1
-			FPS_Log("SavePlayerData >> Query#1: %s", szQuery)
-		#endif
+		FPS_Debug("SavePlayerData >> Query#1: %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
 		int iPlayTime = FPS_GetPlayedTime(iClient, false);
@@ -306,9 +292,7 @@ void SavePlayerData(int iClient)
 			g_fPlayerPoints[iClient], g_iPlayerData[iClient][KILLS], g_iPlayerData[iClient][DEATHS], 
 			g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], 
 			g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], iPlayTime, g_iPlayerSessionData[iClient][PLAYTIME]);
-		#if DEBUG == 1
-			FPS_Log("SavePlayerData >> Query#2: %s", szQuery)
-		#endif
+		FPS_Debug("SavePlayerData >> Query#2: %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
 		// Save weapons stats
@@ -364,9 +348,7 @@ void SavePlayerData(int iClient)
 						iHitsLeftLeg, iHitsRightLeg, iHeadshots,
 						iKills, iShoots, iHitsHead, iHitsBody, iHitsLeftArm, iHitsRightArm,
 						iHitsLeftLeg, iHitsRightLeg, iHeadshots);
-					#if DEBUG == 1
-						FPS_Log("SavePlayerData >> WeaponQuery#%i: %s", ++i, szQuery)
-					#endif
+					FPS_Debug("SavePlayerData >> WeaponQuery#%i: %s", ++i, szQuery)
 					hTxn.AddQuery(szQuery);
 				} while (g_hWeaponsKV.GotoNextKey());
 
@@ -381,19 +363,14 @@ void SavePlayerData(int iClient)
 
 public void SQL_TxnSuccess_UpdateOrInsertPlayerData(Database hDatabase, any Data, int iNumQueries, DBResultSet[] results, any[] QueryData)
 {
-	#if DEBUG == 1
-		FPS_Log("SQL_TxnSuccess_UpdateOrInsertPlayerData >> Success")
-	#endif
+	FPS_Debug("SQL_TxnSuccess_UpdateOrInsertPlayerData >> Success")
 }
 
 public void SQL_TxnFailure_UpdateOrInsertPlayerData(Database hDatabase, any Data, int iNumQueries, const char[] szError, int iFailIndex, any[] QueryData)
 {
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "SQL_TxnFailure_UpdateOrInsertPlayerData #%i", iFailIndex);
-	if (!CheckDatabaseConnection(hDatabase, szError, szBuffer))
-	{
-		return;
-	}
+	CheckDatabaseConnection(hDatabase, szError, szBuffer);
 }
 
 void DeleteInactivePlayers()
@@ -409,9 +386,7 @@ void DeleteInactivePlayers()
 				`s`.`server_id` = %i \
 				AND `w`.`server_id` = %i \
 				AND `s`.`lastconnect` < %i;", g_iServerID, g_iServerID, (GetTime() - g_iDeletePlayersTime));
-		#if DEBUG == 1
-			FPS_Log("DeleteInactivePlayers >> Query: %s", szQuery)
-		#endif
+		FPS_Debug("DeleteInactivePlayers >> Query: %s", szQuery)
 		g_hDatabase.Query(SQL_Default_Callback, szQuery, 3);
 	}
 }
@@ -430,9 +405,7 @@ void LoadTopData()
 				`fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
 			WHERE `server_id` = %i ORDER BY `points` DESC LIMIT 10;", g_iServerID);
-		#if DEBUG == 1
-			FPS_Log("LoadTopData >> Query#1 (Top): %s", szQuery)
-		#endif
+		FPS_Debug("LoadTopData >> Query#1 (Top): %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
 		g_hDatabase.Format(SZF(szQuery), "SELECT \
@@ -441,15 +414,11 @@ void LoadTopData()
 				`fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
 			WHERE `server_id` = %i ORDER BY `playtime` DESC LIMIT 10;", g_iServerID);
-		#if DEBUG == 1
-			FPS_Log("LoadTopData >> Query#2 (TopTime): %s", szQuery)
-		#endif
+		FPS_Debug("LoadTopData >> Query#2 (TopTime): %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
 		g_hDatabase.Format(SZF(szQuery), "SELECT COUNT(`id`) FROM `fps_servers_stats` WHERE `server_id` = %i;", g_iServerID);
-		#if DEBUG == 1
-			FPS_Log("LoadTopData >> Query#3 (GetPlayerCount): %s", szQuery)
-		#endif
+		FPS_Debug("LoadTopData >> Query#3 (GetPlayerCount): %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
 		g_hDatabase.Execute(hTxn, SQL_TxnSuccess_TopData, SQL_TxnFailure_TopData);
@@ -479,10 +448,7 @@ public void SQL_TxnFailure_TopData(Database hDatabase, any Data, int iNumQueries
 {
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "SQL_TxnFailure_TopData #%i", iFailIndex);
-	if (!CheckDatabaseConnection(hDatabase, szError, szBuffer))
-	{
-		return;
-	}
+	CheckDatabaseConnection(hDatabase, szError, szBuffer);
 }
 
 // Get player position
@@ -493,9 +459,7 @@ void GetPlayerPosition(int iClient)
 		char szQuery[256];
 		g_hDatabase.Format(SZF(szQuery), "SELECT DISTINCT COUNT(`id`) AS `position` \
 			FROM `fps_servers_stats` WHERE `points` >= %f AND `server_id` = %i;", g_fPlayerPoints[iClient], g_iServerID);
-		#if DEBUG == 1
-			FPS_Log("GetPlayerPosition >> Query: %s", szQuery)
-		#endif
+		FPS_Debug("GetPlayerPosition >> Query: %s", szQuery)
 		g_hDatabase.Query(SQL_Callback_PlayerPosition, szQuery, UID(iClient));
 	}
 }
@@ -509,7 +473,5 @@ public void SQL_Callback_PlayerPosition(Database hDatabase, DBResultSet hResult,
 	}
 
 	g_iPlayerPosition[iClient] = hResult.FetchRow() ? hResult.FetchInt(0) : 0;
-	#if DEBUG == 1
-		FPS_Log("SQL_Callback_PlayerPosition >> %N: position: %i / %i", iClient, g_iPlayerPosition[iClient], g_iPlayersCount)
-	#endif
+	FPS_Debug("SQL_Callback_PlayerPosition >> %N: position: %i / %i", iClient, g_iPlayerPosition[iClient], g_iPlayersCount)
 }

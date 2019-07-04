@@ -127,9 +127,7 @@ public int Native_FPSClientReloadData(Handle hPlugin, int iNumParams)
 	int iClient = GetNativeCell(1);
 	if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
 	{
-		#if DEBUG == 1
-			FPS_Log("Native_FPSClientReloadData >> LoadStats: %N", iClient)
-		#endif
+		FPS_Debug("Native_FPSClientReloadData >> LoadStats: %N", iClient)
 		OnClientDisconnect(iClient);
 		LoadPlayerData(iClient);
 	}

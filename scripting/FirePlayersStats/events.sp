@@ -48,9 +48,7 @@ public void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroad
 			{
 				szWeapon = "weapon_knife";
 			}
-			#if DEBUG == 1
-				FPS_Log("----->> Event_WeaponFire >>----- %s", szWeapon)
-			#endif
+			FPS_Debug("----->> Event_WeaponFire >>----- %s", szWeapon)
 
 			if (JumpToWeapons(iClient, szWeapon[7]))
 			{
@@ -84,9 +82,7 @@ public void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroad
 		{
 			szWeapon = "weapon_knife";
 		}
-		#if DEBUG == 1
-			FPS_Log("----->> Event_PlayerHurt >>----- %s", szWeapon)
-		#endif
+		FPS_Debug("----->> Event_PlayerHurt >>----- %s", szWeapon)
 
 		int iHitgroup = hEvent.GetInt("hitgroup");
 		if (iHitgroup != HITGROUP_GENERIC && iHitgroup != HITGROUP_GEAR && JumpToWeapons(iAttacker, szWeapon[7]))
@@ -133,9 +129,7 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 			{
 				g_fPlayerPoints[iAttacker] += g_fExtraPoints[CFG_TEAMKILL];
 				CheckRank(iAttacker);
-				#if DEBUG == 1
-					FPS_Log("Event_PlayerDeath >> TeamKill >> Attacker: %f", g_fPlayerPoints[iAttacker])
-				#endif
+				FPS_Debug("Event_PlayerDeath >> TeamKill >> Attacker: %f", g_fPlayerPoints[iAttacker])
 				return;
 			}
 
@@ -166,19 +160,15 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 					{
 						g_hWeaponsKV.SetNum("headshots", g_hWeaponsKV.GetNum("headshots", 0) + 1);
 					}
-					#if DEBUG == 1
-						FPS_Log("Event_Death >> g_hWeaponsKV >> Kills (%s)", bHeadshot ? "HS" : "No HS")
-					#endif
+					FPS_Debug("Event_Death >> g_hWeaponsKV >> Kills (%s)", bHeadshot ? "HS" : "No HS")
 				}
 			}
 
 			float	fPointsAttacker = ((g_fPlayerPoints[iVictim] / g_fPlayerPoints[iAttacker]) * 5.0 + (bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0) + StreakPoints(iAttacker) * (!bIsGrenade ? GetWeaponExtraPoints(szWeapon[7]) : 0.0)),
 					fDiss = (g_fPlayerPoints[iAttacker] / g_fPlayerPoints[iVictim]),
 					fPointsVictim = (fPointsAttacker * g_fCoeff) * (fDiss < 0.5 && IsCalibration(iAttacker) ? fDiss : 1.0);
-			#if DEBUG == 1
-				FPS_Log("Event_PlayerDeath >> Points Data: \n ----->> HS: %f \n ----->> SP: %f \n ----->> EP: %f \n ----->> DS: %f : %f", (bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0), StreakPoints(iAttacker), (!bIsGrenade ? GetWeaponExtraPoints(szWeapon[7]) : 0.0), fDiss, (fDiss < 0.5 && IsCalibration(iAttacker) ? fDiss : 1.0))
-				FPS_Log("Event_PlayerDeath >> Points >> Attacker (%N): %f / Victim (%N): %f", iAttacker, fPointsAttacker, iVictim, fPointsVictim)
-			#endif
+			FPS_Debug("Event_PlayerDeath >> Points Data: \n ----->> HS: %f \n ----->> SP: %f \n ----->> EP: %f \n ----->> DS: %f : %f", (bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0), StreakPoints(iAttacker), (!bIsGrenade ? GetWeaponExtraPoints(szWeapon[7]) : 0.0), fDiss, (fDiss < 0.5 && IsCalibration(iAttacker) ? fDiss : 1.0))
+			FPS_Debug("Event_PlayerDeath >> Points >> Attacker (%N): %f / Victim (%N): %f", iAttacker, fPointsAttacker, iVictim, fPointsVictim)
 
 			ResetIfLessZero(fPointsAttacker);
 			ResetIfLessZero(fPointsVictim);
@@ -196,9 +186,7 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 				{
 					g_fPlayerPoints[iAttacker] += fAddPointsAttacker;
 					g_fPlayerPoints[iVictim] -= fAddPointsVictim;
-					#if DEBUG == 1
-						FPS_Log("Event_PlayerDeath >> Points Pre Changed >> Attacker (%N): %f / Victim (%N): %f", iAttacker, fAddPointsAttacker, iVictim, fAddPointsVictim)
-					#endif
+					FPS_Debug("Event_PlayerDeath >> Points Pre Changed >> Attacker (%N): %f / Victim (%N): %f", iAttacker, fAddPointsAttacker, iVictim, fAddPointsVictim)
 				}
 				default:
 				{
@@ -240,9 +228,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 			}
 			g_bStatsActive = (iPlayers >= g_iMinPlayers && g_hDatabase);
 
-			#if DEBUG == 1
-				FPS_Log("Event_RoundAction (s) >> Stats %s", g_bStatsActive ? "ON" : "OFF")
-			#endif
+			FPS_Debug("Event_RoundAction (s) >> Stats %s", g_bStatsActive ? "ON" : "OFF")
 		}
 		case 'm':
 		{
@@ -255,9 +241,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 					CheckRank(iClient);
 				}
 
-				#if DEBUG == 1
-					FPS_Log("Event_RoundAction (m) >> MVP: %N", iClient)
-				#endif
+				FPS_Debug("Event_RoundAction (m) >> MVP: %N", iClient)
 			}
 		}
 		case 'e':
@@ -297,9 +281,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 
 						if (bSave)
 						{
-							#if DEBUG == 1
-								FPS_Log("Call Save Function >> %N | %i", i, iSave)
-							#endif
+							FPS_Debug("Call Save Function >> %N | %i", i, iSave)
 							SavePlayerData(i);
 						}
 					}
@@ -317,9 +299,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 					}
 				}
 
-				#if DEBUG == 1
-					FPS_Log("Event_RoundAction (e) >> ----------------")
-				#endif
+				FPS_Debug("Event_RoundAction (e) >> ----------------")
 			}
 		}
 	}
@@ -359,8 +339,6 @@ public void Event_OtherAction(Event hEvent, const char[] sEvName, bool bDontBroa
 
 		CheckRank(iClient);
 
-		#if DEBUG == 1
-			FPS_Log("Event_OtherAction >> %s", sEvName)
-		#endif
+		FPS_Debug("Event_OtherAction >> %s", sEvName)
 	}
 }

@@ -61,37 +61,6 @@ public Action CommandFpsMenu(int iClient, int iArgs)
 	return Plugin_Handled;
 }
 
-// public void OnClientSayCommand_Post(int iClient, const char[] szCommand, const char[] sArgs)
-// {
-// 	if (g_bStatsLoad[iClient])
-// 	{
-// 		static const char szCommands[][] = {
-// 			"pos", "position", "top", "toptime", "stats", "fps", "rank"
-// 		};
-
-// 		if (!strcmp(sArgs[1], szCommands[0], false) || !strcmp(sArgs, szCommands[0], false) || !strcmp(sArgs[1], szCommands[1], false) || !strcmp(sArgs, szCommands[1], false))
-// 		{
-// 			ShowPosition(iClient);
-// 		}
-// 		else if (!strcmp(sArgs[1], szCommands[2], false) || !strcmp(sArgs, szCommands[2], false))
-// 		{
-// 			ShowTopMenu(iClient, 0);
-// 		}
-// 		else if (!strcmp(sArgs[1], szCommands[3], false) || !strcmp(sArgs, szCommands[3], false))
-// 		{
-// 			ShowTopMenu(iClient, 1);
-// 		}
-// 		else if (!strcmp(sArgs[1], szCommands[4], false) || !strcmp(sArgs, szCommands[4], false) || !strcmp(sArgs[1], szCommands[5], false) || !strcmp(sArgs, szCommands[5], false) || !strcmp(sArgs[1], szCommands[6], false) || !strcmp(sArgs, szCommands[6], false))
-// 		{
-// 			ShowFpsMenu(iClient);
-// 		}
-
-// 		return;
-// 	}
-
-// 	FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
-// }
-
 void ShowFpsMenu(int iClient)
 {
 	Menu hMenu = new Menu(Handler_FpsMenu);
@@ -107,8 +76,8 @@ void ShowFpsMenu(int iClient)
 	hMenu.AddItem(NULL_STRING, szBuffer);
 	FormatEx(SZF(szBuffer), "%t", "RanksInfo");
 	hMenu.AddItem(NULL_STRING, szBuffer);
-	FormatEx(SZF(szBuffer), "%t", "StatsInfo");
-	hMenu.AddItem(NULL_STRING, szBuffer);
+	// FormatEx(SZF(szBuffer), "%t", "StatsInfo");
+	// hMenu.AddItem(NULL_STRING, szBuffer);
 
 	hMenu.ExitButton = true;
 	hMenu.Display(iClient, MENU_TIME_FOREVER);
@@ -127,7 +96,7 @@ public int Handler_FpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem
 				case 1: ShowTopMenu(iClient, 0);
 				case 2: ShowTopMenu(iClient, 1);
 				case 3: ShowRankInfoMenu(iClient);
-				case 4: ShowStatsInfoMenu(iClient);
+				//case 4: ShowStatsInfoMenu(iClient);
 			}
 		}
 	}
@@ -375,29 +344,29 @@ void ShowRankInfoMenu(int iClient)
 	hMenu.Display(iClient, MENU_TIME_FOREVER);
 }
 
-void ShowStatsInfoMenu(int iClient)
-{
-	char szBuffer[512];
-	Panel hPanel = new Panel();
-	SetGlobalTransTarget(iClient);
+// void ShowStatsInfoMenu(int iClient)
+// {
+// 	char szBuffer[512];
+// 	Panel hPanel = new Panel();
+// 	SetGlobalTransTarget(iClient);
 
-	FormatEx(SZF(szBuffer), "[ %t ]\n ", "StatsInfo");
-	hPanel.SetTitle(szBuffer);
+// 	FormatEx(SZF(szBuffer), "[ %t ]\n ", "StatsInfo");
+// 	hPanel.SetTitle(szBuffer);
 
-	FormatEx(SZF(szBuffer), "%t\n ", "StatsInfoData");
-	hPanel.DrawText(szBuffer);
+// 	FormatEx(SZF(szBuffer), "%t\n ", "StatsInfoData");
+// 	hPanel.DrawText(szBuffer);
 
-	FormatEx(SZF(szBuffer), "%t", "Back");
-	hPanel.CurrentKey = 7;
-	hPanel.DrawItem(szBuffer);
+// 	FormatEx(SZF(szBuffer), "%t", "Back");
+// 	hPanel.CurrentKey = 7;
+// 	hPanel.DrawItem(szBuffer);
 
-	FormatEx(SZF(szBuffer), "%t", "Exit");
-	hPanel.CurrentKey = 9;
-	hPanel.DrawItem(szBuffer);
+// 	FormatEx(SZF(szBuffer), "%t", "Exit");
+// 	hPanel.CurrentKey = 9;
+// 	hPanel.DrawItem(szBuffer);
 
-	hPanel.Send(iClient, Handler_Panel, MENU_TIME_FOREVER);
-	delete hPanel;
-}
+// 	hPanel.Send(iClient, Handler_Panel, MENU_TIME_FOREVER);
+// 	delete hPanel;
+// }
 
 public int Handler_Panel(Menu hPanel, MenuAction action, int iClient, int iOption)
 {

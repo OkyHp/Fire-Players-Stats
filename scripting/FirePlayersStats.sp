@@ -57,7 +57,9 @@
 
 #if DEBUG == 1
 	char g_sLogPath[256];
-	#define FPS_Log(%0)		LogToFile(g_sLogPath, %0);
+	#define FPS_Debug(%0)		LogToFile(g_sLogPath, %0);
+#else
+	#define FPS_Debug(%0)
 #endif
 
 // Others vars
@@ -208,9 +210,7 @@ public void OnClientAuthorized(int iClient)
 {
 	if (iClient && !IsFakeClient(iClient) && !IsClientSourceTV(iClient))
 	{
-		#if DEBUG == 1
-			FPS_Log("Client connected (Type: %i) >> LoadStats: %N", LOAD_TYPE, iClient)
-		#endif
+		FPS_Debug("Client connected (Type: %i) >> LoadStats: %N", LOAD_TYPE, iClient)
 
 		int iAccountID = GetSteamAccountID(iClient, true);
 		if (iAccountID)
@@ -218,12 +218,10 @@ public void OnClientAuthorized(int iClient)
 			g_iPlayerAccountID[iClient] = iAccountID;
 			LoadPlayerData(iClient);
 		}
-		#if DEBUG == 1
 		else
 		{
-			FPS_Log("GetSteamAccountID >> %N: AccountID not valid %i", iClient, iAccountID)
+			LogError("GetSteamAccountID >> %N: AccountID not valid %i", iClient, iAccountID);
 		}
-		#endif
 	}
 }
 
