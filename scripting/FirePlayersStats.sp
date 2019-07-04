@@ -166,7 +166,7 @@ public int SteamWorks_SteamServersConnected()
 				szBuffer[256];
 		FormatEx(SZF(szIP), "%i.%i.%i.%i", iIP[0], iIP[1], iIP[2], iIP[3]);
 		Handle hRequest = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, "http://stats.tibari.ru/api/v1/add_server");
-		FormatEx(SZF(szBuffer), "key=%s&ip=%s&port=%i&version=%s&sm=%s", "c30facaa6f64ce25357e7c5ed1685afd", szIP, FindConVar("hostport").IntValue, PLUGIN_VERSION, SOURCEMOD_VERSION);
+		FormatEx(SZF(szBuffer), "key=c30facaa6f64ce25357e7c5ed1685afd&ip=%s&port=%i&version=%s&sm=%s", szIP, FindConVar("hostport").IntValue, PLUGIN_VERSION, SOURCEMOD_VERSION);
 		SteamWorks_SetHTTPRequestRawPostBody(hRequest, "application/x-www-form-urlencoded", SZF(szBuffer));
 		SteamWorks_SetHTTPCallbacks(hRequest, OnTransferComplete);
 		SteamWorks_SendHTTPRequest(hRequest);
