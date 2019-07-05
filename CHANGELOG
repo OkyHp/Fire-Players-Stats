@@ -5,3 +5,5 @@
 		Added counting hits on hit group. 
 		Small edits in the fake ranks module.
 1.0.0 - Release.
+1.0.1 - Disabled scoring for victory/loss for connected players.
+		Fixed typo in config.

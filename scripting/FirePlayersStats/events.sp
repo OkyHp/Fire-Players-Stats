@@ -223,6 +223,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 				{
 					iMaxRoundsKills[i] = 0;
 					fRoundPlayerPoints[i] = g_fPlayerPoints[i];
+					g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] = 1;
 					++iPlayers;
 				}
 			}
@@ -261,7 +262,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 							g_iPlayerData[i][MAX_ROUNDS_KILLS] = iMaxRoundsKills[i];
 						}
 
-						if (iWinTeam > 1 && (iTeam = GetClientTeam(i)) > 1)
+						if (g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] && iWinTeam > 1 && (iTeam = GetClientTeam(i)) > 1)
 						{
 							if (iTeam == iWinTeam)
 							{
@@ -276,8 +277,11 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 							CheckRank(i);
 						}
 
-						float fPoints = g_fPlayerPoints[i] - fRoundPlayerPoints[i];
-						FPS_PrintToChat(i, "%t", "PrintPoints", fPoints > 0.0 ? "{GREEN}" : "{RED}", fPoints);
+						if (g_iPlayerSessionData[i][MAX_ROUNDS_KILLS])
+						{
+							float fPoints = g_fPlayerPoints[i] - fRoundPlayerPoints[i];
+							FPS_PrintToChat(i, "%t", "PrintPoints", fPoints > 0.0 ? "{GREEN}" : "{RED}", fPoints);
+						}
 
 						if (bSave)
 						{

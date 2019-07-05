@@ -41,7 +41,7 @@
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
-#define PLUGIN_VERSION	"1.0.0"
+#define PLUGIN_VERSION	"1.0.1"
 
 #define UID(%0)				GetClientUserId(%0)
 #define CID(%0)				GetClientOfUserId(%0)
@@ -232,5 +232,6 @@ public void OnClientDisconnect(int iClient)
 		SavePlayerData(iClient);
 	}
 	
+	g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS] = 0; // (not used var) for blocked accrual of experience to connected player
 	ResetData(iClient);
 }
