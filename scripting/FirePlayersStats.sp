@@ -183,15 +183,15 @@ public int OnTransferComplete(Handle hRequest, bool bFailure, bool bRequestSucce
 	{
 		switch(iStatus)
 		{
-			case 200:	LogAction(-1, -1, "[FPS Stats] Сервер успешно добавлен/обновлен");
-			case 400:	LogError("[FPS Stats] Не верный запрос");
-			case 403:	LogError("[FPS Stats] Не верный IP:PORT");
-			case 404:	LogError("[FPS Stats] Сервер или версия не найдены в базе данных");
-			case 406:	LogError("[FPS Stats] Не верный API KEY");
-			case 410:	LogError("[FPS Stats] Не верная версия Fire Players Stats");
-			case 413:	LogError("[FPS Stats] Не верный размер аргументов");
+			case 200:	LogAction(-1, -1, "[FPS Stats] >> Сервер успешно добавлен/обновлен");
+			case 400:	PrintToServer("[FPS Stats] >> Не верный запрос");
+			case 403:	PrintToServer("[FPS Stats] >> Не верный IP:PORT");
+			case 404:	PrintToServer("[FPS Stats] >> Сервер или версия не найдены в базе данных");
+			case 406:	PrintToServer("[FPS Stats] >> Не верный API KEY");
+			case 410:	PrintToServer("[FPS Stats] >> Не верная версия Fire Players Stats");
+			case 413:	PrintToServer("[FPS Stats] >> Не верный размер аргументов");
 			case 429:	return;
-			default:	LogError("[FPS Stats] Не известная ошибка: %i", iStatus);								
+			default:	PrintToServer("[FPS Stats] >> Не известная ошибка: %i", iStatus);								
 		}
 	}
 }

@@ -7,4 +7,5 @@
 1.0.0 - Release.
 1.0.1 - Disabled scoring for victory/loss for connected players.
 		Fixed typo in config.
-1.0.1 - Autizm fix.
+1.0.1 - Autizm fix (Disabled scoring for victory/loss for connected players).
+		Logging errors related to collection of statistics replaced by a simple display in console.
