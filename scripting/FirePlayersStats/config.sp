@@ -46,7 +46,7 @@ void LoadConfigKV()
 	}
 
 	g_hWeaponsConfigKV.Rewind();
-	if (g_hWeaponsConfigKV.JumpToKey("ExtraPoins") && g_hWeaponsConfigKV.GotoFirstSubKey(false))
+	if (g_hWeaponsConfigKV.JumpToKey("ExtraPoints") && g_hWeaponsConfigKV.GotoFirstSubKey(false))
 	{
 		int i;
 		do {
@@ -102,7 +102,7 @@ void SetCvars()
 
 	(Convar = CreateConVar(
 		"sm_fps_show_stats_everyone",		"1", 
-		"Показывать статиститку игрока всем при использовании команд просмотра (1 - Да / 0 - Нет)", 
+		"Показывать статиститку игрока всем при использовании команд просмотра позиции (sm_pos) (1 - Да / 0 - Нет)", 
 		_, true, 0.0, true, 1.0
 	)).AddChangeHook(ChangeCvar_ShowStatsEveryone);
 	g_bShowStatsEveryone = Convar.BoolValue;
