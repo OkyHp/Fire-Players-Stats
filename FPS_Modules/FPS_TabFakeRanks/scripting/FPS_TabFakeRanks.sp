@@ -13,7 +13,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Tab Fake Ranks",
 	author	=	"OkyHp",
-	version	=	"1.0.0",
+	version	=	"1.0.1",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -54,7 +54,7 @@ public void OnThinkPost(int iEntity)
 {
 	for (int i = 1; i < MaxClients; ++i)
 	{
-		if(FPS_ClientLoaded(i))
+		if(FPS_ClientLoaded(i) && !FPS_IsCalibration(i))
 		{
 			SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iPlayerRanks[i]);
 		}
