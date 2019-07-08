@@ -243,6 +243,7 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 		FPS_Debug("SQL_Callback_LoadPlayerData >> New player: %N", iClient)
 	}
 
+	g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS] = 0; // (not used var) for blocked accrual of experience to connected player
 	g_iPlayerSessionData[iClient][PLAYTIME] = GetTime();
 	CheckRank(iClient);
 	GetPlayerPosition(iClient);

@@ -217,8 +217,6 @@ public void OnClientAuthorized(int iClient)
 		{
 			g_iPlayerAccountID[iClient] = iAccountID;
 			LoadPlayerData(iClient);
-
-			g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS] = 0; // (not used var) for blocked accrual of experience to connected player
 		}
 		else
 		{

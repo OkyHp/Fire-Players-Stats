@@ -15,4 +15,5 @@
 		Added information menu. 
 		Made a couple of small changes. 
 		In information menu for session added value of received points. 
-		Added native FPS_IsCalibration.
+		Added native FPS_IsCalibration. 
+		DAgain attempt to disable scoring for win / lose for connected players.
