@@ -367,10 +367,10 @@ void ShowStatsInfoMenu(int iClient)
 		g_hWeaponsConfigKV.Rewind();
 		if (g_hWeaponsConfigKV.JumpToKey("ExtraPoints") && g_hWeaponsConfigKV.GotoFirstSubKey(false))
 		{
-			char szBuffer[32];
+			char szRank[32], szBuffer[128];
 			do {
-				g_hWeaponsConfigKV.GetSectionName(SZF(szBuffer));
-				FormatEx(SZF(szBuffer), "%t", "%s", szBuffer, g_hWeaponsConfigKV.GetFloat(NULL_STRING, 0.0));
+				g_hWeaponsConfigKV.GetSectionName(SZF(szRank));
+				FormatEx(SZF(szBuffer), "%t", szRank, g_hWeaponsConfigKV.GetFloat(NULL_STRING, 0.0));
 				hMenu.AddItem(NULL_STRING, szBuffer, ITEMDRAW_DISABLED);
 			} while (g_hWeaponsConfigKV.GotoNextKey(false));
 		}
