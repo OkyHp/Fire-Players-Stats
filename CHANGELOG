@@ -9,3 +9,8 @@
 		Fixed typo in config.
 1.0.1 - Autizm fix (Disabled scoring for victory/loss for connected players).
 		Logging errors related to collection of statistics replaced by a simple display in console.
+1.1.0 - FPS_GetPoints updated. 
+		Added native FPS_GetSessionData. 
+		Added message on stats state.
+		Added information menu.
+		Made a couple of small changes.

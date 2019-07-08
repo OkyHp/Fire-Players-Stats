@@ -79,7 +79,7 @@
 	{
 		"#format"	"{1:.2f},{2:i},{3:s},{4:i},{5:i},{6:i},{7:i},{8:.2f},{9:i},{10:i},{11:i},{12:i},{13:i},{14:.2f}"
 		"en"		"Points: {1} \nLevel: {2} \nRank: {3} \nPosition: {4}/{5} \n \nKills: {6} \nDeaths: {7} \nKDR: {8} \nAssists: {9} \nMaximum kills per round: {10} \nRounds played: {11} \nWin rounds: {12} \nLose rounds: {13} \nPlayed time on server: {14} h"
-		"ru"		"Опыт: {1} \nУровень: {2} \nРанг: {3} \nМесто: {4}/{5} \n \nУбийств: {6} \nСмертей: {7} \nKDR: {8} \nАссистов: {9} \nМаксимум убийств за раунд: {10} \nРаундов сыграно: {11} \nВыиграно: {12} \nПроиграно: {13} \nНаигранное время на сервере: {14} ч"
+		"ru"		"Поинты: {1} \nУровень: {2} \nРанг: {3} \nМесто: {4}/{5} \n \nУбийств: {6} \nСмертей: {7} \nKDR: {8} \nАссистов: {9} \nМаксимум убийств за раунд: {10} \nРаундов сыграно: {11} \nВыиграно: {12} \nПроиграно: {13} \nНаигранное время на сервере: {14} ч"
 		"ua"		"Поінти: {1} \nРівень: {2} \nРанг: {3} \nМісце: {4}/{5} \n \nВбивств: {6} \nСмертей: {7} \nKDR: {8} \nАсистів: {9} \nМаксимум вбивств за раунд: {10} \nРаундів відіграно: {11} \nВиграно: {12} \nПрограно: {13} \nНаграний час на сервері: {14} г"
 	}
 
@@ -91,10 +91,10 @@
 	}
 	"PlayerDataSession"
 	{
-		"#format"	"{1:i},{2:i},{3:.2f},{4:i},{5:i},{6:i},{7:i}"
-		"en"		"Kills: {1} \nDeaths: {2} \nKDR: {3} \nAssists: {4} \nRounds played: {5} \nWin rounds: {6} \nLose rounds: {7}"
-		"ru"		"Убийств: {1} \nСмертей: {2} \nKDR: {3} \nАссистов: {4} \nРаундов сыграно: {5} \nВыиграно: {6} \nПроиграно: {7}"
-		"ua"		"Вбивств: {1} \nСмертей: {2} \nKDR: {3} \nАсистів: {4} \nРаундів відіграно: {5} \nВиграно: {6} \nПрограно: {7}"
+		"#format"	"{1:.2f},{2:i},{3:i},{4:.2f},{5:i},{6:i},{7:i},{8:i}"
+		"en"		"Points: {1} \nKills: {2} \nDeaths: {3} \nKDR: {4} \nAssists: {5} \nRounds played: {6} \nWin rounds: {7} \nLose rounds: {8}"
+		"ru"		"Поинты: {1} \nУбийств: {2} \nСмертей: {3} \nKDR: {4} \nАссистов: {5} \nРаундов сыграно: {6} \nВыиграно: {7} \nПроиграно: {8}"
+		"ua"		"Поінти: {1} \nВбивств: {2} \nСмертей: {3} \nKDR: {4} \nАсистів: {5} \nРаундів відіграно: {6} \nВиграно: {7} \nПрограно: {8}"
 	}
 
 	"TopTitle"
@@ -118,11 +118,128 @@
 		"ua"		"Немає рангів"
 	}
 
-	"StatsInfoData"
+	"StatsInfoTitle"
 	{
-		"en"		"-"
-		"ru"		"-"
-		"ua"		"-"
+		"#format"	"{1:t},{1:.2f}"
+		"en"		"[ {1} ] \nStatistics works on the principle of: You will {2} points and secondary title. \nDepending on how well you play will depend on your rank.\n \nAdditional points for:"
+		"ru"		"[ {1} ] \nСтатистика работает по принципу: Вы получаете {2} поинтов и среднее звание. \nВ зависимости от того, насколько хорошо вы играете будет зависит ваше звание.\n \nДополнительные поинты за:"
+		"ua"		"[ {1} ] \nСтатистика працює за принципом: Ви отримуєте {2} поінтів і середнє звання. \nВ залежності від того, наскільки гарно ви граете буде залежить ваше звання.\n \nДодаткові поінти за:"
+	}
+	"fps_headshot"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Headshot - {1}"
+		"ru"		"Убиство в голову - {1}"
+		"ua"		"Вбивство в голову - {1}"
+	}
+	"fps_assist"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Assist - {1}"
+		"ru"		"Помощь в убистве - {1}"
+		"ua"		"Допомога у вбивстві - {1}"
+	}
+	"fps_suicide"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Suicide - {1}"
+		"ru"		"Суицид - {1}"
+		"ua"		"Самогубство - {1}"
+	}
+	"fps_teamkill"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Team kill - {1}"
+		"ru"		"Убиство союзника - {1}"
+		"ua"		"Вбивство союзника - {1}"
+	}
+	"fps_winround"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Win round - {1}"
+		"ru"		"Победу в раунде - {1}"
+		"ua"		"Перемога в раунді - {1}"
+	}
+	"fps_loseround"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Lose round - {1}"
+		"ru"		"Проигрыш в раунде - {1}"
+		"ua"		"Програш в раунді - {1}"
+	}
+	"fps_mvpround"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"MVP - {1}"
+		"ru"		"MVP - {1}"
+		"ua"		"MVP - {1}"
+	}
+	"fps_bombplanted"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Bomb planted - {1}"
+		"ru"		"Установку бомбы - {1}"
+		"ua"		"Встановлення бомби - {1}"
+	}
+	"fps_bombdefused"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Bomb defused - {1}"
+		"ru"		"Деактивацию бомбы - {1}"
+		"ua"		"Деактивацію бомби - {1}"
+	}
+	"fps_bombdropped"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Bomb dropped - {1}"
+		"ru"		"Потерю бомбы - {1}"
+		"ua"		"Втрата бомби - {1}"
+	}
+	"fps_bombpickup"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Bomb pick up - {1}"
+		"ru"		"Подбор бомбы - {1}"
+		"ua"		"Підбір бомби - {1}"
+	}
+	"fps_hostagekilled"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Hostage killed - {1}"
+		"ru"		"Убиство заложника - {1}"
+		"ua"		"Вбивство заручника - {1}"
+	}
+	"fps_hostagerescued"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Hostage rescued - {1}"
+		"ru"		"Спасение заложника - {1}"
+		"ua"		"Спасіння заручника - {1}"
+	}
+	"fps_double_kill"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Double kill - {1}"
+	}
+	"fps_triple_kill"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Triple kill - {1}"
+	}
+	"fps_domination"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Domination - {1}"
+	}
+	"fps_rampage"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Rampage - {1}"
+	}
+	"fps_mega_kill"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Mega kill - {1}"
 	}
 
 	"ResetPlayerStats"

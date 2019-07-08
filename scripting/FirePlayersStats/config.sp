@@ -69,82 +69,80 @@ void SetCvars()
 		"Через сколько секунд повторить попытку коннекта к БД", 
 		_, true, 5.0, true, 120.0
 	)).AddChangeHook(ChangeCvar_DBRetryConnTime);
-	g_fDBRetryConnTime = Convar.FloatValue;
+	ChangeCvar_DBRetryConnTime(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_server_id",					"0", 
-		"ID сервера. Позволит использовать одну БД для многих серверов",
+		"ID сервера. Позволит использовать одну БД для многих серверов. -1 - будет установлен уникальный ID сервера",
 		_, true, 0.0
 	)).AddChangeHook(ChangeCvar_ServerID);
-	g_iServerID = Convar.IntValue;
+	ChangeCvar_ServerID(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
-		"sm_fps_ranks_id",					"0", 
-		"ID настройки рангов. Позволит использовать одну и туже настройку рангов\n \
-		для некоторых серверов, при этом можно сделать уникальную для других",
+		"sm_fps_ranks_id",					"1", 
+		"ID настройки рангов. Позволит использовать одну и туже настройку рангов для некоторых серверов, при этом можно сделать уникальную для других",
 		_, true, 0.0
 	)).AddChangeHook(ChangeCvar_RanksID);
-	g_iRanksID = Convar.IntValue;
+	ChangeCvar_RanksID(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_min_players",				"4", 
 		"Минимальное количество игроков для работы статистики", 
 		_, true, 2.0
 	)).AddChangeHook(ChangeCvar_MinPlayers);
-	g_iMinPlayers = Convar.IntValue;
+	ChangeCvar_MinPlayers(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_reset_stats_time",			"2592000", 
 		"Минимальное время в секундах, через которое можно обнулить статистику (0 - Выключить возможность обнуления)", 
 		_, true, 0.0
 	)).AddChangeHook(ChangeCvar_ResetStatsTime);
-	g_iResetStatsTime = Convar.IntValue;
+	ChangeCvar_ResetStatsTime(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_show_stats_everyone",		"1", 
 		"Показывать статиститку игрока всем при использовании команд просмотра позиции (sm_pos) (1 - Да / 0 - Нет)", 
 		_, true, 0.0, true, 1.0
 	)).AddChangeHook(ChangeCvar_ShowStatsEveryone);
-	g_bShowStatsEveryone = Convar.BoolValue;
+	ChangeCvar_ShowStatsEveryone(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_block_stats_on_warmup",		"1", 
 		"Блокировать работу статистики на разминке (1 - Да / 0 - Нет)", 
 		_, true, 0.0, true, 1.0
 	)).AddChangeHook(ChangeCvar_BlockStatsOnWarmup);
-	g_bBlockStatsOnWarmup = Convar.BoolValue;
+	ChangeCvar_BlockStatsOnWarmup(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_clean_players_time",		"14", 
 		"Через сколько дней удалить данные игрока", 
 		_, true, 7.0, true, 90.0
 	)).AddChangeHook(ChangeCvar_DeletePlayersTime);
-	g_iDeletePlayersTime = Convar.IntValue * 24 * 60 * 60;
+	ChangeCvar_DeletePlayersTime(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_poins_coeff",	"1.0", 
-		"Коэффициент расчета очков.\n \
-		1.9 - Игрок теряет на 90% больше, чем получает за него убийца\n \
-		1.0 - Игрок теряет столько же очков опыта, сколько получает убийца\n \
-		0.1 - Игрок теряет только 10% очков опыта от реального значения", 
+		"Коэффициент расчета очков.\
+		\n1.9 - Игрок теряет на 90% больше, чем получает за него убийца \
+		\n1.0 - Игрок теряет столько же очков опыта, сколько получает убийца \
+		\n0.1 - Игрок теряет только 10% очков опыта от реального значения", 
 		_, true, 0.1, true, 1.9
 	)).AddChangeHook(ChangeCvar_EloCoeff);
-	g_fCoeff = Convar.FloatValue;
+	ChangeCvar_EloCoeff(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_calibration_fix",	"1800", 
-		"Время калибровки игрока. Снижает ущерб всем кого убил калибрующийся\n \
-		 в течение времени в сек, если доля делимых очек менее 0.5. 0 - Отключить.", 
+		"Время калибровки игрока. Снижает ущерб всем кого убил калибрующийся в течение времени в сек, если доля делимых очек менее 0.5. 0 - Отключить.", 
 		_, true, 0.0, true, 7200.0
 	)).AddChangeHook(ChangeCvar_CalibrationFix);
-	g_iCalibrationFixTime = Convar.IntValue;
+	ChangeCvar_CalibrationFix(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_save_period",	"5", 
 		"Интервал раундов сохранения статистики.", 
 		_, true, 2.0, true, 10.0
 	)).AddChangeHook(ChangeCvar_SaveInterval);
-	g_iSaveInterval = Convar.IntValue;
+	ChangeCvar_SaveInterval(Convar, NULL_STRING, NULL_STRING);
 
 	AutoExecConfig(true, "FirePlayersStats");
 

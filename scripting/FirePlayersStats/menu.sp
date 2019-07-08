@@ -76,8 +76,8 @@ void ShowFpsMenu(int iClient)
 	hMenu.AddItem(NULL_STRING, szBuffer);
 	FormatEx(SZF(szBuffer), "%t", "RanksInfo");
 	hMenu.AddItem(NULL_STRING, szBuffer);
-	// FormatEx(SZF(szBuffer), "%t", "StatsInfo");
-	// hMenu.AddItem(NULL_STRING, szBuffer);
+	FormatEx(SZF(szBuffer), "%t", "StatsInfo");
+	hMenu.AddItem(NULL_STRING, szBuffer);
 
 	hMenu.ExitButton = true;
 	hMenu.Display(iClient, MENU_TIME_FOREVER);
@@ -96,7 +96,7 @@ public int Handler_FpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem
 				case 1: ShowTopMenu(iClient, 0);
 				case 2: ShowTopMenu(iClient, 1);
 				case 3: ShowRankInfoMenu(iClient);
-				//case 4: ShowStatsInfoMenu(iClient);
+				case 4: ShowStatsInfoMenu(iClient);
 			}
 		}
 	}
@@ -170,7 +170,7 @@ void ShowPlayerSessionsMenu(int iClient)
 	iSessions[1] = g_iPlayerData[iClient][DEATHS] - g_iPlayerSessionData[iClient][DEATHS];
 	iSessions[2] = g_iPlayerData[iClient][ROUND_WIN] - g_iPlayerSessionData[iClient][ROUND_WIN];
 	iSessions[3] = g_iPlayerData[iClient][ROUND_LOSE] - g_iPlayerSessionData[iClient][ROUND_LOSE];
-	FormatEx(SZF(szBuffer), "%t\n ", "PlayerDataSession", iSessions[0], iSessions[1], 
+	FormatEx(SZF(szBuffer), "%t\n ", "PlayerDataSession", (g_fPlayerPoints[iClient] - g_fPlayerSessionPoints[iClient]), iSessions[0], iSessions[1], 
 		(iSessions[0] && iSessions[1] ? (float(iSessions[0]) / float(iSessions[1])) : 0.0), 
 		(g_iPlayerData[iClient][ASSISTS] - g_iPlayerSessionData[iClient][ASSISTS]), 
 		(iSessions[2] + iSessions[3]), iSessions[2], iSessions[3]);
@@ -295,6 +295,18 @@ void ShowTopMenu(int iClient, int iMenuType)
 	delete hPanel;
 }
 
+public int Handler_Panel(Menu hPanel, MenuAction action, int iClient, int iOption)
+{
+	if(g_bStatsLoad[iClient] && action == MenuAction_Select)
+	{
+		if (iOption == 7)
+		{
+			ShowFpsMenu(iClient);
+		}
+		PlayItemSelectSound(iClient, true);
+	}
+}
+
 public int Handler_BackToFpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 {
 	switch(action)
@@ -344,40 +356,29 @@ void ShowRankInfoMenu(int iClient)
 	hMenu.Display(iClient, MENU_TIME_FOREVER);
 }
 
-// void ShowStatsInfoMenu(int iClient)
-// {
-// 	char szBuffer[512];
-// 	Panel hPanel = new Panel();
-// 	SetGlobalTransTarget(iClient);
-
-// 	FormatEx(SZF(szBuffer), "[ %t ]\n ", "StatsInfo");
-// 	hPanel.SetTitle(szBuffer);
-
-// 	FormatEx(SZF(szBuffer), "%t\n ", "StatsInfoData");
-// 	hPanel.DrawText(szBuffer);
-
-// 	FormatEx(SZF(szBuffer), "%t", "Back");
-// 	hPanel.CurrentKey = 7;
-// 	hPanel.DrawItem(szBuffer);
-
-// 	FormatEx(SZF(szBuffer), "%t", "Exit");
-// 	hPanel.CurrentKey = 9;
-// 	hPanel.DrawItem(szBuffer);
-
-// 	hPanel.Send(iClient, Handler_Panel, MENU_TIME_FOREVER);
-// 	delete hPanel;
-// }
-
-public int Handler_Panel(Menu hPanel, MenuAction action, int iClient, int iOption)
+void ShowStatsInfoMenu(int iClient)
 {
-	if(g_bStatsLoad[iClient] && action == MenuAction_Select)
+	Menu hMenu = new Menu(Handler_BackToFpsMenu);
+	SetGlobalTransTarget(iClient);
+	hMenu.SetTitle("%t", "StatsInfoTitle", "StatsInfo", DEFAULT_POINTS);
+
+	if (g_hWeaponsConfigKV)
 	{
-		if (iOption == 7)
+		g_hWeaponsConfigKV.Rewind();
+		if (g_hWeaponsConfigKV.JumpToKey("ExtraPoints") && g_hWeaponsConfigKV.GotoFirstSubKey(false))
 		{
-			ShowFpsMenu(iClient);
+			char szBuffer[32];
+			do {
+				g_hWeaponsConfigKV.GetSectionName(SZF(szBuffer));
+				FormatEx(SZF(szBuffer), "%t", "%s", szBuffer, g_hWeaponsConfigKV.GetFloat(NULL_STRING, 0.0));
+				hMenu.AddItem(NULL_STRING, szBuffer, ITEMDRAW_DISABLED);
+			} while (g_hWeaponsConfigKV.GotoNextKey(false));
 		}
-		PlayItemSelectSound(iClient, true);
 	}
+
+	hMenu.ExitBackButton = true;
+	hMenu.ExitButton = true;
+	hMenu.Display(iClient, MENU_TIME_FOREVER);
 }
 
 void ShowPosition(int iClient)

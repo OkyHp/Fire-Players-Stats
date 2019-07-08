@@ -37,11 +37,11 @@
 
 #pragma newdecls required
 
-#if FPS_INC_VER < 1
+#if FPS_INC_VER < 2
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
-#define PLUGIN_VERSION	"1.0.3"
+#define PLUGIN_VERSION	"1.1.0"
 
 #define UID(%0)				GetClientUserId(%0)
 #define CID(%0)				GetClientOfUserId(%0)

@@ -27,10 +27,11 @@ public void __pl_fire_players_stats_SetNTVOptional()
 	MarkNativeAsOptional("FPS_GetLevel");
 	MarkNativeAsOptional("FPS_GetRanks");
 	MarkNativeAsOptional("FPS_GetMaxRanks");
+	MarkNativeAsOptional("FPS_GetSessionData");
 }
 #endif
 
-#define FPS_INC_VER		1
+#define FPS_INC_VER		2
 
 
 /****************** FORWARDS ******************/
@@ -204,4 +205,4 @@ native int FPS_GetMaxRanks();
  *								6 - Время подключение игрока.
  *	@return
  */
-native int FPS_GetSessionData(int iClient, int iData)
+native int FPS_GetSessionData(int iClient, int iData);
