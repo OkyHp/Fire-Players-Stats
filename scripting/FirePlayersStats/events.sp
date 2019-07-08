@@ -212,6 +212,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 		{
 			if (g_bBlockStatsOnWarmup && GameRules_GetProp("m_bWarmupPeriod"))
 			{
+				FPS_PrintToChatAll("%t", "StatsWarmupBlocked");
 				g_bStatsActive = false;
 				return;
 			}
@@ -227,7 +228,11 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 					++iPlayers;
 				}
 			}
-			g_bStatsActive = (iPlayers >= g_iMinPlayers && g_hDatabase);
+			g_bStatsActive = (iPlayers >= g_iMinPlayers);
+			if (!g_bStatsActive)
+			{
+				FPS_PrintToChatAll("%t", "NoPlayersForStatsWork", g_iMinPlayers);
+			}
 
 			FPS_Debug("Event_RoundAction (s) >> Stats %s", g_bStatsActive ? "ON" : "OFF")
 		}
@@ -255,14 +260,14 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 
 				for (int i = 1; i <= MaxClients; ++i)
 				{
-					if (g_bStatsLoad[i])
+					if (g_bStatsLoad[i] && (iTeam = GetClientTeam(i)) > 1)
 					{
 						if (iMaxRoundsKills[i] > g_iPlayerData[i][MAX_ROUNDS_KILLS])
 						{
 							g_iPlayerData[i][MAX_ROUNDS_KILLS] = iMaxRoundsKills[i];
 						}
 
-						if (g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] && iWinTeam > 1 && (iTeam = GetClientTeam(i)) > 1)
+						if (g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] && iWinTeam > 1)
 						{
 							if (iTeam == iWinTeam)
 							{

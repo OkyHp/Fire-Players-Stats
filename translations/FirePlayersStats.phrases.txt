@@ -100,9 +100,9 @@
 	"TopTitle"
 	{
 		"#format"	"{1:t}"
-		"en"		"[ {1} ]\n Information is updated after a certain time"
-		"ru"		"[ {1} ]\n Информация обновляется через определенное время"
-		"ua"		"[ {1} ]\n Інформація оновлюеться через певний час"
+		"en"		"[ {1} ] \nInformation is updated after a certain time"
+		"ru"		"[ {1} ] \nИнформация обновляется через определенное время"
+		"ua"		"[ {1} ] \nІнформація оновлюеться через певний час"
 	}
 	"NoPlayers"
 	{
@@ -195,6 +195,21 @@
 		"en"		"Points earned per round: {1}{2}"
 		"ru"		"Очки полученные за раунд: {1}{2}"
 		"ua"		"Поінти отримані за раунд: {1}{2}"
+	}
+
+	"StatsWarmupBlocked"
+	{
+		"en"		"Stats disabled on warm-up"
+		"ru"		"Статистика отключена на разминке"
+		"ua"		"Статистика відключена на розминці"
+	}
+
+	"NoPlayersForStatsWork"
+	{
+		"#format"	"{1:i}"
+		"en"		"To work statistics need minimum {GREEN}{1} {DEFAULT}players."
+		"ru"		"Для работы статистики нужно минимум {GREEN}{1} {DEFAULT}игрока."
+		"ua"		"Для роботи статистики необхідно мінімумьшт {GREEN}{1} {DEFAULT}гравці."
 	}
 
 	// Other

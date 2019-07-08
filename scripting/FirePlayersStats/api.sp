@@ -96,6 +96,7 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 	CreateNative("FPS_GetLevel",				Native_FPSGetLevel);
 	CreateNative("FPS_GetRanks",				Native_FPSGetRanks);
 	CreateNative("FPS_GetMaxRanks",				Native_FPSGetMaxRanks);
+	CreateNative("FPS_GetSessionData",			Native_FPSGetSessionData);
 
 	RegPluginLibrary("FirePlayersStats");
 	
@@ -150,11 +151,11 @@ public int Native_FPSGetPlayedTime(Handle hPlugin, int iNumParams)
 	return 0;
 }
 
-// float FPS_GetPoints(int iClient);
+// float FPS_GetPoints(int iClient, bool bSession = false);
 public int Native_FPSGetPoints(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	return view_as<int>(iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient] ? g_fPlayerPoints[iClient] : DEFAULT_POINTS);
+	return view_as<int>(iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient] ? (!GetNativeCell(1) ? g_fPlayerPoints[iClient] : (g_fPlayerPoints[iClient] - g_fPlayerSessionPoints[iClient])) : DEFAULT_POINTS);
 }
 
 // int FPS_GetLevel(int iClient);
@@ -182,4 +183,12 @@ public int Native_FPSGetRanks(Handle hPlugin, int iNumParams)
 public int Native_FPSGetMaxRanks(Handle hPlugin, int iNumParams)
 {
 	return g_iRanksCount;
+}
+
+// int FPS_GetSessionData(int iClient, int iData)
+public int Native_FPSGetSessionData(Handle hPlugin, int iNumParams)
+{
+	int iClient = GetNativeCell(1),
+		iData = GetNativeCell(2);
+	return iClient > 0 && iClient <= MaxClients && iData > -1 && iData != 3 && iData < sizeof(g_iPlayerSessionData[]) && g_bStatsLoad[iClient] ? g_iPlayerSessionData[iClient][iData] : 0;
 }

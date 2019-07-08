@@ -161,9 +161,10 @@ native int FPS_GetPlayedTime(int iClient, bool bSession = false);
  *	Получить количетсво поинтов/очков у игрока.
  *
  *	@param iClient		Индекс игрока.
+ *	@param bSession		Количетсво поинтов за текущую сессию.
  *	@return				Количетсво поинтов/очков у игрока.
  */
-native float FPS_GetPoints(int iClient);
+native float FPS_GetPoints(int iClient, bool bSession = false);
 
 /**
  *	Получить текущий уровень/ранг.
@@ -189,3 +190,18 @@ native void FPS_GetRanks(int iClient, char[] szBufferRank, int iMaxLength);
  *	@return						Количетсво всех рангов.
  */
 native int FPS_GetMaxRanks();
+
+/**
+ *	Получить данные игрока за сессию.
+ *
+ *	@param iClient				Индекс игрока.
+ *	@param iData				Индекс ячейки с данными:
+ *								0 - Убиства.
+ *								1 - Смерти.
+ *								2 - Фссисты.
+ *								4 - Количесво выиграных раундов.
+ *								5 - Количесво проиграных раундов.
+ *								6 - Время подключение игрока.
+ *	@return
+ */
+native int FPS_GetSessionData(int iClient, int iData)
