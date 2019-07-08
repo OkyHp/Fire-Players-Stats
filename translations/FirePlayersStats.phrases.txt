@@ -121,9 +121,9 @@
 	"StatsInfoTitle"
 	{
 		"#format"	"{1:t},{1:.2f}"
-		"en"		"[ {1} ] \nStatistics works on the principle of: You will {2} points and secondary title. \nDepending on how well you play will depend on your rank.\n \nAdditional points for:"
-		"ru"		"[ {1} ] \nСтатистика работает по принципу: Вы получаете {2} поинтов и среднее звание. \nВ зависимости от того, насколько хорошо вы играете будет зависит ваше звание.\n \nДополнительные поинты за:"
-		"ua"		"[ {1} ] \nСтатистика працює за принципом: Ви отримуєте {2} поінтів і середнє звання. \nВ залежності від того, наскільки гарно ви граете буде залежить ваше звання.\n \nДодаткові поінти за:"
+		"en"		"[ {1} ] \nStatistics works on the principle of: You get 1000 points and after calibration the average rank. \nDepending on how well you play will depend on your rank.\n \nAdditional points for:"
+		"ru"		"[ {1} ] \nСтатистика работает по принципу: Вы получаете {2} поинтов и после калибровки среднее звание. \nВ зависимости от того, насколько хорошо вы играете будет зависит ваше звание.\n \nДополнительные поинты за:"
+		"ua"		"[ {1} ] \nСтатистика працює за принципом: Ви отримуєте {2} поінтів і після калібрування середнє звання. \nВ залежності від того, наскільки гарно ви граете буде залежить ваше звання.\n \nДодаткові поінти за:"
 	}
 	"fps_headshot"
 	{
