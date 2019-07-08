@@ -41,16 +41,6 @@ bool JumpToWeapons(int iClient, const char[] szWeapon)
 	return true;
 }
 
-// Get calibration status
-bool IsCalibration(int iClient)
-{
-	if (g_bStatsLoad[iClient])
-	{
-		return FPS_GetPlayedTime(iClient, false) < g_iCalibrationFixTime;
-	}
-	return false;
-}
-
 // Reset if less zero
 void ResetIfLessZero(float fValue)
 {
@@ -122,7 +112,7 @@ float GetWeaponExtraPoints(const char[] szWeapon)
 // Check rank level
 void CheckRank(int iClient)
 {
-	if (IsCalibration(iClient))
+	if (FPS_IsCalibration(iClient))
 	{
 		g_iPlayerRanks[iClient] = 0;
 		FormatEx(g_sRankName[iClient], sizeof(g_sRankName[]), "%T", "Calibration", iClient);

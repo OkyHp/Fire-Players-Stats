@@ -28,6 +28,7 @@ public void __pl_fire_players_stats_SetNTVOptional()
 	MarkNativeAsOptional("FPS_GetRanks");
 	MarkNativeAsOptional("FPS_GetMaxRanks");
 	MarkNativeAsOptional("FPS_GetSessionData");
+	MarkNativeAsOptional("FPS_IsCalibration");
 }
 #endif
 
@@ -206,3 +207,12 @@ native int FPS_GetMaxRanks();
  *	@return
  */
 native int FPS_GetSessionData(int iClient, int iData);
+
+/**
+ *	Получить стату калибровки.
+ *
+ *	@param iClient		Индекс игрока.
+ *	@return				true - игрок калибруется.
+ * 						false - игрок уже откалиброван.
+ */
+native bool FPS_IsCalibration(int iClient);

@@ -166,8 +166,8 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 
 			float	fPointsAttacker = ((g_fPlayerPoints[iVictim] / g_fPlayerPoints[iAttacker]) * 5.0 + (bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0) + StreakPoints(iAttacker) * (!bIsGrenade ? GetWeaponExtraPoints(szWeapon[7]) : 0.0)),
 					fDiss = (g_fPlayerPoints[iAttacker] / g_fPlayerPoints[iVictim]),
-					fPointsVictim = (fPointsAttacker * g_fCoeff) * (fDiss < 0.5 && IsCalibration(iAttacker) ? fDiss : 1.0);
-			FPS_Debug("Event_PlayerDeath >> Points Data: \n ----->> HS: %f \n ----->> SP: %f \n ----->> EP: %f \n ----->> DS: %f : %f", (bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0), StreakPoints(iAttacker), (!bIsGrenade ? GetWeaponExtraPoints(szWeapon[7]) : 0.0), fDiss, (fDiss < 0.5 && IsCalibration(iAttacker) ? fDiss : 1.0))
+					fPointsVictim = (fPointsAttacker * g_fCoeff) * (fDiss < 0.5 && FPS_IsCalibration(iAttacker) ? fDiss : 1.0);
+			FPS_Debug("Event_PlayerDeath >> Points Data: \n ----->> HS: %f \n ----->> SP: %f \n ----->> EP: %f \n ----->> DS: %f : %f", (bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0), StreakPoints(iAttacker), (!bIsGrenade ? GetWeaponExtraPoints(szWeapon[7]) : 0.0), fDiss, (fDiss < 0.5 && FPS_IsCalibration(iAttacker) ? fDiss : 1.0))
 			FPS_Debug("Event_PlayerDeath >> Points >> Attacker (%N): %f / Victim (%N): %f", iAttacker, fPointsAttacker, iVictim, fPointsVictim)
 
 			ResetIfLessZero(fPointsAttacker);

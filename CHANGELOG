@@ -11,7 +11,8 @@
 		Logging errors related to collection of statistics replaced by a simple display in console.
 1.1.0 - FPS_GetPoints updated. 
 		Added native FPS_GetSessionData. 
-		Added message on stats state.
-		Added information menu.
-		Made a couple of small changes.
-		In information menu for session added value of received points.
+		Added message on stats state. 
+		Added information menu. 
+		Made a couple of small changes. 
+		In information menu for session added value of received points. 
+		Added native FPS_IsCalibration.
