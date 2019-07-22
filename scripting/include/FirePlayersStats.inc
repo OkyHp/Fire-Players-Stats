@@ -32,7 +32,7 @@ public void __pl_fire_players_stats_SetNTVOptional()
 }
 #endif
 
-#define FPS_INC_VER		2
+#define FPS_INC_VER		20
 
 
 /****************** FORWARDS ******************/
@@ -105,6 +105,16 @@ forward void FPS_OnPointsChange(int iAttacker, int iVictim, float fPointsAttacke
  *	@noreturn
  */
 forward void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel);
+
+/**
+ *	Вызывается после получения позиции игрока.
+ *
+ *	@param iClient			Индекс игрока.
+ *	@param iPosition		Текущая позиция игрока.
+ *	@param iPlayersCount	Всего игроков.
+ *	@noreturn
+ */
+forward void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount);
 
 
 /****************** NATIVES ******************/

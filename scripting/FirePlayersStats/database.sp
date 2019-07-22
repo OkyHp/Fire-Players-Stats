@@ -475,4 +475,6 @@ public void SQL_Callback_PlayerPosition(Database hDatabase, DBResultSet hResult,
 
 	g_iPlayerPosition[iClient] = hResult.FetchRow() ? hResult.FetchInt(0) : 0;
 	FPS_Debug("SQL_Callback_PlayerPosition >> %N: position: %i / %i", iClient, g_iPlayerPosition[iClient], g_iPlayersCount)
+
+	CallForward_OnFPSPlayerPosition(iClient, g_iPlayerPosition[iClient], g_iPlayersCount);
 }

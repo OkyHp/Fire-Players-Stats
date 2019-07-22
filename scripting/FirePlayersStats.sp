@@ -1,6 +1,8 @@
 /**
  * TODO:
  * - Перекинуть конфиг для юзания с под БД.
+ * - Сделать форвард на получение позиции на сервере игрока.
+ * - Почистить лишнее.
  * ----------------------------------------------------------------------------------------------
  * Ranks settings query: 
 		INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) 
@@ -37,11 +39,11 @@
 
 #pragma newdecls required
 
-#if FPS_INC_VER < 2
+#if FPS_INC_VER < 20
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
-#define PLUGIN_VERSION	"1.1.0"
+#define PLUGIN_VERSION	"1.1.1"
 
 #define UID(%0)				GetClientUserId(%0)
 #define CID(%0)				GetClientOfUserId(%0)
