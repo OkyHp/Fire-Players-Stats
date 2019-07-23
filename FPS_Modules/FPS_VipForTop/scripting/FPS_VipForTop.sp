@@ -41,6 +41,6 @@ public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
 	if (iPosition == 1 && !VIP_IsClientVIP(iClient))
 	{
-		VIP_GiveClientVIP(-1, iClient, 10800, g_sVipGroupe, false);
+		VIP_GiveClientVIP(-1, iClient, 0, g_sVipGroupe, false);
 	}
 }
