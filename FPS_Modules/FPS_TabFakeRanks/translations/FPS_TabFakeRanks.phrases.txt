@@ -1,0 +1,58 @@
+"Phrases"
+{
+	"FakeRanks"
+	{
+		"en"		"Fake ranks"
+		"ru"		"Фейк ранг"
+		"ua"		"Фейк ранг"
+	}
+
+	"FakeRanksMenu"
+	{
+		"en"		"Set rank in TAB"
+		"ru"		"Установить ранг в TAB`е"
+		"ua"		"Встановити ранг в TAB`і"
+	}
+
+	"Disabled"
+	{
+		"en"		"Disabled"
+		"ru"		"Выключено"
+		"ua"		"Вимкнено"
+	}
+
+	"Enabled"
+	{
+		"en"		"Enabled"
+		"ru"		"Включено"
+		"ua"		"Увімкнено"
+	}
+
+	"No_Access"
+	{
+		"en"		"No access"
+		"ru"		"Нет доступа"
+		"ua"		"Немає доступу"
+	}
+
+	"FakeRankMenuTitle"
+	{
+		"en"		"Select rank in TAB"
+		"ru"		"Выбрать ранг в TAB`е"
+		"ua"		"Вибрати ранг в TAB`і"
+	}
+
+	"StatsRank"
+	{
+		"en"		"Display of rank statistics"
+		"ru"		"Отображение ранга статистики"
+		"ua"		"Відображення рангу статистики"
+	}
+
+	"SelectedFakeRank"
+	{
+		"en"		"Selected rank"
+		"ru"		"Выбран ранг"
+		"ua"		"Вибраний ранг"
+	}
+}
