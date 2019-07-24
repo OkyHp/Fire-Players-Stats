@@ -248,6 +248,13 @@
 		"ru"		"Сбросить мою статистику"
 		"ua"		"Стерти мою статистику"
 	}
+	"ResetPlayerStatsLock"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Reset statistics will be available in {1} h"
+		"ru"		"Сброс статистики будет доступен через {1} ч"
+		"ua"		"Стерти статистику можна буде через {1} г"
+	}
 	"AreYouSureResetStats"
 	{
 		"en"		"Are you sure reset your stats?"

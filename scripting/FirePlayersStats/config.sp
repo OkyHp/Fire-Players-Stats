@@ -93,8 +93,8 @@ void SetCvars()
 	ChangeCvar_MinPlayers(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
-		"sm_fps_reset_stats_time",			"2592000", 
-		"Минимальное время в секундах, через которое можно обнулить статистику (0 - Выключить возможность обнуления)", 
+		"sm_fps_reset_stats_time",			"90000", 
+		"Минимальное наиграное время в секундах, через которое можно обнулить статистику (0 - Выключить возможность обнуления)", 
 		_, true, 0.0
 	)).AddChangeHook(ChangeCvar_ResetStatsTime);
 	ChangeCvar_ResetStatsTime(Convar, NULL_STRING, NULL_STRING);

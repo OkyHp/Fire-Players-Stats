@@ -36,7 +36,7 @@ public void OnPluginStart()
 
 public void FPS_OnFPSStatsLoaded()
 {
-	for (int i = 1; i < MaxClients; ++i)
+	for (int i = 1; i <= MaxClients; ++i)
 	{
 		if (FPS_ClientLoaded(i))
 		{

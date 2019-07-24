@@ -112,7 +112,7 @@ void ShowPlayerMenu(int iClient)
 	hPanel.SetTitle(szBuffer);
 
 	int iPlayedTime = FPS_GetPlayedTime(iClient, false);
-	float fPlayedTime = iPlayedTime ? (iPlayedTime / 60.0 / 60.0) : 0.0;
+	float fPlayedTime = iPlayedTime ? (float(iPlayedTime) / 60.0 / 60.0) : 0.0;
 
 	FormatEx(SZF(szBuffer), "%t\n ", "PlayerData", g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], g_sRankName[iClient], g_iPlayerPosition[iClient], g_iPlayersCount, g_iPlayerData[iClient][KILLS], 
 		g_iPlayerData[iClient][DEATHS], (g_iPlayerData[iClient][KILLS] && g_iPlayerData[iClient][DEATHS] ? (float(g_iPlayerData[iClient][KILLS]) / float(g_iPlayerData[iClient][DEATHS])) : 0.0), g_iPlayerData[iClient][ASSISTS], 
@@ -125,9 +125,17 @@ void ShowPlayerMenu(int iClient)
 
 	if (g_iResetStatsTime)
 	{
-		FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStats");
 		hPanel.CurrentKey = 2;
-		hPanel.DrawItem(szBuffer, iPlayedTime > g_iResetStatsTime ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		if (iPlayedTime < g_iResetStatsTime)
+		{
+			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsLock", (float(g_iResetStatsTime) / 60.0 / 60.0) - fPlayedTime);
+			hPanel.DrawItem(szBuffer, ITEMDRAW_DISABLED);
+		}
+		else
+		{
+			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStats");
+			hPanel.DrawItem(szBuffer, ITEMDRAW_DEFAULT);
+		}
 	}
 
 	FormatEx(SZF(szBuffer), "%t", "Back");
