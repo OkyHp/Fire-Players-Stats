@@ -42,11 +42,11 @@
 		"ua"		"Вибрати ранг в TAB`і"
 	}
 
-	"StatsRank"
+	"RandomRank"
 	{
-		"en"		"Display of rank statistics"
-		"ru"		"Отображение ранга статистики"
-		"ua"		"Відображення рангу статистики"
+		"en"		"Display of random ranks"
+		"ru"		"Отображение рандомных рангов"
+		"ua"		"Відображення рандомних рангів"
 	}
 
 	"SelectedFakeRank"
