@@ -6,18 +6,6 @@
 #include <sdkhooks>
 #include <FirePlayersStats>
 
-/**************************************************************************
- * Устанавливает фейковые звания в TAB`е.
- * 
- * Модуль, помимо отображения званий статистики, теперь поддерживает VIP Core, от Рико, 
- * позволяя vip игрокам устанавливать визуальные звания не изменяя очки статистики. + Есть режим рандомных званий.
- * 
- * Для использования модуля с VIP Core:
- * 1. Закиньте все содержимое архива на сервер
- * 2. В addons/sourcemod/data/vip/groups.ini добавьте параметр доступа "FakeRanks" "1"
- * Внимание! Если вам не нужно использовать модуль совместно с VIP Core, откройте исходник модуля и измените 
- * значение VIP_SUPPORT на 0, после чего скомпилируйте плагин. Так же, переводы в этом случае ненужны!
- **************************************************************************/
 #define VIP_SUPPORT		1
 
 int m_iCompetitiveRanking,
@@ -33,15 +21,14 @@ static int g_iRanksIndex[] = {0, 50, 70, 90, 92, 94, 18, 18, 15};
 
 	int		g_iVipFakeRanks[MAXPLAYERS+1][2],
 			g_iVipStatus[MAXPLAYERS+1],
-			g_iRandomRank;
+			g_iRandomRank[2];
 	Handle	g_hCookie;
 	static const char g_sFeature[][] = {"FakeRanks", "FakeRanksMenu"};
 	static const char g_sRanksDeff[][] = {
-			"Lab Rat I", "Lab Rat I", 
-			"Sprinting Hare I", "Sprinting Hare II", 
-			"Wild Scout I", "Wild Scout II", "Wild Scout Elite", 
-			"Hunter Fox I", "Hunter Fox II", "Hunter Fox III", "Hunter Fox Elite", 
-			"Timber Wolf", "Ember Wolf", "Wildfire Wolf", "The Howling Alpha"
+			"Silver I", "Silver II", "Silver III", "Silver IV", "Silver Elite", "Silver Elite Master",
+			"Gold Nova I", "Gold Nova II", "Gold Nova III", "Gold Nova Master",
+			"Master Guardian I", "Master Guardian II", "Master Guardian Elite", "Distinguished Master Guardian",
+			"Legendary Eagle", "Legandary Eagle Master", "Supreme Master First Class", "The Global Elite"
 		};
 	static const char g_sRanksDz[][] = {
 			"Lab Rat I", "Lab Rat I", 
@@ -92,15 +79,19 @@ public void OnPluginStart()
 
 	ConVar Convar;
 	(Convar = CreateConVar(
-		"sm_fpsm_fake_ranks_type",		"0", 
-		"0 - Стандарт (18 lvls). 1 - Напарники (18 lvls). 2 - Опасная зона (15 lvls)"
+		"sm_fpsm_fake_ranks_type",		"1", 
+		"0 - Стандарт (18 lvls). 1 - Напарники (18 lvls). 2 - Опасная зона (15 lvls)",
+		_, true, 0.0, true, 2.0
 	)).AddChangeHook(ChangeCvar_RanksType);
 	ChangeCvar_RanksType(Convar, NULL_STRING, NULL_STRING);
+
+	AutoExecConfig(true, "FPS_TabFakeRanks");
 }
 
 public void ChangeCvar_RanksType(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iRanksType = Convar.IntValue;
+	FPS_OnFPSStatsLoaded();
 }
 
 #if VIP_SUPPORT == 1
@@ -109,9 +100,16 @@ public void OnClientCookiesCached(int iClient)
 	char szBuffer[8];
 	GetClientCookie(iClient, g_hCookie, szBuffer, sizeof(szBuffer));
 	int iPos = FindCharInString(szBuffer, '');
-	szBuffer[iPos] = 0; ++iPos;
-	g_iVipFakeRanks[iClient][0] = szBuffer ? StringToInt(szBuffer) : 0;
-	g_iVipFakeRanks[iClient][1] = szBuffer[iPos] ? StringToInt(szBuffer[iPos]) : 0;
+	if (iPos != -1)
+	{
+		szBuffer[iPos] = 0; ++iPos;
+		g_iVipFakeRanks[iClient][0] = StringToInt(szBuffer);
+		g_iVipFakeRanks[iClient][1] = StringToInt(szBuffer[iPos]);
+	}
+	else
+	{
+		g_iVipFakeRanks[iClient][0] = g_iVipFakeRanks[iClient][1] = 0;
+	}
 }
 
 public void VIP_OnVIPLoaded()
@@ -177,12 +175,12 @@ public bool OnItemSelect(int iClient, const char[] szFeature)
 	char szBuffer[64];
 	FormatEx(szBuffer, sizeof(szBuffer), "%t [%t]", "FakeRankType", g_sRanksType[g_iVipFakeRanks[iClient][0]]);
 	hMenu.AddItem(NULL_STRING, szBuffer);
-	FormatEx(szBuffer, sizeof(szBuffer), "%t", "RandomRank");
+	FormatEx(szBuffer, sizeof(szBuffer), "%t\n ", "RandomRank");
 	hMenu.AddItem(NULL_STRING, szBuffer);
 
 	for (int i = 0; i < g_iRanksIndex[g_iVipFakeRanks[iClient][0] + 6]; ++i)
 	{
-		hMenu.AddItem(NULL_STRING, g_iVipFakeRanks[iClient][0] < 2 ? g_sRanksDeff[i] : g_sRanksDz[i]);
+		hMenu.AddItem(NULL_STRING, (g_iVipFakeRanks[iClient][0] != 2 ? g_sRanksDeff[i] : g_sRanksDz[i]));
 	}
 
 	hMenu.ExitBackButton = true;
@@ -204,20 +202,23 @@ public int Handler_FakeRankMenu(Menu hMenu, MenuAction action, int iClient, int 
 		}
 		case MenuAction_Select:
 		{
-			if (iItem)
-			{
-				g_iVipFakeRanks[iClient][0] == 2 ? (g_iVipFakeRanks[iClient][0] = 0) : g_iVipFakeRanks[iClient][0]++;
-			}
-			else
-			{
-				g_iVipFakeRanks[iClient][1] = (iItem-1) + g_iRanksIndex[g_iVipFakeRanks[iClient][0]];
-			}
-
 			switch(iItem)
 			{
-				case 0: PrintToChat(iClient, " \x04[ \x02VIP \x04] \x01%t: \x04%t", "SelectedFakeRankType", g_sRanksType[g_iVipFakeRanks[iClient][0]]);
-				case 1: PrintToChat(iClient, " \x04[ \x02VIP \x04] \x01%t: \x04%t", "SelectedFakeRank", "RandomRank");
-				default: PrintToChat(iClient, " \x04[ \x02VIP \x04] \x01%t: \x04%s", "SelectedFakeRank", g_iVipFakeRanks[iClient][0] < 2 ? g_sRanksDeff[iItem-2] : g_sRanksDz[iItem-2]);
+				case 0: 
+				{
+					g_iVipFakeRanks[iClient][0] == 2 ? (g_iVipFakeRanks[iClient][0] = 0) : g_iVipFakeRanks[iClient][0]++;
+					PrintToChat(iClient, " \x04[ \x02VIP \x04] \x01%t: \x04%t", "SelectedFakeRankType", g_sRanksType[g_iVipFakeRanks[iClient][0]]);
+				}
+				case 1: 
+				{
+					g_iVipFakeRanks[iClient][1] = 0;
+					PrintToChat(iClient, " \x04[ \x02VIP \x04] \x01%t: \x04%t", "SelectedFakeRank", "RandomRank");
+				}
+				default: 
+				{
+					g_iVipFakeRanks[iClient][1] = (iItem-1) + g_iRanksIndex[g_iVipFakeRanks[iClient][0]];
+					PrintToChat(iClient, " \x04[ \x02VIP \x04] \x01%t: \x04%s", "SelectedFakeRank", g_iVipFakeRanks[iClient][0] != 2 ? g_sRanksDeff[iItem-2] : g_sRanksDz[iItem-2]);
+				}
 			}
 
 			char szBuffer[8];
@@ -230,7 +231,8 @@ public int Handler_FakeRankMenu(Menu hMenu, MenuAction action, int iClient, int 
 
 void Timer_GetRandomInt()
 {
-	g_iRandomRank = GetRandomInt(1, 18);
+	g_iRandomRank[0] = GetRandomInt(1, 18);
+	g_iRandomRank[1] = GetRandomInt(1, 15);
 }
 #endif
 
@@ -271,7 +273,7 @@ public void OnThinkPost(int iEntity)
 		if(FPS_ClientLoaded(i))
 		{
 			#if VIP_SUPPORT == 1
-				SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iVipStatus[i] != 1 ? g_iPlayerRanks[i] : (g_iVipFakeRanks[i][1] ? g_iVipFakeRanks[i][1] : g_iRandomRank + g_iRanksIndex[g_iVipFakeRanks[i][0]]));
+				SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iVipStatus[i] != 1 ? g_iPlayerRanks[i] : (g_iVipFakeRanks[i][1] > 1 ? g_iVipFakeRanks[i][1] : g_iRandomRank[g_iVipFakeRanks[i][0] < 2 ? 0 : 1] + g_iRanksIndex[g_iVipFakeRanks[i][0]]));
 			#else
 				SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iPlayerRanks[i]);
 			#endif
