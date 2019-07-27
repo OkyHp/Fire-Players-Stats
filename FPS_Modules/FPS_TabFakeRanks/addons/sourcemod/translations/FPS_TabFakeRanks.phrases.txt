@@ -55,4 +55,39 @@
 		"ru"		"Выбран ранг"
 		"ua"		"Вибраний ранг"
 	}
+
+	"FakeRankType"
+	{
+		"en"		"Type ranks"
+		"ru"		"Тип рангов"
+		"ua"		"Тип рангів"
+	}
+
+	"SelectedFakeRankType"
+	{
+		"en"		"Selected ranks type"
+		"ru"		"Выбран тип рангов"
+		"ua"		"Виьраний тип рангів"
+	}
+
+	"Competitive"
+	{
+		"en"		"Competitive"
+		"ru"		"Соревновательный"
+		"ua"		"Змагальний"
+	}
+
+	"Wingman"
+	{
+		"en"		"Wingman"
+		"ru"		"Напарники"
+		"ua"		"Напарники"
+	}
+
+	"DangerZone"
+	{
+		"en"		"Danger Zone"
+		"ru"		"Опасная зона"
+		"ua"		"Небеспечна зона"
+	}
 }
