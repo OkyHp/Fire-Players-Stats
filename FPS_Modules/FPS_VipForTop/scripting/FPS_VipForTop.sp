@@ -24,7 +24,7 @@ public void OnPluginStart()
 
 	ConVar Convar;
 	(Convar = CreateConVar(
-		"sm_fpsm_vip_groupe",		"vip", 
+		"sm_fpsm_vip_for_top_groupe",		"vip", 
 		"Звук воспроизводимый при повышении уровня без папки sound"
 	)).AddChangeHook(ChangeCvar_VipGroupe);
 	ChangeCvar_VipGroupe(Convar, NULL_STRING, NULL_STRING);
