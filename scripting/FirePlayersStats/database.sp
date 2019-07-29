@@ -102,13 +102,15 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				PRIMARY KEY (`id`), \
 				UNIQUE(`account_id`, `server_id`, `weapon`) \
 			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;"); // `hits`			int				NOT NULL, 
-		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_ranks` ( \
-				`id`			int 			NOT NULL AUTO_INCREMENT, \
-				`rank_id`		int 			NOT NULL, \
-				`rank_name`		varchar(128)	NOT NULL, \
-				`points`		float			UNSIGNED NOT NULL, \
-				PRIMARY KEY (`id`) \
-			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		#if USE_RANKS == 1
+			hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_ranks` ( \
+					`id`			int 			NOT NULL AUTO_INCREMENT, \
+					`rank_id`		int 			NOT NULL, \
+					`rank_name`		varchar(128)	NOT NULL, \
+					`points`		float			UNSIGNED NOT NULL, \
+					PRIMARY KEY (`id`) \
+				) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		#endif
 		g_hDatabase.Execute(hTxn, SQL_TxnSuccess_CreateTable, SQL_TxnFailure_CreateTable);
 	}
 }
@@ -138,68 +140,70 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 	SetFailState("SQL_TxnFailure_CreateTable #%i: %s", iFailIndex, szError);
 }
 
-// Load ranks settings
-void LoadRanksSettings()
-{
-	if (g_hDatabase)
+#if USE_RANKS == 1
+	// Load ranks settings
+	void LoadRanksSettings()
 	{
-		char szQuery[256];
-		g_hDatabase.Format(SZF(szQuery), "SELECT `rank_name`, `points` \
-			FROM `fps_ranks` WHERE `rank_id` = %i ORDER BY `points` ASC", g_iRanksID);
-		FPS_Debug("LoadRanksSettings >> Query: %s", szQuery)
-		g_hDatabase.Query(SQL_Callback_LoadRanks, szQuery);
-	}
-}
-
-public void SQL_Callback_LoadRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any data)
-{
-	if (g_hRanksConfigKV)
-	{
-		delete g_hRanksConfigKV;
-	}
-	char szPath[256];
-	BuildPath(Path_SM, SZF(szPath), "configs/FirePlayersStats/catch_ranks.ini");
-	g_hRanksConfigKV = new KeyValues("Ranks_Settings");
-
-	if (!CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_LoadRanks"))
-	{
-		if (!g_hDatabase)
+		if (g_hDatabase)
 		{
-			if (!g_hRanksConfigKV.ImportFromFile(szPath))
-			{
-				SetFailState("Not fount ranks setting cache file. If it`s first run of the plugin - check database connection.");
-			}
-
-			int iLevel;
-			g_hRanksConfigKV.Rewind();
-			if (g_hRanksConfigKV.GotoFirstSubKey(false))
-			{
-				do {
-					++iLevel;
-				} while (g_hRanksConfigKV.GotoNextKey(false));
-			}
-			g_iRanksCount = iLevel;
-
-			FPS_Debug("SQL_Callback_LoadRanks >> Catch KV >> %i", iLevel)
+			char szQuery[256];
+			g_hDatabase.Format(SZF(szQuery), "SELECT `rank_name`, `points` \
+				FROM `fps_ranks` WHERE `rank_id` = %i ORDER BY `points` ASC", g_iRanksID);
+			FPS_Debug("LoadRanksSettings >> Query: %s", szQuery)
+			g_hDatabase.Query(SQL_Callback_LoadRanks, szQuery);
 		}
-		return;
 	}
 
-	int		iLevel;
-	char	szBuffer[128];
-	while(hResult.FetchRow())
+	public void SQL_Callback_LoadRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any data)
 	{
-		hResult.FetchString(0, SZF(szBuffer));
-		g_hRanksConfigKV.SetFloat(szBuffer, hResult.FetchFloat(1));
-		++iLevel;
+		if (g_hRanksConfigKV)
+		{
+			delete g_hRanksConfigKV;
+		}
+		char szPath[256];
+		BuildPath(Path_SM, SZF(szPath), "configs/FirePlayersStats/catch_ranks.ini");
+		g_hRanksConfigKV = new KeyValues("Ranks_Settings");
+
+		if (!CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_LoadRanks"))
+		{
+			if (!g_hDatabase)
+			{
+				if (!g_hRanksConfigKV.ImportFromFile(szPath))
+				{
+					SetFailState("Not fount ranks setting cache file. If it`s first run of the plugin - check database connection.");
+				}
+
+				int iLevel;
+				g_hRanksConfigKV.Rewind();
+				if (g_hRanksConfigKV.GotoFirstSubKey(false))
+				{
+					do {
+						++iLevel;
+					} while (g_hRanksConfigKV.GotoNextKey(false));
+				}
+				g_iRanksCount = iLevel;
+
+				FPS_Debug("SQL_Callback_LoadRanks >> Catch KV >> %i", iLevel)
+			}
+			return;
+		}
+
+		int		iLevel;
+		char	szBuffer[128];
+		while(hResult.FetchRow())
+		{
+			hResult.FetchString(0, SZF(szBuffer));
+			g_hRanksConfigKV.SetFloat(szBuffer, hResult.FetchFloat(1));
+			++iLevel;
+		}
+		g_iRanksCount = iLevel;
+
+		FPS_Debug("SQL_Callback_LoadRanks >> Database KV >> %i", iLevel)
+
+		g_hRanksConfigKV.Rewind();
+		g_hRanksConfigKV.ExportToFile(szPath);
 	}
-	g_iRanksCount = iLevel;
-
-	FPS_Debug("SQL_Callback_LoadRanks >> Database KV >> %i", iLevel)
-
-	g_hRanksConfigKV.Rewind();
-	g_hRanksConfigKV.ExportToFile(szPath);
-}
+#endif
 
 // Load player data
 void LoadPlayerData(int iClient)

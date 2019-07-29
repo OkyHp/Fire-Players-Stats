@@ -5,8 +5,10 @@ static Handle	g_hGlobalForvard_OnFPSStatsLoaded,
 				g_hGlobalForvard_OnFPSClientLoaded,
 				g_hGlobalForvard_OnFPSPointsChangePre,
 				g_hGlobalForvard_OnFPSPointsChange,
-				g_hGlobalForvard_OnFPSLevelChange,
 				g_hGlobalForvard_OnFPSPlayerPosition;
+#if USE_RANKS == 1
+	static Handle	g_hGlobalForvard_OnFPSLevelChange;
+#endif
 
 void CreateGlobalForwards()
 {
@@ -16,8 +18,11 @@ void CreateGlobalForwards()
 	g_hGlobalForvard_OnFPSClientLoaded				= CreateGlobalForward("FPS_OnClientLoaded",				ET_Ignore,	Param_Cell, Param_Cell);
 	g_hGlobalForvard_OnFPSPointsChangePre			= CreateGlobalForward("FPS_OnPointsChangePre",			ET_Hook,	Param_Cell, Param_Cell, Param_Cell, Param_FloatByRef, Param_FloatByRef);
 	g_hGlobalForvard_OnFPSPointsChange				= CreateGlobalForward("FPS_OnPointsChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Float, Param_Float);
-	g_hGlobalForvard_OnFPSLevelChange				= CreateGlobalForward("FPS_OnLevelChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
 	g_hGlobalForvard_OnFPSPlayerPosition			= CreateGlobalForward("FPS_PlayerPosition",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
+
+	#if USE_RANKS == 1
+		g_hGlobalForvard_OnFPSLevelChange			= CreateGlobalForward("FPS_OnLevelChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
+	#endif
 }
 
 void CallForward_OnFPSStatsLoaded()
@@ -70,14 +75,16 @@ void CallForward_OnFPSPointsChange(int iAttacker, int iVictim, float fPointsAtta
 	Call_Finish();
 }
 
-void CallForward_OnFPSLevelChange(int iClient, int iOldLevel, int iNewLevel)
-{
-	Call_StartForward(g_hGlobalForvard_OnFPSLevelChange);
-	Call_PushCell(iClient);
-	Call_PushCell(iOldLevel);
-	Call_PushCell(iNewLevel);
-	Call_Finish();
-}
+#if USE_RANKS == 1
+	void CallForward_OnFPSLevelChange(int iClient, int iOldLevel, int iNewLevel)
+	{
+		Call_StartForward(g_hGlobalForvard_OnFPSLevelChange);
+		Call_PushCell(iClient);
+		Call_PushCell(iOldLevel);
+		Call_PushCell(iNewLevel);
+		Call_Finish();
+	}
+#endif
 
 void CallForward_OnFPSPlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
@@ -104,11 +111,14 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 	CreateNative("FPS_DisableStatisPerRound",	Native_FPSDisableStatisPerRound);
 	CreateNative("FPS_GetPlayedTime",			Native_FPSGetPlayedTime);
 	CreateNative("FPS_GetPoints",				Native_FPSGetPoints);
-	CreateNative("FPS_GetLevel",				Native_FPSGetLevel);
-	CreateNative("FPS_GetRanks",				Native_FPSGetRanks);
-	CreateNative("FPS_GetMaxRanks",				Native_FPSGetMaxRanks);
 	CreateNative("FPS_GetSessionData",			Native_FPSGetSessionData);
 	CreateNative("FPS_IsCalibration",			Native_FPSIsCalibration);
+
+	#if USE_RANKS == 1
+		CreateNative("FPS_GetLevel",				Native_FPSGetLevel);
+		CreateNative("FPS_GetRanks",				Native_FPSGetRanks);
+		CreateNative("FPS_GetMaxRanks",				Native_FPSGetMaxRanks);
+	#endif
 
 	RegPluginLibrary("FirePlayersStats");
 	
@@ -170,32 +180,34 @@ public int Native_FPSGetPoints(Handle hPlugin, int iNumParams)
 	return view_as<int>(iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient] ? (!GetNativeCell(1) ? g_fPlayerPoints[iClient] : (g_fPlayerPoints[iClient] - g_fPlayerSessionPoints[iClient])) : DEFAULT_POINTS);
 }
 
-// int FPS_GetLevel(int iClient);
-public int Native_FPSGetLevel(Handle hPlugin, int iNumParams)
-{
-	int iClient = GetNativeCell(1);
-	if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
+#if USE_RANKS == 1
+	// int FPS_GetLevel(int iClient);
+	public int Native_FPSGetLevel(Handle hPlugin, int iNumParams)
 	{
-		return g_iPlayerRanks[iClient];
+		int iClient = GetNativeCell(1);
+		if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
+		{
+			return g_iPlayerRanks[iClient];
+		}
+		return 0;
 	}
-	return 0;
-}
 
-// void FPS_GetRanks(int iClient, char[] szBufferRank, int iMaxLength);
-public int Native_FPSGetRanks(Handle hPlugin, int iNumParams)
-{
-	int iClient = GetNativeCell(1);
-	if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
+	// void FPS_GetRanks(int iClient, char[] szBufferRank, int iMaxLength);
+	public int Native_FPSGetRanks(Handle hPlugin, int iNumParams)
 	{
-		SetNativeString(2, g_sRankName[iClient], GetNativeCell(3), true);
+		int iClient = GetNativeCell(1);
+		if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
+		{
+			SetNativeString(2, g_sRankName[iClient], GetNativeCell(3), true);
+		}
 	}
-}
 
-// int FPS_GetMaxRanks();
-public int Native_FPSGetMaxRanks(Handle hPlugin, int iNumParams)
-{
-	return g_iRanksCount;
-}
+	// int FPS_GetMaxRanks();
+	public int Native_FPSGetMaxRanks(Handle hPlugin, int iNumParams)
+	{
+		return g_iRanksCount;
+	}
+#endif
 
 // int FPS_GetSessionData(int iClient, int iData);
 public int Native_FPSGetSessionData(Handle hPlugin, int iNumParams)
