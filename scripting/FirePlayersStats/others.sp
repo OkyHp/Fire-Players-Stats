@@ -181,3 +181,15 @@ void PlayItemSelectSound(int iClient, bool bClose)
 {
 	ClientCommand(iClient, bClose ? "playgamesound *buttons/combine_button7.wav" : "playgamesound *buttons/button14.wav");
 }
+
+// Print message on load data status
+bool IsPlayerLoaded(int iClient)
+{
+	if (g_bStatsLoad[iClient])
+	{
+		return true;
+	}
+
+	FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
+	return false;
+}

@@ -4,6 +4,7 @@ void SetCommands()
 	RegConsoleCmd("sm_position",	CommandPosition);
 	RegConsoleCmd("sm_top",			CommandTop);
 	RegConsoleCmd("sm_toptime",		CommandTopTime);
+	RegConsoleCmd("sm_clutch",		CommandClutch);
 	RegConsoleCmd("sm_stats",		CommandFpsMenu);
 	RegConsoleCmd("sm_fps",			CommandFpsMenu);
 	RegConsoleCmd("sm_rank",		CommandFpsMenu);
@@ -11,52 +12,45 @@ void SetCommands()
 
 public Action CommandPosition(int iClient, int iArgs)
 {
-	if (g_bStatsLoad[iClient])
+	if (IsPlayerLoaded(iClient))
 	{
 		ShowPosition(iClient);
-	}
-	else
-	{
-		FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
 	}
 	return Plugin_Handled;
 }
 
 public Action CommandTop(int iClient, int iArgs)
 {
-	if (g_bStatsLoad[iClient])
+	if (IsPlayerLoaded(iClient))
 	{
 		ShowTopMenu(iClient, 0);
-	}
-	else
-	{
-		FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
 	}
 	return Plugin_Handled;
 }
 
 public Action CommandTopTime(int iClient, int iArgs)
 {
-	if (g_bStatsLoad[iClient])
+	if (IsPlayerLoaded(iClient))
 	{
 		ShowTopMenu(iClient, 1);
 	}
-	else
+	return Plugin_Handled;
+}
+
+public Action CommandClutch(int iClient, int iArgs)
+{
+	if (IsPlayerLoaded(iClient))
 	{
-		FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
+		ShowTopMenu(iClient, 2);
 	}
 	return Plugin_Handled;
 }
 
 public Action CommandFpsMenu(int iClient, int iArgs)
 {
-	if (g_bStatsLoad[iClient])
+	if (IsPlayerLoaded(iClient))
 	{
 		ShowFpsMenu(iClient);
-	}
-	else
-	{
-		FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
 	}
 	return Plugin_Handled;
 }
@@ -77,6 +71,8 @@ void ShowFpsMenu(int iClient)
 	FormatEx(SZF(szBuffer), "%t", "TopTen");
 	hMenu.AddItem(NULL_STRING, szBuffer);
 	FormatEx(SZF(szBuffer), "%t", "TopTime");
+	hMenu.AddItem(NULL_STRING, szBuffer);
+	FormatEx(SZF(szBuffer), "%t", "TopClutch");
 	hMenu.AddItem(NULL_STRING, szBuffer);
 	FormatEx(SZF(szBuffer), "%t", "StatsInfo");
 	hMenu.AddItem(NULL_STRING, szBuffer);
@@ -284,7 +280,12 @@ void ShowTopMenu(int iClient, int iMenuType)
 	Panel hPanel = new Panel();
 	SetGlobalTransTarget(iClient);
 
-	FormatEx(SZF(szBuffer), "%t\n ", "TopTitle", !iMenuType ? "TopTen" : "TopTime");
+	switch(iMenuType)
+	{
+		case 0: FormatEx(SZF(szBuffer), "%t\n ", "TopTitle", "TopTen");
+		case 1: FormatEx(SZF(szBuffer), "%t\n ", "TopTitle", "TopTime");
+		case 2: FormatEx(SZF(szBuffer), "%t\n ", "TopTitle", "TopClutch");
+	}
 	hPanel.SetTitle(szBuffer);
 	
 	for (int i = 0; i < 10; ++i)
@@ -293,7 +294,13 @@ void ShowTopMenu(int iClient, int iMenuType)
 		{
 			break;
 		}
-		FormatEx(SZF(szBuffer), "%i. [%.2f] %s", i+1, !iMenuType ? g_fTopData[i][iMenuType] : (g_fTopData[i][iMenuType] / 60 / 60), g_sTopData[i][iMenuType]);
+
+		switch(iMenuType)
+		{
+			case 0: FormatEx(SZF(szBuffer), "%i. %.2f %t - %s", i+1, g_fTopData[i][iMenuType], "Points", g_sTopData[i][iMenuType]);
+			case 1: FormatEx(SZF(szBuffer), "%i. %.2f %t - %s", i+1, (g_fTopData[i][iMenuType] / 60.0 / 60.0), "Hours", g_sTopData[i][iMenuType]);
+			case 2: FormatEx(SZF(szBuffer), "%i. %.0f %t - %s", i+1, g_fTopData[i][iMenuType], "Kills", g_sTopData[i][iMenuType]);
+		}
 		hPanel.DrawText(szBuffer);
 	}
 
