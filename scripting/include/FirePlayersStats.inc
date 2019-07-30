@@ -42,7 +42,7 @@ public void __pl_fire_players_stats_SetNTVOptional()
  *
  *	@noparams
  *	@noreturn
- */
+*/
 forward void FPS_OnFPSStatsLoaded();
 
 /**
@@ -50,7 +50,7 @@ forward void FPS_OnFPSStatsLoaded();
  *
  *	@param hDatabase	Хендл базы данных.
  *	@noreturn
- */
+*/
 forward void FPS_OnDatabaseConnected(Database hDatabase);
 
 /**
@@ -58,7 +58,7 @@ forward void FPS_OnDatabaseConnected(Database hDatabase);
  *
  *	@noparams
  *	@noreturn
- */
+*/
 forward void FPS_OnDatabaseLostConnection();
 
 /**
@@ -67,7 +67,7 @@ forward void FPS_OnDatabaseLostConnection();
  *	@param iClient		Индекс игрока.
  *	@param fPoints		Количество поинтов у игрока.
  *	@noreturn
- */
+*/
 forward void FPS_OnClientLoaded(int iClient, float fPoints);
 
 /**
@@ -82,7 +82,7 @@ forward void FPS_OnClientLoaded(int iClient, float fPoints);
  								Plugin_Continue  - разрешит выдачу опыта без изменений;
  								Plugin_Changed - разрешит переключение опыта на fAddPointsAttacker и fAddPointsVictim.
 
- */
+*/
 forward Action FPS_OnPointsChangePre(int iAttacker, int iVictim, bool bHeadshot, float& fAddPointsAttacker, float& fAddPointsVictim);
 
 /**
@@ -93,7 +93,7 @@ forward Action FPS_OnPointsChangePre(int iAttacker, int iVictim, bool bHeadshot,
  *	@param fPointsAttacker		Количество поинтов у убийцы (общее).
  *	@param fPointsVictim		Количество поинтов у жертвы (общее).
  *	@noreturn
- */
+*/
 forward void FPS_OnPointsChange(int iAttacker, int iVictim, float fPointsAttacker, float fPointsVictim);
 
 /**
@@ -103,7 +103,7 @@ forward void FPS_OnPointsChange(int iAttacker, int iVictim, float fPointsAttacke
  *	@param iOldLevel	Старый уровень игрока.
  *	@param iNewLevel	Новый уровень игрока.
  *	@noreturn
- */
+*/
 forward void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel);
 
 /**
@@ -113,7 +113,7 @@ forward void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel);
  *	@param iPosition		Текущая позиция игрока.
  *	@param iPlayersCount	Всего игроков.
  *	@noreturn
- */
+*/
 forward void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount);
 
 
@@ -125,7 +125,7 @@ forward void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount);
  *	@noparams
  *	@return				true - Загружено.
  * 						false - Не загружено.
- */
+*/
 native bool FPS_StatsLoad();
 
 /**
@@ -133,7 +133,7 @@ native bool FPS_StatsLoad();
  *
  *	@noparams
  *	@return				Хендл базы данных.
- */
+*/
 native Database FPS_GetDatabase();
 
 /**
@@ -142,7 +142,7 @@ native Database FPS_GetDatabase();
  *	@param iClient		Индекс игрока.
  *	@return				true - Данные игрока загружены.
  * 						false - Данные игрока не загружены.
- */
+*/
 native bool FPS_ClientLoaded(int iClient);
 
 /**
@@ -150,14 +150,14 @@ native bool FPS_ClientLoaded(int iClient);
  *
  *	@param iClient		Индекс игрока.
  *	@noreturn
- */
+*/
 native void FPS_ClientReloadData(int iClient);
 
 /**
  *	Отключить работу статистики на 1 раунд.
  *
  *	@noreturn
- */
+*/
 native void FPS_DisableStatisPerRound();
 
 /**
@@ -166,7 +166,7 @@ native void FPS_DisableStatisPerRound();
  *	@param iClient		Индекс игрока.
  *	@param bSession		Вывод наигранного времени за текущую сессию.
  *	@return				Наигранное время в секундах.
- */
+*/
 native int FPS_GetPlayedTime(int iClient, bool bSession = false);
 
 /**
@@ -175,7 +175,7 @@ native int FPS_GetPlayedTime(int iClient, bool bSession = false);
  *	@param iClient		Индекс игрока.
  *	@param bSession		Количетсво поинтов за текущую сессию.
  *	@return				Количетсво поинтов/очков у игрока.
- */
+*/
 native float FPS_GetPoints(int iClient, bool bSession = false);
 
 /**
@@ -183,7 +183,7 @@ native float FPS_GetPoints(int iClient, bool bSession = false);
  *
  *	@param iClient				Индекс игрока.
  *	@return						Текущий ранг.
- */
+*/
 native int FPS_GetLevel(int iClient);
 
 /**
@@ -193,14 +193,14 @@ native int FPS_GetLevel(int iClient);
  *	@param szBufferLevelName	Буфер для записи названия ранга.
  *	@param iMaxLength			Максимальный размер буфера.
  *	@noreturn
- */
+*/
 native void FPS_GetRanks(int iClient, char[] szBufferRank, int iMaxLength);
 
 /**
  *	Получить количетсво всех рангов. Получает значение при старте карты.
  *
  *	@return						Количетсво всех рангов.
- */
+*/
 native int FPS_GetMaxRanks();
 
 /**
@@ -215,7 +215,7 @@ native int FPS_GetMaxRanks();
  *								5 - Количесво проиграных раундов.
  *								6 - Время подключение игрока.
  *	@return
- */
+*/
 native int FPS_GetSessionData(int iClient, int iData);
 
 /**
@@ -224,5 +224,5 @@ native int FPS_GetSessionData(int iClient, int iData);
  *	@param iClient		Индекс игрока.
  *	@return				true - игрок калибруется.
  * 						false - игрок уже откалиброван.
- */
+*/
 native bool FPS_IsCalibration(int iClient);

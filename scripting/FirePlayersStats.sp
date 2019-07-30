@@ -62,7 +62,7 @@
 
 #if DEBUG == 1
 	char g_sLogPath[256];
-	#define FPS_Debug(%0)		LogToFile(g_sLogPath, %0);
+	#define FPS_Debug(%0)	LogToFile(g_sLogPath, %0);
 #else
 	#define FPS_Debug(%0)
 #endif
