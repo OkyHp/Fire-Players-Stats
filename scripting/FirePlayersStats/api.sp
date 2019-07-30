@@ -221,5 +221,5 @@ public int Native_FPSGetSessionData(Handle hPlugin, int iNumParams)
 public int Native_FPSIsCalibration(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	return (g_bStatsLoad[iClient] && FPS_GetPlayedTime(iClient, false) < g_iCalibrationFixTime);
+	return (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient] && FPS_GetPlayedTime(iClient, false) < g_iCalibrationFixTime);
 }
