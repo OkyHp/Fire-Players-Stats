@@ -37,7 +37,7 @@
 
 #pragma newdecls required
 
-#if FPS_INC_VER < 20
+#if FPS_INC_VER < 12
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 

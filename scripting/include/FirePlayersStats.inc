@@ -32,7 +32,7 @@ public void __pl_fire_players_stats_SetNTVOptional()
 }
 #endif
 
-#define FPS_INC_VER		20
+#define FPS_INC_VER		12
 
 
 /****************** FORWARDS ******************/
