@@ -127,9 +127,9 @@
 
 	"Points"
 	{
-		"en"		"Points"
-		"ru"		"Поинтов"
-		"ua"		"Поінтів"
+		"en"		"points"
+		"ru"		"поинтов"
+		"ua"		"поінтів"
 	}
 
 	"Hours"
@@ -141,9 +141,9 @@
 	
 	"Kills"
 	{
-		"en"		"Kills"
-		"ru"		"Убийств"
-		"ua"		"Вбивств"
+		"en"		"kills"
+		"ru"		"убийств"
+		"ua"		"вбивств"
 	}
 
 	"NoPlayers"

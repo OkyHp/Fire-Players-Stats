@@ -100,8 +100,8 @@ KeyValues	g_hWeaponsKV;
 // Database vars
 Database	g_hDatabase;
 // Top Data
-float		g_fTopData[10][2];
-char		g_sTopData[10][2][64];
+float		g_fTopData[10][3];
+char		g_sTopData[10][3][64];
 
 enum
 {

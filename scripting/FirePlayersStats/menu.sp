@@ -97,9 +97,10 @@ public int Handler_FpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem
 				case 0: ShowPlayerMenu(iClient);
 				case 1: ShowTopMenu(iClient, 0);
 				case 2: ShowTopMenu(iClient, 1);
-				case 3: ShowStatsInfoMenu(iClient);
+				case 3: ShowTopMenu(iClient, 2);
+				case 4: ShowStatsInfoMenu(iClient);
 				#if USE_RANKS == 1
-					case 4: ShowRankInfoMenu(iClient);
+					case 5: ShowRankInfoMenu(iClient);
 				#endif
 			}
 		}
