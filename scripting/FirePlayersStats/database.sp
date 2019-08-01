@@ -102,13 +102,15 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				PRIMARY KEY (`id`), \
 				UNIQUE(`account_id`, `server_id`, `weapon`) \
 			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;"); // `hits`			int				NOT NULL, 
-		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_ranks` ( \
-				`id`			int 			NOT NULL AUTO_INCREMENT, \
-				`rank_id`		int 			NOT NULL, \
-				`rank_name`		varchar(128)	NOT NULL, \
-				`points`		float			UNSIGNED NOT NULL, \
-				PRIMARY KEY (`id`) \
-			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		#if USE_RANKS == 1
+			hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_ranks` ( \
+					`id`			int 			NOT NULL AUTO_INCREMENT, \
+					`rank_id`		int 			NOT NULL, \
+					`rank_name`		varchar(128)	NOT NULL, \
+					`points`		float			UNSIGNED NOT NULL, \
+					PRIMARY KEY (`id`) \
+				) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
+		#endif
 		g_hDatabase.Execute(hTxn, SQL_TxnSuccess_CreateTable, SQL_TxnFailure_CreateTable);
 	}
 }
@@ -138,68 +140,70 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 	SetFailState("SQL_TxnFailure_CreateTable #%i: %s", iFailIndex, szError);
 }
 
-// Load ranks settings
-void LoadRanksSettings()
-{
-	if (g_hDatabase)
+#if USE_RANKS == 1
+	// Load ranks settings
+	void LoadRanksSettings()
 	{
-		char szQuery[256];
-		g_hDatabase.Format(SZF(szQuery), "SELECT `rank_name`, `points` \
-			FROM `fps_ranks` WHERE `rank_id` = %i ORDER BY `points` ASC", g_iRanksID);
-		FPS_Debug("LoadRanksSettings >> Query: %s", szQuery)
-		g_hDatabase.Query(SQL_Callback_LoadRanks, szQuery);
-	}
-}
-
-public void SQL_Callback_LoadRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any data)
-{
-	if (g_hRanksConfigKV)
-	{
-		delete g_hRanksConfigKV;
-	}
-	char szPath[256];
-	BuildPath(Path_SM, SZF(szPath), "configs/FirePlayersStats/catch_ranks.ini");
-	g_hRanksConfigKV = new KeyValues("Ranks_Settings");
-
-	if (!CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_LoadRanks"))
-	{
-		if (!g_hDatabase)
+		if (g_hDatabase)
 		{
-			if (!g_hRanksConfigKV.ImportFromFile(szPath))
-			{
-				SetFailState("Not fount ranks setting cache file. If it`s first run of the plugin - check database connection.");
-			}
-
-			int iLevel;
-			g_hRanksConfigKV.Rewind();
-			if (g_hRanksConfigKV.GotoFirstSubKey(false))
-			{
-				do {
-					++iLevel;
-				} while (g_hRanksConfigKV.GotoNextKey(false));
-			}
-			g_iRanksCount = iLevel;
-
-			FPS_Debug("SQL_Callback_LoadRanks >> Catch KV >> %i", iLevel)
+			char szQuery[256];
+			g_hDatabase.Format(SZF(szQuery), "SELECT `rank_name`, `points` \
+				FROM `fps_ranks` WHERE `rank_id` = %i ORDER BY `points` ASC", g_iRanksID);
+			FPS_Debug("LoadRanksSettings >> Query: %s", szQuery)
+			g_hDatabase.Query(SQL_Callback_LoadRanks, szQuery);
 		}
-		return;
 	}
 
-	int		iLevel;
-	char	szBuffer[128];
-	while(hResult.FetchRow())
+	public void SQL_Callback_LoadRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any data)
 	{
-		hResult.FetchString(0, SZF(szBuffer));
-		g_hRanksConfigKV.SetFloat(szBuffer, hResult.FetchFloat(1));
-		++iLevel;
+		if (g_hRanksConfigKV)
+		{
+			delete g_hRanksConfigKV;
+		}
+		char szPath[256];
+		BuildPath(Path_SM, SZF(szPath), "configs/FirePlayersStats/catch_ranks.ini");
+		g_hRanksConfigKV = new KeyValues("Ranks_Settings");
+
+		if (!CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_LoadRanks"))
+		{
+			if (!g_hDatabase)
+			{
+				if (!g_hRanksConfigKV.ImportFromFile(szPath))
+				{
+					SetFailState("Not fount ranks setting cache file. If it`s first run of the plugin - check database connection.");
+				}
+
+				int iLevel;
+				g_hRanksConfigKV.Rewind();
+				if (g_hRanksConfigKV.GotoFirstSubKey(false))
+				{
+					do {
+						++iLevel;
+					} while (g_hRanksConfigKV.GotoNextKey(false));
+				}
+				g_iRanksCount = iLevel;
+
+				FPS_Debug("SQL_Callback_LoadRanks >> Catch KV >> %i", iLevel)
+			}
+			return;
+		}
+
+		int		iLevel;
+		char	szBuffer[128];
+		while(hResult.FetchRow())
+		{
+			hResult.FetchString(0, SZF(szBuffer));
+			g_hRanksConfigKV.SetFloat(szBuffer, hResult.FetchFloat(1));
+			++iLevel;
+		}
+		g_iRanksCount = iLevel;
+
+		FPS_Debug("SQL_Callback_LoadRanks >> Database KV >> %i", iLevel)
+
+		g_hRanksConfigKV.Rewind();
+		g_hRanksConfigKV.ExportToFile(szPath);
 	}
-	g_iRanksCount = iLevel;
-
-	FPS_Debug("SQL_Callback_LoadRanks >> Database KV >> %i", iLevel)
-
-	g_hRanksConfigKV.Rewind();
-	g_hRanksConfigKV.ExportToFile(szPath);
-}
+#endif
 
 // Load player data
 void LoadPlayerData(int iClient)
@@ -245,11 +249,14 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 
 	g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS] = 0; // (not used var) for blocked accrual of experience to connected player
 	g_iPlayerSessionData[iClient][PLAYTIME] = GetTime();
-	CheckRank(iClient);
 	GetPlayerPosition(iClient);
 	g_bStatsLoad[iClient] = true;
 
 	CallForward_OnFPSClientLoaded(iClient, g_fPlayerPoints[iClient]);
+
+	#if USE_RANKS == 1
+		CheckRank(iClient);
+	#endif
 }
 
 void SavePlayerData(int iClient)
@@ -400,8 +407,7 @@ void LoadTopData()
 		char	szQuery[256];
 		Transaction	hTxn = new Transaction();
 
-		g_hDatabase.Format(SZF(szQuery), "SELECT \
-				`p`.`nickname`, `s`.`points` \
+		g_hDatabase.Format(SZF(szQuery), "SELECT `p`.`nickname`, `s`.`points` \
 			FROM \
 				`fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
@@ -409,8 +415,7 @@ void LoadTopData()
 		FPS_Debug("LoadTopData >> Query#1 (Top): %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
-		g_hDatabase.Format(SZF(szQuery), "SELECT \
-				`p`.`nickname`, `s`.`playtime` \
+		g_hDatabase.Format(SZF(szQuery), "SELECT `p`.`nickname`, `s`.`playtime` \
 			FROM \
 				`fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
@@ -418,8 +423,16 @@ void LoadTopData()
 		FPS_Debug("LoadTopData >> Query#2 (TopTime): %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
+		g_hDatabase.Format(SZF(szQuery), "SELECT `p`.`nickname`, `s`.`round_max_kills` \
+			FROM \
+				`fps_servers_stats` AS `s` \
+				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
+			WHERE `server_id` = %i ORDER BY `round_max_kills` DESC, `points` DESC LIMIT 10", g_iServerID);
+		FPS_Debug("LoadTopData >> Query#3 (TopClutch): %s", szQuery)
+		hTxn.AddQuery(szQuery);
+
 		g_hDatabase.Format(SZF(szQuery), "SELECT COUNT(`id`) FROM `fps_servers_stats` WHERE `server_id` = %i;", g_iServerID);
-		FPS_Debug("LoadTopData >> Query#3 (GetPlayerCount): %s", szQuery)
+		FPS_Debug("LoadTopData >> Query#4 (GetPlayerCount): %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
 		g_hDatabase.Execute(hTxn, SQL_TxnSuccess_TopData, SQL_TxnFailure_TopData);
@@ -428,7 +441,7 @@ void LoadTopData()
 
 public void SQL_TxnSuccess_TopData(Database hDatabase, any Data, int iNumQueries, DBResultSet[] hResult, any[] QueryData)
 {
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
 		int u = 0;
 		while(hResult[i].FetchRow())
@@ -439,9 +452,9 @@ public void SQL_TxnSuccess_TopData(Database hDatabase, any Data, int iNumQueries
 		}
 	}
 
-	if (hResult[2].FetchRow())
+	if (hResult[3].FetchRow())
 	{
-		g_iPlayersCount = hResult[2].FetchInt(0);
+		g_iPlayersCount = hResult[3].FetchInt(0);
 	}
 }
 

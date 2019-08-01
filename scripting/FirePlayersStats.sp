@@ -37,16 +37,19 @@
 
 #pragma newdecls required
 
-#if FPS_INC_VER < 20
+#if FPS_INC_VER < 12
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
-#define PLUGIN_VERSION	"1.1.1"
+#define PLUGIN_VERSION		"1.1.2"
 
 #define UID(%0)				GetClientUserId(%0)
 #define CID(%0)				GetClientOfUserId(%0)
 #define SZF(%0)				%0, sizeof(%0)
 
+/////////////////////////////////////// PRECOMPILATION SETTINGS ///////////////////////////////////////
+
+#define USE_RANKS			1	// 1 - Use ranks in statistics. 0 - There will be no ranks, only points.
 #define DEFAULT_POINTS		1000.0
 #define DEBUG				0	// Enable/Disable debug mod
 #define LOAD_TYPE			0	// Use forvard for load player stats:	0 - OnClientPostAdminCheck 
@@ -55,11 +58,20 @@
 #define FPS_PrintToChat(%0,%1)	CGOPrintToChat(%0, FPS_CHAT_PREFIX ... %1)
 #define FPS_PrintToChatAll(%0)	CGOPrintToChatAll(FPS_CHAT_PREFIX ... %0)
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #if DEBUG == 1
 	char g_sLogPath[256];
-	#define FPS_Debug(%0)		LogToFile(g_sLogPath, %0);
+	#define FPS_Debug(%0)	LogToFile(g_sLogPath, %0);
 #else
 	#define FPS_Debug(%0)
+#endif
+
+#if USE_RANKS != 1
+	#define DEF_BUFF		PLUGIN_VERSION
+	#undef	PLUGIN_VERSION
+	#define PLUGIN_VERSION	DEF_BUFF ... " NO RANKS"
+	#undef	DEF_BUFF
 #endif
 
 // Others vars
@@ -74,11 +86,15 @@ bool		g_bStatsLoaded,
 			g_bStatsLoad[MAXPLAYERS+1],
 			g_bStatsActive,
 			g_bLateLoad;
+
+#if USE_RANKS == 1
 // Ranks settings
 int			g_iRanksCount,
 			g_iPlayerRanks[MAXPLAYERS+1];
 char		g_sRankName[MAXPLAYERS+1][64];
 KeyValues	g_hRanksConfigKV;
+#endif
+
 // Weapons stats wars
 KeyValues	g_hWeaponsKV;
 // Database vars
@@ -147,7 +163,9 @@ public void OnPluginStart()
 
 public void OnMapStart()
 {
-	LoadRanksSettings();
+	#if USE_RANKS == 1
+		LoadRanksSettings();
+	#endif
 	LoadTopData();
 
 	#if defined _SteamWorks_Included

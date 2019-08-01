@@ -4,13 +4,16 @@ void ResetData(int iClient)
 	g_iPlayerAccountID[iClient] = 0;
 	g_iPlayerPosition[iClient] = 0;
 	g_bStatsLoad[iClient] = false;
-	g_iPlayerRanks[iClient] = 0;
-	g_sRankName[iClient][0] = 0;
 	g_fPlayerSessionPoints[iClient]	= g_fPlayerPoints[iClient] = DEFAULT_POINTS;
 	for (int i = 0; i < sizeof(g_iPlayerData[]); ++i)
 	{
 		g_iPlayerSessionData[iClient][i] = g_iPlayerData[iClient][i] = 0;
 	}
+
+	#if USE_RANKS == 1
+		g_iPlayerRanks[iClient] = 0;
+		g_sRankName[iClient][0] = 0;
+	#endif
 }
 
 // Weapons stats KV
@@ -109,46 +112,48 @@ float GetWeaponExtraPoints(const char[] szWeapon)
 	return 1.0;
 }
 
-// Check rank level
-void CheckRank(int iClient)
-{
-	if (FPS_IsCalibration(iClient))
+#if USE_RANKS == 1
+	// Check rank level
+	void CheckRank(int iClient)
 	{
-		g_iPlayerRanks[iClient] = 0;
-		FormatEx(g_sRankName[iClient], sizeof(g_sRankName[]), "%T", "Calibration", iClient);
-		return;
-	}
-
-	if (g_hRanksConfigKV)
-	{
-		int iLevel;
-		g_hRanksConfigKV.Rewind();
-		if (g_hRanksConfigKV.GotoFirstSubKey(false))
+		if (FPS_IsCalibration(iClient))
 		{
-			do {
-				if (g_fPlayerPoints[iClient] < g_hRanksConfigKV.GetFloat(NULL_STRING))
-				{
-					if (iLevel != g_iPlayerRanks[iClient])
+			g_iPlayerRanks[iClient] = 0;
+			FormatEx(g_sRankName[iClient], sizeof(g_sRankName[]), "%T", "Calibration", iClient);
+			return;
+		}
+
+		if (g_hRanksConfigKV)
+		{
+			int iLevel;
+			g_hRanksConfigKV.Rewind();
+			if (g_hRanksConfigKV.GotoFirstSubKey(false))
+			{
+				do {
+					if (g_fPlayerPoints[iClient] < g_hRanksConfigKV.GetFloat(NULL_STRING))
 					{
-						if (g_iPlayerRanks[iClient])
+						if (iLevel != g_iPlayerRanks[iClient])
 						{
-							FPS_PrintToChat(iClient, "%t", iLevel > g_iPlayerRanks[iClient] ? "RankUpped" : "RankDowned", g_sRankName[iClient]);
-							CallForward_OnFPSLevelChange(iClient, g_iPlayerRanks[iClient], iLevel);
+							if (g_iPlayerRanks[iClient])
+							{
+								FPS_PrintToChat(iClient, "%t", iLevel > g_iPlayerRanks[iClient] ? "RankUpped" : "RankDowned", g_sRankName[iClient]);
+								CallForward_OnFPSLevelChange(iClient, g_iPlayerRanks[iClient], iLevel);
+							}
+							FPS_Debug("CheckRank Pre (New level) >> %N: %i", iClient, iLevel)
+
+							g_iPlayerRanks[iClient] = iLevel;
+
+							FPS_Debug("CheckRank >> %N: %i | %s", iClient, g_iPlayerRanks[iClient], g_sRankName[iClient])
 						}
-						FPS_Debug("CheckRank Pre (New level) >> %N: %i", iClient, iLevel)
-
-						g_iPlayerRanks[iClient] = iLevel;
-
-						FPS_Debug("CheckRank >> %N: %i | %s", iClient, g_iPlayerRanks[iClient], g_sRankName[iClient])
+						return;
 					}
-					return;
-				}
-				g_hRanksConfigKV.GetSectionName(g_sRankName[iClient], sizeof(g_sRankName[])); // ebaniy kostil
-				++iLevel;
-			} while (g_hRanksConfigKV.GotoNextKey(false));
+					g_hRanksConfigKV.GetSectionName(g_sRankName[iClient], sizeof(g_sRankName[])); // ebaniy kostil
+					++iLevel;
+				} while (g_hRanksConfigKV.GotoNextKey(false));
+			}
 		}
 	}
-}
+#endif
 
 // Check grenade
 bool IsGrenade(const char[] szWeapon)
@@ -175,4 +180,16 @@ bool IsKnife(const char[] szWeapon)
 void PlayItemSelectSound(int iClient, bool bClose)
 {
 	ClientCommand(iClient, bClose ? "playgamesound *buttons/combine_button7.wav" : "playgamesound *buttons/button14.wav");
+}
+
+// Print message on load data status
+bool IsPlayerLoaded(int iClient)
+{
+	if (g_bStatsLoad[iClient])
+	{
+		return true;
+	}
+
+	FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
+	return false;
 }
