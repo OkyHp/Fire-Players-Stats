@@ -170,118 +170,118 @@
 	"fps_headshot"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Headshot - {1}"
-		"ru"		"Убиство в голову - {1}"
-		"ua"		"Вбивство в голову - {1}"
+		"en"		"Headshot: {1}"
+		"ru"		"Убиство в голову: {1}"
+		"ua"		"Вбивство в голову: {1}"
 	}
 	"fps_assist"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Assist - {1}"
-		"ru"		"Помощь в убистве - {1}"
-		"ua"		"Допомога у вбивстві - {1}"
+		"en"		"Assist: {1}"
+		"ru"		"Помощь в убистве: {1}"
+		"ua"		"Допомога у вбивстві: {1}"
 	}
 	"fps_suicide"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Suicide - {1}"
-		"ru"		"Суицид - {1}"
-		"ua"		"Самогубство - {1}"
+		"en"		"Suicide: {1}"
+		"ru"		"Суицид: {1}"
+		"ua"		"Самогубство: {1}"
 	}
 	"fps_teamkill"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Team kill - {1}"
-		"ru"		"Убиство союзника - {1}"
-		"ua"		"Вбивство союзника - {1}"
+		"en"		"Team kill: {1}"
+		"ru"		"Убиство союзника: {1}"
+		"ua"		"Вбивство союзника: {1}"
 	}
 	"fps_winround"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Win round - {1}"
-		"ru"		"Победу в раунде - {1}"
-		"ua"		"Перемога в раунді - {1}"
+		"en"		"Win round: {1}"
+		"ru"		"Победу в раунде: {1}"
+		"ua"		"Перемога в раунді: {1}"
 	}
 	"fps_loseround"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Lose round - {1}"
-		"ru"		"Проигрыш в раунде - {1}"
-		"ua"		"Програш в раунді - {1}"
+		"en"		"Lose round: {1}"
+		"ru"		"Проигрыш в раунде: {1}"
+		"ua"		"Програш в раунді: {1}"
 	}
 	"fps_mvpround"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"MVP - {1}"
-		"ru"		"MVP - {1}"
-		"ua"		"MVP - {1}"
+		"en"		"MVP: {1}"
+		"ru"		"MVP: {1}"
+		"ua"		"MVP: {1}"
 	}
 	"fps_bombplanted"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Bomb planted - {1}"
-		"ru"		"Установку бомбы - {1}"
-		"ua"		"Встановлення бомби - {1}"
+		"en"		"Bomb planted: {1}"
+		"ru"		"Установку бомбы: {1}"
+		"ua"		"Встановлення бомби: {1}"
 	}
 	"fps_bombdefused"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Bomb defused - {1}"
-		"ru"		"Деактивацию бомбы - {1}"
-		"ua"		"Деактивацію бомби - {1}"
+		"en"		"Bomb defused: {1}"
+		"ru"		"Деактивацию бомбы: {1}"
+		"ua"		"Деактивацію бомби: {1}"
 	}
 	"fps_bombdropped"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Bomb dropped - {1}"
-		"ru"		"Потерю бомбы - {1}"
-		"ua"		"Втрата бомби - {1}"
+		"en"		"Bomb dropped: {1}"
+		"ru"		"Потерю бомбы: {1}"
+		"ua"		"Втрата бомби: {1}"
 	}
 	"fps_bombpickup"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Bomb pick up - {1}"
-		"ru"		"Подбор бомбы - {1}"
-		"ua"		"Підбір бомби - {1}"
+		"en"		"Bomb pick up: {1}"
+		"ru"		"Подбор бомбы: {1}"
+		"ua"		"Підбір бомби: {1}"
 	}
 	"fps_hostagekilled"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Hostage killed - {1}"
-		"ru"		"Убиство заложника - {1}"
-		"ua"		"Вбивство заручника - {1}"
+		"en"		"Hostage killed: {1}"
+		"ru"		"Убиство заложника: {1}"
+		"ua"		"Вбивство заручника: {1}"
 	}
 	"fps_hostagerescued"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Hostage rescued - {1}"
-		"ru"		"Спасение заложника - {1}"
-		"ua"		"Спасіння заручника - {1}"
+		"en"		"Hostage rescued: {1}"
+		"ru"		"Спасение заложника: {1}"
+		"ua"		"Спасіння заручника: {1}"
 	}
 	"fps_double_kill"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Double kill - {1}"
+		"en"		"Double kill: {1}"
 	}
 	"fps_triple_kill"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Triple kill - {1}"
+		"en"		"Triple kill: {1}"
 	}
 	"fps_domination"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Domination - {1}"
+		"en"		"Domination: {1}"
 	}
 	"fps_rampage"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Rampage - {1}"
+		"en"		"Rampage: {1}"
 	}
 	"fps_mega_kill"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Mega kill - {1}"
+		"en"		"Mega kill: {1}"
 	}
 
 	"ResetPlayerStats"
