@@ -5,7 +5,7 @@
 #include <vip_core>
 #include <FirePlayersStats>
 
-char	g_sVipGroupe[32];
+KeyValues	g_hConfig;
 
 public Plugin myinfo =
 {
@@ -21,26 +21,36 @@ public void OnPluginStart()
 	{
 		SetFailState("This plugin works only on CS:GO");
 	}
-
-	ConVar Convar;
-	(Convar = CreateConVar(
-		"sm_fpsm_vip_for_top_groupe",		"vip", 
-		"Звук воспроизводимый при повышении уровня без папки sound"
-	)).AddChangeHook(ChangeCvar_VipGroupe);
-	ChangeCvar_VipGroupe(Convar, NULL_STRING, NULL_STRING);
-
-	AutoExecConfig(true, "FPS_VipForTop");
 }
 
-public void ChangeCvar_VipGroupe(ConVar Convar, const char[] oldValue, const char[] newValue)
+public void OnMapStart()
 {
-	Convar.GetString(g_sVipGroupe, sizeof(g_sVipGroupe));
+	if (g_hConfig)
+	{
+		delete g_hConfig;
+	}
+
+	char szPath[256];
+	g_hConfig = new KeyValues("Config");
+	BuildPath(Path_SM, szPath, sizeof(szPath), "configs/FirePlayersStats/vip_for_top.ini");
+	if(!g_hConfig.ImportFromFile(szPath))
+	{
+		SetFailState("No found file: '%s'.", szPath);
+	}
 }
 
 public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
-	if (iPosition == 1 && !VIP_IsClientVIP(iClient))
+	if (!iPosition && !VIP_IsClientVIP(iClient))
 	{
-		VIP_GiveClientVIP(-1, iClient, 0, g_sVipGroupe, false);
+		char	szPos[4],
+				szVipGroup[32];
+		IntToString(iPosition, szPos, sizeof(szPos));
+		g_hConfig.Rewind();
+		g_hConfig.GetString(szPos, szVipGroup, sizeof(szVipGroup), NULL_STRING);
+		if (szVipGroup[0])
+		{
+			VIP_GiveClientVIP(-1, iClient, 0, szVipGroup, false);
+		}
 	}
 }
