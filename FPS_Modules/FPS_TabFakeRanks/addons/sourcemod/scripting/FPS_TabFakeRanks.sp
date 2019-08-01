@@ -273,7 +273,7 @@ public void OnThinkPost(int iEntity)
 		if(FPS_ClientLoaded(i))
 		{
 			#if VIP_SUPPORT == 1
-				SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iVipStatus[i] != 1 ? g_iPlayerRanks[i] : (g_iVipFakeRanks[i][1] > 1 ? g_iVipFakeRanks[i][1] : g_iRandomRank[g_iVipFakeRanks[i][0] < 2 ? 0 : 1] + g_iRanksIndex[g_iVipFakeRanks[i][0]]));
+				SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iVipStatus[i] == 1 ? (g_iVipFakeRanks[i][1] > 1 ? g_iVipFakeRanks[i][1] : g_iRandomRank[g_iVipFakeRanks[i][0] < 2 ? 0 : 1] + g_iRanksIndex[g_iVipFakeRanks[i][0]]) : g_iPlayerRanks[i]);
 			#else
 				SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iPlayerRanks[i]);
 			#endif
