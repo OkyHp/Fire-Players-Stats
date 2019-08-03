@@ -281,6 +281,11 @@ public void OnThinkPost(int iEntity)
 	}
 }
 
+public void FPS_OnClientLoaded(int iClient, float fPoints)
+{
+	GetPlayerData(iClient, FPS_GetLevel(iClient));
+}
+
 public void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel)
 {
 	GetPlayerData(iClient, iNewLevel);
@@ -289,7 +294,6 @@ public void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel)
 void GetPlayerData(int iClient, int iLevel)
 {
 	g_iPlayerRanks[iClient] = !FPS_IsCalibration(iClient) ? (iLevel + g_iRanksIndex[g_iRanksType]) : g_iRanksIndex[g_iRanksType + 3];
-	LogError(">> %i (%i)", g_iPlayerRanks[iClient], iLevel);
 }
 
 public void OnPlayerRunCmdPost(int iClient, int iButtons)
