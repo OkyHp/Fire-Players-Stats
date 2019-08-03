@@ -91,11 +91,6 @@ public void FPS_OnFPSStatsLoaded()
 	}
 }
 
-public void FPS_OnClientLoaded(int iClient, float fPoints)
-{
-	GetPlayerData(iClient, FPS_GetLevel(iClient));
-}
-
 public void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel)
 {
 	GetPlayerData(iClient, iNewLevel);

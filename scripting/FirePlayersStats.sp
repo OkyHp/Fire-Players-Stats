@@ -41,7 +41,7 @@
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
-#define PLUGIN_VERSION		"1.2.0"
+#define PLUGIN_VERSION		"1.2.1"
 
 #define UID(%0)				GetClientUserId(%0)
 #define CID(%0)				GetClientOfUserId(%0)
@@ -70,7 +70,7 @@
 #if USE_RANKS != 1
 	#define DEF_BUFF		PLUGIN_VERSION
 	#undef	PLUGIN_VERSION
-	#define PLUGIN_VERSION	DEF_BUFF ... " NO RANKS"
+	#define PLUGIN_VERSION	DEF_BUFF ... " NR"
 	#undef	DEF_BUFF
 #endif
 

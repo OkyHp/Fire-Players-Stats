@@ -273,17 +273,12 @@ public void OnThinkPost(int iEntity)
 		if(FPS_ClientLoaded(i))
 		{
 			#if VIP_SUPPORT == 1
-				SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iVipStatus[i] == 1 ? (g_iVipFakeRanks[i][1] ? g_iVipFakeRanks[i][1] : g_iRandomRank[g_iVipFakeRanks[i][0] < 2 ? 0 : 1] + g_iRanksIndex[g_iVipFakeRanks[i][0]]) : g_iPlayerRanks[i]);
+				SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iVipStatus[i] == 1 ? (g_iVipFakeRanks[i][1] ? g_iVipFakeRanks[i][1] : (g_iRandomRank[g_iVipFakeRanks[i][0] < 2 ? 0 : 1] + g_iRanksIndex[g_iVipFakeRanks[i][0]])) : g_iPlayerRanks[i]);
 			#else
 				SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iPlayerRanks[i]);
 			#endif
 		}
 	}
-}
-
-public void FPS_OnClientLoaded(int iClient, float fPoints)
-{
-	GetPlayerData(iClient, FPS_GetLevel(iClient));
 }
 
 public void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel)
@@ -294,6 +289,7 @@ public void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel)
 void GetPlayerData(int iClient, int iLevel)
 {
 	g_iPlayerRanks[iClient] = !FPS_IsCalibration(iClient) ? (iLevel + g_iRanksIndex[g_iRanksType]) : g_iRanksIndex[g_iRanksType + 3];
+	LogError(">> %i (%i)", g_iPlayerRanks[iClient], iLevel);
 }
 
 public void OnPlayerRunCmdPost(int iClient, int iButtons)

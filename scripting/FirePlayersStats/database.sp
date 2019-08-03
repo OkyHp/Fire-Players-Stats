@@ -251,12 +251,11 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 	g_iPlayerSessionData[iClient][PLAYTIME] = GetTime();
 	GetPlayerPosition(iClient);
 	g_bStatsLoad[iClient] = true;
-
-	CallForward_OnFPSClientLoaded(iClient, g_fPlayerPoints[iClient]);
-
 	#if USE_RANKS == 1
 		CheckRank(iClient);
 	#endif
+
+	CallForward_OnFPSClientLoaded(iClient, g_fPlayerPoints[iClient]);
 }
 
 void SavePlayerData(int iClient)

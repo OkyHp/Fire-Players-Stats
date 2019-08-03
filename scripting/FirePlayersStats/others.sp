@@ -134,15 +134,11 @@ float GetWeaponExtraPoints(const char[] szWeapon)
 					{
 						if (iLevel != g_iPlayerRanks[iClient])
 						{
-							if (g_iPlayerRanks[iClient])
-							{
-								FPS_PrintToChat(iClient, "%t", iLevel > g_iPlayerRanks[iClient] ? "RankUpped" : "RankDowned", g_sRankName[iClient]);
-								CallForward_OnFPSLevelChange(iClient, g_iPlayerRanks[iClient], iLevel);
-							}
+							FPS_PrintToChat(iClient, "%t", g_iPlayerRanks[iClient] ? (iLevel > g_iPlayerRanks[iClient] ? "RankUpped" : "RankDowned", g_sRankName[iClient]) : ("CalibrationCompleted", g_sRankName[iClient]));
+							CallForward_OnFPSLevelChange(iClient, g_iPlayerRanks[iClient], iLevel);
 							FPS_Debug("CheckRank Pre (New level) >> %N: %i", iClient, iLevel)
 
 							g_iPlayerRanks[iClient] = iLevel;
-
 							FPS_Debug("CheckRank >> %N: %i | %s", iClient, g_iPlayerRanks[iClient], g_sRankName[iClient])
 						}
 						return;

@@ -339,6 +339,13 @@
 		"ru"		"Ранг понижен: {RED}{1}"
 		"ua"		"Ранг знижений: {RED}{1}"
 	}
+	"CalibrationCompleted"
+	{
+		"#format"	"{1:s}"
+		"en"		"Calibration completed with the rank {OLIVE}{1}"
+		"ru"		"Калибровка завершена с рангом {OLIVE}{1}"
+		"ua"		"Калібрування завершено з рангом {OLIVE}{1}"
+	}
 
 	"ShowMePosition"
 	{
