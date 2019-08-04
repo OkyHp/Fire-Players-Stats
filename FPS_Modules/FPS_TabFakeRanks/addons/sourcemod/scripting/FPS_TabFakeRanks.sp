@@ -46,7 +46,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Tab Fake Ranks" ... VIP_SUPPORTED,
 	author	=	"OkyHp, Wend4r",
-	version	=	"1.2.1",
+	version	=	"1.2.2",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -127,9 +127,9 @@ public void OnPluginEnd()
 	}
 }
 
-public void VIP_OnVIPClientLoaded(int iClient)
+public void VIP_OnClientLoaded(int iClient, bool bIsVIP)
 {
-	g_iVipStatus[iClient] = view_as<int>(VIP_GetClientFeatureStatus(iClient, g_sFeature[0]));
+	g_iVipStatus[iClient] = bIsVIP ? view_as<int>(VIP_GetClientFeatureStatus(iClient, g_sFeature[0])) : 0;
 }
 
 public Action VIP_OnFeatureToggle(int iClient, const char[] szFeature, VIP_ToggleState eOldStatus, VIP_ToggleState &eNewStatus)

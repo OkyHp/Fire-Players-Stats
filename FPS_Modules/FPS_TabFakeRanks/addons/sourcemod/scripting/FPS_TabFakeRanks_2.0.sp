@@ -17,7 +17,7 @@ int			m_iCompetitiveRanking,
 			g_iVipStatus[MAXPLAYERS+1];
 bool		g_bVipLoaded;
 KeyValues	g_hConfig;
-ConVar		g_hConvar;
+
 static int g_iRanksIndex[] = {0, 50, 70, 90, 92, 94, 18, 18, 15};
 static char g_sFeature[] = "FakeRanks";
 
@@ -42,13 +42,6 @@ public void OnPluginStart()
 	{
 		FPS_OnFPSStatsLoaded();
 	}
-
-	(g_hConvar = CreateConVar("sm_fpsm_fake_ranks_type", "0")).AddChangeHook(ChangeCvar_RanksType);
-}
-
-public void ChangeCvar_RanksType(ConVar Convar, const char[] oldValue, const char[] newValue)
-{
-	Convar.SetInt(g_iRanksType);
 }
 
 public void OnLibraryAdded(const char[] szName)
@@ -67,9 +60,9 @@ public void OnLibraryRemoved(const char[] szName)
 	}
 }
 
-public void VIP_OnVIPClientLoaded(int iClient)
+public void VIP_OnClientLoaded(int iClient, bool bIsVIP)
 {
-	g_iVipStatus[iClient] = view_as<int>(VIP_GetClientFeatureStatus(iClient, g_sFeature));
+	g_iVipStatus[iClient] = bIsVIP ? view_as<int>(VIP_GetClientFeatureStatus(iClient, g_sFeature)) : 0;
 }
 
 public Action VIP_OnFeatureToggle(int iClient, const char[] szFeature, VIP_ToggleState eOldStatus, VIP_ToggleState &eNewStatus)
@@ -113,11 +106,9 @@ void GetPlayerData(int iClient, int iLevel)
 				char szBuffer[4];
 				IntToString(iLevel, szBuffer, sizeof(szBuffer));
 				g_iPlayerRanks[iClient] = g_hConfig.GetNum(szBuffer);
+				return;
 			}
-			else
-			{
-				g_iPlayerRanks[iClient] = g_hConfig.GetNum("0", g_iRanksIndex[3]);
-			}
+			g_iPlayerRanks[iClient] = g_hConfig.GetNum("0", g_iRanksIndex[3]);
 		}
 		return;
 	}
@@ -145,8 +136,13 @@ public void OnMapStart()
 	g_hConfig.Rewind();
 	g_iRanksType = g_hConfig.GetNum("ranks_type", 0);
 
-	ChangeCvar_RanksType(g_hConvar, NULL_STRING, NULL_STRING);
+	// Calibration download
+	for (int i = 3; i < 6; ++i)
+	{
+		RanksAddToDownloads(g_iRanksIndex[i]);
+	}
 
+	// Custom download
 	if (g_iRanksType > 2)
 	{
 		g_hConfig.Rewind();
@@ -159,8 +155,10 @@ public void OnMapStart()
 		return;
 	}
 
+	// Default download
 	for (int i = g_iRanksIndex[g_iRanksType]; i <= g_iRanksIndex[g_iRanksType + 6]; ++i)
 	{
+		LogError("%i >> %i", g_iRanksType, i);
 		RanksAddToDownloads(i);
 	}
 }
