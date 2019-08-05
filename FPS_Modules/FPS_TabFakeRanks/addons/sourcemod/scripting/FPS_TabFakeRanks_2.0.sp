@@ -136,15 +136,12 @@ public void OnMapStart()
 	g_hConfig.Rewind();
 	g_iRanksType = g_hConfig.GetNum("ranks_type", 0);
 
-	// Calibration download
-	for (int i = 3; i < 6; ++i)
-	{
-		RanksAddToDownloads(g_iRanksIndex[i]);
-	}
-
 	// Custom download
 	if (g_iRanksType > 2)
 	{
+		// Calibration download
+		RanksAddToDownloads(g_iRanksIndex[3]);
+
 		g_hConfig.Rewind();
 		if (g_hConfig.JumpToKey("custom_ranks") && g_hConfig.GotoFirstSubKey(false))
 		{
@@ -156,10 +153,16 @@ public void OnMapStart()
 	}
 
 	// Default download
-	for (int i = g_iRanksIndex[g_iRanksType]; i <= g_iRanksIndex[g_iRanksType + 6]; ++i)
+	RanksAddToDownloads(g_iRanksIndex[g_iRanksType + 3]);
+	if (g_iRanksType)
 	{
-		LogError("%i >> %i", g_iRanksType, i);
-		RanksAddToDownloads(i);
+		int i = g_iRanksIndex[g_iRanksType],
+			iMax = g_iRanksIndex[g_iRanksType] + g_iRanksIndex[g_iRanksType + 6] + 1;
+		while(i < iMax)
+		{
+			RanksAddToDownloads(i);
+			++i;
+		}
 	}
 }
 
