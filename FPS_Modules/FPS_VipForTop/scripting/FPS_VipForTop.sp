@@ -52,13 +52,14 @@ public void OnMapStart()
 
 public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
-	static int iOldPosition[MAXPLAYERS+1];
-	if (iOldPosition[iClient] != iPosition)
+	static int iData[MAXPLAYERS+1][2];
+	if (iData[iClient][1] && iData[iClient][0] != iPosition)
 	{
 		VIP_RemoveClientVIP2(-1, iClient, false, false);
 		PrintToServer("[FPS Vip for Top] >> игроку %N удалена випка. Текущая позиция: %", iClient, iPosition);
+		iData[iClient][1] = 0;
 	}
-	iOldPosition[iClient] = iPosition;
+	iData[iClient][0] = iPosition;
 
 	if (iPosition <= g_iVipPosition && !VIP_IsClientVIP(iClient))
 	{
@@ -72,6 +73,7 @@ public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
 		{
 			VIP_GiveClientVIP(-1, iClient, 0, szVipGroup, false);
 			PrintToServer("[FPS Vip for Top] >> игроку %N за %i место установлена вип группа: %s", iClient, iPosition, szVipGroup);
+			iData[iClient][1] = 1;
 		}
 	}
 }
