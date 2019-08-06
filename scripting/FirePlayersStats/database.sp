@@ -1,20 +1,17 @@
-static Handle g_hTimerReconnectDB;
-
 void DatabaseConnect()
 {
-	static const char szSection[] = "fire_players_stats";
+	FPS_Debug("DatabaseConnect >> %s", !g_hDatabase ? "Connect database" : "Error! Handle is valid")
+	LogError("DatabaseConnect >> %s", !g_hDatabase ? "Connect database" : "Error! Handle is valid");
 
-	if (g_hDatabase)
+	if (!g_hDatabase)
 	{
-		delete g_hDatabase;
-	}
+		static const char szSection[] = "fire_players_stats";
+		if (SQL_CheckConfig(szSection))
+		{
+			Database.Connect(OnDatabaseConnect, szSection);
+			return;
+		}
 
-	if (SQL_CheckConfig(szSection))
-	{
-		Database.Connect(OnDatabaseConnect, szSection);
-	}
-	else
-	{
 		SetFailState("DatabaseConnect: Section \"%s\" not found in \"/addons/sourcemod/configs/database.cfg\". Use only MySQL!", szSection);
 	}
 }
@@ -22,7 +19,7 @@ void DatabaseConnect()
 public Action Timer_DatabaseRetryConn(Handle hTimer)
 {
 	DatabaseConnect();
-	return Plugin_Continue;
+	return Plugin_Stop;
 }
 
 bool CheckDatabaseConnection(Database hDatabase, const char[] szError, const char[] szErrorTag)
@@ -32,9 +29,11 @@ bool CheckDatabaseConnection(Database hDatabase, const char[] szError, const cha
 		LogError("%s: %s", szErrorTag, szError);
 		if(StrContains(szError, "Lost connection to MySQL", false) != -1)
 		{
+			FPS_Debug("%s >> Lost connection to MySQL", szErrorTag)
+
 			delete g_hDatabase;
 			CallForward_OnFPSDatabaseLostConnection();
-			g_hTimerReconnectDB = CreateTimer(g_fDBRetryConnTime, Timer_DatabaseRetryConn, _, TIMER_REPEAT);
+			CreateTimer(g_fDBRetryConnTime, Timer_DatabaseRetryConn, _, TIMER_FLAG_NO_MAPCHANGE);
 		}
 		return false;
 	}
@@ -48,10 +47,7 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 		return;
 	}
 
-	if (g_hTimerReconnectDB)
-	{
-		delete g_hTimerReconnectDB;
-	}
+	FPS_Debug("OnDatabaseConnect >> Database connected")
 
 	g_hDatabase = hDatabase;
 	CallForward_OnFPSDatabaseConnected();
@@ -117,7 +113,7 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 
 public void SQL_Default_Callback(Database hDatabase, DBResultSet hResult, const char[] szError, any QueryID)
 {
-	if (hResult == null || szError[0])
+	if (!hResult || szError[0])
 	{
 		char szBuffer[128];
 		FormatEx(SZF(szBuffer), "SQL_Default_Callback #%i", QueryID);
