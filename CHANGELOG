@@ -28,3 +28,9 @@
 		Исправлена незначительная ошибка с установкой рангов при подключении нового игрока.
 		Форвард FPS_OnLevelChange теперь вызывается и по завершении калибровки.
 		Добавлено уведомление при окончании калибровки.
+1.2.2 - Small optimization.
+		Fixed a possible leak when the reconnection with the database.
+		Fixed point with no valid handloom when you call forward FPS_On Database Connected.
+		Небольшая оптимизация.
+		Исправлена возможная утечка при потере соединения с БД.
+		Исправлен момент с не валидным хендлом при вызове форварда FPS_OnDatabaseConnected

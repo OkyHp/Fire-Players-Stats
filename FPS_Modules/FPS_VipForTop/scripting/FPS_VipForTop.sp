@@ -41,16 +41,32 @@ public void OnPluginStart()
 	}
 }
 
-public void VIP_OnClientLoaded(int iClient, bool bIsVIP)
+// public void VIP_OnClientLoaded(int iClient, bool bIsVIP)
+// {
+// 	g_bIsVip[iClient] = bIsVIP;
+// 	LogError("[VIP_OnClientLoaded] >> %s", g_bIsVip[iClient] ? "TRUE" : "FASLE");
+// }
+
+// public void VIP_OnVIPClientAdded(int iClient, int iAdmin)
+// {
+// 	g_bIsVip[iClient] = true;
+// 	LogError("[VIP_OnVIPClientAdded] >> %s", g_bIsVip[iClient] ? "TRUE" : "FASLE");
+// }
+
+public void VIP_OnVIPClientLoaded(int iClient)
 {
-	g_bIsVip[iClient] = bIsVIP;
-	LogError("[VIP_OnClientLoaded] >> %s", g_bIsVip[iClient] ? "TRUE" : "FASLE");
+	g_bIsVip[iClient] = true;
 }
 
 public void VIP_OnVIPClientAdded(int iClient, int iAdmin)
 {
+	LogError("[VIP_OnVIPClientAdded] >> %s | %i", g_bIsVip[iClient] ? "TRUE" : "FASLE", iAdmin);
 	g_bIsVip[iClient] = true;
-	LogError("[VIP_OnVIPClientAdded] >> %s", g_bIsVip[iClient] ? "TRUE" : "FASLE");
+}
+
+public void OnClientDisconnect(int iClient)
+{
+	g_bIsVip[iClient] = false;
 }
 
 public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
