@@ -34,7 +34,7 @@ void CallForward_OnFPSStatsLoaded()
 void CallForward_OnFPSDatabaseConnected()
 {
 	Call_StartForward(g_hGlobalForvard_OnFPSDatabaseConnected);
-	Call_PushCell(g_hDatabase ? CloneHandle(g_hDatabase, GetMyHandle()) : null);
+	Call_PushCell(g_hDatabase);
 	Call_Finish();
 }
 
