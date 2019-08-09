@@ -6,47 +6,26 @@
 #include <sdkhooks>
 #include <FirePlayersStats>
 
+#undef REQUIRE_PLUGIN
+#include <vip_core>
+
 #define VIP_SUPPORT		1
 
-int m_iCompetitiveRanking,
-	g_iPlayerRanks[MAXPLAYERS+1],
-	g_iRanksType;
+int			m_iCompetitiveRanking,
+			g_iPlayerRanks[MAXPLAYERS+1],
+			g_iRanksType,
+			g_iVipStatus[MAXPLAYERS+1];
+bool		g_bVipLoaded;
+KeyValues	g_hConfig;
+
 static int g_iRanksIndex[] = {0, 50, 70, 90, 92, 94, 18, 18, 15};
-
-#if VIP_SUPPORT == 1
-	#define VIP_SUPPORTED	" (VIP supported)"
-
-	#include <clientprefs>
-	#include <vip_core>
-
-	int		g_iVipFakeRanks[MAXPLAYERS+1][2],
-			g_iVipStatus[MAXPLAYERS+1],
-			g_iRandomRank[2];
-	Handle	g_hCookie;
-	static const char g_sFeature[][] = {"FakeRanks", "FakeRanksMenu"};
-	static const char g_sRanksDeff[][] = {
-			"Silver I", "Silver II", "Silver III", "Silver IV", "Silver Elite", "Silver Elite Master",
-			"Gold Nova I", "Gold Nova II", "Gold Nova III", "Gold Nova Master",
-			"Master Guardian I", "Master Guardian II", "Master Guardian Elite", "Distinguished Master Guardian",
-			"Legendary Eagle", "Legandary Eagle Master", "Supreme Master First Class", "The Global Elite"
-		};
-	static const char g_sRanksDz[][] = {
-			"Lab Rat I", "Lab Rat I", 
-			"Sprinting Hare I", "Sprinting Hare II", 
-			"Wild Scout I", "Wild Scout II", "Wild Scout Elite", 
-			"Hunter Fox I", "Hunter Fox II", "Hunter Fox III", "Hunter Fox Elite", 
-			"Timber Wolf", "Ember Wolf", "Wildfire Wolf", "The Howling Alpha"
-		};
-	static const char g_sRanksType[][] = {"Competitive", "Wingman", "DangerZone"};
-#else
-	#define VIP_SUPPORTED	" (VIP not supported)"
-#endif
+static char g_sFeature[] = "FakeRanks";
 
 public Plugin myinfo =
 {
-	name	=	"FPS Tab Fake Ranks" ... VIP_SUPPORTED,
+	name	=	"FPS Tab Fake Ranks",
 	author	=	"OkyHp, Wend4r",
-	version	=	"1.2.2",
+	version	=	"1.3.0",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -63,178 +42,46 @@ public void OnPluginStart()
 	{
 		FPS_OnFPSStatsLoaded();
 	}
-
-	#if VIP_SUPPORT == 1
-		g_hCookie = RegClientCookie("FPS_TabFakeRanks", "Ranks id for vip FPS_TabFakeRanks", CookieAccess_Private);
-
-		LoadTranslations("FPS_TabFakeRanks.phrases");
-
-		if(VIP_IsVIPLoaded())
-		{
-			VIP_OnVIPLoaded();
-		}
-
-		CreateTimer(0.5, view_as<Timer>(Timer_GetRandomInt), _, TIMER_REPEAT);
-	#endif
-
-	ConVar Convar;
-	(Convar = CreateConVar(
-		"sm_fpsm_fake_ranks_type",		"1", 
-		"0 - Стандарт (18 lvls). 1 - Напарники (18 lvls). 2 - Опасная зона (15 lvls)",
-		_, true, 0.0, true, 2.0
-	)).AddChangeHook(ChangeCvar_RanksType);
-	ChangeCvar_RanksType(Convar, NULL_STRING, NULL_STRING);
-
-	AutoExecConfig(true, "FPS_TabFakeRanks");
 }
 
-public void ChangeCvar_RanksType(ConVar Convar, const char[] oldValue, const char[] newValue)
+public void OnLibraryAdded(const char[] szName)
 {
-	g_iRanksType = Convar.IntValue;
-	FPS_OnFPSStatsLoaded();
-}
-
-#if VIP_SUPPORT == 1
-public void OnClientCookiesCached(int iClient)
-{
-	char szBuffer[8];
-	GetClientCookie(iClient, g_hCookie, szBuffer, sizeof(szBuffer));
-	int iPos = FindCharInString(szBuffer, '');
-	if (iPos != -1)
+	if (!strcmp(szName, "vip_core"))
 	{
-		szBuffer[iPos] = 0; ++iPos;
-		g_iVipFakeRanks[iClient][0] = StringToInt(szBuffer);
-		g_iVipFakeRanks[iClient][1] = StringToInt(szBuffer[iPos]);
-	}
-	else
-	{
-		g_iVipFakeRanks[iClient][0] = g_iVipFakeRanks[iClient][1] = 0;
+		g_bVipLoaded = true;
 	}
 }
 
-public void VIP_OnVIPLoaded()
+public void OnLibraryRemoved(const char[] szName)
 {
-	VIP_RegisterFeature(g_sFeature[0],	BOOL,		TOGGLABLE,	_,				OnDisplayItem,	_,			DISABLED);
-	VIP_RegisterFeature(g_sFeature[1],	VIP_NULL,	SELECTABLE,	OnItemSelect,	OnDisplayItem,	OnItemDraw);
-}
-
-public void OnPluginEnd()
-{
-	if(CanTestFeatures() && GetFeatureStatus(FeatureType_Native, "VIP_UnregisterFeature") == FeatureStatus_Available)
+	if (!strcmp(szName, "vip_core"))
 	{
-		VIP_UnregisterFeature(g_sFeature[0]);
-		VIP_UnregisterFeature(g_sFeature[1]);
+		g_bVipLoaded = false;
 	}
 }
 
-public void VIP_OnClientLoaded(int iClient, bool bIsVIP)
+public void VIP_OnVIPClientLoaded(int iClient)
 {
-	g_iVipStatus[iClient] = bIsVIP ? view_as<int>(VIP_GetClientFeatureStatus(iClient, g_sFeature[0])) : 0;
+	g_iVipStatus[iClient] = view_as<int>(VIP_GetClientFeatureStatus(iClient, g_sFeature));
+}
+
+public void VIP_OnVIPClientAdded(int iClient, int iAdmin)
+{
+	g_iVipStatus[iClient] = view_as<int>(VIP_GetClientFeatureStatus(iClient, g_sFeature));
+}
+
+public void OnClientDisconnect(int iClient)
+{
+	g_iVipStatus[iClient] = 0;
 }
 
 public Action VIP_OnFeatureToggle(int iClient, const char[] szFeature, VIP_ToggleState eOldStatus, VIP_ToggleState &eNewStatus)
 {
-	if(!strcmp(szFeature, g_sFeature[0], false)) 
+	if(!strcmp(szFeature, g_sFeature, false)) 
 	{
 		g_iVipStatus[iClient] = view_as<int>(eNewStatus);
 	}
 }
-
-public bool OnDisplayItem(int iClient, const char[] szFeature, char[] szDisplay, int iMaxLength)
-{
-	if (!strcmp(szFeature, g_sFeature[1]))
-	{
-		FormatEx(szDisplay, iMaxLength, "%T", szFeature, iClient);
-	}
-	else
-	{
-		static const char szState[][] = {"Disabled", "Enabled", "No_Access"};
-		SetGlobalTransTarget(iClient);
-		FormatEx(szDisplay, iMaxLength, "%t [%t]", szFeature, szState[g_iVipStatus[iClient]]);
-	}
-	return true;
-}
-
-public int OnItemDraw(int iClient, const char[] szFeature, int iStyle)
-{
-	switch(g_iVipStatus[iClient])
-	{
-		case ENABLED: return ITEMDRAW_DEFAULT;
-		case DISABLED: return ITEMDRAW_DISABLED;
-		case NO_ACCESS: return ITEMDRAW_RAWLINE;
-	}
-	return iStyle;
-}
-
-public bool OnItemSelect(int iClient, const char[] szFeature)
-{
-	SetGlobalTransTarget(iClient);
-	Menu hMenu = new Menu(Handler_FakeRankMenu);
-	hMenu.SetTitle("[ %t ]\n ", "FakeRankMenuTitle");
-
-	char szBuffer[64];
-	FormatEx(szBuffer, sizeof(szBuffer), "%t [%t]", "FakeRankType", g_sRanksType[g_iVipFakeRanks[iClient][0]]);
-	hMenu.AddItem(NULL_STRING, szBuffer);
-	FormatEx(szBuffer, sizeof(szBuffer), "%t\n ", "RandomRank");
-	hMenu.AddItem(NULL_STRING, szBuffer);
-
-	for (int i = 0; i < g_iRanksIndex[g_iVipFakeRanks[iClient][0] + 6]; ++i)
-	{
-		hMenu.AddItem(NULL_STRING, (g_iVipFakeRanks[iClient][0] != 2 ? g_sRanksDeff[i] : g_sRanksDz[i]));
-	}
-
-	hMenu.ExitBackButton = true;
-	hMenu.ExitButton = true;
-	hMenu.Display(iClient, MENU_TIME_FOREVER);
-}
-
-public int Handler_FakeRankMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
-{
-	switch(action)
-	{
-		case MenuAction_End: delete hMenu;
-		case MenuAction_Cancel:
-		{
-			if(iItem == MenuCancel_ExitBack)
-			{
-				VIP_SendClientVIPMenu(iClient);
-			}
-		}
-		case MenuAction_Select:
-		{
-			switch(iItem)
-			{
-				case 0: 
-				{
-					g_iVipFakeRanks[iClient][0] == 2 ? (g_iVipFakeRanks[iClient][0] = 0) : g_iVipFakeRanks[iClient][0]++;
-					PrintToChat(iClient, " \x04[ \x02VIP \x04] \x01%t: \x04%t", "SelectedFakeRankType", g_sRanksType[g_iVipFakeRanks[iClient][0]]);
-				}
-				case 1: 
-				{
-					g_iVipFakeRanks[iClient][1] = 0;
-					PrintToChat(iClient, " \x04[ \x02VIP \x04] \x01%t: \x04%t", "SelectedFakeRank", "RandomRank");
-				}
-				default: 
-				{
-					g_iVipFakeRanks[iClient][1] = (iItem-1) + g_iRanksIndex[g_iVipFakeRanks[iClient][0]];
-					PrintToChat(iClient, " \x04[ \x02VIP \x04] \x01%t: \x04%s", "SelectedFakeRank", g_iVipFakeRanks[iClient][0] != 2 ? g_sRanksDeff[iItem-2] : g_sRanksDz[iItem-2]);
-				}
-			}
-
-			char szBuffer[8];
-			FormatEx(szBuffer, sizeof(szBuffer), "%i%i", g_iVipFakeRanks[iClient][0], g_iVipFakeRanks[iClient][1]);
-			SetClientCookie(iClient, g_hCookie, szBuffer);
-			OnItemSelect(iClient, NULL_STRING);
-		}
-	}
-}
-
-void Timer_GetRandomInt()
-{
-	g_iRandomRank[0] = GetRandomInt(1, 18);
-	g_iRandomRank[1] = GetRandomInt(1, 15);
-}
-#endif
 
 public void FPS_OnFPSStatsLoaded()
 {
@@ -243,40 +90,6 @@ public void FPS_OnFPSStatsLoaded()
 		if (FPS_ClientLoaded(i))
 		{
 			GetPlayerData(i, FPS_GetLevel(i));
-		}
-	}
-}
-
-public void OnMapStart()
-{
-	SDKHook(FindEntityByClassname(-1, "cs_player_manager"), SDKHook_ThinkPost, OnThinkPost);
-
-	char szBuffer[256];
-	#if VIP_SUPPORT == 1
-		for (int i = 51; i < 96; ++i)
-	#else
-		for (int i = g_iRanksIndex[g_iRanksType]; i <= g_iRanksIndex[g_iRanksType + 6]; ++i)
-	#endif
-	{
-		FormatEx(szBuffer, sizeof(szBuffer), "materials/panorama/images/icons/skillgroups/skillgroup%i.svg", i);
-		if(FileExists(szBuffer))
-		{
-			AddFileToDownloadsTable(szBuffer);
-		}
-	}
-}
-
-public void OnThinkPost(int iEntity)
-{
-	for (int i = 1; i <= MaxClients; ++i)
-	{
-		if(FPS_ClientLoaded(i))
-		{
-			#if VIP_SUPPORT == 1
-				SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iVipStatus[i] == 1 ? (g_iVipFakeRanks[i][1] ? g_iVipFakeRanks[i][1] : (g_iRandomRank[g_iVipFakeRanks[i][0] < 2 ? 0 : 1] + g_iRanksIndex[g_iVipFakeRanks[i][0]])) : g_iPlayerRanks[i]);
-			#else
-				SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iPlayerRanks[i]);
-			#endif
 		}
 	}
 }
@@ -293,7 +106,99 @@ public void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel)
 
 void GetPlayerData(int iClient, int iLevel)
 {
+	if (g_iRanksType > 2 && g_hConfig)
+	{
+		g_hConfig.Rewind();
+		if (g_hConfig.JumpToKey("custom_ranks"))
+		{
+			if (!FPS_IsCalibration(iClient))
+			{
+				char szBuffer[4];
+				IntToString(iLevel, szBuffer, sizeof(szBuffer));
+				g_iPlayerRanks[iClient] = g_hConfig.GetNum(szBuffer);
+				return;
+			}
+			g_iPlayerRanks[iClient] = g_hConfig.GetNum("0", g_iRanksIndex[3]);
+		}
+		return;
+	}
+
 	g_iPlayerRanks[iClient] = !FPS_IsCalibration(iClient) ? (iLevel + g_iRanksIndex[g_iRanksType]) : g_iRanksIndex[g_iRanksType + 3];
+}
+
+public void OnMapStart()
+{
+	SDKHook(FindEntityByClassname(-1, "cs_player_manager"), SDKHook_ThinkPost, OnThinkPost);
+
+	if (g_hConfig)
+	{
+		delete g_hConfig;
+	}
+
+	char szPath[256];
+	g_hConfig = new KeyValues("Config");
+	BuildPath(Path_SM, szPath, sizeof(szPath), "configs/FirePlayersStats/fake_ranks.ini");
+	if(!g_hConfig.ImportFromFile(szPath))
+	{
+		SetFailState("No found file: '%s'.", szPath);
+	}
+
+	g_hConfig.Rewind();
+	g_iRanksType = g_hConfig.GetNum("ranks_type", 0);
+
+	// Custom download
+	if (g_iRanksType > 2)
+	{
+		// Calibration download
+		RanksAddToDownloads(g_iRanksIndex[3]);
+
+		g_hConfig.Rewind();
+		if (g_hConfig.JumpToKey("custom_ranks") && g_hConfig.GotoFirstSubKey(false))
+		{
+			do {
+				RanksAddToDownloads(g_hConfig.GetNum(NULL_STRING));
+			} while (g_hConfig.GotoNextKey(false));
+		}
+		return;
+	}
+
+	// Default download
+	RanksAddToDownloads(g_iRanksIndex[g_iRanksType + 3]);
+	if (g_iRanksType)
+	{
+		int i = g_iRanksIndex[g_iRanksType],
+			iMax = g_iRanksIndex[g_iRanksType] + g_iRanksIndex[g_iRanksType + 6] + 1;
+		while(i < iMax)
+		{
+			RanksAddToDownloads(i);
+			++i;
+		}
+	}
+}
+
+void RanksAddToDownloads(int iRanks)
+{
+	char szBuffer[256];
+	FormatEx(szBuffer, sizeof(szBuffer), "materials/panorama/images/icons/skillgroups/skillgroup%i.svg", iRanks);
+	if(FileExists(szBuffer))
+	{
+		AddFileToDownloadsTable(szBuffer);
+	}
+}
+
+public void OnThinkPost(int iEntity)
+{
+	for (int i = 1; i <= MaxClients; ++i)
+	{
+		if(FPS_ClientLoaded(i))
+		{
+			if (g_bVipLoaded && g_iVipStatus[i] == 1)
+			{
+				continue;
+			}
+			SetEntData(iEntity, m_iCompetitiveRanking + i * 4, g_iPlayerRanks[i]);
+		}
+	}
 }
 
 public void OnPlayerRunCmdPost(int iClient, int iButtons)

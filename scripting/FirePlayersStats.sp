@@ -41,7 +41,7 @@
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
-#define PLUGIN_VERSION		"1.2.1"
+#define PLUGIN_VERSION		"1.2.2"
 
 #define UID(%0)				GetClientUserId(%0)
 #define CID(%0)				GetClientOfUserId(%0)
@@ -115,8 +115,8 @@ enum
 };
 
 #include "FirePlayersStats/config.sp"
-#include "FirePlayersStats/api.sp"
 #include "FirePlayersStats/database.sp"
+#include "FirePlayersStats/api.sp"
 #include "FirePlayersStats/events.sp"
 #include "FirePlayersStats/menu.sp"
 #include "FirePlayersStats/others.sp"

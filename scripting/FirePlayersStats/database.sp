@@ -1,8 +1,7 @@
 void DatabaseConnect()
 {
 	FPS_Debug("DatabaseConnect >> %s", !g_hDatabase ? "Connect database" : "Error! Handle is valid")
-	LogError("DatabaseConnect >> %s", !g_hDatabase ? "Connect database" : "Error! Handle is valid");
-
+	
 	if (!g_hDatabase)
 	{
 		static const char szSection[] = "fire_players_stats";
