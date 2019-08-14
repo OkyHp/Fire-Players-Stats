@@ -76,7 +76,7 @@ void SetCvars()
 
 	(Convar = CreateConVar(
 		"sm_fps_server_id",					"0", 
-		"ID сервера. Позволит использовать одну БД для многих серверов. -1 - будет установлен уникальный ID сервера",
+		"ID сервера. Позволит использовать одну БД для многих серверов. -1 - будет установлен уникальный ID сервера (Работает только с SteamWorks)",
 		_, true, 0.0
 	)).AddChangeHook(ChangeCvar_ServerID);
 	ChangeCvar_ServerID(Convar, NULL_STRING, NULL_STRING);
@@ -162,6 +162,7 @@ public void ChangeCvar_DBRetryConnTime(ConVar Convar, const char[] oldValue, con
 public void ChangeCvar_ServerID(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iServerID = Convar.IntValue;
+	GetAutoServerID();
 }
 
 #if USE_RANKS == 1

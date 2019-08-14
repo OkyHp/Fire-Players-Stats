@@ -192,3 +192,13 @@ bool IsPlayerLoaded(int iClient)
 	FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
 	return false;
 }
+
+// Get auto server id
+void GetAutoServerID()
+{
+	if (g_iServerID == -1)
+	{
+		g_iServerID = GetServerSteamAccountId();
+		FPS_Debug("GetAutoServerID >> %i", g_iServerID)
+	}
+}

@@ -41,7 +41,7 @@
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
-#define PLUGIN_VERSION		"1.2.2"
+#define PLUGIN_VERSION		"1.2.3"
 
 #define UID(%0)				GetClientUserId(%0)
 #define CID(%0)				GetClientOfUserId(%0)
@@ -179,6 +179,8 @@ public void OnMapStart()
 #if defined _SteamWorks_Included
 public int SteamWorks_SteamServersConnected()
 {
+	GetAutoServerID();
+
 	int iIP[4];
 	if (SteamWorks_GetPublicIP(iIP) && iIP[0] && iIP[1] && iIP[2] && iIP[3])
 	{
