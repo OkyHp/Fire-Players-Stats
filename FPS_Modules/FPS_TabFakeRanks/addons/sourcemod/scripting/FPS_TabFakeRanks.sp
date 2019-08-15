@@ -9,8 +9,6 @@
 #undef REQUIRE_PLUGIN
 #include <vip_core>
 
-#define VIP_SUPPORT		1
-
 int			m_iCompetitiveRanking,
 			g_iPlayerRanks[MAXPLAYERS+1],
 			g_iRanksType,
