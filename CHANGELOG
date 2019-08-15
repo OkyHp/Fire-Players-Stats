@@ -29,3 +29,4 @@
 		Fixed a possible leak when the reconnection with the database.
 		Fixed point with no valid handloom when you call forward FPS_On Database Connected.
 1.2.3 - Added server ID generation. Works only with SteamWorks.
+1.2.4 - Added automatic generation of rank settings.

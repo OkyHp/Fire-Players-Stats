@@ -76,7 +76,8 @@ void SetCvars()
 
 	(Convar = CreateConVar(
 		"sm_fps_server_id",					"1", 
-		"ID сервера. Позволит использовать одну БД для многих серверов. 0 - будет установлен уникальный ID сервера (Работает корректно только с SteamWorks)",
+		"ID сервера. Позволит использовать одну БД для многих серверов. \
+		\n0 - будет установлен уникальный ID сервера (Работает корректно только с SteamWorks)",
 		_, true, 0.0
 	)).AddChangeHook(ChangeCvar_ServerID);
 	ChangeCvar_ServerID(Convar, NULL_STRING, NULL_STRING);
@@ -84,7 +85,8 @@ void SetCvars()
 	#if USE_RANKS == 1
 		(Convar = CreateConVar(
 			"sm_fps_ranks_id",					"1", 
-			"ID настройки рангов. Позволит использовать одну и туже настройку рангов для некоторых серверов, при этом можно сделать уникальную для других",
+			"ID настройки рангов. Позволит использовать одну и туже настройку \
+			\nрангов для некоторых серверов, при этом можно сделать уникальную для других",
 			_, true, 0.0
 		)).AddChangeHook(ChangeCvar_RanksID);
 		ChangeCvar_RanksID(Convar, NULL_STRING, NULL_STRING);
@@ -99,14 +101,16 @@ void SetCvars()
 
 	(Convar = CreateConVar(
 		"sm_fps_reset_stats_time",			"90000", 
-		"Минимальное наиграное время в секундах, через которое можно обнулить статистику (0 - Выключить возможность обнуления)", 
+		"Минимальное наиграное время в секундах, через которое можно \
+		\nобнулить статистику (0 - Выключить возможность обнуления)", 
 		_, true, 0.0
 	)).AddChangeHook(ChangeCvar_ResetStatsTime);
 	ChangeCvar_ResetStatsTime(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_show_stats_everyone",		"1", 
-		"Показывать статиститку игрока всем при использовании команд просмотра позиции (sm_pos) (1 - Да / 0 - Нет)", 
+		"Показывать статиститку игрока всем при использовании команд \
+		\nпросмотра позиции (sm_pos) (1 - Да / 0 - Нет)", 
 		_, true, 0.0, true, 1.0
 	)).AddChangeHook(ChangeCvar_ShowStatsEveryone);
 	ChangeCvar_ShowStatsEveryone(Convar, NULL_STRING, NULL_STRING);
@@ -137,7 +141,8 @@ void SetCvars()
 
 	(Convar = CreateConVar(
 		"sm_fps_calibration_fix",	"1800", 
-		"Время калибровки игрока. Снижает ущерб всем кого убил калибрующийся в течение времени в сек, если доля делимых очек менее 0.5. 0 - Отключить.", 
+		"Время калибровки игрока. Снижает ущерб всем кого убил калибрующийся \
+		\nв течение времени в сек, если доля делимых очек менее 0.5. 0 - Отключить.", 
 		_, true, 0.0, true, 7200.0
 	)).AddChangeHook(ChangeCvar_CalibrationFix);
 	ChangeCvar_CalibrationFix(Convar, NULL_STRING, NULL_STRING);

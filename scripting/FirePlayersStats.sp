@@ -5,7 +5,7 @@
  * Ranks settings query: 
 		INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) 
 		VALUES 
-			('1', 'Silver I', '650'),
+			('1', 'Silver I', '0'),
 			('1', 'Silver II', '700'), 
 			('1', 'Silver III', '800'), 
 			('1', 'Silver IV', '850'), 
@@ -41,7 +41,7 @@
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
-#define PLUGIN_VERSION		"1.2.3"
+#define PLUGIN_VERSION		"1.2.4"
 
 #define UID(%0)				GetClientUserId(%0)
 #define CID(%0)				GetClientOfUserId(%0)
@@ -147,6 +147,9 @@ public void OnPluginStart()
 
 	g_bStatsLoaded = true;
 	CallForward_OnFPSStatsLoaded();
+
+	RegAdminCmd("sm_fps_create_default_ranks", CommandCreateRanks, ADMFLAG_ROOT, "Создание настройки рангов. \
+		\n0 - Стандартные ранги (18 lvl). 1 - Ранги опасной зоны (15 lvl). 2 - Фейсит ранги (10 lvl).");
 
 	if (g_bLateLoad)
 	{

@@ -135,6 +135,87 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 	SetFailState("SQL_TxnFailure_CreateTable #%i: %s", iFailIndex, szError);
 }
 
+public Action CommandCreateRanks(int iClient, int iArgs) 
+{ 
+	if (g_hDatabase)
+	{
+		char	szQuery[512],
+				szArg[2];
+		GetCmdArg(iArgs, SZF(szArg));
+
+		switch(szArg[0])
+		{
+			case '0':
+			{
+				g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) \
+					VALUES \
+						('%i', 'Silver I',						'0'), \
+						('%i', 'Silver II',						'700'), \
+						('%i', 'Silver III',					'800'), \
+						('%i', 'Silver IV',						'850'), \
+						('%i', 'Silver Elite',					'900'), \
+						('%i', 'Silver Elite Master',			'925'), \
+						('%i', 'Gold Nova I',					'950'), \
+						('%i', 'Gold Nova II',					'975'), \
+						('%i', 'Gold Nova III',					'1000'), \
+						('%i', 'Gold Nova Master',				'1100'), \
+						('%i', 'Master Guardian I',				'1250'), \
+						('%i', 'Master Guardian II',			'1400'), \
+						('%i', 'Master Guardian Elite',			'1600'), \
+						('%i', 'Distinguished Master Guardian',	'1800'), \
+						('%i', 'Legendary Eagle',				'2100'), \
+						('%i', 'Legendary Eagle Master',		'2400'), \
+						('%i', 'Supreme Master First Class',	'3000'), \
+						('%i', 'The Global Elite',				'4000')", g_iRanksID, g_iRanksID, g_iRanksID, 
+						g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
+						g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID);
+			}
+			case '1':
+			{
+				g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) \
+					VALUES \
+						('%i', 'Lab Rat I',			'0'), \
+						('%i', 'Lab Rat II',		'600'), \
+						('%i', 'Sprinting Hare I',	'785'), \
+						('%i', 'Sprinting Hare II',	'900'), \
+						('%i', 'Wild Scout I',		'950'), \
+						('%i', 'Wild Scout II',		'1000'), \
+						('%i', 'Wild Scout Elite',	'1050'), \
+						('%i', 'Hunter Fox I',		'1250'), \
+						('%i', 'Hunter Fox II,		'1400'), \
+						('%i', 'Hunter Fox III',	'1650'), \
+						('%i', 'Hunter Fox Elite',	'2000'), \
+						('%i', 'Timber Wolf',		'2400'), \
+						('%i', 'Ember Wolf',		'2800'), \
+						('%i', 'Wildfire Wolf',		'3200'), \
+						('%i', 'The Howling Alpha',	'4000')", g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
+						g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
+						g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID);
+			}
+			case '2':
+			{
+				g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) \
+					VALUES \
+						('%i', 'FaceIt Level I',	'0'), \
+						('%i', 'FaceIt Level II',	'700'), \
+						('%i', 'FaceIt Level III',	'800'), \
+						('%i', 'FaceIt Level IV',	'1000'), \
+						('%i', 'FaceIt Level V',	'1300'), \
+						('%i', 'FaceIt Level VI',	'1600'), \
+						('%i', 'FaceIt Level VII',	'2000'), \
+						('%i', 'FaceIt Level VIII',	'2400'), \
+						('%i', 'FaceIt Level IX,	'3000'), \
+						('%i', 'FaceIt Level X',	'4000')", g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
+						g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID);
+			}
+		}
+
+		FPS_Debug("CommandCreateRanks >> Query(Type: %s): %s", szArg, szQuery)
+		g_hDatabase.Query(SQL_Default_Callback, szQuery, 4);
+	}
+	return Plugin_Handled;
+}
+
 #if USE_RANKS == 1
 	// Load ranks settings
 	void LoadRanksSettings()
