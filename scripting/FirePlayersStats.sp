@@ -148,8 +148,10 @@ public void OnPluginStart()
 	g_bStatsLoaded = true;
 	CallForward_OnFPSStatsLoaded();
 
-	RegAdminCmd("sm_fps_create_default_ranks", CommandCreateRanks, ADMFLAG_ROOT, "Создание настройки рангов. \
+	#if USE_RANKS == 1
+		RegAdminCmd("sm_fps_create_default_ranks", CommandCreateRanks, ADMFLAG_ROOT, "Создание настройки рангов. \
 		\n0 - Стандартные ранги (18 lvl). 1 - Ранги опасной зоны (15 lvl). 2 - Фейсит ранги (10 lvl).");
+	#endif
 
 	if (g_bLateLoad)
 	{
@@ -223,6 +225,8 @@ public int OnTransferComplete(Handle hRequest, bool bFailure, bool bRequestSucce
 public void OnMapEnd()
 {
 	DeleteInactivePlayers();
+
+	UpdateServerData();
 }
 
 #if LOAD_TYPE == 0

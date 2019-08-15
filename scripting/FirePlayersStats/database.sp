@@ -63,7 +63,7 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				`nickname`		varchar(256)	NOT NULL, \
 				`ip`			varchar(24)		NOT NULL, \
 				PRIMARY KEY (`account_id`) \
-			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
+			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_servers_stats` ( \
 				`id`				int 		NOT NULL AUTO_INCREMENT, \
 				`account_id`		int			NOT NULL, \
@@ -79,7 +79,7 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				`lastconnect`		int			NOT NULL, \
 				PRIMARY KEY (`id`), \
 				UNIQUE(`account_id`, `server_id`) \
-			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
+			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_weapons_stats` ( \
 				`id`				int 			NOT NULL AUTO_INCREMENT, \
 				`account_id`		int				NOT NULL, \
@@ -96,15 +96,22 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				`headshots`			int				NOT NULL, \
 				PRIMARY KEY (`id`), \
 				UNIQUE(`account_id`, `server_id`, `weapon`) \
-			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;"); // `hits`			int				NOT NULL, 
+			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8_general_ci;");
+		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_servers` ( \
+				`id`					int 			NOT NULL, \
+				`server_name`			varchar(256)	NOT NULL, \
+				`settings_rank_id`		int 			NOT NULL, \
+				`settings_points_id`	int 			NOT NULL, \
+				PRIMARY KEY (`id`) \
+			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8_general_ci;");
 		#if USE_RANKS == 1
 			hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_ranks` ( \
-					`id`			int 			NOT NULL AUTO_INCREMENT, \
+					`id`			int 			NOT NULL, \
 					`rank_id`		int 			NOT NULL, \
 					`rank_name`		varchar(128)	NOT NULL, \
 					`points`		float			UNSIGNED NOT NULL, \
 					PRIMARY KEY (`id`) \
-				) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
+				) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8_general_ci;");
 		#endif
 		g_hDatabase.Execute(hTxn, SQL_TxnSuccess_CreateTable, SQL_TxnFailure_CreateTable);
 	}
@@ -135,88 +142,87 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 	SetFailState("SQL_TxnFailure_CreateTable #%i: %s", iFailIndex, szError);
 }
 
-public Action CommandCreateRanks(int iClient, int iArgs) 
-{ 
-	if (g_hDatabase)
-	{
-		char	szQuery[512],
-				szArg[2];
-		GetCmdArg(iArgs, SZF(szArg));
-
-		switch(szArg[0])
-		{
-			case '0':
-			{
-				g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) \
-					VALUES \
-						('%i', 'Silver I',						'0'), \
-						('%i', 'Silver II',						'700'), \
-						('%i', 'Silver III',					'800'), \
-						('%i', 'Silver IV',						'850'), \
-						('%i', 'Silver Elite',					'900'), \
-						('%i', 'Silver Elite Master',			'925'), \
-						('%i', 'Gold Nova I',					'950'), \
-						('%i', 'Gold Nova II',					'975'), \
-						('%i', 'Gold Nova III',					'1000'), \
-						('%i', 'Gold Nova Master',				'1100'), \
-						('%i', 'Master Guardian I',				'1250'), \
-						('%i', 'Master Guardian II',			'1400'), \
-						('%i', 'Master Guardian Elite',			'1600'), \
-						('%i', 'Distinguished Master Guardian',	'1800'), \
-						('%i', 'Legendary Eagle',				'2100'), \
-						('%i', 'Legendary Eagle Master',		'2400'), \
-						('%i', 'Supreme Master First Class',	'3000'), \
-						('%i', 'The Global Elite',				'4000')", g_iRanksID, g_iRanksID, g_iRanksID, 
-						g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
-						g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID);
-			}
-			case '1':
-			{
-				g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) \
-					VALUES \
-						('%i', 'Lab Rat I',			'0'), \
-						('%i', 'Lab Rat II',		'600'), \
-						('%i', 'Sprinting Hare I',	'785'), \
-						('%i', 'Sprinting Hare II',	'900'), \
-						('%i', 'Wild Scout I',		'950'), \
-						('%i', 'Wild Scout II',		'1000'), \
-						('%i', 'Wild Scout Elite',	'1050'), \
-						('%i', 'Hunter Fox I',		'1250'), \
-						('%i', 'Hunter Fox II,		'1400'), \
-						('%i', 'Hunter Fox III',	'1650'), \
-						('%i', 'Hunter Fox Elite',	'2000'), \
-						('%i', 'Timber Wolf',		'2400'), \
-						('%i', 'Ember Wolf',		'2800'), \
-						('%i', 'Wildfire Wolf',		'3200'), \
-						('%i', 'The Howling Alpha',	'4000')", g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
-						g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
-						g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID);
-			}
-			case '2':
-			{
-				g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) \
-					VALUES \
-						('%i', 'FaceIt Level I',	'0'), \
-						('%i', 'FaceIt Level II',	'700'), \
-						('%i', 'FaceIt Level III',	'800'), \
-						('%i', 'FaceIt Level IV',	'1000'), \
-						('%i', 'FaceIt Level V',	'1300'), \
-						('%i', 'FaceIt Level VI',	'1600'), \
-						('%i', 'FaceIt Level VII',	'2000'), \
-						('%i', 'FaceIt Level VIII',	'2400'), \
-						('%i', 'FaceIt Level IX,	'3000'), \
-						('%i', 'FaceIt Level X',	'4000')", g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
-						g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID);
-			}
-		}
-
-		FPS_Debug("CommandCreateRanks >> Query(Type: %s): %s", szArg, szQuery)
-		g_hDatabase.Query(SQL_Default_Callback, szQuery, 4);
-	}
-	return Plugin_Handled;
-}
-
 #if USE_RANKS == 1
+	public Action CommandCreateRanks(int iClient, int iArgs) 
+	{ 
+		if (g_hDatabase)
+		{
+			char	szQuery[512],
+					szArg[2];
+			GetCmdArg(iArgs, SZF(szArg));
+
+			switch(szArg[0])
+			{
+				case '0':
+				{
+					g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) \
+						VALUES \
+							('%i', 'Silver I',						'0'), \
+							('%i', 'Silver II',						'700'), \
+							('%i', 'Silver III',					'800'), \
+							('%i', 'Silver IV',						'850'), \
+							('%i', 'Silver Elite',					'900'), \
+							('%i', 'Silver Elite Master',			'925'), \
+							('%i', 'Gold Nova I',					'950'), \
+							('%i', 'Gold Nova II',					'975'), \
+							('%i', 'Gold Nova III',					'1000'), \
+							('%i', 'Gold Nova Master',				'1100'), \
+							('%i', 'Master Guardian I',				'1250'), \
+							('%i', 'Master Guardian II',			'1400'), \
+							('%i', 'Master Guardian Elite',			'1600'), \
+							('%i', 'Distinguished Master Guardian',	'1800'), \
+							('%i', 'Legendary Eagle',				'2100'), \
+							('%i', 'Legendary Eagle Master',		'2400'), \
+							('%i', 'Supreme Master First Class',	'3000'), \
+							('%i', 'The Global Elite',				'4000')", g_iRanksID, g_iRanksID, g_iRanksID, 
+							g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
+							g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID);
+				}
+				case '1':
+				{
+					g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) \
+						VALUES \
+							('%i', 'Lab Rat I',			'0'), \
+							('%i', 'Lab Rat II',		'600'), \
+							('%i', 'Sprinting Hare I',	'785'), \
+							('%i', 'Sprinting Hare II',	'900'), \
+							('%i', 'Wild Scout I',		'950'), \
+							('%i', 'Wild Scout II',		'1000'), \
+							('%i', 'Wild Scout Elite',	'1050'), \
+							('%i', 'Hunter Fox I',		'1250'), \
+							('%i', 'Hunter Fox II,		'1400'), \
+							('%i', 'Hunter Fox III',	'1650'), \
+							('%i', 'Hunter Fox Elite',	'2000'), \
+							('%i', 'Timber Wolf',		'2400'), \
+							('%i', 'Ember Wolf',		'2800'), \
+							('%i', 'Wildfire Wolf',		'3200'), \
+							('%i', 'The Howling Alpha',	'4000')", g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
+							g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
+							g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID);
+				}
+				case '2':
+				{
+					g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) \
+						VALUES \
+							('%i', 'FaceIt Level I',	'0'), \
+							('%i', 'FaceIt Level II',	'700'), \
+							('%i', 'FaceIt Level III',	'800'), \
+							('%i', 'FaceIt Level IV',	'1000'), \
+							('%i', 'FaceIt Level V',	'1300'), \
+							('%i', 'FaceIt Level VI',	'1600'), \
+							('%i', 'FaceIt Level VII',	'2000'), \
+							('%i', 'FaceIt Level VIII',	'2400'), \
+							('%i', 'FaceIt Level IX,	'3000'), \
+							('%i', 'FaceIt Level X',	'4000')", g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
+							g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID);
+				}
+			}
+			FPS_Debug("CommandCreateRanks >> Query(Type: %s): %s", szArg, szQuery)
+			g_hDatabase.Query(SQL_Default_Callback, szQuery, 4);
+		}
+		return Plugin_Handled;
+	}
+
 	// Load ranks settings
 	void LoadRanksSettings()
 	{
@@ -400,7 +406,6 @@ void SavePlayerData(int iClient)
 				do {
 					iKills			= g_hWeaponsKV.GetNum("kills");
 					iShoots			= g_hWeaponsKV.GetNum("shoots");
-					//iHits			= g_hWeaponsKV.GetNum("hits");
 					iHitsHead		= g_hWeaponsKV.GetNum("hitsHead");
 					iHitsBody		= g_hWeaponsKV.GetNum("hitsBody");
 					iHitsLeftArm	= g_hWeaponsKV.GetNum("hitsLeftArm");
@@ -565,4 +570,27 @@ public void SQL_Callback_PlayerPosition(Database hDatabase, DBResultSet hResult,
 	FPS_Debug("SQL_Callback_PlayerPosition >> %N: position: %i / %i", iClient, g_iPlayerPosition[iClient], g_iPlayersCount)
 
 	CallForward_OnFPSPlayerPosition(iClient, g_iPlayerPosition[iClient], g_iPlayersCount);
+}
+
+void UpdateServerData()
+{
+	if (g_hDatabase)
+	{
+		int		iRanksID;
+		char	szQuery[512],
+				szServerName[256];
+		#if USE_RANKS == 1
+			iRanksID = g_iRanksID;
+		#endif
+		FindConVar("hostname").GetString(SZF(szServerName));
+		g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers` ( \
+				`id`, `server_name`, `settings_rank_id`, `settings_points_id` \
+			) VALUES ( %i, '%s', '%i', '%i' ) ON DUPLICATE KEY UPDATE \
+				`id` = '%i', `server_name` = '%s', `settings_rank_id` = '%i', `settings_points_id` = '%i';", 
+			g_iServerID, szServerName, 1, iRanksID,
+			g_iServerID, szServerName, 1, iRanksID);
+
+		FPS_Debug("UpdateServerData >> Query: %s", szQuery)
+		g_hDatabase.Query(SQL_Default_Callback, szQuery, 5);
+	}
 }
