@@ -40,9 +40,9 @@ __Для игроков:__\
 **sm_clutch** - Топ максимальных убиств за раунд.
 __Для администратора:__\
 **sm_fps_create_default_ranks** - Создание настройки рангов.
-- 0 - Стандартные ранги CS:GO Competitive (18 lvl). 
-- 1 - Ранги опасной зоны (15 lvl). 
-- 2 - Фейсит ранги (10 lvl).
+- **0** - Стандартные ранги CS:GO Competitive (18 lvl). 
+- **1** - Ранги опасной зоны (15 lvl). 
+- **2** - Фейсит ранги (10 lvl).
 
 ---
 
@@ -69,24 +69,24 @@ __Для администратора:__\
 	```sql
 	INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) 
 	VALUES 
-		('1', 'Silver I', '0'),
-		('1', 'Silver II', '700'), 
-		('1', 'Silver III', '800'), 
-		('1', 'Silver IV', '850'), 
-		('1', 'Silver Elite', '900'), 
-		('1', 'Silver Elite Master', '925'), 
-		('1', 'Gold Nova I', '950'), 
-		('1', 'Gold Nova II', '975'), 
-		('1', 'Gold Nova III', '1000'), 
-		('1', 'Gold Nova Master', '1100'), 
-		('1', 'Master Guardian I', '1250'), 
-		('1', 'Master Guardian II', '1400'), 
-		('1', 'Master Guardian Elite', '1600'), 
-		('1', 'Distinguished Master Guardian', '1800'), 
-		('1', 'Legendary Eagle', '2100'), 
-		('1', 'Legendary Eagle Master', '2400'), 
-		('1', 'Supreme Master First Class', '3000'), 
-		('1', 'The Global Elite', '4000');
+		('1', 'Silver I',						'0'),
+		('1', 'Silver II',						'700'), 
+		('1', 'Silver III',						'800'), 
+		('1', 'Silver IV',						'850'), 
+		('1', 'Silver Elite',					'900'), 
+		('1', 'Silver Elite Master',			'925'), 
+		('1', 'Gold Nova I',					'950'), 
+		('1', 'Gold Nova II',					'975'), 
+		('1', 'Gold Nova III',					'1000'), 
+		('1', 'Gold Nova Master',				'1100'), 
+		('1', 'Master Guardian I',				'1250'), 
+		('1', 'Master Guardian II',				'1400'), 
+		('1', 'Master Guardian Elite',			'1600'), 
+		('1', 'Distinguished Master Guardian',	'1800'), 
+		('1', 'Legendary Eagle',				'2100'), 
+		('1', 'Legendary Eagle Master',			'2400'), 
+		('1', 'Supreme Master First Class',		'3000'), 
+		('1', 'The Global Elite',				'4000');
 	```
 	</details>
 
