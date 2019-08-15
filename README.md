@@ -88,9 +88,9 @@ __Для администратора:__\
 		('1', 'Master Guardian Elite',			'1600'), 
 		('1', 'Distinguished Master Guardian',		'1800'), 
 		('1', 'Legendary Eagle',			'2100'), 
-		('1', 'Legendary Eagle Master',				'2400'), 
-		('1', 'Supreme Master First Class',			'3000'), 
-		('1', 'The Global Elite',					'4000');
+		('1', 'Legendary Eagle Master',			'2400'), 
+		('1', 'Supreme Master First Class',		'3000'), 
+		('1', 'The Global Elite',			'4000');
 	```
 
 	</details>
