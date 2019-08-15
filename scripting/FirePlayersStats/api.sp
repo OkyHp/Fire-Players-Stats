@@ -162,13 +162,13 @@ public int Native_FPSDisableStatisPerRound(Handle hPlugin, int iNumParams)
 	g_bStatsActive = false;
 }
 
-// int FPS_GetPlayedTime(int iClient, bool bSession = false);
+// int FPS_GetPlayedTime(int iClient);
 public int Native_FPSGetPlayedTime(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
 	{
-		return (GetTime() - g_iPlayerSessionData[iClient][PLAYTIME]) + (GetNativeCell(2) ? 0 : g_iPlayerData[iClient][PLAYTIME]);
+		return (GetTime() - g_iPlayerSessionData[iClient][PLAYTIME] + g_iPlayerData[iClient][PLAYTIME]);
 	}
 	return 0;
 }
@@ -221,5 +221,5 @@ public int Native_FPSGetSessionData(Handle hPlugin, int iNumParams)
 public int Native_FPSIsCalibration(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	return (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient] && FPS_GetPlayedTime(iClient, false) < g_iCalibrationFixTime);
+	return (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient] && FPS_GetPlayedTime(iClient) < g_iCalibrationFixTime);
 }

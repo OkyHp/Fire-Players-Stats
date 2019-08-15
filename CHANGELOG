@@ -31,3 +31,4 @@
 1.2.3 - Added server ID generation. Works only with SteamWorks.
 1.2.4 - Added automatic generation of rank settings.
 		Added table with the Intel about servers.
+		Removed 2 parameter because of unnecessary in FPS_GetPlayedTime.

@@ -116,7 +116,7 @@ void ShowPlayerMenu(int iClient)
 	FormatEx(SZF(szBuffer), "[ %t ]\n ", "PlayerTitle");
 	hPanel.SetTitle(szBuffer);
 
-	int iPlayedTime = FPS_GetPlayedTime(iClient, false);
+	int iPlayedTime = FPS_GetPlayedTime(iClient);
 	float fPlayedTime = iPlayedTime ? (float(iPlayedTime) / 60.0 / 60.0) : 0.0;
 
 	#if USE_RANKS == 1

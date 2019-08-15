@@ -164,10 +164,9 @@ native void FPS_DisableStatisPerRound();
  *	Получить количетсво наигранного времени. 
  *
  *	@param iClient		Индекс игрока.
- *	@param bSession		Вывод наигранного времени за текущую сессию.
  *	@return				Наигранное время в секундах.
 */
-native int FPS_GetPlayedTime(int iClient, bool bSession = false);
+native int FPS_GetPlayedTime(int iClient);
 
 /**
  *	Получить количетсво поинтов/очков у игрока.

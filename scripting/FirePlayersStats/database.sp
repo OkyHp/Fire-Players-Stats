@@ -363,7 +363,7 @@ void SavePlayerData(int iClient)
 		FPS_Debug("SavePlayerData >> Query#1: %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
-		int iPlayTime = FPS_GetPlayedTime(iClient, false);
+		int iPlayTime = FPS_GetPlayedTime(iClient);
 		g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers_stats` ( \
 				`account_id`,`server_id`,`points`,`kills`, \
 				`deaths`,`assists`,`round_max_kills`,`round_win`, \
