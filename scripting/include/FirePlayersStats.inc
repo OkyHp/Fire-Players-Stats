@@ -97,7 +97,7 @@ forward Action FPS_OnPointsChangePre(int iAttacker, int iVictim, bool bHeadshot,
 forward void FPS_OnPointsChange(int iAttacker, int iVictim, float fPointsAttacker, float fPointsVictim);
 
 /**
- *	Вызывается после установкой поинтов игроку.
+ *	Вызывается после изменения уровня.
  *
  *	@param iClient		Индекс игрока.
  *	@param iOldLevel	Старый уровень игрока.

@@ -168,7 +168,7 @@ public int Native_FPSGetPlayedTime(Handle hPlugin, int iNumParams)
 	int iClient = GetNativeCell(1);
 	if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
 	{
-		return (GetTime() - g_iPlayerSessionData[iClient][PLAYTIME] + g_iPlayerData[iClient][PLAYTIME]);
+		return (GetTime() - g_iPlayerSessionData[iClient][PLAYTIME]) + g_iPlayerData[iClient][PLAYTIME];
 	}
 	return 0;
 }
