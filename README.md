@@ -16,9 +16,11 @@
  - Важной особенностью данного плагина можно отметить неизменное API и переводы при обновлениях. =)
  - Есть возможность отключить полностью поддержку рангов, будут только очки. Измените значение **USE_RANKS** на **0** и скомпилируйте плагин.
 
-| ![](https://hlmod.ru/attachments/fps1-png.44480/) | ![](https://hlmod.ru/attachments/fps2-png.44482/) | ![](https://hlmod.ru/attachments/fps3-png.44483/) |
-| ![](https://hlmod.ru/attachments/fps4-png.44484/) | ![](https://hlmod.ru/attachments/fps5-png.44485/) | ![](https://hlmod.ru/attachments/fps6-png.44486/) |
-| ![](https://hlmod.ru/attachments/fps7-png.44487/) | ![](https://hlmod.ru/attachments/fps8-png.44488/) | ![](https://hlmod.ru/attachments/fps-chat-info-png.43167/) |
+<details><summary>Меню плагина</summary>
+
+![](https://hlmod.ru/attachments/fps1-png.44480/) ![](https://hlmod.ru/attachments/fps2-png.44482/) ![](https://hlmod.ru/attachments/fps3-png.44483/) ![](https://hlmod.ru/attachments/fps4-png.44484/) ![](https://hlmod.ru/attachments/fps5-png.44485/) ![](https://hlmod.ru/attachments/fps6-png.44486/) ![](https://hlmod.ru/attachments/fps7-png.44487/) ![](https://hlmod.ru/attachments/fps8-png.44488/) ![](https://hlmod.ru/attachments/fps-chat-info-png.43167/)
+
+</details>
 
  [**_Список модулей к статистике_**](https://gitlab.com/OkyHp/fire-players-stats/tree/master/FPS_Modules)
 
