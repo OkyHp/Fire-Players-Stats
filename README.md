@@ -25,24 +25,24 @@
 
  [**_Список модулей к статистике_**](https://gitlab.com/OkyHp/fire-players-stats/tree/master/FPS_Modules)
 
- Спасибо за идеии в реализации: [Разработчикам LR](https://github.com/orgs/levelsranks/people), [Someone](https://hlmod.ru/members/someone.73313/).
+ > Спасибо за идеии в реализации: [Разработчикам LR](https://github.com/orgs/levelsranks/people), [Someone](https://hlmod.ru/members/someone.73313/).
 
 ## Команды плагина:
 
 ### Для игроков:
 
-**sm_pos**, **sm_position** - Позиция игрока на сервере. \
-**sm_stats**, **sm_rank**, **sm_fps** - Главное меню статистики. \
-**sm_top** - Топ лучших игроков. \
-**sm_toptime** - Топ игроков по наиграному времени. \
-**sm_clutch** - Топ максимальных убиств за раунд.\
+**_sm_pos_**, **_sm_position_** - Позиция игрока на сервере. \
+**_sm_stats_**, **sm_rank**, **sm_fps** - Главное меню статистики. \
+**_sm_top_** - Топ лучших игроков. \
+**_sm_toptime_** - Топ игроков по наиграному времени. \
+**_sm_clutch_** - Топ максимальных убиств за раунд.\
 
 ### Для администратора:
 
-**sm_fps_create_default_ranks** - Создание настройки рангов.\
-		**0** - Стандартные ранги CS:GO Competitive (18 lvl)\
- 		**1** - Ранги опасной зоны (15 lvl)\
- 		**2** - Фейсит ранги (10 lvl)
+**_sm_fps_create_default_ranks_** - Создание настройки рангов.\
+	⋅⋅⋅**0** - Стандартные ранги CS:GO Competitive (18 lvl)\
+ 	⋅⋅⋅**1** - Ранги опасной зоны (15 lvl)\
+ 	⋅⋅⋅**2** - Фейсит ранги (10 lvl)
 
 ## Требования
 
@@ -99,4 +99,4 @@
 
 	</details>
 
-Тема на [HLmod](https://hlmod.ru/resources/fire-players-stats.1232/).
+**Тема на [HLMOD](https://hlmod.ru/resources/fire-players-stats.1232/)**.
