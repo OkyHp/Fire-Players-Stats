@@ -47,7 +47,6 @@
 ## Требования
 
   - [**Sourcemod 1.9+**](https://www.sourcemod.net/downloads.php?branch=stable)
-  - [**CS:GO Colors**](https://hlmod.ru/resources/inc-cs-go-colors.1009/)
   - [**SteamWorks**](http://users.alliedmods.net/~kyles/builds/SteamWorks/) (Опционально)
 
 ## Установка
