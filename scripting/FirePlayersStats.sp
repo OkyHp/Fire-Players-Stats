@@ -41,7 +41,7 @@
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
-#define PLUGIN_VERSION		"1.2.4"
+#define PLUGIN_VERSION		"1.3.0"
 
 #define UID(%0)				GetClientUserId(%0)
 #define CID(%0)				GetClientOfUserId(%0)
