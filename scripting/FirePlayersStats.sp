@@ -133,14 +133,20 @@ public void OnPluginStart()
 	g_hWeaponsKV = new KeyValues("Weapons_Stats");
 
 	LoadTranslations("FirePlayersStats.phrases");
-
-	g_bStatsLoaded = true;
-	CallForward_OnFPSStatsLoaded();
-
 	#if USE_RANKS == 1
+		char szPath[256];
+		BuildPath(Path_SM, SZF(szPath), "translations/FirePlayersStatsRanks.phrases.txt");
+		if (FileExists(szPath, false, NULL_STRING))
+		{
+			LoadTranslations("FirePlayersStatsRanks.phrases");
+		}
+
 		RegAdminCmd("sm_fps_create_default_ranks", CommandCreateRanks, ADMFLAG_ROOT, "Создание настройки рангов. \
 		\n0 - Стандартные ранги (18 lvl). 1 - Ранги опасной зоны (15 lvl). 2 - Фейсит ранги (10 lvl).");
 	#endif
+
+	g_bStatsLoaded = true;
+	CallForward_OnFPSStatsLoaded();
 
 	if (g_bLateLoad)
 	{

@@ -60,7 +60,7 @@ void ShowFpsMenu(int iClient)
 	Menu hMenu = new Menu(Handler_FpsMenu);
 	SetGlobalTransTarget(iClient);
 	#if USE_RANKS == 1
-		hMenu.SetTitle("%t\n ", "FpsTitle", g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], g_sRankName[iClient]);
+		hMenu.SetTitle("%t\n ", "FpsTitle", g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], FindTranslationRank(iClient));
 	#else
 		hMenu.SetTitle("%t\n ", "FpsTitleNoRanks", g_fPlayerPoints[iClient]);
 	#endif
@@ -120,7 +120,7 @@ void ShowPlayerMenu(int iClient)
 	float fPlayedTime = iPlayedTime ? (float(iPlayedTime) / 60.0 / 60.0) : 0.0;
 
 	#if USE_RANKS == 1
-		FormatEx(SZF(szBuffer), "%t\n ", "PlayerData", g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], g_sRankName[iClient], g_iPlayerPosition[iClient], g_iPlayersCount, g_iPlayerData[iClient][KILLS], 
+		FormatEx(SZF(szBuffer), "%t\n ", "PlayerData", g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], FindTranslationRank(iClient), g_iPlayerPosition[iClient], g_iPlayersCount, g_iPlayerData[iClient][KILLS], 
 		g_iPlayerData[iClient][DEATHS], (g_iPlayerData[iClient][KILLS] && g_iPlayerData[iClient][DEATHS] ? (float(g_iPlayerData[iClient][KILLS]) / float(g_iPlayerData[iClient][DEATHS])) : 0.0), g_iPlayerData[iClient][ASSISTS], 
 		g_iPlayerData[iClient][MAX_ROUNDS_KILLS], (g_iPlayerData[iClient][ROUND_WIN] + g_iPlayerData[iClient][ROUND_LOSE]), g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], fPlayedTime);
 	#else

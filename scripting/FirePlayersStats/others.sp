@@ -119,7 +119,7 @@ float GetWeaponExtraPoints(const char[] szWeapon)
 		if (FPS_IsCalibration(iClient))
 		{
 			g_iPlayerRanks[iClient] = 0;
-			FormatEx(g_sRankName[iClient], sizeof(g_sRankName[]), "%T", "Calibration", iClient);
+			g_sRankName[iClient] = "Calibration";
 			return;
 		}
 
@@ -136,7 +136,7 @@ float GetWeaponExtraPoints(const char[] szWeapon)
 						{
 							if (g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS])
 							{
-								FPS_PrintToChat(iClient, "%t", g_iPlayerRanks[iClient] ? (iLevel > g_iPlayerRanks[iClient] ? "RankUpped" : "RankDowned") : "CalibrationCompleted", g_sRankName[iClient]);
+								FPS_PrintToChat(iClient, "%t", g_iPlayerRanks[iClient] ? (iLevel > g_iPlayerRanks[iClient] ? "RankUpped" : "RankDowned") : "CalibrationCompleted", FindTranslationRank(iClient));
 								CallForward_OnFPSLevelChange(iClient, g_iPlayerRanks[iClient], iLevel);
 								FPS_Debug("CheckRank Pre (New level) >> %N: %i", iClient, iLevel)
 							}
@@ -201,4 +201,20 @@ void GetAutoServerID()
 		g_iServerID = GetServerSteamAccountId();
 		FPS_Debug("GetAutoServerID >> %i", g_iServerID)
 	}
+}
+
+// Find translation
+char[] FindTranslationRank(int iClient)
+{
+	char szBuffer[128];
+	if (!TranslationPhraseExists(g_sRankName[iClient]))
+	{
+		szBuffer = g_sRankName[iClient];
+	}
+	else
+	{
+		FormatEx(szBuffer, sizeof(szBuffer), "%T", g_sRankName[iClient], iClient);
+	}
+
+	return szBuffer;
 }
