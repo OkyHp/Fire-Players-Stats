@@ -37,7 +37,7 @@
 
 #pragma newdecls required
 
-#if FPS_INC_VER < 12
+#if FPS_INC_VER < 13
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
@@ -102,17 +102,6 @@ Database	g_hDatabase;
 // Top Data
 float		g_fTopData[10][3];
 char		g_sTopData[10][3][64];
-
-enum
-{
-	KILLS = 0,
-	DEATHS,
-	ASSISTS,
-	MAX_ROUNDS_KILLS,
-	ROUND_WIN,
-	ROUND_LOSE,
-	PLAYTIME
-};
 
 #include "FirePlayersStats/config.sp"
 #include "FirePlayersStats/database.sp"

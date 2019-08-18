@@ -27,13 +27,23 @@ public void __pl_fire_players_stats_SetNTVOptional()
 	MarkNativeAsOptional("FPS_GetLevel");
 	MarkNativeAsOptional("FPS_GetRanks");
 	MarkNativeAsOptional("FPS_GetMaxRanks");
-	MarkNativeAsOptional("FPS_GetSessionData");
+	MarkNativeAsOptional("FPS_GetStatsData");
 	MarkNativeAsOptional("FPS_IsCalibration");
 }
 #endif
 
-#define FPS_INC_VER		12
+#define FPS_INC_VER		13
 
+enum StatsData
+{
+	KILLS = 0,
+	DEATHS,
+	ASSISTS,
+	MAX_ROUNDS_KILLS,
+	ROUND_WIN,
+	ROUND_LOSE,
+	PLAYTIME
+};
 
 /****************** FORWARDS ******************/
 
@@ -203,19 +213,15 @@ native void FPS_GetRanks(int iClient, char[] szBufferRank, int iMaxLength);
 native int FPS_GetMaxRanks();
 
 /**
- *	Получить данные игрока за сессию.
+ *	Получить данные игрока
  *
  *	@param iClient				Индекс игрока.
- *	@param iData				Индекс ячейки с данными:
- *								0 - Убиства.
- *								1 - Смерти.
- *								2 - Фссисты.
- *								4 - Количесво выиграных раундов.
- *								5 - Количесво проиграных раундов.
- *								6 - Время подключение игрока.
- *	@return
+ *	@param eData				Тип получаемых данных. Примичание, данные MAX_ROUNDS_KILLS за сессию не 
+ 								имеет смысла хранить, из-за чего, ядро хранит в нем свои данные!
+ *	@param bSession				Получить данные за сессию.
+ *	@return						Запрашиваемые данные.
 */
-native int FPS_GetSessionData(int iClient, int iData);
+native int FPS_GetStatsData(int iClient, StatsData eData, bool bSession = false);
 
 /**
  *	Получить стату калибровки.

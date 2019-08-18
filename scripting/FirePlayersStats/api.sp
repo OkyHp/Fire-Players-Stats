@@ -111,7 +111,7 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 	CreateNative("FPS_DisableStatisPerRound",	Native_FPSDisableStatisPerRound);
 	CreateNative("FPS_GetPlayedTime",			Native_FPSGetPlayedTime);
 	CreateNative("FPS_GetPoints",				Native_FPSGetPoints);
-	CreateNative("FPS_GetSessionData",			Native_FPSGetSessionData);
+	CreateNative("FPS_GetStatsData",			Native_FPSGetStatsData);
 	CreateNative("FPS_IsCalibration",			Native_FPSIsCalibration);
 
 	#if USE_RANKS == 1
@@ -209,12 +209,16 @@ public int Native_FPSGetPoints(Handle hPlugin, int iNumParams)
 	}
 #endif
 
-// int FPS_GetSessionData(int iClient, int iData);
-public int Native_FPSGetSessionData(Handle hPlugin, int iNumParams)
+// int FPS_GetStatsData(int iClient, StatsData eData, bool bSession = false);
+public int Native_FPSGetStatsData(Handle hPlugin, int iNumParams)
 {
-	int iClient = GetNativeCell(1),
-		iData = GetNativeCell(2);
-	return iClient > 0 && iClient <= MaxClients && iData > -1 && iData != 3 && iData < sizeof(g_iPlayerSessionData[]) && g_bStatsLoad[iClient] ? g_iPlayerSessionData[iClient][iData] : 0;
+	int			iClient = GetNativeCell(1);
+	StatsData	eData = GetNativeCell(2);
+	if (iClient > 0 && iClient <= MaxClients && eData > -1 && eData < PLAYTIME + 1 && g_bStatsLoad[iClient])
+	{
+		return GetNativeCell(3) ? g_iPlayerData[iClient][eData] : g_iPlayerSessionData[iClient][eData];
+	}
+	return 0;
 }
 
 // bool FPS_IsCalibration(int iClient);
