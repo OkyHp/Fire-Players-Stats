@@ -30,7 +30,6 @@
 #include <sourcemod>
 #include <sdktools>
 #include <FirePlayersStats>
-#include <csgo_colors>
 
 #undef REQUIRE_EXTENSIONS
 #tryinclude <SteamWorks>
@@ -54,9 +53,6 @@
 #define DEBUG				0	// Enable/Disable debug mod
 #define LOAD_TYPE			0	// Use forvard for load player stats:	0 - OnClientPostAdminCheck 
 								//										1 - OnClientAuthorized
-#define FPS_CHAT_PREFIX			" \x04[ \x02FPS \x04] \x01"
-#define FPS_PrintToChat(%0,%1)	CGOPrintToChat(%0, FPS_CHAT_PREFIX ... %1)
-#define FPS_PrintToChatAll(%0)	CGOPrintToChatAll(FPS_CHAT_PREFIX ... %0)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 

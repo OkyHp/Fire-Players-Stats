@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 #include <sourcemod>
+#include <clientprefs>
 #include <FirePlayersStats>
 #include <FPS_HintInfo>
 
@@ -11,6 +12,7 @@ int		g_iPlayerLevel[MAXPLAYERS+1],
 bool	g_bHintState[MAXPLAYERS+1];
 float	g_fPlayerPoints[MAXPLAYERS+1];
 char	g_sPlayerRank[MAXPLAYERS+1][256];
+Handle	g_hCookie;
 
 public Plugin myinfo =
 {
@@ -52,12 +54,34 @@ public int Native_FPSHintInfo_SetState(Handle hPlugin, int iNumParams)
 
 public void OnPluginStart()
 {
+	g_hCookie = RegClientCookie("FPS_HintStatus", "FPS Hint Status", CookieAccess_Private);
+
 	LoadTranslations("FPS_HintInfo.phrases");
 
 	if (FPS_StatsLoad())
 	{
 		FPS_OnFPSStatsLoaded();
 	}
+
+	RegConsoleCmd("sm_fps_hint", CommandHintStatus);
+}
+
+public void OnClientCookiesCached(int iClient)
+{
+	char szBuffer[4];
+	GetClientCookie(iClient, g_hCookie, szBuffer, sizeof(szBuffer));
+	g_bHintState[iClient] = view_as<bool>(StringToInt(szBuffer));
+}
+
+public Action CommandHintStatus(int iClient, int iArgs)
+{
+	if (FPS_ClientLoaded(iClient))
+	{
+		g_bHintState[iClient] = !g_bHintState[iClient];
+		FPS_PrintToChat(iClient, "%t", "ChangeHintStatus", g_bHintState[iClient] ? "Enabled" : "Disabled");
+		SetClientCookie(iClient, g_hCookie, g_bHintState[iClient] ? "1" : "0");
+	}
+	return Plugin_Handled;
 }
 
 public void FPS_OnFPSStatsLoaded()
@@ -73,7 +97,6 @@ public void FPS_OnFPSStatsLoaded()
 
 public void FPS_OnClientLoaded(int iClient, float fPoints)
 {
-	g_bHintState[iClient] = true;
 	g_fPlayerPoints[iClient] = fPoints;
 	GetPlayerLevel(iClient, FPS_GetLevel(iClient));
 }
@@ -103,17 +126,12 @@ void GetPlayerLevel(int iClient, int iLevel)
 
 public void OnPlayerRunCmdPost(int iClient)
 {
-	if (GetEntProp(iClient, Prop_Send, "m_iObserverMode") != 6)
+	if (g_bHintState[iClient] && GetEntProp(iClient, Prop_Send, "m_iObserverMode") != 6)
 	{
 		static int iTarget;
 		iTarget = GetEntPropEnt(iClient, Prop_Send, "m_hObserverTarget");
 		if (iTarget != -1 && iTarget <= MaxClients && FPS_ClientLoaded(iTarget))
 		{
-			// PrintHintText(iClient, "%t⠀⠀%t\n%t⠀⠀%t",
-			// 	"Points", g_fPlayerPoints[iTarget], 
-			// 	"Position", g_iPlayerPosition[iTarget], g_iPlayersCount, 
-			// 	"Level", g_iPlayerLevel[iTarget], 
-			// 	"Rank", g_sPlayerRank[iTarget]);
 			PrintHintText(iClient, "%t", "HudMessage", 
 				g_fPlayerPoints[iTarget], 
 				g_iPlayerPosition[iTarget], g_iPlayersCount, 

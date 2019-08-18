@@ -33,6 +33,9 @@ public void __pl_fire_players_stats_SetNTVOptional()
 #endif
 
 #define FPS_INC_VER		13
+#define FPS_CHAT_PREFIX			" \x04[ \x02FPS \x04] \x01"
+#define FPS_PrintToChat(%0,%1)	CGOPrintToChat(%0, FPS_CHAT_PREFIX ... %1)
+#define FPS_PrintToChatAll(%0)	CGOPrintToChatAll(FPS_CHAT_PREFIX ... %0)
 
 enum StatsData
 {
@@ -231,3 +234,81 @@ native int FPS_GetStatsData(int iClient, StatsData eData, bool bSession = false)
  * 						false - игрок уже откалиброван.
 */
 native bool FPS_IsCalibration(int iClient);
+
+/////////////////////////////////////////////////////////////////////////////////
+// Taken c CS:GO COLORS by Феникс(komashchenko)
+
+#define CSGO_COL_COUNT		14
+static char g_sCsgoColorsBuff[2048];
+
+static const char g_sColorsT[CSGO_COL_COUNT][] = {
+	"{DEFAULT}", "{RED}", "{LIGHTPURPLE}", "{GREEN}", "{LIME}", 
+	"{LIGHTGREEN}", "{LIGHTRED}", "{GRAY}", "{LIGHTOLIVE}", "{OLIVE}", 
+	"{LIGHTBLUE}", "{BLUE}", "{PURPLE}", "{GRAYBLUE}"
+};
+static const char g_sColorsC[CSGO_COL_COUNT][] = {
+	"\x01", "\x02", "\x03", "\x04", "\x05", 
+	"\x06", "\x07", "\x08", "\x09", "\x10", 
+	"\x0B", "\x0C", "\x0E", "\x0A"
+};
+
+
+stock void CGOPrintToChat(int iClient, const char[] message, any ...)
+{
+	SetGlobalTransTarget(iClient);
+	VFormat(g_sCsgoColorsBuff, sizeof g_sCsgoColorsBuff, message, 3);
+	
+	int iLastStart = 0, i = 0;
+	for(; i < CSGO_COL_COUNT; i++)
+	{
+		ReplaceString(g_sCsgoColorsBuff, sizeof g_sCsgoColorsBuff, g_sColorsT[i], g_sColorsC[i], false);
+	}
+	
+	i = 0;
+	
+	while(g_sCsgoColorsBuff[i])
+	{
+		if(g_sCsgoColorsBuff[i] == '\n')
+		{
+			g_sCsgoColorsBuff[i] = 0;
+			PrintToChat(iClient, " %s", g_sCsgoColorsBuff[iLastStart]);
+			iLastStart = i+1;
+		}
+		
+		i++;
+	}
+	
+	PrintToChat(iClient, " %s", g_sCsgoColorsBuff[iLastStart]);
+}
+
+stock void CGOPrintToChatAll(const char[] message, any ...)
+{
+	int iLastStart = 0, i = 0;
+	
+	for (int iClient = 1; iClient <= MaxClients; iClient++) if(IsClientInGame(iClient) && !IsFakeClient(iClient))
+	{
+		SetGlobalTransTarget(iClient);
+		VFormat(g_sCsgoColorsBuff, sizeof g_sCsgoColorsBuff, message, 2);
+		
+		for(i = 0; i < CSGO_COL_COUNT; i++)
+		{
+			ReplaceString(g_sCsgoColorsBuff, sizeof g_sCsgoColorsBuff, g_sColorsT[i], g_sColorsC[i], false);
+		}
+		
+		iLastStart = 0, i = 0;
+		
+		while(g_sCsgoColorsBuff[i])
+		{
+			if(g_sCsgoColorsBuff[i] == '\n')
+			{
+				g_sCsgoColorsBuff[i] = 0;
+				PrintToChat(iClient, " %s", g_sCsgoColorsBuff[iLastStart]);
+				iLastStart = i+1;
+			}
+			
+			i++;
+		}
+		
+		PrintToChat(iClient, " %s", g_sCsgoColorsBuff[iLastStart]);
+	}
+}
