@@ -212,11 +212,11 @@ public int Native_FPSGetPoints(Handle hPlugin, int iNumParams)
 // int FPS_GetStatsData(int iClient, StatsData eData, bool bSession = false);
 public int Native_FPSGetStatsData(Handle hPlugin, int iNumParams)
 {
-	int			iClient = GetNativeCell(1);
-	StatsData	eData = GetNativeCell(2);
-	if (iClient > 0 && iClient <= MaxClients && eData > -1 && eData < PLAYTIME + 1 && g_bStatsLoad[iClient])
+	int	iClient	= GetNativeCell(1),
+		iData	= GetNativeCell(2);
+	if (iClient > 0 && iClient <= MaxClients && iData > -1 && iData < 7 && g_bStatsLoad[iClient])
 	{
-		return GetNativeCell(3) ? g_iPlayerData[iClient][eData] : g_iPlayerSessionData[iClient][eData];
+		return GetNativeCell(3) ? g_iPlayerData[iClient][iData] : g_iPlayerSessionData[iClient][iData];
 	}
 	return 0;
 }
