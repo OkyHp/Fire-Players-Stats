@@ -81,7 +81,8 @@ float		g_fPlayerPoints[MAXPLAYERS+1],
 bool		g_bStatsLoaded,
 			g_bStatsLoad[MAXPLAYERS+1],
 			g_bStatsActive,
-			g_bLateLoad;
+			g_bLateLoad,
+			g_bTeammatesAreEnemies;
 
 #if USE_RANKS == 1
 // Ranks settings
@@ -141,6 +142,11 @@ public void OnPluginStart()
 		\n0 - Стандартные ранги (18 lvl). 1 - Ранги опасной зоны (15 lvl). 2 - Фейсит ранги (10 lvl).");
 	#endif
 
+
+	ConVar Convar = FindConVar("mp_teammates_are_enemies");
+	Convar.AddChangeHook(ChangeCvar_TeammatesAreEnemies);
+	ChangeCvar_TeammatesAreEnemies(Convar, NULL_STRING, NULL_STRING);
+
 	g_bStatsLoaded = true;
 	CallForward_OnFPSStatsLoaded();
 
@@ -155,6 +161,11 @@ public void OnPluginStart()
 			}
 		}
 	}
+}
+
+public void ChangeCvar_TeammatesAreEnemies(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_bTeammatesAreEnemies = Convar.BoolValue;
 }
 
 public void OnMapStart()

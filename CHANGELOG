@@ -34,3 +34,5 @@
 		Removed 2 parameter because of unnecessary in FPS_GetPlayedTime.
 		Removed native FPS_GetSessionData. Instead added new Native FPS_GetStatsData.
 		Added optional support for translation of ranks.
+		Added support for mp_teammates_are_enemies.
+		Try fix get player played time.

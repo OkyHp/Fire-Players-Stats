@@ -127,7 +127,7 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 
 		if (iVictim != iAttacker)
 		{
-			if(g_fExtraPoints[CFG_TEAMKILL] && GetClientTeam(iAttacker) == GetClientTeam(iVictim))
+			if(!g_bTeammatesAreEnemies && g_fExtraPoints[CFG_TEAMKILL] && GetClientTeam(iAttacker) == GetClientTeam(iVictim))
 			{
 				g_fPlayerPoints[iAttacker] += g_fExtraPoints[CFG_TEAMKILL];
 				#if USE_RANKS == 1
