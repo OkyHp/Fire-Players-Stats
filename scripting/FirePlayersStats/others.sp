@@ -206,7 +206,7 @@ void GetAutoServerID()
 // Find translation
 char[] FindTranslationRank(int iClient)
 {
-	char szBuffer[128];
+	static char szBuffer[128];
 	if (!TranslationPhraseExists(g_sRankName[iClient]))
 	{
 		szBuffer = g_sRankName[iClient];

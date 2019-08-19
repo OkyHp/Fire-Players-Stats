@@ -18,15 +18,37 @@
 
 	"Disabled"
 	{
-		"en"		"{RED}Disabled"
-		"ru"		"{RED}Выключено"
-		"ua"		"{RED}Вимкнено"
+		"en"		"{RED}disabled"
+		"ru"		"{RED}выключено"
+		"ua"		"{RED}вимкнено"
 	}
 
 	"Enabled"
 	{
-		"en"		"{GREEN}Enabled"
-		"ru"		"{GREEN}Включено"
-		"ua"		"{GREEN}Увімкнено"
+		"en"		"{GREEN}enabled"
+		"ru"		"{GREEN}включено"
+		"ua"		"{GREEN}увімкнено"
+	}
+
+	"Message"
+	{
+		"#format"	"{1:t}"
+		"en"		"{1} display of statistics in hint {GREEN}▶ {RED}!fps_hint"
+		"ru"		"{1} отображения статистики в хинте {GREEN}▶ {RED}!fps_hint"
+		"ua"		"{1} відображення статистики в хінті {GREEN}▶ {RED}!fps_hint"
+	}
+
+	"Disable"
+	{
+		"en"		"Disable"
+		"ru"		"Выключить"
+		"ua"		"Вимкнути"
+	}
+
+	"Enable"
+	{
+		"en"		"Enable"
+		"ru"		"Включить"
+		"ua"		"Увимкнути"
 	}
 }

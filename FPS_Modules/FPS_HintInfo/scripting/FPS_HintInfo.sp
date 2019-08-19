@@ -56,6 +56,8 @@ public void OnPluginStart()
 {
 	g_hCookie = RegClientCookie("FPS_HintStatus", "FPS Hint Status", CookieAccess_Private);
 
+	HookEvent("player_death", Event_PlayerDeath, EventHookMode_PostNoCopy);
+
 	LoadTranslations("FPS_HintInfo.phrases");
 
 	if (FPS_StatsLoad())
@@ -66,11 +68,20 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_fps_hint", CommandHintStatus);
 }
 
+public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+{
+	int iClient = GetClientOfUserId(hEvent.GetInt("userid"));
+	if (iClient)
+	{
+		FPS_PrintToChat(iClient, "%t", "Message", g_bHintState[iClient] ? "Disable" : "Enable");
+	}
+}
+
 public void OnClientCookiesCached(int iClient)
 {
 	char szBuffer[4];
 	GetClientCookie(iClient, g_hCookie, szBuffer, sizeof(szBuffer));
-	g_bHintState[iClient] = view_as<bool>(StringToInt(szBuffer));
+	g_bHintState[iClient] = szBuffer[0] ? view_as<bool>(StringToInt(szBuffer)) : true;
 }
 
 public Action CommandHintStatus(int iClient, int iArgs)
