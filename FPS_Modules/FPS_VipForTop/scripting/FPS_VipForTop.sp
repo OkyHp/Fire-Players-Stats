@@ -41,11 +41,11 @@ public void OnPluginStart()
 	}
 }
 
-// public void VIP_OnClientLoaded(int iClient, bool bIsVIP)
-// {
-// 	g_bIsVip[iClient] = bIsVIP;
-// 	LogError("[VIP_OnClientLoaded] >> %s", g_bIsVip[iClient] ? "TRUE" : "FASLE");
-// }
+public void VIP_OnClientLoaded(int iClient, bool bIsVIP)
+{
+	g_bIsVip[iClient] = bIsVIP;
+	LogError("[VIP_OnClientLoaded] >> %s", g_bIsVip[iClient] ? "TRUE" : "FASLE");
+}
 
 // public void VIP_OnVIPClientAdded(int iClient, int iAdmin)
 // {
@@ -53,10 +53,10 @@ public void OnPluginStart()
 // 	LogError("[VIP_OnVIPClientAdded] >> %s", g_bIsVip[iClient] ? "TRUE" : "FASLE");
 // }
 
-public void VIP_OnVIPClientLoaded(int iClient)
-{
-	g_bIsVip[iClient] = true;
-}
+// public void VIP_OnVIPClientLoaded(int iClient)
+// {
+// 	g_bIsVip[iClient] = true;
+// }
 
 public void VIP_OnVIPClientAdded(int iClient, int iAdmin)
 {

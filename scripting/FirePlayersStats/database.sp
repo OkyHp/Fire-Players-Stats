@@ -606,8 +606,8 @@ void UpdateServerData()
 				`id`, `server_name`, `settings_rank_id`, `settings_points_id` \
 			) VALUES ( %i, '%s', '%i', '%i' ) ON DUPLICATE KEY UPDATE \
 				`id` = '%i', `server_name` = '%s', `settings_rank_id` = '%i', `settings_points_id` = '%i';", 
-			g_iServerID, szServerName, 1, iRanksID,
-			g_iServerID, szServerName, 1, iRanksID);
+			g_iServerID, szServerName, iRanksID, 1,
+			g_iServerID, szServerName, iRanksID, 1);
 
 		FPS_Debug("UpdateServerData >> Query: %s", szQuery)
 		g_hDatabase.Query(SQL_Default_Callback, szQuery, 5);

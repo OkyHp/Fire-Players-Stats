@@ -184,12 +184,15 @@ void PlayItemSelectSound(int iClient, bool bClose)
 // Print message on load data status
 bool IsPlayerLoaded(int iClient)
 {
-	if (g_bStatsLoad[iClient])
+	if (iClient)
 	{
-		return true;
-	}
+		if (g_bStatsLoad[iClient])
+		{
+			return true;
+		}
 
-	FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
+		FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
+	}
 	return false;
 }
 
@@ -213,7 +216,7 @@ char[] FindTranslationRank(int iClient)
 	}
 	else
 	{
-		FormatEx(szBuffer, sizeof(szBuffer), "%T", g_sRankName[iClient], iClient);
+		FormatEx(SZF(szBuffer), "%T", g_sRankName[iClient], iClient);
 	}
 
 	return szBuffer;
