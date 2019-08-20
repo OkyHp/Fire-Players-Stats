@@ -106,7 +106,7 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
 		#if USE_RANKS == 1
 			hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_ranks` ( \
-					`id`			int 			NOT NULL, \
+					`id`			int 			NOT NULL AUTO_INCREMENT, \
 					`rank_id`		int 			NOT NULL, \
 					`rank_name`		varchar(128)	NOT NULL, \
 					`points`		float			UNSIGNED NOT NULL, \
@@ -147,7 +147,7 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 	{ 
 		if (g_hDatabase)
 		{
-			char	szQuery[512],
+			char	szQuery[1024],
 					szArg[2];
 			GetCmdArg(iArgs, SZF(szArg));
 
@@ -157,24 +157,24 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 				{
 					g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) \
 						VALUES \
-							('%i', 'Silver I',						'0'), \
-							('%i', 'Silver II',						'700'), \
-							('%i', 'Silver III',					'800'), \
-							('%i', 'Silver IV',						'850'), \
-							('%i', 'Silver Elite',					'900'), \
-							('%i', 'Silver Elite Master',			'925'), \
-							('%i', 'Gold Nova I',					'950'), \
-							('%i', 'Gold Nova II',					'975'), \
-							('%i', 'Gold Nova III',					'1000'), \
-							('%i', 'Gold Nova Master',				'1100'), \
-							('%i', 'Master Guardian I',				'1250'), \
-							('%i', 'Master Guardian II',			'1400'), \
-							('%i', 'Master Guardian Elite',			'1600'), \
-							('%i', 'Distinguished Master Guardian',	'1800'), \
-							('%i', 'Legendary Eagle',				'2100'), \
-							('%i', 'Legendary Eagle Master',		'2400'), \
-							('%i', 'Supreme Master First Class',	'3000'), \
-							('%i', 'The Global Elite',				'4000')", g_iRanksID, g_iRanksID, g_iRanksID, 
+							(%i, 'Silver I',						'0'), \
+							(%i, 'Silver II',						'700'), \
+							(%i, 'Silver III',						'800'), \
+							(%i, 'Silver IV',						'850'), \
+							(%i, 'Silver Elite',					'900'), \
+							(%i, 'Silver Elite Master',				'925'), \
+							(%i, 'Gold Nova I',						'950'), \
+							(%i, 'Gold Nova II',					'975'), \
+							(%i, 'Gold Nova III',					'1000'), \
+							(%i, 'Gold Nova Master',				'1100'), \
+							(%i, 'Master Guardian I',				'1250'), \
+							(%i, 'Master Guardian II',				'1400'), \
+							(%i, 'Master Guardian Elite',			'1600'), \
+							(%i, 'Distinguished Master Guardian',	'1800'), \
+							(%i, 'Legendary Eagle',					'2100'), \
+							(%i, 'Legendary Eagle Master',			'2400'), \
+							(%i, 'Supreme Master First Class',		'3000'), \
+							(%i, 'The Global Elite',				'4000')", g_iRanksID, g_iRanksID, g_iRanksID, 
 							g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
 							g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID);
 				}
@@ -182,21 +182,21 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 				{
 					g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) \
 						VALUES \
-							('%i', 'Lab Rat I',			'0'), \
-							('%i', 'Lab Rat II',		'600'), \
-							('%i', 'Sprinting Hare I',	'785'), \
-							('%i', 'Sprinting Hare II',	'900'), \
-							('%i', 'Wild Scout I',		'950'), \
-							('%i', 'Wild Scout II',		'1000'), \
-							('%i', 'Wild Scout Elite',	'1050'), \
-							('%i', 'Hunter Fox I',		'1250'), \
-							('%i', 'Hunter Fox II,		'1400'), \
-							('%i', 'Hunter Fox III',	'1650'), \
-							('%i', 'Hunter Fox Elite',	'2000'), \
-							('%i', 'Timber Wolf',		'2400'), \
-							('%i', 'Ember Wolf',		'2800'), \
-							('%i', 'Wildfire Wolf',		'3200'), \
-							('%i', 'The Howling Alpha',	'4000')", g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
+							(%i, 'Lab Rat I',			'0'), \
+							(%i, 'Lab Rat II',			'600'), \
+							(%i, 'Sprinting Hare I',	'785'), \
+							(%i, 'Sprinting Hare II',	'900'), \
+							(%i, 'Wild Scout I',		'950'), \
+							(%i, 'Wild Scout II',		'1000'), \
+							(%i, 'Wild Scout Elite',	'1050'), \
+							(%i, 'Hunter Fox I',		'1250'), \
+							(%i, 'Hunter Fox II',		'1400'), \
+							(%i, 'Hunter Fox III',		'1650'), \
+							(%i, 'Hunter Fox Elite',	'2000'), \
+							(%i, 'Timber Wolf',			'2400'), \
+							(%i, 'Ember Wolf',			'2800'), \
+							(%i, 'Wildfire Wolf',		'3200'), \
+							(%i, 'The Howling Alpha',	'4000')", g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
 							g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
 							g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID);
 				}
@@ -204,23 +204,38 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 				{
 					g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) \
 						VALUES \
-							('%i', 'FaceIt Level I',	'0'), \
-							('%i', 'FaceIt Level II',	'700'), \
-							('%i', 'FaceIt Level III',	'800'), \
-							('%i', 'FaceIt Level IV',	'1000'), \
-							('%i', 'FaceIt Level V',	'1300'), \
-							('%i', 'FaceIt Level VI',	'1600'), \
-							('%i', 'FaceIt Level VII',	'2000'), \
-							('%i', 'FaceIt Level VIII',	'2400'), \
-							('%i', 'FaceIt Level IX,	'3000'), \
-							('%i', 'FaceIt Level X',	'4000')", g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
+							(%i, 'FaceIt Level I',		'0'), \
+							(%i, 'FaceIt Level II',		'700'), \
+							(%i, 'FaceIt Level III',	'800'), \
+							(%i, 'FaceIt Level IV',		'1000'), \
+							(%i, 'FaceIt Level V',		'1300'), \
+							(%i, 'FaceIt Level VI',		'1600'), \
+							(%i, 'FaceIt Level VII',	'2000'), \
+							(%i, 'FaceIt Level VIII',	'2400'), \
+							(%i, 'FaceIt Level IX',		'3000'), \
+							(%i, 'FaceIt Level X',		'4000')", g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, 
 							g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID, g_iRanksID);
+				}
+				default:
+				{
+					ReplyToCommand(iClient, "Выберите тип рангов: 0 - Стандартные ранги (18 lvl). 1 - Ранги опасной зоны (15 lvl). 2 - Фейсит ранги (10 lvl).");
+					return Plugin_Handled;
 				}
 			}
 			FPS_Debug("CommandCreateRanks >> Query(Type: %s): %s", szArg, szQuery)
-			g_hDatabase.Query(SQL_Default_Callback, szQuery, 4);
+			g_hDatabase.Query(SQL_Callback_CreateRanks, szQuery, 4);
 		}
 		return Plugin_Handled;
+	}
+
+	public void SQL_Callback_CreateRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
+	{
+		if (!CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_CreateRanks"))
+		{
+			return;
+		}
+
+		LoadRanksSettings();
 	}
 
 	// Load ranks settings
