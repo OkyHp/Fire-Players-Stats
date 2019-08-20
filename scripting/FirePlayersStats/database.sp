@@ -223,19 +223,23 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 				}
 			}
 			FPS_Debug("CommandCreateRanks >> Query(Type: %s): %s", szArg, szQuery)
-			g_hDatabase.Query(SQL_Callback_CreateRanks, szQuery, 4);
+			g_hDatabase.Query(SQL_Callback_CreateRanks, szQuery, UID(iClient));
 		}
 		return Plugin_Handled;
 	}
 
 	public void SQL_Callback_CreateRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 	{
-		if (!CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_CreateRanks"))
+		if (CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_CreateRanks"))
 		{
-			return;
-		}
+			LoadRanksSettings();
 
-		LoadRanksSettings();
+			int iClient = CID(iUserID);
+			if (iClient)
+			{
+				FPS_PrintToChat(iClient, "Request completed successfully!");
+			}
+		}
 	}
 
 	// Load ranks settings
