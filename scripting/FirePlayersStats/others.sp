@@ -194,14 +194,14 @@ bool IsPlayerLoaded(int iClient)
 }
 
 // Get auto server id
-void GetAutoServerID()
-{
-	if (!g_iServerID)
-	{
-		g_iServerID = GetServerSteamAccountId();
-		FPS_Debug("GetAutoServerID >> %i", g_iServerID)
-	}
-}
+// void GetAutoServerID()
+// {
+// 	if (!g_iServerID)
+// 	{
+// 		g_iServerID = GetServerSteamAccountId();
+// 		FPS_Debug("GetAutoServerID >> %i", g_iServerID)
+// 	}
+// }
 
 // Find translation
 char[] FindTranslationRank(int iClient)

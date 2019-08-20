@@ -186,8 +186,6 @@ public void OnMapStart()
 #if defined _SteamWorks_Included
 public int SteamWorks_SteamServersConnected()
 {
-	GetAutoServerID();
-
 	int iIP[4];
 	if (SteamWorks_GetPublicIP(iIP) && iIP[0] && iIP[1] && iIP[2] && iIP[3])
 	{

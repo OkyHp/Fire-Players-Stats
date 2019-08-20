@@ -63,7 +63,7 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				`nickname`		varchar(256)	NOT NULL, \
 				`ip`			varchar(24)		NOT NULL, \
 				PRIMARY KEY (`account_id`) \
-			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8_general_ci;");
+			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_servers_stats` ( \
 				`id`				int 		NOT NULL AUTO_INCREMENT, \
 				`account_id`		int			NOT NULL, \
@@ -79,7 +79,7 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				`lastconnect`		int			NOT NULL, \
 				PRIMARY KEY (`id`), \
 				UNIQUE(`account_id`, `server_id`) \
-			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8_general_ci;");
+			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_weapons_stats` ( \
 				`id`				int 			NOT NULL AUTO_INCREMENT, \
 				`account_id`		int				NOT NULL, \
@@ -96,14 +96,14 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				`headshots`			int				NOT NULL, \
 				PRIMARY KEY (`id`), \
 				UNIQUE(`account_id`, `server_id`, `weapon`) \
-			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8_general_ci;");
+			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_servers` ( \
 				`id`					int 			NOT NULL, \
 				`server_name`			varchar(256)	NOT NULL, \
 				`settings_rank_id`		int 			NOT NULL, \
 				`settings_points_id`	int 			NOT NULL, \
 				PRIMARY KEY (`id`) \
-			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8_general_ci;");
+			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
 		#if USE_RANKS == 1
 			hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_ranks` ( \
 					`id`			int 			NOT NULL, \
@@ -111,7 +111,7 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 					`rank_name`		varchar(128)	NOT NULL, \
 					`points`		float			UNSIGNED NOT NULL, \
 					PRIMARY KEY (`id`) \
-				) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8_general_ci;");
+				) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;"); // utf8mb4
 		#endif
 		g_hDatabase.Execute(hTxn, SQL_TxnSuccess_CreateTable, SQL_TxnFailure_CreateTable);
 	}
