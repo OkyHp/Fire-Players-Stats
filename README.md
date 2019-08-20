@@ -99,4 +99,4 @@
 	</details>
 
 **Тема на [HLMOD](https://hlmod.ru/resources/fire-players-stats.1232/)**.
-**[Discord](https://discord.gg/M82xN4y)**.
+**[Discord server](https://discord.gg/M82xN4y)**.
