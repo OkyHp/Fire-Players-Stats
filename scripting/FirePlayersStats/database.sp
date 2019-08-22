@@ -63,7 +63,7 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				`nickname`		varchar(256)	NOT NULL, \
 				`ip`			varchar(24)		NOT NULL, \
 				PRIMARY KEY (`account_id`) \
-			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
+			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_servers_stats` ( \
 				`id`				int 		NOT NULL AUTO_INCREMENT, \
 				`account_id`		int			NOT NULL, \
@@ -79,7 +79,7 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				`lastconnect`		int			NOT NULL, \
 				PRIMARY KEY (`id`), \
 				UNIQUE(`account_id`, `server_id`) \
-			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
+			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_weapons_stats` ( \
 				`id`				int 			NOT NULL AUTO_INCREMENT, \
 				`account_id`		int				NOT NULL, \
@@ -96,14 +96,15 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				`headshots`			int				NOT NULL, \
 				PRIMARY KEY (`id`), \
 				UNIQUE(`account_id`, `server_id`, `weapon`) \
-			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
+			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_servers` ( \
 				`id`					int 			NOT NULL, \
 				`server_name`			varchar(256)	NOT NULL, \
 				`settings_rank_id`		int 			NOT NULL, \
 				`settings_points_id`	int 			NOT NULL, \
+				`server_ip`				varchar(32)		NOT NULL, \
 				PRIMARY KEY (`id`) \
-			) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;");
+			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		#if USE_RANKS == 1
 			hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_ranks` ( \
 					`id`			int 			NOT NULL AUTO_INCREMENT, \
@@ -111,7 +112,7 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 					`rank_name`		varchar(128)	NOT NULL, \
 					`points`		float			UNSIGNED NOT NULL, \
 					PRIMARY KEY (`id`) \
-				) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;"); // utf8mb4
+				) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		#endif
 		g_hDatabase.Execute(hTxn, SQL_TxnSuccess_CreateTable, SQL_TxnFailure_CreateTable);
 	}
@@ -249,7 +250,7 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 		{
 			char szQuery[256];
 			g_hDatabase.Format(SZF(szQuery), "SELECT `rank_name`, `points` \
-				FROM `fps_ranks` WHERE `rank_id` = %i ORDER BY `points` ASC", g_iRanksID);
+				FROM `fps_ranks` WHERE `rank_id` = %i ORDER BY `points` DESC", g_iRanksID);
 			FPS_Debug("LoadRanksSettings >> Query: %s", szQuery)
 			g_hDatabase.Query(SQL_Callback_LoadRanks, szQuery);
 		}
@@ -597,18 +598,32 @@ void UpdateServerData()
 	{
 		int		iRanksID;
 		char	szQuery[512],
-				szServerName[256];
+				szServerName[256],
+				szBuffer[64];
 		#if USE_RANKS == 1
 			iRanksID = g_iRanksID;
 		#endif
-		FindConVar("hostname").GetString(SZF(szServerName));
-		g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers` ( \
-				`id`, `server_name`, `settings_rank_id`, `settings_points_id` \
-			) VALUES ( %i, '%s', '%i', '%i' ) ON DUPLICATE KEY UPDATE \
-				`id` = '%i', `server_name` = '%s', `settings_rank_id` = '%i', `settings_points_id` = '%i';", 
-			g_iServerID, szServerName, iRanksID, 1,
-			g_iServerID, szServerName, iRanksID, 1);
 
+		#if defined _SteamWorks_Included
+			int		iIP[4];
+			if (SteamWorks_GetPublicIP(iIP) && iIP[0] && iIP[1] && iIP[2] && iIP[3])
+			{
+				FormatEx(szBuffer[0], sizeof(szBuffer[]), "%i.%i.%i.%i:%i", iIP[0], iIP[1], iIP[2], iIP[3], FindConVar("hostport").IntValue);
+				
+				#if UPDATE_SERVER_IP == 1
+					FormatEx(szBuffer[1], sizeof(szBuffer[]), ", `server_ip` = '%s'", szBuffer[0]);
+				#endif
+			}
+		#endif
+
+		FindConVar("hostname").GetString(SZF(szServerName));
+
+		g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers` ( \
+				`id`, `server_name`, `settings_rank_id`, `settings_points_id`, `server_ip` \
+			) VALUES ( %i, '%s', '%i', '%i', '%s' ) ON DUPLICATE KEY UPDATE \
+				`id` = '%i', `server_name` = '%s', `settings_rank_id` = '%i', `settings_points_id` = '%i' %s;", 
+			g_iServerID, szServerName, iRanksID, 1, szBuffer[0],
+			g_iServerID, szServerName, iRanksID, 1, szBuffer[1]);
 		FPS_Debug("UpdateServerData >> Query: %s", szQuery)
 		g_hDatabase.Query(SQL_Default_Callback, szQuery, 5);
 	}

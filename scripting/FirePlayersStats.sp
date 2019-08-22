@@ -42,13 +42,11 @@
 
 #define PLUGIN_VERSION		"1.3.0"
 
-#define UID(%0)				GetClientUserId(%0)
-#define CID(%0)				GetClientOfUserId(%0)
-#define SZF(%0)				%0, sizeof(%0)
-
 /////////////////////////////////////// PRECOMPILATION SETTINGS ///////////////////////////////////////
 
-#define USE_RANKS			1	// 1 - Use ranks in statistics. 0 - There will be no ranks, only points.
+#define USE_RANKS			1	// 0 - There will be no ranks, only points.
+#define UPDATE_SERVER_IP	1	// Works only with SteamWorks. 
+								// 0 - Disable. It is necessary if you use the domain instead of IP. 
 #define DEFAULT_POINTS		1000.0
 #define DEBUG				0	// Enable/Disable debug mod
 #define LOAD_TYPE			0	// Use forvard for load player stats:	0 - OnClientPostAdminCheck 

@@ -35,3 +35,6 @@
 		Added optional support for translation of ranks.
 		Added support for mp_teammates_are_enemies.
 		Try fix get player played time.
+		CSGO Colors integration to FPS inc and removed.
+		Optimized getting the current rank.
+		Changed encoding for tables from utf8 to utf8mb4.

@@ -32,7 +32,10 @@ public void __pl_fire_players_stats_SetNTVOptional()
 }
 #endif
 
-#define FPS_INC_VER		13
+#define FPS_INC_VER				13
+#define UID(%0)					GetClientUserId(%0)
+#define CID(%0)					GetClientOfUserId(%0)
+#define SZF(%0)					%0, sizeof(%0)
 #define FPS_CHAT_PREFIX			" \x04[ \x02FPS \x04] \x01"
 #define FPS_PrintToChat(%0,%1)	CGOPrintToChat(%0, FPS_CHAT_PREFIX ... %1)
 #define FPS_PrintToChatAll(%0)	CGOPrintToChatAll(FPS_CHAT_PREFIX ... %0)
@@ -236,7 +239,21 @@ native int FPS_GetStatsData(int iClient, StatsData eData, bool bSession = false)
 native bool FPS_IsCalibration(int iClient);
 
 /////////////////////////////////////////////////////////////////////////////////
-// Taken c CS:GO COLORS by Феникс(komashchenko)
+
+// Find translation rank
+stock char[] FindTranslationRank(int iClient)
+{
+	static char szRank[128];
+	FPS_GetRanks(iClient, SZF(szRank));
+	if (TranslationPhraseExists(szRank))
+	{
+		Format(SZF(szRank), "%T", szRank, iClient);
+	}
+
+	return szRank;
+}
+
+// Taken from CS:GO COLORS by Феникс(komashchenko)
 
 #define CSGO_COL_COUNT		14
 static char g_sCsgoColorsBuff[2048];

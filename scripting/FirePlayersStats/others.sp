@@ -130,23 +130,20 @@ float GetWeaponExtraPoints(const char[] szWeapon)
 			if (g_hRanksConfigKV.GotoFirstSubKey(false))
 			{
 				do {
-					if (g_fPlayerPoints[iClient] < g_hRanksConfigKV.GetFloat(NULL_STRING))
+					if (g_hRanksConfigKV.GetFloat(NULL_STRING) <= g_fPlayerPoints[iClient] && iLevel != g_iPlayerRanks[iClient])
 					{
-						if (iLevel != g_iPlayerRanks[iClient])
-						{
-							if (g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS])
-							{
-								FPS_PrintToChat(iClient, "%t", g_iPlayerRanks[iClient] ? (iLevel > g_iPlayerRanks[iClient] ? "RankUpped" : "RankDowned") : "CalibrationCompleted", FindTranslationRank(iClient));
-								CallForward_OnFPSLevelChange(iClient, g_iPlayerRanks[iClient], iLevel);
-								FPS_Debug("CheckRank Pre (New level) >> %N: %i", iClient, iLevel)
-							}
+						g_hRanksConfigKV.GetSectionName(g_sRankName[iClient], sizeof(g_sRankName[]));
 
-							g_iPlayerRanks[iClient] = iLevel;
-							FPS_Debug("CheckRank >> %N: %i | %s", iClient, g_iPlayerRanks[iClient], g_sRankName[iClient])
+						if (g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS])
+						{
+							FPS_PrintToChat(iClient, "%t", g_iPlayerRanks[iClient] ? (iLevel > g_iPlayerRanks[iClient] ? "RankUpped" : "RankDowned") : "CalibrationCompleted", FindTranslationRank(iClient));
+							CallForward_OnFPSLevelChange(iClient, g_iPlayerRanks[iClient], iLevel);
+							FPS_Debug("CheckRank Notification (New level) >> %N: %i", iClient, iLevel)
 						}
-						return;
+
+						g_iPlayerRanks[iClient] = iLevel;
+						FPS_Debug("CheckRank >> %N: %i | %s", iClient, g_iPlayerRanks[iClient], g_sRankName[iClient])
 					}
-					g_hRanksConfigKV.GetSectionName(g_sRankName[iClient], sizeof(g_sRankName[])); // ebaniy kostil
 					++iLevel;
 				} while (g_hRanksConfigKV.GotoNextKey(false));
 			}
@@ -205,19 +202,3 @@ bool IsPlayerLoaded(int iClient)
 // 		FPS_Debug("GetAutoServerID >> %i", g_iServerID)
 // 	}
 // }
-
-// Find translation
-char[] FindTranslationRank(int iClient)
-{
-	static char szBuffer[128];
-	if (!TranslationPhraseExists(g_sRankName[iClient]))
-	{
-		szBuffer = g_sRankName[iClient];
-	}
-	else
-	{
-		FormatEx(SZF(szBuffer), "%T", g_sRankName[iClient], iClient);
-	}
-
-	return szBuffer;
-}
