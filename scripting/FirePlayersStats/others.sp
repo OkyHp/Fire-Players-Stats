@@ -130,8 +130,13 @@ float GetWeaponExtraPoints(const char[] szWeapon)
 			if (g_hRanksConfigKV.GotoFirstSubKey(false))
 			{
 				do {
-					if (g_hRanksConfigKV.GetFloat(NULL_STRING) <= g_fPlayerPoints[iClient] && iLevel != g_iPlayerRanks[iClient])
+					if (g_hRanksConfigKV.GetFloat(NULL_STRING) <= g_fPlayerPoints[iClient])
 					{
+						if (iLevel == g_iPlayerRanks[iClient])
+						{
+							return;
+						}
+
 						g_hRanksConfigKV.GetSectionName(g_sRankName[iClient], sizeof(g_sRankName[]));
 
 						if (g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS])

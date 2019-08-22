@@ -60,6 +60,13 @@ public void OnPluginStart()
 
 	LoadTranslations("FPS_HintInfo.phrases");
 
+	char szPath[256];
+	BuildPath(Path_SM, SZF(szPath), "translations/FirePlayersStatsRanks.phrases.txt");
+	if (FileExists(szPath, false, NULL_STRING))
+	{
+		LoadTranslations("FirePlayersStatsRanks.phrases");
+	}
+
 	if (FPS_StatsLoad())
 	{
 		FPS_OnFPSStatsLoaded();
@@ -132,7 +139,8 @@ public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
 void GetPlayerLevel(int iClient, int iLevel)
 {
 	g_iPlayerLevel[iClient] = iLevel;
-	FPS_GetRanks(iClient, g_sPlayerRank[iClient], sizeof(g_sPlayerRank[]));
+	strcopy(g_sPlayerRank[iClient], sizeof(g_sPlayerRank[]), FindTranslationRank(iClient));
+	//FPS_GetRanks(iClient, g_sPlayerRank[iClient], sizeof(g_sPlayerRank[]));
 }
 
 public void OnPlayerRunCmdPost(int iClient)
