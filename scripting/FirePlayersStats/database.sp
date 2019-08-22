@@ -599,7 +599,7 @@ void UpdateServerData()
 		int		iRanksID;
 		char	szQuery[512],
 				szServerName[256],
-				szBuffer[64];
+				szBuffer[2][64];
 		#if USE_RANKS == 1
 			iRanksID = g_iRanksID;
 		#endif
