@@ -148,6 +148,7 @@ float GetWeaponExtraPoints(const char[] szWeapon)
 
 						g_iPlayerRanks[iClient] = iLevel;
 						FPS_Debug("CheckRank >> %N: %i | %s", iClient, g_iPlayerRanks[iClient], g_sRankName[iClient])
+						return;
 					}
 					++iLevel;
 				} while (g_hRanksConfigKV.GotoNextKey(false));
