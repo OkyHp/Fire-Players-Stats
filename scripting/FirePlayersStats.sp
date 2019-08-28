@@ -30,9 +30,7 @@
 #include <sourcemod>
 #include <sdktools>
 #include <FirePlayersStats>
-
-#undef REQUIRE_EXTENSIONS
-#tryinclude <SteamWorks>
+#include <SteamWorks>
 
 #pragma newdecls required
 
@@ -45,8 +43,7 @@
 /////////////////////////////////////// PRECOMPILATION SETTINGS ///////////////////////////////////////
 
 #define USE_RANKS			1	// 0 - There will be no ranks, only points.
-#define UPDATE_SERVER_IP	1	// Works only with SteamWorks. 
-								// 0 - Disable. It is necessary if you use the domain instead of IP. 
+#define UPDATE_SERVER_IP	0	// 0 - Disable. It is necessary if you use the domain instead of IP. 
 #define DEFAULT_POINTS		1000.0
 #define DEBUG				0	// Enable/Disable debug mod
 #define LOAD_TYPE			0	// Use forvard for load player stats:	0 - OnClientPostAdminCheck 
@@ -173,28 +170,28 @@ public void OnMapStart()
 	#endif
 	LoadTopData();
 
-	#if defined _SteamWorks_Included
 	if (CanTestFeatures() && GetFeatureStatus(FeatureType_Native, "SteamWorks_CreateHTTPRequest") == FeatureStatus_Available)
 	{
 		SteamWorks_SteamServersConnected();
 	}
-	#endif
 }
 
-#if defined _SteamWorks_Included
 public int SteamWorks_SteamServersConnected()
 {
 	int iIP[4];
 	if (SteamWorks_GetPublicIP(iIP) && iIP[0] && iIP[1] && iIP[2] && iIP[3])
 	{
+		int		iPort = FindConVar("hostport").IntValue;
 		char	szIP[24],
 				szBuffer[256];
 		FormatEx(SZF(szIP), "%i.%i.%i.%i", iIP[0], iIP[1], iIP[2], iIP[3]);
 		Handle hRequest = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, "http://stats.tibari.ru/api/v1/add_server");
-		FormatEx(SZF(szBuffer), "key=c30facaa6f64ce25357e7c5ed1685afd&ip=%s&port=%i&version=%s&sm=%s", szIP, FindConVar("hostport").IntValue, PLUGIN_VERSION, SOURCEMOD_VERSION);
+		FormatEx(SZF(szBuffer), "key=c30facaa6f64ce25357e7c5ed1685afd&ip=%s&port=%i&version=%s&sm=%s", szIP, iPort, PLUGIN_VERSION, SOURCEMOD_VERSION);
 		SteamWorks_SetHTTPRequestRawPostBody(hRequest, "application/x-www-form-urlencoded", SZF(szBuffer));
 		SteamWorks_SetHTTPCallbacks(hRequest, OnTransferComplete);
 		SteamWorks_SendHTTPRequest(hRequest);
+
+		UpdateServerData(szIP, iPort);
 	}
 }
 
@@ -218,13 +215,10 @@ public int OnTransferComplete(Handle hRequest, bool bFailure, bool bRequestSucce
 		}
 	}
 }
-#endif
 
 public void OnMapEnd()
 {
 	DeleteInactivePlayers();
-
-	UpdateServerData();
 }
 
 #if LOAD_TYPE == 0

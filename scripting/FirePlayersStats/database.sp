@@ -589,39 +589,36 @@ public void SQL_Callback_PlayerPosition(Database hDatabase, DBResultSet hResult,
 	CallForward_OnFPSPlayerPosition(iClient, g_iPlayerPosition[iClient], g_iPlayersCount);
 }
 
-void UpdateServerData()
+void UpdateServerData(char[] szIP, int iPort)
 {
 	if (g_hDatabase)
 	{
 		int		iRanksID;
 		char	szQuery[512],
-				szServerName[256],
-				szBuffer[2][64];
+				szServerName[256];
 		#if USE_RANKS == 1
 			iRanksID = g_iRanksID;
 		#endif
 
-		#if defined _SteamWorks_Included
-			int		iIP[4];
-			if (SteamWorks_GetPublicIP(iIP) && iIP[0] && iIP[1] && iIP[2] && iIP[3])
-			{
-				FormatEx(szBuffer[0], sizeof(szBuffer[]), "%i.%i.%i.%i:%i", iIP[0], iIP[1], iIP[2], iIP[3], FindConVar("hostport").IntValue);
-				
-				#if UPDATE_SERVER_IP == 1
-					FormatEx(szBuffer[1], sizeof(szBuffer[]), ", `server_ip` = '%s'", szBuffer[0]);
-				#endif
-			}
-		#endif
-
 		FindConVar("hostname").GetString(SZF(szServerName));
 
-		g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers` ( \
+		#if UPDATE_SERVER_IP == 1
+			g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers` ( \
 				`id`, `server_name`, `settings_rank_id`, `settings_points_id`, `server_ip` \
-			) VALUES ( %i, '%s', '%i', '%i', '%s' ) ON DUPLICATE KEY UPDATE \
-				`id` = '%i', `server_name` = '%s', `settings_rank_id` = '%i', `settings_points_id` = '%i' %s;", 
-			g_iServerID, szServerName, iRanksID, 1, szBuffer[0],
-			g_iServerID, szServerName, iRanksID, 1, szBuffer[1]);
-		FPS_Debug("UpdateServerData >> Query: %s", szQuery)
+			) VALUES ( %i, '%s', %i, %i, '%s:%i' ) ON DUPLICATE KEY UPDATE \
+				`id` = %i, `server_name` = '%s', `settings_rank_id` = %i, `settings_points_id` = %i, `server_ip` = '%s:%i';", 
+			g_iServerID, szServerName, iRanksID, 1, szIP, iPort,
+			g_iServerID, szServerName, iRanksID, 1, szIP, iPort);
+		#else
+			g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers` ( \
+				`id`, `server_name`, `settings_rank_id`, `settings_points_id`, `server_ip` \
+			) VALUES ( %i, '%s', %i, %i, '%s:%i' ) ON DUPLICATE KEY UPDATE \
+				`id` = %i, `server_name` = '%s', `settings_rank_id` = %i, `settings_points_id` = %i;", 
+			g_iServerID, szServerName, iRanksID, 1, szIP, iPort,
+			g_iServerID, szServerName, iRanksID, 1);
+		#endif
+
+		FPS_Debug("UpdateServerData >> Query (%i): %s", UPDATE_SERVER_IP, szQuery)
 		g_hDatabase.Query(SQL_Default_Callback, szQuery, 5);
 	}
 }
