@@ -69,6 +69,7 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				`account_id`		int			NOT NULL, \
 				`server_id`			int			NOT NULL, \
 				`points`			float		UNSIGNED NOT NULL, \
+				`rank`				int			NOT NULL DEFAULT '0', \
 				`kills`				int			NOT NULL DEFAULT '0', \
 				`deaths`			int			NOT NULL DEFAULT '0', \
 				`assists`			int			NOT NULL DEFAULT '0', \
@@ -76,7 +77,7 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				`round_win`			int			NOT NULL DEFAULT '0', \
 				`round_lose`		int			NOT NULL DEFAULT '0', \
 				`playtime`			int			NOT NULL DEFAULT '0', \
-				`lastconnect`		int			NOT NULL, \
+				`lastconnect`		int			NOT NULL DEFAULT '0', \
 				PRIMARY KEY (`id`), \
 				UNIQUE(`account_id`, `server_id`) \
 			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
@@ -85,15 +86,15 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				`account_id`		int				NOT NULL, \
 				`server_id`			int				NOT NULL, \
 				`weapon`			varchar(64)		NOT NULL, \
-				`kills`				int				NOT NULL, \
-				`shoots`			int				NOT NULL, \
-				`hits_head`			int				NOT NULL, \
-				`hits_body`			int				NOT NULL, \
-				`hits_left_arm`		int				NOT NULL, \
-				`hits_right_arm`	int				NOT NULL, \
-				`hits_left_leg`		int				NOT NULL, \
-				`hits_right_leg`	int				NOT NULL, \
-				`headshots`			int				NOT NULL, \
+				`kills`				int				NOT NULL DEFAULT '0', \
+				`shoots`			int				NOT NULL DEFAULT '0', \
+				`hits_head`			int				NOT NULL DEFAULT '0', \
+				`hits_body`			int				NOT NULL DEFAULT '0', \
+				`hits_left_arm`		int				NOT NULL DEFAULT '0', \
+				`hits_right_arm`	int				NOT NULL DEFAULT '0', \
+				`hits_left_leg`		int				NOT NULL DEFAULT '0', \
+				`hits_right_leg`	int				NOT NULL DEFAULT '0', \
+				`headshots`			int				NOT NULL DEFAULT '0', \
 				PRIMARY KEY (`id`), \
 				UNIQUE(`account_id`, `server_id`, `weapon`) \
 			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
@@ -263,6 +264,7 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 		BuildPath(Path_SM, SZF(szPath), "configs/FirePlayersStats/catch_ranks.ini");
 		g_hRanksConfigKV = new KeyValues("Ranks_Settings");
 
+		int iLevel;
 		if (!CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_LoadRanks"))
 		{
 			if (!g_hDatabase)
@@ -272,7 +274,6 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 					SetFailState("Not fount ranks setting cache file. If it`s first run of the plugin - check database connection.");
 				}
 
-				int iLevel;
 				g_hRanksConfigKV.Rewind();
 				if (g_hRanksConfigKV.GotoFirstSubKey(false))
 				{
@@ -286,8 +287,7 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 			}
 			return;
 		}
-
-		int		iLevel;
+		
 		char	szBuffer[128];
 		while(hResult.FetchRow())
 		{
@@ -381,24 +381,44 @@ void SavePlayerData(int iClient)
 		hTxn.AddQuery(szQuery);
 
 		int iPlayTime = FPS_GetPlayedTime(iClient);
-		g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers_stats` ( \
-				`account_id`,`server_id`,`points`,`kills`, \
-				`deaths`,`assists`,`round_max_kills`,`round_win`, \
-				`round_lose`,`playtime`,`lastconnect` \
-			) \
-			VALUES \
-				(%i, %i, %f, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
-			UPDATE \
-				`points` = %f, `kills` = %i, `deaths` = %i, `assists` = %i, `round_max_kills` = %i, \
-				`round_win` = %i, `round_lose` = %i, `playtime` = %i, `lastconnect` = %i;", 
-			g_iPlayerAccountID[iClient], g_iServerID, g_fPlayerPoints[iClient], g_iPlayerData[iClient][KILLS],
-			g_iPlayerData[iClient][DEATHS], g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], g_iPlayerData[iClient][ROUND_WIN],
-			g_iPlayerData[iClient][ROUND_LOSE], iPlayTime, g_iPlayerSessionData[iClient][PLAYTIME],
+		#if USE_RANKS == 1
+			g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers_stats` ( \
+					`account_id`,`server_id`,`points`, `rank`, `kills`, \
+					`deaths`,`assists`,`round_max_kills`,`round_win`, \
+					`round_lose`,`playtime`,`lastconnect` \
+				) \
+				VALUES \
+					(%i, %i, %f, %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
+				UPDATE \
+					`points` = %f, `rank` = %i, `kills` = %i, `deaths` = %i, `assists` = %i, `round_max_kills` = %i, \
+					`round_win` = %i, `round_lose` = %i, `playtime` = %i, `lastconnect` = %i;", 
+				g_iPlayerAccountID[iClient], g_iServerID, g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], g_iPlayerData[iClient][KILLS],
+				g_iPlayerData[iClient][DEATHS], g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], g_iPlayerData[iClient][ROUND_WIN],
+				g_iPlayerData[iClient][ROUND_LOSE], iPlayTime, g_iPlayerSessionData[iClient][PLAYTIME],
 
-			g_fPlayerPoints[iClient], g_iPlayerData[iClient][KILLS], g_iPlayerData[iClient][DEATHS], 
-			g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], 
-			g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], iPlayTime, g_iPlayerSessionData[iClient][PLAYTIME]);
-		FPS_Debug("SavePlayerData >> Query#2: %s", szQuery)
+				g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], g_iPlayerData[iClient][KILLS], g_iPlayerData[iClient][DEATHS], 
+				g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], 
+				g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], iPlayTime, g_iPlayerSessionData[iClient][PLAYTIME]);
+		#else
+			g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers_stats` ( \
+					`account_id`,`server_id`,`points`, `rank`, `kills`, \
+					`deaths`,`assists`,`round_max_kills`,`round_win`, \
+					`round_lose`,`playtime`,`lastconnect` \
+				) \
+				VALUES \
+					(%i, %i, %f, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
+				UPDATE \
+					`points` = %f, `rank` = %i, `kills` = %i, `deaths` = %i, `assists` = %i, `round_max_kills` = %i, \
+					`round_win` = %i, `round_lose` = %i, `playtime` = %i, `lastconnect` = %i;", 
+				g_iPlayerAccountID[iClient], g_iServerID, g_fPlayerPoints[iClient], g_iPlayerData[iClient][KILLS],
+				g_iPlayerData[iClient][DEATHS], g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], g_iPlayerData[iClient][ROUND_WIN],
+				g_iPlayerData[iClient][ROUND_LOSE], iPlayTime, g_iPlayerSessionData[iClient][PLAYTIME],
+
+				g_fPlayerPoints[iClient], g_iPlayerData[iClient][KILLS], g_iPlayerData[iClient][DEATHS], 
+				g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], 
+				g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], iPlayTime, g_iPlayerSessionData[iClient][PLAYTIME]);
+		#endif
+		FPS_Debug("SavePlayerData >> Query#2 (%i): %s", USE_RANKS, szQuery)
 		hTxn.AddQuery(szQuery);
 
 		// Save weapons stats

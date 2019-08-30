@@ -125,7 +125,7 @@ float GetWeaponExtraPoints(const char[] szWeapon)
 
 		if (g_hRanksConfigKV)
 		{
-			int iLevel;
+			int iLevel = g_iRanksCount;
 			g_hRanksConfigKV.Rewind();
 			if (g_hRanksConfigKV.GotoFirstSubKey(false))
 			{
@@ -150,7 +150,7 @@ float GetWeaponExtraPoints(const char[] szWeapon)
 						FPS_Debug("CheckRank >> %N: %i | %s", iClient, g_iPlayerRanks[iClient], g_sRankName[iClient])
 						return;
 					}
-					++iLevel;
+					--iLevel;
 				} while (g_hRanksConfigKV.GotoNextKey(false));
 			}
 		}
