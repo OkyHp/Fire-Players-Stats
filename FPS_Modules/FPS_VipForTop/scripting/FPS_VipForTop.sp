@@ -5,15 +5,18 @@
 #include <vip_core>
 #include <FirePlayersStats>
 
+#define DEFAULT 0
+#define STATS	1
+
 int			g_iVipQuota;
-bool		g_bIsVip[MAXPLAYERS+1];
+bool		g_bIsVip[MAXPLAYERS+1][2];
 KeyValues	g_hConfig;
 
 public Plugin myinfo =
 {
 	name	=	"FPS Vip For Top",
 	author	=	"OkyHp",
-	version	=	"1.0.1",
+	version	=	"1.1.0",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -43,43 +46,41 @@ public void OnPluginStart()
 
 public void VIP_OnClientLoaded(int iClient, bool bIsVIP)
 {
-	g_bIsVip[iClient] = bIsVIP;
-	LogError("[VIP_OnClientLoaded] >> %s", g_bIsVip[iClient] ? "TRUE" : "FASLE");
+	g_bIsVip[iClient][DEFAULT] = bIsVIP;
 }
-
-// public void VIP_OnVIPClientAdded(int iClient, int iAdmin)
-// {
-// 	g_bIsVip[iClient] = true;
-// 	LogError("[VIP_OnVIPClientAdded] >> %s", g_bIsVip[iClient] ? "TRUE" : "FASLE");
-// }
-
-// public void VIP_OnVIPClientLoaded(int iClient)
-// {
-// 	g_bIsVip[iClient] = true;
-// }
 
 public void VIP_OnVIPClientAdded(int iClient, int iAdmin)
 {
-	LogError("[VIP_OnVIPClientAdded] >> %s | %i", g_bIsVip[iClient] ? "TRUE" : "FASLE", iAdmin);
-	g_bIsVip[iClient] = true;
+	g_bIsVip[iClient][DEFAULT] = true;
+}
+
+public void VIP_OnVIPClientRemoved(int iClient, const char[] szReason, int iAdmin)
+{
+	g_bIsVip[iClient][DEFAULT] = false;
 }
 
 public void OnClientDisconnect(int iClient)
 {
-	g_bIsVip[iClient] = false;
+	for (int i = 0; i < 2; ++i)
+	{
+		g_bIsVip[iClient][i] = false;
+	}
 }
 
 public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
 	static int iPos[MAXPLAYERS+1];
-	if (!g_bIsVip[iClient] && iPos[iClient] != iPosition)
+	if (!g_bIsVip[iClient][DEFAULT] && !FPS_IsCalibration(iClient) && iPos[iClient] != iPosition)
 	{
-		if (iPosition > g_iVipQuota)
+		if (g_bIsVip[iClient][STATS])
 		{
+			g_bIsVip[iClient][STATS] = false;
+			// VIP_RemoveClientVIP(iClient, false, false);
 			VIP_RemoveClientVIP2(-1, iClient, false, false);
-			LogError("[FPS_PlayerPosition] >> Игроку %N удалена вип группа %i", iClient, iPosition);
+			PrintToServer("[FPS_PlayerPosition] >> Игроку %N удалена вип группа %i", iClient, iPosition);
 		}
-		else
+
+		if(iPosition <= g_iVipQuota)
 		{
 			char	szPos[4],
 					szVipGroup[32];
@@ -89,8 +90,10 @@ public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
 			g_hConfig.GetString(szPos, szVipGroup, sizeof(szVipGroup), NULL_STRING);
 			if (szVipGroup[0])
 			{
+				g_bIsVip[iClient][STATS] = true;
+				// VIP_SetClientVIP(iClient, 0, 0, szVipGroup, false);
 				VIP_GiveClientVIP(-1, iClient, 0, szVipGroup, false);
-				LogError("[FPS_PlayerPosition] >> Игроку %N за %i место установлена вип группа: %s", iClient, iPosition, szVipGroup);
+				PrintToServer("[FPS_PlayerPosition] >> Игроку %N за %i место установлена вип группа: %s", iClient, iPosition, szVipGroup);
 			}
 		}
 	}

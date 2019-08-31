@@ -39,3 +39,4 @@
 		Optimized getting the current rank.
 		Changed encoding for tables from utf8 to utf8mb4.
 		SteamWorks marked as required.
+		Added rank column in fps_servers_stats. ( ALTER TABLE `fps_servers_stats` ADD `rank` int NOT NULL DEFAULT '0' AFTER `points`; )
