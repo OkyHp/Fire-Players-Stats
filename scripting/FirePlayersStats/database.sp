@@ -217,12 +217,12 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 				}
 				default:
 				{
-					ReplyToCommand(iClient, "Выберите тип рангов: 0 - Стандартные ранги (18 lvl). 1 - Ранги опасной зоны (15 lvl). 2 - Фейсит ранги (10 lvl).");
+					ReplyToCommand(iClient, ">> Выберите тип рангов: 0 - Стандартные ранги (18 lvl). 1 - Ранги опасной зоны (15 lvl). 2 - Фейсит ранги (10 lvl).");
 					return Plugin_Handled;
 				}
 			}
 			FPS_Debug("CommandCreateRanks >> Query(Type: %s): %s", szArg, szQuery)
-			g_hDatabase.Query(SQL_Callback_CreateRanks, szQuery, UID(iClient));
+			g_hDatabase.Query(SQL_Callback_CreateRanks, szQuery, iClient ? UID(iClient) : 0);
 		}
 		return Plugin_Handled;
 	}

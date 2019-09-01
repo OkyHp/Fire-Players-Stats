@@ -38,7 +38,7 @@
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
-#define PLUGIN_VERSION		"1.3.0"
+#define PLUGIN_VERSION		"1.3.1"
 
 /////////////////////////////////////// PRECOMPILATION SETTINGS ///////////////////////////////////////
 

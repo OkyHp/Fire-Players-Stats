@@ -370,7 +370,7 @@ public int Handler_BackToFpsMenu(Menu hMenu, MenuAction action, int iClient, int
 				do {
 					fRank = g_hRanksConfigKV.GetFloat(NULL_STRING);
 					g_hRanksConfigKV.GetSectionName(SZF(szRank));
-					FormatEx(SZF(szBuffer), "[%.2f] %s (%s)", fRank, szRank, g_fPlayerPoints[iClient] <= fRank ? "✗" : "✓");
+					FormatEx(SZF(szBuffer), "[%.2f] %s (%s)", fRank, szRank, g_fPlayerPoints[iClient] < fRank ? "✗" : "✓");
 					hMenu.AddItem(NULL_STRING, szBuffer, ITEMDRAW_DISABLED);
 				} while (g_hRanksConfigKV.GotoNextKey(false));
 			}
