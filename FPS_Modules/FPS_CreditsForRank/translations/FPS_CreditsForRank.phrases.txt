@@ -1,0 +1,10 @@
+"Phrases"
+{
+	"BonusMessage"
+	{
+		"#format"	"{1:i}"
+		"en"	"Bonus for rank boost {GREEN}{1} {DEFAULT} credits"
+		"ru"	"Бонус за повышение ранга {GREEN}{1} {DEFAULT}кредитов"
+		"ua"	"Бонус за підвищення рангу {GREEN}{1} {DEFAULT} кредитів"
+	}
+}
