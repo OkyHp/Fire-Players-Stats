@@ -8,7 +8,7 @@
 
 public Plugin myinfo =
 {
-	name	=	"FPS Shop For Rank",
+	name	=	"FPS Credits For Rank",
 	author	=	"OkyHp",
 	version	=	"1.0.0",
 	url		=	"https://dev-source.ru/, https://hlmod.ru/"
@@ -25,9 +25,9 @@ public void OnPluginStart()
 		SetFailState("This plugin works only on CS:GO");
 	}
 
-	g_hCookie = RegClientCookie("FPS_ShopForRank", "FPS Shop For Rank - Player last rank", CookieAccess_Private);
+	g_hCookie = RegClientCookie("FPS_CreditsForRank", "FPS Shop For Rank - Player last rank", CookieAccess_Private);
 
-	LoadTranslations("FPS_ShopForRank.phrases");
+	LoadTranslations("FPS_CreditsForRank.phrases");
 
 	LoadConfig();
 
@@ -56,7 +56,7 @@ void LoadConfig()
 
 	char szPath[256];
 	g_hConfig = new KeyValues("Config");
-	BuildPath(Path_SM, szPath, sizeof(szPath), "configs/FirePlayersStats/shop_ranks.ini");
+	BuildPath(Path_SM, szPath, sizeof(szPath), "configs/FirePlayersStats/credits_for_ranks.ini");
 	if(!g_hConfig.ImportFromFile(szPath))
 	{
 		SetFailState("No found file: '%s'.", szPath);
