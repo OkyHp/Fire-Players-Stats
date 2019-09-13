@@ -8,7 +8,7 @@
 #undef REQUIRE_PLUGIN
 #include <vip_core>
 
-int		g_iType,
+int		g_iTopMax,
 		g_iPlayerPosition[MAXPLAYERS+1];
 bool	g_bVipLoaded;
 
@@ -17,7 +17,7 @@ public Plugin myinfo =
 	name	=	"FPS Top Clan Tag",
 	author	=	"OkyHp",
 	version	=	"1.0.0",
-	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
+	url		=	"https://dev-source.ru/, https://hlmod.ru/"
 };
 
 public void OnLibraryAdded(const char[] szName)
@@ -45,23 +45,22 @@ public void OnPluginStart()
 
 	ConVar Convar;
 	(Convar = CreateConVar(
-		"sm_fpsm_top_clan_tag_type",		"0", 
-		"0 - просто заменять клантег. 1 - Сохранять текущий тег и добавлять к нему.",
-		_, true, 0.0, true, 1.0
-	)).AddChangeHook(ChangeCvar_WorkType);
-	ChangeCvar_WorkType(Convar, NULL_STRING, NULL_STRING);
+		"sm_fpsm_max_top", "100", "Максимальный уровень игрока, для установки клантега",
+		_, true, 3.0
+	)).AddChangeHook(ChangeCvar_MaxTop);
+	ChangeCvar_MaxTop(Convar, NULL_STRING, NULL_STRING);
 
 	AutoExecConfig(true, "FPS_TopClanTag");
 
-	CreateTimer(5.0, view_as<Timer>(Timer_GetRandomInt), _, TIMER_REPEAT);
+	CreateTimer(5.0, view_as<Timer>(Timer_UpdateTag), _, TIMER_REPEAT);
 }
 
-public void ChangeCvar_WorkType(ConVar Convar, const char[] oldValue, const char[] newValue)
+public void ChangeCvar_MaxTop(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
-	g_iType = Convar.IntValue;
+	g_iTopMax = Convar.IntValue;
 }
 
-void Timer_GetRandomInt()
+void Timer_UpdateTag()
 {
 	for (int i = 1; i < MaxClients; ++i)
 	{
@@ -75,22 +74,14 @@ void Timer_GetRandomInt()
 int GetTopPos(int iClient)
 {
 	int i;
-	while(i <= 100)
+	while(i <= g_iTopMax)
 	{
 		if (g_iPlayerPosition[iClient] <= i)
 		{
 			return i;
 		}
 
-		switch(i)
-		{
-			case 10: i = 19;
-			case 20: i = 29;
-			case 30: i = 39;
-			case 40: i = 49;
-			case 50: i = 99;
-		}
-		++i;
+		i += (i > 9) ? 10 : 1;
 	}
 	return 0;
 }
@@ -104,16 +95,7 @@ void SetClanTag(int iClient)
 	}
 
 	char szBuffer[32];
-	switch(g_iType)
-	{
-		case 0:
-		{
-			char szTag[16];
-			CS_GetClientClanTag(iClient, szTag, sizeof(szTag));
-			FormatEx(szBuffer, sizeof(szBuffer), "[TOP %i] %s", iPos, szTag);
-		}
-		case 1: FormatEx(szBuffer, sizeof(szBuffer), "[TOP %i]", iPos);
-	}
+	FormatEx(szBuffer, sizeof(szBuffer), "[TOP %i]", iPos);
 	CS_SetClientClanTag(iClient, szBuffer);
 }
 
