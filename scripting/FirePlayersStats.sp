@@ -38,8 +38,6 @@
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
-#define PLUGIN_VERSION		"1.3.1"
-
 /////////////////////////////////////// PRECOMPILATION SETTINGS ///////////////////////////////////////
 
 #define USE_RANKS			1	// 0 - There will be no ranks, only points.
@@ -51,18 +49,17 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if USE_RANKS == 1
+	#define PLUGIN_VERSION		"1.3.1"
+#else
+	#define PLUGIN_VERSION		"1.3.1 NR"
+#endif
+
 #if DEBUG == 1
 	char g_sLogPath[256];
 	#define FPS_Debug(%0)	LogToFile(g_sLogPath, %0);
 #else
 	#define FPS_Debug(%0)
-#endif
-
-#if USE_RANKS != 1
-	#define DEF_BUFF		PLUGIN_VERSION
-	#undef	PLUGIN_VERSION
-	#define PLUGIN_VERSION	DEF_BUFF ... " NR"
-	#undef	DEF_BUFF
 #endif
 
 // Others vars

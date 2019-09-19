@@ -37,8 +37,8 @@ public void __pl_fire_players_stats_SetNTVOptional()
 #define CID(%0)					GetClientOfUserId(%0)
 #define SZF(%0)					%0, sizeof(%0)
 #define FPS_CHAT_PREFIX			" \x04[ \x02FPS \x04] \x01"
-#define FPS_PrintToChat(%0,%1)	CGOPrintToChat(%0, FPS_CHAT_PREFIX ... %1)
-#define FPS_PrintToChatAll(%0)	CGOPrintToChatAll(FPS_CHAT_PREFIX ... %0)
+#define FPS_PrintToChat(%0,%1)	FPS_CGOPrintToChat(%0, FPS_CHAT_PREFIX ... %1)
+#define FPS_PrintToChatAll(%0)	FPS_CGOPrintToChat(FPS_CHAT_PREFIX ... %0)
 
 enum StatsData
 {
@@ -270,7 +270,7 @@ static const char g_sColorsC[CSGO_COL_COUNT][] = {
 };
 
 
-stock void CGOPrintToChat(int iClient, const char[] message, any ...)
+stock void FPS_CGOPrintToChat(int iClient, const char[] message, any ...)
 {
 	SetGlobalTransTarget(iClient);
 	VFormat(g_sCsgoColorsBuff, sizeof g_sCsgoColorsBuff, message, 3);
@@ -298,7 +298,7 @@ stock void CGOPrintToChat(int iClient, const char[] message, any ...)
 	PrintToChat(iClient, " %s", g_sCsgoColorsBuff[iLastStart]);
 }
 
-stock void CGOPrintToChatAll(const char[] message, any ...)
+stock void FPS_CGOPrintToChat(const char[] message, any ...)
 {
 	int iLastStart = 0, i = 0;
 	
