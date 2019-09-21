@@ -87,11 +87,12 @@ public void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroad
 		int iHitgroup = hEvent.GetInt("hitgroup");
 		if (iHitgroup != HITGROUP_GENERIC && iHitgroup != HITGROUP_GEAR && JumpToWeapons(iAttacker, szWeapon[7]))
 		{
-			//g_hWeaponsKV.SetNum("hits", g_hWeaponsKV.GetNum("hits", 0) + 1);
 			switch(iHitgroup)
 			{
-				case HITGROUP_HEAD, HITGROUP_NECK: g_hWeaponsKV.SetNum("hitsHead", g_hWeaponsKV.GetNum("hitsHead", 0) + 1);
-				case HITGROUP_CHEST, HITGROUP_STOMACH: g_hWeaponsKV.SetNum("hitsBody", g_hWeaponsKV.GetNum("hitsBody", 0) + 1);
+				case HITGROUP_HEAD: g_hWeaponsKV.SetNum("hitsHead", g_hWeaponsKV.GetNum("hitsHead", 0) + 1);
+				case HITGROUP_NECK: g_hWeaponsKV.SetNum("hitsNeck", g_hWeaponsKV.GetNum("hitsNeck", 0) + 1);
+				case HITGROUP_CHEST: g_hWeaponsKV.SetNum("hitsChest", g_hWeaponsKV.GetNum("hitsChest", 0) + 1);
+				case HITGROUP_STOMACH: g_hWeaponsKV.SetNum("hitsStomach", g_hWeaponsKV.GetNum("hitsStomach", 0) + 1);
 				case HITGROUP_LEFTARM: g_hWeaponsKV.SetNum("hitsLeftArm", g_hWeaponsKV.GetNum("hitsLeftArm", 0) + 1);
 				case HITGROUP_RIGHTARM: g_hWeaponsKV.SetNum("hitsRightArm", g_hWeaponsKV.GetNum("hitsRightArm", 0) + 1);
 				case HITGROUP_LEFTLEG: g_hWeaponsKV.SetNum("hitsLeftLeg", g_hWeaponsKV.GetNum("hitsLeftLeg", 0) + 1);

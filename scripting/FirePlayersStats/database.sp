@@ -89,7 +89,9 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				`kills`				int				NOT NULL DEFAULT '0', \
 				`shoots`			int				NOT NULL DEFAULT '0', \
 				`hits_head`			int				NOT NULL DEFAULT '0', \
-				`hits_body`			int				NOT NULL DEFAULT '0', \
+				`hits_neck`			int				NOT NULL DEFAULT '0', \
+				`hits_chest`		int				NOT NULL DEFAULT '0', \
+				`hits_stomach`		int				NOT NULL DEFAULT '0', \
 				`hits_left_arm`		int				NOT NULL DEFAULT '0', \
 				`hits_right_arm`	int				NOT NULL DEFAULT '0', \
 				`hits_left_leg`		int				NOT NULL DEFAULT '0', \
@@ -438,41 +440,45 @@ void SavePlayerData(int iClient)
 				#if DEBUG == 1
 					int i;
 				#endif
-				int iKills, iShoots, iHitsHead, iHitsBody, iHitsLeftArm, iHitsRightArm, iHitsLeftLeg, iHitsRightLeg, iHeadshots;
+				int iKills, iShoots, iHitsHead, iHitsNeck, iHitsChest, iHitsStomach, iHitsLeftArm, iHitsRightArm, iHitsLeftLeg, iHitsRightLeg, iHeadshots;
 				char szWeapon[32];
 				do {
-					iKills			= g_hWeaponsKV.GetNum("kills");
-					iShoots			= g_hWeaponsKV.GetNum("shoots");
-					iHitsHead		= g_hWeaponsKV.GetNum("hitsHead");
-					iHitsBody		= g_hWeaponsKV.GetNum("hitsBody");
-					iHitsLeftArm	= g_hWeaponsKV.GetNum("hitsLeftArm");
-					iHitsRightArm	= g_hWeaponsKV.GetNum("hitsRightArm");
-					iHitsLeftLeg	= g_hWeaponsKV.GetNum("hitsLeftLeg");
-					iHitsRightLeg	= g_hWeaponsKV.GetNum("hitsRightLeg");
+					iKills			= g_hWeaponsKV.GetNum("kills", 0);
+					iShoots			= g_hWeaponsKV.GetNum("shoots", 0);
+					iHitsHead		= g_hWeaponsKV.GetNum("hitsHead", 0);
+					iHitsNeck		= g_hWeaponsKV.GetNum("hitsNeck", 0);
+					iHitsChest		= g_hWeaponsKV.GetNum("hitsChest", 0);
+					iHitsStomach	= g_hWeaponsKV.GetNum("hitsStomach", 0);
+					iHitsLeftArm	= g_hWeaponsKV.GetNum("hitsLeftArm", 0);
+					iHitsRightArm	= g_hWeaponsKV.GetNum("hitsRightArm", 0);
+					iHitsLeftLeg	= g_hWeaponsKV.GetNum("hitsLeftLeg", 0);
+					iHitsRightLeg	= g_hWeaponsKV.GetNum("hitsRightLeg", 0);
 					iHeadshots	= g_hWeaponsKV.GetNum("headshots");
 					g_hWeaponsKV.GetSectionName(SZF(szWeapon));
 
 					g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_weapons_stats` ( \
 							`account_id`, `server_id`, `weapon`, `kills`, `shoots`, \
-							`hits_head`, `hits_body`, `hits_left_arm`, `hits_right_arm`, \
-							`hits_left_leg`, `hits_right_leg`, `headshots` \
+							`hits_head`, `hits_neck`, `hits_chest`, `hits_stomach`, \
+							`hits_left_arm`, `hits_right_arm`, `hits_left_leg`, `hits_right_leg`, `headshots` \
 						) VALUES \
-							(%i, %i, '%s', %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
+							(%i, %i, '%s', %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
 						UPDATE \
 							`kills` = `kills` + %i, \
 							`shoots` = `shoots` + %i, \
 							`hits_head` = `hits_head` + %i, \
-							`hits_body` = `hits_body` + %i, \
+							`hits_neck` = `hits_neck` + %i, \
+							`hits_chest` = `hits_chest` + %i, \
+							`hits_stomach` = `hits_stomach` + %i, \
 							`hits_left_arm` = `hits_left_arm` + %i, \
 							`hits_right_arm` = `hits_right_arm` + %i, \
 							`hits_left_leg` = `hits_left_leg` + %i, \
 							`hits_right_leg` = `hits_right_leg` + %i, \
 							`headshots` = `headshots` + %i;", 
 						g_iPlayerAccountID[iClient], g_iServerID, szWeapon, iKills, iShoots, 
-						iHitsHead, iHitsBody, iHitsLeftArm, iHitsRightArm, 
-						iHitsLeftLeg, iHitsRightLeg, iHeadshots,
-						iKills, iShoots, iHitsHead, iHitsBody, iHitsLeftArm, iHitsRightArm,
-						iHitsLeftLeg, iHitsRightLeg, iHeadshots);
+						iHitsHead, iHitsNeck, iHitsChest, iHitsStomach, 
+						iHitsLeftArm, iHitsRightArm, iHitsLeftLeg, iHitsRightLeg, iHeadshots, 
+						iKills, iShoots, iHitsHead, iHitsNeck, iHitsChest, iHitsStomach, 
+						iHitsLeftArm, iHitsRightArm, iHitsLeftLeg, iHitsRightLeg, iHeadshots);
 					FPS_Debug("SavePlayerData >> WeaponQuery#%i: %s", ++i, szQuery)
 					hTxn.AddQuery(szQuery);
 				} while (g_hWeaponsKV.GotoNextKey());
