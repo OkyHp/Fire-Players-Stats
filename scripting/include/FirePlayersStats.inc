@@ -91,7 +91,7 @@ forward void FPS_OnClientLoaded(int iClient, float fPoints);
  *
  *	@param iAttacker			Индекс убийцы.
  *	@param iVictim				Индекс жертвы.
- *	@param bHeadshot			Было ли убиство в голову.
+ *	@param hEvent				Хендл события.
  *	@param fAddPointsAttacker	Количество добавляемых поинтов у убийцы.
  *	@param fAddPointsVictim		Количество отнимаемых поинтов у жертвы.
  *	@return						Plugin_Stop или Plugin_Handled  - запретит выдачу опыта (не влияет на статистику по оружию и доп очки!);
@@ -99,7 +99,7 @@ forward void FPS_OnClientLoaded(int iClient, float fPoints);
  								Plugin_Changed - разрешит переключение опыта на fAddPointsAttacker и fAddPointsVictim.
 
 */
-forward Action FPS_OnPointsChangePre(int iAttacker, int iVictim, bool bHeadshot, float& fAddPointsAttacker, float& fAddPointsVictim);
+forward Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, float& fAddPointsAttacker, float& fAddPointsVictim);
 
 /**
  *	Вызывается после установкой поинтов игроку.

@@ -179,7 +179,7 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 
 			float	fAddPointsAttacker = fPointsAttacker,
 					fAddPointsVictim = fPointsVictim;
-			switch(CallForward_OnFPSPointsChangePre(iAttacker, iVictim, bHeadshot, fAddPointsAttacker, fAddPointsVictim))
+			switch(CallForward_OnFPSPointsChangePre(iAttacker, iVictim, hEvent, fAddPointsAttacker, fAddPointsVictim))
 			{
 				case Plugin_Continue:
 				{

@@ -52,13 +52,13 @@ void CallForward_OnFPSClientLoaded(int iClient, float fPoints)
 	Call_Finish();
 }
 
-Action CallForward_OnFPSPointsChangePre(int iAttacker, int iVictim, bool bHeadshot, float& fAddPointsAttacker, float& fAddPointsVictim)
+Action CallForward_OnFPSPointsChangePre(int iAttacker, int iVictim, Event hEvent, float& fAddPointsAttacker, float& fAddPointsVictim)
 {
 	Action Result = Plugin_Continue;
 	Call_StartForward(g_hGlobalForvard_OnFPSPointsChangePre);
 	Call_PushCell(iAttacker);
 	Call_PushCell(iVictim);
-	Call_PushCell(bHeadshot);
+	Call_PushCell(hEvent);
 	Call_PushFloatRef(fAddPointsAttacker);
 	Call_PushFloatRef(fAddPointsVictim);
 	Call_Finish(Result);

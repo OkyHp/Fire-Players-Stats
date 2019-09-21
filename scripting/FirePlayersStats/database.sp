@@ -148,7 +148,7 @@ public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQue
 		{
 			char	szQuery[1024],
 					szArg[2];
-			GetCmdArg(iArgs, SZF(szArg));
+			GetCmdArg(1, SZF(szArg));
 
 			switch(szArg[0])
 			{
