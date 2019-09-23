@@ -73,8 +73,10 @@ float		g_fPlayerPoints[MAXPLAYERS+1],
 bool		g_bStatsLoaded,
 			g_bStatsLoad[MAXPLAYERS+1],
 			g_bStatsActive,
+			g_bDisableStatisPerRound,
 			g_bLateLoad,
 			g_bTeammatesAreEnemies;
+char		g_sMap[128];
 
 #if USE_RANKS == 1
 // Ranks settings
@@ -84,7 +86,7 @@ char		g_sRankName[MAXPLAYERS+1][64];
 KeyValues	g_hRanksConfigKV;
 #endif
 
-// Weapons stats wars
+// Weapons stats vars
 KeyValues	g_hWeaponsKV;
 // Database vars
 Database	g_hDatabase;
@@ -171,6 +173,8 @@ public void OnMapStart()
 	{
 		SteamWorks_SteamServersConnected();
 	}
+
+	GetCurrentMap(SZF(g_sMap));
 }
 
 public int SteamWorks_SteamServersConnected()

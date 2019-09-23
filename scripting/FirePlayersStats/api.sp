@@ -159,7 +159,7 @@ public int Native_FPSClientReloadData(Handle hPlugin, int iNumParams)
 // void FPS_DisableStatisPerRound();
 public int Native_FPSDisableStatisPerRound(Handle hPlugin, int iNumParams)
 {
-	g_bStatsActive = false;
+	g_bDisableStatisPerRound = true;
 }
 
 // int FPS_GetPlayedTime(int iClient);

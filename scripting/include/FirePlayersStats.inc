@@ -170,7 +170,8 @@ native bool FPS_ClientLoaded(int iClient);
 native void FPS_ClientReloadData(int iClient);
 
 /**
- *	Отключить работу статистики на 1 раунд.
+ *	Отключить работу статистики на 1 раунд. 
+ *  Используйте только после события конца раунда и не позже события начала нового раунда.
  *
  *	@noreturn
 */

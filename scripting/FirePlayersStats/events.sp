@@ -223,6 +223,13 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 				g_bStatsActive = false;
 				return;
 			}
+
+			if (g_bDisableStatisPerRound)
+			{
+				g_bStatsActive = false;
+				g_bDisableStatisPerRound = false;
+				return;
+			}
 			
 			int iPlayers;
 			for (int i = 1; i <= MaxClients; ++i)
