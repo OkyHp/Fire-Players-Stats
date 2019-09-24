@@ -45,3 +45,5 @@
 1.3.2 - Fixed minor bugs.
 		Update forvard FPS_OnPointsChangePre. bHeadshot replase handle hEvant.
 		Added new hit zones. Edit the database!
+		Fixed native for disable stats.
+		Added override of weapon multiplier for different map.

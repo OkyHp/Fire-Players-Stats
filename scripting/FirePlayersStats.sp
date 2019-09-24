@@ -76,7 +76,7 @@ bool		g_bStatsLoaded,
 			g_bDisableStatisPerRound,
 			g_bLateLoad,
 			g_bTeammatesAreEnemies;
-char		g_sMap[128];
+char		g_sMap[256];
 
 #if USE_RANKS == 1
 // Ranks settings
@@ -174,13 +174,13 @@ public void OnMapStart()
 		SteamWorks_SteamServersConnected();
 	}
 
-	GetCurrentMap(SZF(g_sMap));
+	GetCurrentMapEx(SZF(g_sMap));
 }
 
 public int SteamWorks_SteamServersConnected()
 {
 	int iIP[4];
-	if (SteamWorks_GetPublicIP(iIP) && iIP[0] && iIP[1] && iIP[2] && iIP[3])
+	if (SteamWorks_GetPublicIP(iIP)) // && iIP[0] && iIP[1] && iIP[2] && iIP[3]
 	{
 		int		iPort = FindConVar("hostport").IntValue;
 		char	szIP[24],

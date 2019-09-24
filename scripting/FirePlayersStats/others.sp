@@ -102,7 +102,7 @@ float GetWeaponExtraPoints(const char[] szWeapon)
 	if (g_hWeaponsConfigKV)
 	{
 		g_hWeaponsConfigKV.Rewind();
-		if (g_hWeaponsConfigKV.JumpToKey("WeaponCoeff"))
+		if (g_hWeaponsConfigKV.JumpToKey("WeaponCoeff") && ( g_hWeaponsConfigKV.JumpToKey(g_sMap) || g_hWeaponsConfigKV.JumpToKey("default") ))
 		{
 			float fExtPoints = g_hWeaponsConfigKV.GetFloat(szWeapon, 1.0);
 			FPS_Debug("GetWeaponExtraPoints >> %s -> %f", szWeapon, fExtPoints)
@@ -197,6 +197,28 @@ bool IsPlayerLoaded(int iClient)
 		FPS_PrintToChat(iClient, "%t", "ErrorDataLoad");
 	}
 	return false;
+}
+
+void GetCurrentMapEx(char[] szMapBuffer, int iSize)
+{
+	char szBuffer[256];
+	GetCurrentMap(szBuffer, sizeof szBuffer);
+	int iIndex = -1, iLen = strlen(szBuffer);
+	
+	for(int i = 0; i < iLen; i++)
+	{
+		if(FindCharInString(szBuffer[i], '/') != -1 || FindCharInString(szBuffer[i], '\\') != -1)
+		{
+			if(i != iLen - 1)
+			{
+				iIndex = i;
+			}
+			continue;
+		}
+		break;
+	}
+
+	strcopy(szMapBuffer, iSize, szBuffer[iIndex+1]);
 }
 
 // Get auto server id
