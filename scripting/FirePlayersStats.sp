@@ -74,9 +74,9 @@ bool		g_bStatsLoaded,
 			g_bStatsLoad[MAXPLAYERS+1],
 			g_bStatsActive,
 			g_bDisableStatisPerRound,
-			g_bLateLoad,
 			g_bTeammatesAreEnemies;
 char		g_sMap[256];
+ArrayList	g_hItems;
 
 #if USE_RANKS == 1
 // Ranks settings
@@ -91,8 +91,18 @@ KeyValues	g_hWeaponsKV;
 // Database vars
 Database	g_hDatabase;
 // Top Data
-float		g_fTopData[10][3];
-char		g_sTopData[10][3][64];
+float		g_fTopData[10][4];
+char		g_sTopData[10][4][64];
+
+enum
+{
+	F_MENU_TYPE = 1,
+	F_PLUGIN,
+	F_SELECT,
+	F_DISPLAY,
+	F_DRAW,
+	F_COUNT
+};
 
 #include "FirePlayersStats/config.sp"
 #include "FirePlayersStats/database.sp"
@@ -121,7 +131,8 @@ public void OnPluginStart()
 	HookEvents();
 	SetCommands();
 
-	g_hWeaponsKV = new KeyValues("Weapons_Stats");
+	g_hWeaponsKV	= new KeyValues("Weapons_Stats");
+	g_hItems		= new ArrayList(ByteCountToCells(128));
 
 	LoadTranslations("FirePlayersStats.phrases");
 	#if USE_RANKS == 1
@@ -144,15 +155,12 @@ public void OnPluginStart()
 	g_bStatsLoaded = true;
 	CallForward_OnFPSStatsLoaded();
 
-	if (g_bLateLoad)
+	for (int i = 1; i <= MaxClients; ++i)
 	{
-		for (int i = 1; i <= MaxClients; ++i)
+		if (IsClientInGame(i) && !IsFakeClient(i) && IsClientSourceTV(i))
 		{
-			if (IsClientInGame(i) && !IsFakeClient(i) && IsClientSourceTV(i))
-			{
-				OnClientDisconnect(i);
-				LoadPlayerData(i);
-			}
+			OnClientDisconnect(i);
+			LoadPlayerData(i);
 		}
 	}
 }

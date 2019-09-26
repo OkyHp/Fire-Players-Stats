@@ -535,7 +535,14 @@ void LoadTopData()
 				`fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
 			WHERE `server_id` = %i ORDER BY `points` DESC LIMIT 10;", g_iServerID);
-		FPS_Debug("LoadTopData >> Query#1 (Top): %s", szQuery)
+		FPS_Debug("LoadTopData >> Query#1 (TopPoints): %s", szQuery)
+		hTxn.AddQuery(szQuery);
+
+		g_hDatabase.Format(SZF(szQuery), "SELECT `p`.`nickname`, TRUNCATE(`s`.`kills` / `s`.`deaths`, 2) AS `kdr` \
+				FROM `fps_servers_stats` AS `s` \
+				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
+			WHERE `server_id` = %i ORDER BY `kdr` DESC LIMIT 10;", g_iServerID);
+		FPS_Debug("LoadTopData >> Query#1 (TopKRD): %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
 		g_hDatabase.Format(SZF(szQuery), "SELECT `p`.`nickname`, `s`.`playtime` \

@@ -139,7 +139,7 @@ void SetCvars()
 	ChangeCvar_EloCoeff(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
-		"sm_fps_calibration_fix",	"1800", 
+		"sm_fps_calibration_time",	"1800", 
 		"Время калибровки игрока. Снижает ущерб всем кого убил калибрующийся \
 		\nв течение времени в сек, если доля делимых очек менее 0.5. 0 - Отключить.", 
 		_, true, 0.0, true, 7200.0

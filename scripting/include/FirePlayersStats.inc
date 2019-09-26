@@ -51,6 +51,12 @@ enum StatsData
 	PLAYTIME
 };
 
+enum FeatureMenus
+{
+	FPS_STATS_MENU = 0,	// Секция меню статистики
+	FPS_ADVANCED_MENU	// Секция дополнительного меню
+};
+
 /****************** FORWARDS ******************/
 
 /**
@@ -238,6 +244,68 @@ native int FPS_GetStatsData(int iClient, StatsData eData, bool bSession = false)
  * 						false - игрок уже откалиброван.
 */
 native bool FPS_IsCalibration(int iClient);
+
+/////////////////////////////////////////////////////////////////////////////////
+
+/**
+ *	Вызывается, при нажатии пункта.
+ *
+ *	@param iClient			Индекс игрока.
+ *	@return					true - вернет обратно в секцию.
+*/
+typedef ItemSelectCallback	= function bool (int iClient);
+
+/**
+ *	Вызывается, при отображении пункта.
+ *
+ *	@param iClient			Индекс игрока.
+ *	@param szDisplay		Буфер с названием пункта.
+ *	@param iMaxLength		Размер буфера.
+ *	@return					true - установит новое название с szDisplay.
+*/
+typedef ItemDisplayCallback	= function bool (int iClient, char[] szDisplay, int iMaxLength);
+
+/**
+ *	Вызывается, при обращении к пункту.
+ *
+ *	@param iClient			Индекс игрока.
+ *	@param iStyle			Текущий стиль пункта.
+ *	@return					Новый стиль для пункта (ITEMDRAW_DEFAULT, ITEMDRAW_DISABLED, ITEMDRAW_RAWLINE).
+*/
+typedef ItemDrawCallback	= function int (int iClient, int iStyle);
+
+/**
+ *	Добавление новой функции
+ *
+ *	@param szFeature		Название функции.
+ *	@param eType			Секция меню для добавления.
+ *	@param OnItemSelect		Обратный вызов при нажатии пункта.
+ *	@param OnItemDisplay	Обратный вызов при отображении пункта.
+ *	@param OnItemDraw		Обратный вызов при обращении к пункту.
+ *	@noreturn
+*/
+native void FPS_AddFeature(const char[]				szFeature,
+							FeatureMenus			eType,
+							ItemSelectCallback		OnItemSelect	= INVALID_FUNCTION,
+							ItemDisplayCallback		OnItemDisplay	= INVALID_FUNCTION,
+							ItemDrawCallback		OnItemDraw		= INVALID_FUNCTION);
+
+/**
+ *	Удаление функции
+ *
+ *	@param szFeature		Название функции.
+ *	@noreturn
+*/
+native void FPS_RemoveFeature(const char[] szFeature);
+
+/**
+ *	Открыть секцию
+ *
+ *	@param iClient			Индекс игрока.
+ *	@param eType			Секция меню.
+ *	@noreturn
+*/
+native void FPS_MoveToMenu(int iClient, FeatureMenus eType);
 
 /////////////////////////////////////////////////////////////////////////////////
 

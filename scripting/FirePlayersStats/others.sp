@@ -221,6 +221,87 @@ void GetCurrentMapEx(char[] szMapBuffer, int iSize)
 	strcopy(szMapBuffer, iSize, szBuffer[iIndex+1]);
 }
 
+void AddFeatureItemToMenu(Menu hMenu, FeatureMenus eType)
+{
+	int 	iSize = g_hItems.Length;
+	char	szBuffer[128];
+	for (int i = 0; i < iSize; i += F_COUNT)
+	{
+		if (g_hItems.Get(i + 1) == view_as<int>(eType))
+		{
+			g_hItems.GetString(i, SZF(szBuffer));
+			hMenu.AddItem(szBuffer, szBuffer);
+			FPS_Debug("AddFeatureItemToMenu >> F_TYPE: %i >> F: %s", eType, szBuffer)
+		}
+	}
+}
+
+int FeatureHandler(Menu hMenu, MenuAction action, int iClient, int iItem)
+{
+	static char szItem[128];
+	hMenu.GetItem(iItem, SZF(szItem));
+	if (!szItem[0] || szItem[0] == '>')
+	{
+		return 0;
+	}
+
+	static Function Func;
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			Func = g_hItems.Get(iItem + F_SELECT);
+			if (Func != INVALID_FUNCTION)
+			{
+				bool bResult;
+				Call_StartFunction(g_hItems.Get(iItem + F_PLUGIN), Func);
+				Call_PushCell(iClient);
+				Call_Finish(bResult);
+
+				if(bResult)
+				{
+					hMenu.DisplayAt(iClient, GetMenuSelectionPosition(), MENU_TIME_FOREVER);
+				}
+			}
+		}
+		case MenuAction_DisplayItem:
+		{
+			Func = g_hItems.Get(iItem + F_DISPLAY);
+			if (Func != INVALID_FUNCTION)
+			{
+				bool bResult;
+				Call_StartFunction(g_hItems.Get(iItem + F_PLUGIN), Func);
+				Call_PushCell(iClient);
+				Call_PushStringEx(SZF(szItem), SM_PARAM_STRING_UTF8|SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+				Call_PushCell(sizeof(szItem));
+				Call_Finish(bResult);
+
+				if(bResult)
+				{
+					return RedrawMenuItem(szItem);
+				}
+			}
+		}
+		case MenuAction_DrawItem:
+		{
+			Func = g_hItems.Get(iItem + F_DRAW);
+			if (Func != INVALID_FUNCTION)
+			{
+				int iStyle;
+				hMenu.GetItem(iItem, "", 0, iStyle);
+
+				Call_StartFunction(g_hItems.Get(iItem + F_PLUGIN), Func);
+				Call_PushCell(iClient);
+				Call_PushCell(iStyle);
+				Call_Finish(iStyle);
+
+				return iStyle;
+			}
+		}
+	}
+	return 0;
+}
+
 // Get auto server id
 // void GetAutoServerID()
 // {

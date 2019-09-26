@@ -60,19 +60,15 @@ void ShowFpsMenu(int iClient)
 	Menu hMenu = new Menu(Handler_FpsMenu);
 	SetGlobalTransTarget(iClient);
 	#if USE_RANKS == 1
-		hMenu.SetTitle("%t\n ", "FpsTitle", g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], FindTranslationRank(iClient));
+		hMenu.SetTitle("%t\n ", "MiniDataTitle", "FpsTitle", g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], FindTranslationRank(iClient), g_iPlayerPosition[iClient], g_iPlayersCount);
 	#else
-		hMenu.SetTitle("%t\n ", "FpsTitleNoRanks", g_fPlayerPoints[iClient]);
+		hMenu.SetTitle("%t\n ", "MiniDataTitleNoRanks", "FpsTitle", g_fPlayerPoints[iClient], g_iPlayerPosition[iClient], g_iPlayersCount);
 	#endif
 	
 	char szBuffer[64];
-	FormatEx(SZF(szBuffer), "%t", "MyStats");
+	FormatEx(SZF(szBuffer), "%t", "MainStatsMenu");
 	hMenu.AddItem(NULL_STRING, szBuffer);
-	FormatEx(SZF(szBuffer), "%t", "TopTen");
-	hMenu.AddItem(NULL_STRING, szBuffer);
-	FormatEx(SZF(szBuffer), "%t", "TopTime");
-	hMenu.AddItem(NULL_STRING, szBuffer);
-	FormatEx(SZF(szBuffer), "%t", "TopClutch");
+	FormatEx(SZF(szBuffer), "%t", "ListsOfTops");
 	hMenu.AddItem(NULL_STRING, szBuffer);
 	FormatEx(SZF(szBuffer), "%t", "StatsInfo");
 	hMenu.AddItem(NULL_STRING, szBuffer);
@@ -94,60 +90,121 @@ public int Handler_FpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem
 		{
 			switch(iItem)
 			{
-				case 0: ShowPlayerMenu(iClient);
-				case 1: ShowTopMenu(iClient, 0);
-				case 2: ShowTopMenu(iClient, 1);
-				case 3: ShowTopMenu(iClient, 2);
-				case 4: ShowStatsInfoMenu(iClient);
+				case 0: ShowMainStatsMenu(iClient);
+				case 1: ShowMainTopMenu(iClient);
+				case 3: ShowStatsInfoMenu(iClient);
 				#if USE_RANKS == 1
-					case 5: ShowRankInfoMenu(iClient);
+					case 4: ShowRankInfoMenu(iClient);
 				#endif
 			}
 		}
 	}
 }
 
-void ShowPlayerMenu(int iClient)
+void ShowMainStatsMenu(int iClient)
+{
+	Menu hMenu = new Menu(Handler_MainStatsMenu, MENU_ACTIONS_ALL);
+	SetGlobalTransTarget(iClient);
+	#if USE_RANKS == 1
+		hMenu.SetTitle("%t\n ", "MiniDataTitle", "MainStatsMenu", g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], FindTranslationRank(iClient), g_iPlayerPosition[iClient], g_iPlayersCount);
+	#else
+		hMenu.SetTitle("%t\n ", "MiniDataTitleNoRanks", "MainStatsMenu", g_fPlayerPoints[iClient], g_iPlayerPosition[iClient], g_iPlayersCount);
+	#endif
+	
+	char szBuffer[64];
+	FormatEx(SZF(szBuffer), "%t", "GeneralStats");
+	hMenu.AddItem(">", szBuffer);
+	FormatEx(SZF(szBuffer), "%t", "SessionStats");
+	hMenu.AddItem(">", szBuffer);
+
+	AddFeatureItemToMenu(hMenu, FPS_STATS_MENU);
+
+	if (g_iResetStatsTime)
+	{
+		int iPlayedTime = FPS_GetPlayedTime(iClient);
+		if (iPlayedTime < g_iResetStatsTime)
+		{
+			float fResult = float(g_iResetStatsTime - iPlayedTime);
+			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsLock", fResult > 0 ? (fResult / 60 / 60) : 0.0);
+			hMenu.AddItem(">", szBuffer, ITEMDRAW_DISABLED);
+		}
+		else
+		{
+			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStats");
+			hMenu.AddItem(">", szBuffer, ITEMDRAW_DEFAULT);
+		}
+	}
+
+	hMenu.ExitBackButton = true;
+	hMenu.ExitButton = true;
+	hMenu.Display(iClient, MENU_TIME_FOREVER);
+}
+
+public int Handler_MainStatsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
+{
+	switch(action)
+	{
+		case MenuAction_End: delete hMenu;
+		case MenuAction_Cancel:
+		{
+			if(iItem == MenuCancel_ExitBack)
+			{
+				ShowFpsMenu(iClient);
+			}
+		}
+		case MenuAction_Select:
+		{
+			switch(iItem)
+			{
+				case 0: ShowPlayerMenu(iClient, false);
+				case 1: ShowPlayerMenu(iClient, true);
+				default: 
+				{
+					if (hMenu.ItemCount - 1)
+					{
+						ResetPlayerStatsMenu(iClient);
+					}
+				}
+			}
+		}
+	}
+
+	return FeatureHandler(hMenu, action, iClient, iItem);
+}
+
+void ShowPlayerMenu(int iClient, bool bSession = false)
 {
 	char szBuffer[512];
 	Panel hPanel = new Panel();
 	SetGlobalTransTarget(iClient);
 
-	FormatEx(SZF(szBuffer), "[ %t ]\n ", "PlayerTitle");
-	hPanel.SetTitle(szBuffer);
-
-	int iPlayedTime = FPS_GetPlayedTime(iClient);
-	float fPlayedTime = iPlayedTime ? (float(iPlayedTime) / 60.0 / 60.0) : 0.0;
-
-	#if USE_RANKS == 1
-		FormatEx(SZF(szBuffer), "%t\n ", "PlayerData", g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], FindTranslationRank(iClient), g_iPlayerPosition[iClient], g_iPlayersCount, g_iPlayerData[iClient][KILLS], 
-		g_iPlayerData[iClient][DEATHS], (g_iPlayerData[iClient][KILLS] && g_iPlayerData[iClient][DEATHS] ? (float(g_iPlayerData[iClient][KILLS]) / float(g_iPlayerData[iClient][DEATHS])) : 0.0), g_iPlayerData[iClient][ASSISTS], 
-		g_iPlayerData[iClient][MAX_ROUNDS_KILLS], (g_iPlayerData[iClient][ROUND_WIN] + g_iPlayerData[iClient][ROUND_LOSE]), g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], fPlayedTime);
-	#else
-		FormatEx(SZF(szBuffer), "%t\n ", "PlayerDataNoRanks", g_fPlayerPoints[iClient], g_iPlayerPosition[iClient], g_iPlayersCount, g_iPlayerData[iClient][KILLS], 
-		g_iPlayerData[iClient][DEATHS], (g_iPlayerData[iClient][KILLS] && g_iPlayerData[iClient][DEATHS] ? (float(g_iPlayerData[iClient][KILLS]) / float(g_iPlayerData[iClient][DEATHS])) : 0.0), g_iPlayerData[iClient][ASSISTS], 
-		g_iPlayerData[iClient][MAX_ROUNDS_KILLS], (g_iPlayerData[iClient][ROUND_WIN] + g_iPlayerData[iClient][ROUND_LOSE]), g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], fPlayedTime);
-	#endif
-	hPanel.DrawText(szBuffer);
-
-	FormatEx(SZF(szBuffer), "%t", "SessionStats");
-	hPanel.CurrentKey = 1;
-	hPanel.DrawItem(szBuffer);
-
-	if (g_iResetStatsTime)
+	if (!bSession)
 	{
-		hPanel.CurrentKey = 2;
-		if (iPlayedTime < g_iResetStatsTime)
-		{
-			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsLock", (float(g_iResetStatsTime) / 60.0 / 60.0) - fPlayedTime);
-			hPanel.DrawItem(szBuffer, ITEMDRAW_DISABLED);
-		}
-		else
-		{
-			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStats");
-			hPanel.DrawItem(szBuffer, ITEMDRAW_DEFAULT);
-		}
+		FormatEx(SZF(szBuffer), "[ %t ]\n ", "GeneralStats");
+		hPanel.SetTitle(szBuffer);
+
+		int iPlayedTime = FPS_GetPlayedTime(iClient);
+		FormatEx(SZF(szBuffer), "%t\n ", "PlayerGeneralData", g_fPlayerPoints[iClient], g_iPlayerData[iClient][KILLS], g_iPlayerData[iClient][DEATHS], 
+			(g_iPlayerData[iClient][KILLS] && g_iPlayerData[iClient][DEATHS] ? (float(g_iPlayerData[iClient][KILLS]) / float(g_iPlayerData[iClient][DEATHS])) : 0.0), 
+			g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], (g_iPlayerData[iClient][ROUND_WIN] + g_iPlayerData[iClient][ROUND_LOSE]), 
+			g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], (iPlayedTime ? (float(iPlayedTime) / 60.0 / 60.0) : 0.0));
 	}
+	else
+	{
+		FormatEx(SZF(szBuffer), "[ %t ]\n ", "SessionStats");
+		hPanel.SetTitle(szBuffer);
+
+		int iSessions[4];
+		iSessions[0] = g_iPlayerData[iClient][KILLS] - g_iPlayerSessionData[iClient][KILLS];
+		iSessions[1] = g_iPlayerData[iClient][DEATHS] - g_iPlayerSessionData[iClient][DEATHS];
+		iSessions[2] = g_iPlayerData[iClient][ROUND_WIN] - g_iPlayerSessionData[iClient][ROUND_WIN];
+		iSessions[3] = g_iPlayerData[iClient][ROUND_LOSE] - g_iPlayerSessionData[iClient][ROUND_LOSE];
+		FormatEx(SZF(szBuffer), "%t\n ", "PlayerSessionData", (g_fPlayerPoints[iClient] - g_fPlayerSessionPoints[iClient]), 
+			iSessions[0], iSessions[1], (iSessions[0] && iSessions[1] ? (float(iSessions[0]) / float(iSessions[1])) : 0.0), 
+			(g_iPlayerData[iClient][ASSISTS] - g_iPlayerSessionData[iClient][ASSISTS]), (iSessions[2] + iSessions[3]), iSessions[2], iSessions[3]);
+	}
+
+	hPanel.DrawText(szBuffer);
 
 	FormatEx(SZF(szBuffer), "%t", "Back");
 	hPanel.CurrentKey = 7;
@@ -165,55 +222,9 @@ public int Handler_PanelStats(Menu hPanel, MenuAction action, int iClient, int i
 {
 	if(g_bStatsLoad[iClient] && action == MenuAction_Select)
 	{
-		switch(iOption)
-		{
-			case 1: ShowPlayerSessionsMenu(iClient);
-			case 2: ResetPlayerStatsMenu(iClient);
-			case 7: ShowFpsMenu(iClient);
-		}
-		PlayItemSelectSound(iClient, (iOption == 7 || iOption == 9));
-	}
-}
-
-void ShowPlayerSessionsMenu(int iClient)
-{
-	char szBuffer[512];
-	Panel hPanel = new Panel();
-	SetGlobalTransTarget(iClient);
-
-	FormatEx(SZF(szBuffer), "[ %t ]\n ", "SessionStats");
-	hPanel.SetTitle(szBuffer);
-
-	int iSessions[4];
-	iSessions[0] = g_iPlayerData[iClient][KILLS] - g_iPlayerSessionData[iClient][KILLS];
-	iSessions[1] = g_iPlayerData[iClient][DEATHS] - g_iPlayerSessionData[iClient][DEATHS];
-	iSessions[2] = g_iPlayerData[iClient][ROUND_WIN] - g_iPlayerSessionData[iClient][ROUND_WIN];
-	iSessions[3] = g_iPlayerData[iClient][ROUND_LOSE] - g_iPlayerSessionData[iClient][ROUND_LOSE];
-	FormatEx(SZF(szBuffer), "%t\n ", "PlayerDataSession", (g_fPlayerPoints[iClient] - g_fPlayerSessionPoints[iClient]), iSessions[0], iSessions[1], 
-		(iSessions[0] && iSessions[1] ? (float(iSessions[0]) / float(iSessions[1])) : 0.0), 
-		(g_iPlayerData[iClient][ASSISTS] - g_iPlayerSessionData[iClient][ASSISTS]), 
-		(iSessions[2] + iSessions[3]), iSessions[2], iSessions[3]);
-	hPanel.DrawText(szBuffer);
-
-	FormatEx(SZF(szBuffer), "%t", "Back");
-	hPanel.CurrentKey = 7;
-	hPanel.DrawItem(szBuffer);
-
-	FormatEx(SZF(szBuffer), "%t", "Exit");
-	hPanel.CurrentKey = 9;
-	hPanel.DrawItem(szBuffer);
-
-	hPanel.Send(iClient, Handler_PanelSessions, MENU_TIME_FOREVER);
-	delete hPanel;
-}
-
-public int Handler_PanelSessions(Menu hPanel, MenuAction action, int iClient, int iOption)
-{
-	if(g_bStatsLoad[iClient] && action == MenuAction_Select)
-	{
 		if (iOption == 7)
 		{
-			ShowPlayerMenu(iClient);
+			ShowMainStatsMenu(iClient);
 		}
 		PlayItemSelectSound(iClient, true);
 	}
@@ -268,9 +279,53 @@ public int Handler_PanelResetStats(Menu hPanel, MenuAction action, int iClient, 
 		{
 			if (iOption == 7)
 			{
-				ShowPlayerMenu(iClient);
+				ShowMainStatsMenu(iClient);
 			}
 			PlayItemSelectSound(iClient, true);
+		}
+	}
+}
+
+
+void ShowMainTopMenu(int iClient)
+{
+	Menu hMenu = new Menu(Handler_MainTopMenu);
+	SetGlobalTransTarget(iClient);
+	hMenu.SetTitle("%t\n ", "TopTitle", "ListsOfTops");
+	
+	char szBuffer[64];
+	FormatEx(SZF(szBuffer), "%t", "TopPoints");
+	hMenu.AddItem(NULL_STRING, szBuffer);
+	FormatEx(SZF(szBuffer), "%t", "TopKDR");
+	hMenu.AddItem(NULL_STRING, szBuffer);
+	FormatEx(SZF(szBuffer), "%t", "TopTime");
+	hMenu.AddItem(NULL_STRING, szBuffer);
+	FormatEx(SZF(szBuffer), "%t", "TopClutch");
+	hMenu.AddItem(NULL_STRING, szBuffer);
+
+	hMenu.ExitBackButton = true;
+	hMenu.ExitButton = true;
+	hMenu.Display(iClient, MENU_TIME_FOREVER);
+}
+
+public int Handler_MainTopMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
+{
+	switch(action)
+	{
+		case MenuAction_End: delete hMenu;
+		case MenuAction_Cancel:
+		{
+			if(iItem == MenuCancel_ExitBack)
+			{
+				ShowFpsMenu(iClient);
+			}
+		}
+		case MenuAction_Select:
+		{
+			if (iItem > 4)
+			{
+				ShowTopMenu(iClient, iItem);
+			}
 		}
 	}
 }
@@ -283,9 +338,10 @@ void ShowTopMenu(int iClient, int iMenuType)
 
 	switch(iMenuType)
 	{
-		case 0: FormatEx(SZF(szBuffer), "%t\n ", "TopTitle", "TopTen");
-		case 1: FormatEx(SZF(szBuffer), "%t\n ", "TopTitle", "TopTime");
-		case 2: FormatEx(SZF(szBuffer), "%t\n ", "TopTitle", "TopClutch");
+		case 0: FormatEx(SZF(szBuffer), "[ %t ]\n ", "TopPoints");
+		case 1: FormatEx(SZF(szBuffer), "[ %t ]\n ", "TopKDR");
+		case 2: FormatEx(SZF(szBuffer), "[ %t ]\n ", "TopTime");
+		case 3: FormatEx(SZF(szBuffer), "[ %t ]\n ", "TopClutch");
 	}
 	hPanel.SetTitle(szBuffer);
 	
@@ -299,8 +355,9 @@ void ShowTopMenu(int iClient, int iMenuType)
 		switch(iMenuType)
 		{
 			case 0: FormatEx(SZF(szBuffer), "%i. %.2f %t - %s", i+1, g_fTopData[i][iMenuType], "Points", g_sTopData[i][iMenuType]);
-			case 1: FormatEx(SZF(szBuffer), "%i. %.2f %t - %s", i+1, (g_fTopData[i][iMenuType] / 60.0 / 60.0), "Hours", g_sTopData[i][iMenuType]);
-			case 2: FormatEx(SZF(szBuffer), "%i. %.0f %t - %s", i+1, g_fTopData[i][iMenuType], "Kills", g_sTopData[i][iMenuType]);
+			case 1: FormatEx(SZF(szBuffer), "%i. %.2f KDR - %s", i+1, g_fTopData[i][iMenuType], g_sTopData[i][iMenuType]);
+			case 2: FormatEx(SZF(szBuffer), "%i. %.2f %t - %s", i+1, (g_fTopData[i][iMenuType] / 60.0 / 60.0), "Hours", g_sTopData[i][iMenuType]);
+			case 3: FormatEx(SZF(szBuffer), "%i. %.0f %t - %s", i+1, g_fTopData[i][iMenuType], "Kills", g_sTopData[i][iMenuType]);
 		}
 		hPanel.DrawText(szBuffer);
 	}
@@ -321,21 +378,33 @@ void ShowTopMenu(int iClient, int iMenuType)
 	hPanel.CurrentKey = 9;
 	hPanel.DrawItem(szBuffer);
 
-	hPanel.Send(iClient, Handler_Panel, MENU_TIME_FOREVER);
+	hPanel.Send(iClient, Handler_PanelTop, MENU_TIME_FOREVER);
 	delete hPanel;
 }
 
-public int Handler_Panel(Menu hPanel, MenuAction action, int iClient, int iOption)
+public int Handler_PanelTop(Menu hPanel, MenuAction action, int iClient, int iOption)
 {
 	if(g_bStatsLoad[iClient] && action == MenuAction_Select)
 	{
 		if (iOption == 7)
 		{
-			ShowFpsMenu(iClient);
+			ShowMainTopMenu(iClient);
 		}
 		PlayItemSelectSound(iClient, true);
 	}
 }
+
+// public int Handler_Panel(Menu hPanel, MenuAction action, int iClient, int iOption)
+// {
+// 	if(g_bStatsLoad[iClient] && action == MenuAction_Select)
+// 	{
+// 		if (iOption == 7)
+// 		{
+// 			ShowFpsMenu(iClient);
+// 		}
+// 		PlayItemSelectSound(iClient, true);
+// 	}
+// }
 
 public int Handler_BackToFpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 {
