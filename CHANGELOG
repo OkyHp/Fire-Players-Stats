@@ -47,3 +47,9 @@
 		Added new hit zones. Edit the database!
 		Fixed native for disable stats.
 		Added override of weapon multiplier for different map.
+		Fixed error getting data when loading kernel without server restart.
+		Changed cvar "sm_fps_calibration_fix" on "sm_fps_calibration_time" because of the confusion.
+		Changing layout of statistics menu.
+		Added list of top players by KDR.
+		Added new natives to interact with stats menu. 
+		Translation edits.
