@@ -70,6 +70,21 @@ void ShowFpsMenu(int iClient)
 	hMenu.AddItem(NULL_STRING, szBuffer);
 	FormatEx(SZF(szBuffer), "%t", "ListsOfTops");
 	hMenu.AddItem(NULL_STRING, szBuffer);
+
+	int iSize = g_hItems.Length;
+	if (iSize)
+	{
+		for (int i = 0; i < iSize; i += F_COUNT)
+		{
+			if (g_hItems.Get(i + F_MENU_TYPE) == view_as<int>(FPS_ADVANCED_MENU))
+			{
+				FormatEx(SZF(szBuffer), "%t", "AdditionalMenu");
+				hMenu.AddItem(NULL_STRING, szBuffer);
+				break;
+			}
+		}
+	}
+
 	FormatEx(SZF(szBuffer), "%t", "StatsInfo");
 	hMenu.AddItem(NULL_STRING, szBuffer);
 	#if USE_RANKS == 1
@@ -92,6 +107,7 @@ public int Handler_FpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem
 			{
 				case 0: ShowMainStatsMenu(iClient);
 				case 1: ShowMainTopMenu(iClient);
+				case 2: ShowMainAdditionalMenu(iClient);
 				case 3: ShowStatsInfoMenu(iClient);
 				#if USE_RANKS == 1
 					case 4: ShowRankInfoMenu(iClient);
@@ -392,6 +408,35 @@ public int Handler_PanelTop(Menu hPanel, MenuAction action, int iClient, int iOp
 		}
 		PlayItemSelectSound(iClient, true);
 	}
+}
+
+void ShowMainAdditionalMenu(int iClient)
+{
+	Menu hMenu = new Menu(Handler_MainAdditionalMenu);
+	SetGlobalTransTarget(iClient);
+	hMenu.SetTitle("[ %t ]\n ", "AdditionalMenu");
+	
+	AddFeatureItemToMenu(hMenu, FPS_ADVANCED_MENU);
+
+	hMenu.ExitBackButton = true;
+	hMenu.ExitButton = true;
+	hMenu.Display(iClient, MENU_TIME_FOREVER);
+}
+
+public int Handler_MainAdditionalMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
+{
+	switch(action)
+	{
+		case MenuAction_End: delete hMenu;
+		case MenuAction_Cancel:
+		{
+			if(iItem == MenuCancel_ExitBack)
+			{
+				ShowFpsMenu(iClient);
+			}
+		}
+	}
+	return FeatureHandler(hMenu, action, iClient, iItem);
 }
 
 // public int Handler_Panel(Menu hPanel, MenuAction action, int iClient, int iOption)

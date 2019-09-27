@@ -227,7 +227,7 @@ void AddFeatureItemToMenu(Menu hMenu, FeatureMenus eType)
 	char	szBuffer[128];
 	for (int i = 0; i < iSize; i += F_COUNT)
 	{
-		if (g_hItems.Get(i + 1) == view_as<int>(eType))
+		if (g_hItems.Get(i + F_MENU_TYPE) == view_as<int>(eType))
 		{
 			g_hItems.GetString(i, SZF(szBuffer));
 			hMenu.AddItem(szBuffer, szBuffer);
@@ -239,10 +239,14 @@ void AddFeatureItemToMenu(Menu hMenu, FeatureMenus eType)
 int FeatureHandler(Menu hMenu, MenuAction action, int iClient, int iItem)
 {
 	static char szItem[128];
-	hMenu.GetItem(iItem, SZF(szItem));
-	if (!szItem[0] || szItem[0] == '>')
+	
+	if (hMenu)
 	{
-		return 0;
+		hMenu.GetItem(iItem, SZF(szItem));
+		if (!szItem[0] || szItem[0] == '>')
+		{
+			return 0;
+		}
 	}
 
 	static Function Func;
