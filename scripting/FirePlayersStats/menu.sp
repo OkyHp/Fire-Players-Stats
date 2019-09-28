@@ -176,7 +176,7 @@ public int Handler_MainStatsMenu(Menu hMenu, MenuAction action, int iClient, int
 				case 1: ShowPlayerMenu(iClient, true);
 				default: 
 				{
-					if (hMenu.ItemCount - 1)
+					if (iItem == hMenu.ItemCount - 1)
 					{
 						ResetPlayerStatsMenu(iClient);
 					}
