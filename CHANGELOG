@@ -42,7 +42,7 @@
 		Added rank column in fps_servers_stats. ( ALTER TABLE `fps_servers_stats` ADD `rank` int NOT NULL DEFAULT '0' AFTER `points`; )
 1.3.1 - Fixed bug in menu rank info.
 		Fixed bug when using sm_fps_create_default_ranks from the server console.
-1.3.2 - Fixed minor bugs.
+-DEV- - Fixed minor bugs.
 		Update forvard FPS_OnPointsChangePre. bHeadshot replase handle hEvant.
 		Added new hit zones. Edit the database!
 		Fixed native for disable stats.
@@ -53,3 +53,5 @@
 		Added list of top players by KDR.
 		Added new natives to interact with stats menu. 
 		Translation edits.
+		Changed principle of calling list of tops.
+		Fixed menu item buffer size for Cyrillic language.
