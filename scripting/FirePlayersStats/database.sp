@@ -542,7 +542,7 @@ void LoadTopData()
 				FROM `fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
 			WHERE `server_id` = %i ORDER BY `kdr` DESC LIMIT 10;", g_iServerID);
-		FPS_Debug("LoadTopData >> Query#1 (TopKRD): %s", szQuery)
+		FPS_Debug("LoadTopData >> Query#2 (TopKRD): %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
 		g_hDatabase.Format(SZF(szQuery), "SELECT `p`.`nickname`, `s`.`playtime` \
@@ -550,7 +550,7 @@ void LoadTopData()
 				`fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
 			WHERE `server_id` = %i ORDER BY `playtime` DESC LIMIT 10;", g_iServerID);
-		FPS_Debug("LoadTopData >> Query#2 (TopTime): %s", szQuery)
+		FPS_Debug("LoadTopData >> Query#3 (TopTime): %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
 		g_hDatabase.Format(SZF(szQuery), "SELECT `p`.`nickname`, `s`.`round_max_kills` \
@@ -558,11 +558,11 @@ void LoadTopData()
 				`fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
 			WHERE `server_id` = %i ORDER BY `round_max_kills` DESC, `points` DESC LIMIT 10", g_iServerID);
-		FPS_Debug("LoadTopData >> Query#3 (TopClutch): %s", szQuery)
+		FPS_Debug("LoadTopData >> Query#4 (TopClutch): %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
 		g_hDatabase.Format(SZF(szQuery), "SELECT COUNT(`id`) FROM `fps_servers_stats` WHERE `server_id` = %i;", g_iServerID);
-		FPS_Debug("LoadTopData >> Query#4 (GetPlayerCount): %s", szQuery)
+		FPS_Debug("LoadTopData >> Query#5 (GetPlayerCount): %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
 		g_hDatabase.Execute(hTxn, SQL_TxnSuccess_TopData, SQL_TxnFailure_TopData);
@@ -571,7 +571,7 @@ void LoadTopData()
 
 public void SQL_TxnSuccess_TopData(Database hDatabase, any Data, int iNumQueries, DBResultSet[] hResult, any[] QueryData)
 {
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < sizeof(g_fTopData[]); ++i)
 	{
 		int u = 0;
 		while(hResult[i].FetchRow())
@@ -582,9 +582,9 @@ public void SQL_TxnSuccess_TopData(Database hDatabase, any Data, int iNumQueries
 		}
 	}
 
-	if (hResult[3].FetchRow())
+	if (hResult[sizeof(g_fTopData[])].FetchRow())
 	{
-		g_iPlayersCount = hResult[3].FetchInt(0);
+		g_iPlayersCount = hResult[sizeof(g_fTopData[])].FetchInt(0);
 	}
 }
 

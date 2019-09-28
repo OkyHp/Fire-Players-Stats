@@ -54,6 +54,7 @@ enum StatsData
 enum FeatureMenus
 {
 	FPS_STATS_MENU = 0,	// Секция меню статистики
+	FPS_TOP_MENU,		// Секция меню списка топов
 	FPS_ADVANCED_MENU	// Секция дополнительного меню
 };
 
@@ -240,8 +241,8 @@ native int FPS_GetStatsData(int iClient, StatsData eData, bool bSession = false)
  *	Получить стату калибровки.
  *
  *	@param iClient		Индекс игрока.
- *	@return				true - игрок калибруется.
- * 						false - игрок уже откалиброван.
+ *	@return				true - Игрок калибруется.
+ * 						false - Игрок уже откалиброван.
 */
 native bool FPS_IsCalibration(int iClient);
 
@@ -251,7 +252,7 @@ native bool FPS_IsCalibration(int iClient);
  *	Вызывается, при нажатии пункта.
  *
  *	@param iClient			Индекс игрока.
- *	@return					true - вернет обратно в секцию.
+ *	@return					true - Вернет обратно в секцию.
 */
 typedef ItemSelectCallback	= function bool (int iClient);
 
@@ -261,7 +262,7 @@ typedef ItemSelectCallback	= function bool (int iClient);
  *	@param iClient			Индекс игрока.
  *	@param szDisplay		Буфер с названием пункта.
  *	@param iMaxLength		Размер буфера.
- *	@return					true - установит новое название с szDisplay.
+ *	@return					true - Установит новое название с szDisplay.
 */
 typedef ItemDisplayCallback	= function bool (int iClient, char[] szDisplay, int iMaxLength);
 
@@ -302,7 +303,7 @@ native void FPS_RemoveFeature(const char[] szFeature);
  *	Открыть секцию
  *
  *	@param iClient			Индекс игрока.
- *	@param eType			Секция меню.
+ *	@param eType			Секция меню. -1 - Откроет главное меню статистики (Относится толкьо к этому нативу!).
  *	@noreturn
 */
 native void FPS_MoveToMenu(int iClient, FeatureMenus eType);

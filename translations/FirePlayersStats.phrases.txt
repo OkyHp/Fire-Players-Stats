@@ -332,7 +332,7 @@
 	// ------------------------------------
 	"AdditionalMenu"
 	{
-		"en"		"Additionally
+		"en"		"Additionally"
 		"ru"		"Дополнительно"
 		"ua"		"Додатково"
 	}

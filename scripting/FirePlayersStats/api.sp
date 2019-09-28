@@ -316,8 +316,10 @@ public int Native_MoveToMenu(Handle hPlugin, int iNumParams)
 	{
 		switch(GetNativeCell(2))
 		{
-			case FPS_STATS_MENU: ShowMainStatsMenu(iClient);
-			case FPS_ADVANCED_MENU: ShowMainAdditionalMenu(iClient);
+			case -1:				ShowFpsMenu(iClient);
+			case FPS_STATS_MENU:	ShowMainStatsMenu(iClient);
+			case FPS_TOP_MENU:		ShowMainTopMenu(iClient);
+			case FPS_ADVANCED_MENU:	ShowMainAdditionalMenu(iClient);
 		}
 	}
 }
