@@ -5,7 +5,8 @@ static Handle	g_hGlobalForvard_OnFPSStatsLoaded,
 				g_hGlobalForvard_OnFPSClientLoaded,
 				g_hGlobalForvard_OnFPSPointsChangePre,
 				g_hGlobalForvard_OnFPSPointsChange,
-				g_hGlobalForvard_OnFPSPlayerPosition;
+				g_hGlobalForvard_OnFPSPlayerPosition,
+				g_hGlobalForvard_OnFPSSecondDataUpdated;
 #if USE_RANKS == 1
 	static Handle	g_hGlobalForvard_OnFPSLevelChange;
 #endif
@@ -19,6 +20,7 @@ void CreateGlobalForwards()
 	g_hGlobalForvard_OnFPSPointsChangePre			= CreateGlobalForward("FPS_OnPointsChangePre",			ET_Hook,	Param_Cell, Param_Cell, Param_Cell, Param_FloatByRef, Param_FloatByRef);
 	g_hGlobalForvard_OnFPSPointsChange				= CreateGlobalForward("FPS_OnPointsChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Float, Param_Float);
 	g_hGlobalForvard_OnFPSPlayerPosition			= CreateGlobalForward("FPS_PlayerPosition",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
+	g_hGlobalForvard_OnFPSSecondDataUpdated			= CreateGlobalForward("FPS_OnSecondDataUpdated",		ET_Ignore);
 
 	#if USE_RANKS == 1
 		g_hGlobalForvard_OnFPSLevelChange			= CreateGlobalForward("FPS_OnLevelChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
@@ -92,6 +94,12 @@ void CallForward_OnFPSPlayerPosition(int iClient, int iPosition, int iPlayersCou
 	Call_PushCell(iClient);
 	Call_PushCell(iPosition);
 	Call_PushCell(iPlayersCount);
+	Call_Finish();
+}
+
+void CallForward_OnFPSSecondDataUpdated()
+{
+	Call_StartForward(g_hGlobalForvard_OnFPSSecondDataUpdated);
 	Call_Finish();
 }
 

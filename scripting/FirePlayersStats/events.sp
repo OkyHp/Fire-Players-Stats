@@ -324,6 +324,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 							GetPlayerPosition(i);
 						}
 					}
+					CallForward_OnFPSSecondDataUpdated();
 				}
 
 				FPS_Debug("Event_RoundAction (e) >> ----------------")

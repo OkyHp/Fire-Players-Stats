@@ -139,6 +139,14 @@ forward void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel);
 */
 forward void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount);
 
+/**
+ *	Вызывается при обновлении данных в топе и т.д., после сохранения статистики.
+ *
+ *	@noparams
+ *	@noreturn
+*/
+forward void FPS_OnSecondDataUpdated();
+
 
 /****************** NATIVES ******************/
 
