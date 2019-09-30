@@ -55,3 +55,4 @@
 		Translation edits.
 		Changed principle of calling list of tops.
 		Fixed menu item buffer size for Cyrillic language.
+		Added new forward FPS_OnSecondDataUpdated.
