@@ -74,7 +74,8 @@ bool		g_bStatsLoaded,
 			g_bStatsLoad[MAXPLAYERS+1],
 			g_bStatsActive,
 			g_bDisableStatisPerRound,
-			g_bTeammatesAreEnemies;
+			g_bTeammatesAreEnemies,
+			g_bRandomspawn;
 char		g_sMap[256];
 ArrayList	g_hItems;
 
@@ -148,9 +149,12 @@ public void OnPluginStart()
 	#endif
 
 
-	ConVar Convar = FindConVar("mp_teammates_are_enemies");
-	Convar.AddChangeHook(ChangeCvar_TeammatesAreEnemies);
+	ConVar Convar;
+	(Convar = FindConVar("mp_teammates_are_enemies")).AddChangeHook(ChangeCvar_TeammatesAreEnemies);
 	ChangeCvar_TeammatesAreEnemies(Convar, NULL_STRING, NULL_STRING);
+	(Convar = FindConVar("mp_randomspawn")).AddChangeHook(ChangeCvar_RandomSpawn);
+	ChangeCvar_RandomSpawn(Convar, NULL_STRING, NULL_STRING);
+
 
 	g_bStatsLoaded = true;
 	CallForward_OnFPSStatsLoaded();
@@ -170,6 +174,11 @@ public void ChangeCvar_TeammatesAreEnemies(ConVar Convar, const char[] oldValue,
 	g_bTeammatesAreEnemies = Convar.BoolValue;
 }
 
+public void ChangeCvar_RandomSpawn(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_bRandomspawn = Convar.BoolValue;
+}
+
 public void OnMapStart()
 {
 	#if USE_RANKS == 1
@@ -183,6 +192,40 @@ public void OnMapStart()
 	}
 
 	GetCurrentMapEx(SZF(g_sMap));
+
+	if (g_bRandomspawn)
+	{
+		CreateTimer(float(g_iSaveInterval / 60), TimerSaveStats, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	}
+}
+
+public Action TimerSaveStats(Handle hTimer)
+{
+	if (!g_bRandomspawn)
+	{
+		return Plugin_Stop;
+	}
+
+	for (int i = 1; i <= MaxClients; ++i)
+	{
+		if (g_bStatsLoad[i])
+		{
+			FPS_Debug("Call Save Function (TimerSaveStats) >> %N", i)
+			SavePlayerData(i);
+		}
+	}
+
+	LoadTopData();
+	for (int i = 1; i < MaxClients; ++i)
+	{
+		if (g_bStatsLoad[i])
+		{
+			GetPlayerPosition(i);
+		}
+	}
+	CallForward_OnFPSSecondDataUpdated();
+	
+	return Plugin_Continue;
 }
 
 public int SteamWorks_SteamServersConnected()
