@@ -148,7 +148,8 @@ void SetCvars()
 
 	(Convar = CreateConVar(
 		"sm_fps_save_period",	"5", 
-		"Интервал раундов сохранения статистики. 1 - каждый раунд, 2 - каждый второй, 3 - каждый третий, ...", 
+		"Интервал раундов сохранения статистики. 1 - каждый раунд, 2 - каждый второй, ... \
+		Если mp_randomspawn 1 - будет использоваться как время в мин. для сохранения статистики.", 
 		_, true, 1.0, true, 10.0
 	)).AddChangeHook(ChangeCvar_SaveInterval);
 	ChangeCvar_SaveInterval(Convar, NULL_STRING, NULL_STRING);
