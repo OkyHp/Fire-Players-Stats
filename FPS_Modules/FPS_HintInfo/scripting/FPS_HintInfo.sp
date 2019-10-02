@@ -14,6 +14,8 @@ float	g_fPlayerPoints[MAXPLAYERS+1];
 char	g_sPlayerRank[MAXPLAYERS+1][256];
 Handle	g_hCookie;
 
+static const char g_sFeature[] = "FPS_HintInfo";
+
 public Plugin myinfo =
 {
 	name	=	"FPS Hint Info",
@@ -56,8 +58,6 @@ public void OnPluginStart()
 {
 	g_hCookie = RegClientCookie("FPS_HintStatus", "FPS Hint Status", CookieAccess_Private);
 
-	HookEvent("player_death", Event_PlayerDeath, EventHookMode_PostNoCopy);
-
 	LoadTranslations("FPS_HintInfo.phrases");
 
 	char szPath[256];
@@ -75,19 +75,10 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_fps_hint", CommandHintStatus);
 }
 
-public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
-{
-	int iClient = GetClientOfUserId(hEvent.GetInt("userid"));
-	if (iClient)
-	{
-		FPS_PrintToChat(iClient, "%t", "Message", g_bHintState[iClient] ? "Disable" : "Enable");
-	}
-}
-
 public void OnClientCookiesCached(int iClient)
 {
 	char szBuffer[4];
-	GetClientCookie(iClient, g_hCookie, szBuffer, sizeof(szBuffer));
+	GetClientCookie(iClient, g_hCookie, SZF(szBuffer));
 	g_bHintState[iClient] = szBuffer[0] ? view_as<bool>(StringToInt(szBuffer)) : true;
 }
 
@@ -95,15 +86,22 @@ public Action CommandHintStatus(int iClient, int iArgs)
 {
 	if (FPS_ClientLoaded(iClient))
 	{
-		g_bHintState[iClient] = !g_bHintState[iClient];
-		FPS_PrintToChat(iClient, "%t", "ChangeHintStatus", g_bHintState[iClient] ? "Enabled" : "Disabled");
-		SetClientCookie(iClient, g_hCookie, g_bHintState[iClient] ? "1" : "0");
+		HintStatus(iClient);
+		FPS_PrintToChat(iClient, "%t", "ChangeHintStatusChat", g_bHintState[iClient] ? "DisabledChat" : "EnabledChat");
 	}
 	return Plugin_Handled;
 }
 
+void HintStatus(int iClient)
+{
+	g_bHintState[iClient] = !g_bHintState[iClient];
+	SetClientCookie(iClient, g_hCookie, g_bHintState[iClient] ? "1" : "0");
+}
+
 public void FPS_OnFPSStatsLoaded()
 {
+	FPS_AddFeature(g_sFeature, FPS_ADVANCED_MENU, OnItemSelect, OnItemDisplay);
+
 	for (int i = 1; i <= MaxClients; ++i)
 	{
 		if (FPS_ClientLoaded(i))
@@ -111,6 +109,25 @@ public void FPS_OnFPSStatsLoaded()
 			FPS_OnClientLoaded(i, FPS_GetPoints(i));
 		}
 	}
+}
+
+public void OnPluginEnd()
+{
+	if (CanTestFeatures())
+	{
+		FPS_RemoveFeature(g_sFeature);
+	}
+}
+
+public bool OnItemSelect(int iClient)
+{
+	HintStatus(iClient);
+	return true;
+}
+
+public bool OnItemDisplay(int iClient, char[] szDisplay, int iMaxLength)
+{
+	FormatEx(szDisplay, iMaxLength, "%T", "ChangeHintStatusMenu", iClient, g_bHintState[iClient] ? "Enabled" : "Disabled");
 }
 
 public void FPS_OnClientLoaded(int iClient, float fPoints)
@@ -140,7 +157,6 @@ void GetPlayerLevel(int iClient, int iLevel)
 {
 	g_iPlayerLevel[iClient] = iLevel;
 	strcopy(g_sPlayerRank[iClient], sizeof(g_sPlayerRank[]), FindTranslationRank(iClient));
-	//FPS_GetRanks(iClient, g_sPlayerRank[iClient], sizeof(g_sPlayerRank[]));
 }
 
 public void OnPlayerRunCmdPost(int iClient)
