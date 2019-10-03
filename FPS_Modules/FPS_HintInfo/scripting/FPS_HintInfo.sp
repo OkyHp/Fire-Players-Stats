@@ -166,7 +166,7 @@ public void OnPlayerRunCmdPost(int iClient)
 	{
 		static int iTarget;
 		iTarget = GetEntPropEnt(iClient, Prop_Send, "m_hObserverTarget");
-		if (iTarget < 1 && iTarget <= MaxClients && FPS_ClientLoaded(iTarget))
+		if (iTarget > 0 && iTarget <= MaxClients && FPS_ClientLoaded(iTarget))
 		{
 			PrintHintText(iClient, "%t", "HudMessage", 
 				g_fPlayerPoints[iTarget], 
