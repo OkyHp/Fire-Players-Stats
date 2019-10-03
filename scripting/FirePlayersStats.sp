@@ -50,9 +50,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if USE_RANKS == 1
-	#define PLUGIN_VERSION		"1.3.1"
+	#define PLUGIN_VERSION		"1.4.0"
 #else
-	#define PLUGIN_VERSION		"1.3.1 NR"
+	#define PLUGIN_VERSION		"1.4.0 NR"
 #endif
 
 #if DEBUG == 1

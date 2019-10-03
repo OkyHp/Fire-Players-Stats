@@ -236,7 +236,7 @@ void AddFeatureItemToMenu(Menu hMenu, FeatureMenus eType)
 	}
 }
 
-int FeatureHandler(Menu hMenu, MenuAction action, int iClient, int iItem)
+int FeatureHandler(Menu hMenu, MenuAction action, int iClient, int iItem, FeatureMenus eType)
 {
 	static char szItem[128];
 	
@@ -247,59 +247,68 @@ int FeatureHandler(Menu hMenu, MenuAction action, int iClient, int iItem)
 		{
 			return 0;
 		}
-	}
 
-	static Function Func;
-	switch(action)
-	{
-		case MenuAction_Select:
+		int iIndex = g_hItems.FindString(szItem);
+		if (iIndex != -1)
 		{
-			Func = g_hItems.Get(iItem + F_SELECT);
-			if (Func != INVALID_FUNCTION)
+			static Function Func;
+			switch(action)
 			{
-				bool bResult;
-				Call_StartFunction(g_hItems.Get(iItem + F_PLUGIN), Func);
-				Call_PushCell(iClient);
-				Call_Finish(bResult);
-
-				if(bResult)
+				case MenuAction_Select:
 				{
-					hMenu.DisplayAt(iClient, GetMenuSelectionPosition(), MENU_TIME_FOREVER);
-				}
-			}
-		}
-		case MenuAction_DisplayItem:
-		{
-			Func = g_hItems.Get(iItem + F_DISPLAY);
-			if (Func != INVALID_FUNCTION)
-			{
-				bool bResult;
-				Call_StartFunction(g_hItems.Get(iItem + F_PLUGIN), Func);
-				Call_PushCell(iClient);
-				Call_PushStringEx(SZF(szItem), SM_PARAM_STRING_UTF8|SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
-				Call_PushCell(sizeof(szItem));
-				Call_Finish(bResult);
+					Func = g_hItems.Get(iIndex + F_SELECT);
+					if (Func != INVALID_FUNCTION)
+					{
+						bool bResult;
+						Call_StartFunction(g_hItems.Get(iIndex + F_PLUGIN), Func);
+						Call_PushCell(iClient);
+						Call_Finish(bResult);
 
-				if(bResult)
+						if(bResult)
+						{
+							switch(eType)
+							{
+								case FPS_STATS_MENU:	ShowMainStatsMenu(iClient,		GetMenuSelectionPosition());
+								case FPS_TOP_MENU:		ShowMainTopMenu(iClient,		GetMenuSelectionPosition());
+								case FPS_ADVANCED_MENU:	ShowMainAdditionalMenu(iClient,	GetMenuSelectionPosition());
+							}
+						}
+					}
+				}
+				case MenuAction_DisplayItem:
 				{
-					return RedrawMenuItem(szItem);
+					Func = g_hItems.Get(iIndex + F_DISPLAY);
+					if (Func != INVALID_FUNCTION)
+					{
+						bool bResult;
+						Call_StartFunction(g_hItems.Get(iIndex + F_PLUGIN), Func);
+						Call_PushCell(iClient);
+						Call_PushStringEx(SZF(szItem), SM_PARAM_STRING_UTF8|SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+						Call_PushCell(sizeof(szItem));
+						Call_Finish(bResult);
+
+						if(bResult)
+						{
+							return RedrawMenuItem(szItem);
+						}
+					}
 				}
-			}
-		}
-		case MenuAction_DrawItem:
-		{
-			Func = g_hItems.Get(iItem + F_DRAW);
-			if (Func != INVALID_FUNCTION)
-			{
-				int iStyle;
-				hMenu.GetItem(iItem, "", 0, iStyle);
+				case MenuAction_DrawItem:
+				{
+					Func = g_hItems.Get(iIndex + F_DRAW);
+					if (Func != INVALID_FUNCTION)
+					{
+						int iStyle;
+						hMenu.GetItem(iItem, "", 0, iStyle);
 
-				Call_StartFunction(g_hItems.Get(iItem + F_PLUGIN), Func);
-				Call_PushCell(iClient);
-				Call_PushCell(iStyle);
-				Call_Finish(iStyle);
+						Call_StartFunction(g_hItems.Get(iIndex + F_PLUGIN), Func);
+						Call_PushCell(iClient);
+						Call_PushCell(iStyle);
+						Call_Finish(iStyle);
 
-				return iStyle;
+						return iStyle;
+					}
+				}
 			}
 		}
 	}

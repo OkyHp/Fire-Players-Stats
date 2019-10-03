@@ -99,7 +99,7 @@ public int Handler_FpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem
 	}
 }
 
-void ShowMainStatsMenu(int iClient)
+void ShowMainStatsMenu(int iClient, int iPage = 0)
 {
 	Menu hMenu = new Menu(Handler_MainStatsMenu, MENU_ACTIONS_ALL);
 	SetGlobalTransTarget(iClient);
@@ -135,7 +135,7 @@ void ShowMainStatsMenu(int iClient)
 
 	hMenu.ExitBackButton = true;
 	hMenu.ExitButton = true;
-	hMenu.Display(iClient, MENU_TIME_FOREVER);
+	hMenu.DisplayAt(iClient, iPage, MENU_TIME_FOREVER);
 }
 
 public int Handler_MainStatsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
@@ -174,7 +174,7 @@ public int Handler_MainStatsMenu(Menu hMenu, MenuAction action, int iClient, int
 		}
 	}
 
-	return FeatureHandler(hMenu, action, iClient, iItem);
+	return FeatureHandler(hMenu, action, iClient, iItem, FPS_STATS_MENU);
 }
 
 void ShowPlayerMenu(int iClient, bool bSession = false)
@@ -292,7 +292,7 @@ public int Handler_PanelResetStats(Menu hPanel, MenuAction action, int iClient, 
 }
 
 
-void ShowMainTopMenu(int iClient)
+void ShowMainTopMenu(int iClient, int iPage = 0)
 {
 	Menu hMenu = new Menu(Handler_MainTopMenu, MENU_ACTIONS_ALL);
 	SetGlobalTransTarget(iClient);
@@ -312,7 +312,7 @@ void ShowMainTopMenu(int iClient)
 
 	hMenu.ExitBackButton = true;
 	hMenu.ExitButton = true;
-	hMenu.Display(iClient, MENU_TIME_FOREVER);
+	hMenu.DisplayAt(iClient, iPage, MENU_TIME_FOREVER);
 }
 
 public int Handler_MainTopMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
@@ -336,7 +336,7 @@ public int Handler_MainTopMenu(Menu hMenu, MenuAction action, int iClient, int i
 		}
 	}
 
-	return FeatureHandler(hMenu, action, iClient, iItem);
+	return FeatureHandler(hMenu, action, iClient, iItem, FPS_TOP_MENU);
 }
 
 void ShowTopMenu(int iClient, int iMenuType)
@@ -403,7 +403,7 @@ public int Handler_PanelTop(Menu hPanel, MenuAction action, int iClient, int iOp
 	}
 }
 
-void ShowMainAdditionalMenu(int iClient)
+void ShowMainAdditionalMenu(int iClient, int iPage = 0)
 {
 	Menu hMenu = new Menu(Handler_MainAdditionalMenu, MENU_ACTIONS_ALL);
 	SetGlobalTransTarget(iClient);
@@ -421,7 +421,7 @@ void ShowMainAdditionalMenu(int iClient)
 
 	hMenu.ExitBackButton = true;
 	hMenu.ExitButton = true;
-	hMenu.Display(iClient, MENU_TIME_FOREVER);
+	hMenu.DisplayAt(iClient, iPage, MENU_TIME_FOREVER);
 }
 
 public int Handler_MainAdditionalMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
@@ -452,7 +452,7 @@ public int Handler_MainAdditionalMenu(Menu hMenu, MenuAction action, int iClient
 			}
 		}
 	}
-	return FeatureHandler(hMenu, action, iClient, iItem);
+	return FeatureHandler(hMenu, action, iClient, iItem, FPS_ADVANCED_MENU);
 }
 
 // public int Handler_Panel(Menu hPanel, MenuAction action, int iClient, int iOption)

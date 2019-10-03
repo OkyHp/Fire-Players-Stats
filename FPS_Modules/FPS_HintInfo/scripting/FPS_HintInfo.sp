@@ -128,6 +128,7 @@ public bool OnItemSelect(int iClient)
 public bool OnItemDisplay(int iClient, char[] szDisplay, int iMaxLength)
 {
 	FormatEx(szDisplay, iMaxLength, "%T", "ChangeHintStatusMenu", iClient, g_bHintState[iClient] ? "Enabled" : "Disabled");
+	return true;
 }
 
 public void FPS_OnClientLoaded(int iClient, float fPoints)

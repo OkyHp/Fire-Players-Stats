@@ -120,10 +120,9 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 	CreateNative("FPS_GetPoints",				Native_FPSGetPoints);
 	CreateNative("FPS_GetStatsData",			Native_FPSGetStatsData);
 	CreateNative("FPS_IsCalibration",			Native_FPSIsCalibration);
-
 	CreateNative("FPS_AddFeature",				Native_FPSAddFeature);
 	CreateNative("FPS_RemoveFeature",			Native_FPSRemoveFeature);
-	CreateNative("FPS_MoveToMenu",				Native_MoveToMenu);
+	CreateNative("FPS_MoveToMenu",				Native_FPSMoveToMenu);
 
 	#if USE_RANKS == 1
 		CreateNative("FPS_GetLevel",				Native_FPSGetLevel);
@@ -317,7 +316,7 @@ public int Native_FPSRemoveFeature(Handle hPlugin, int iNumParams)
 }
 
 // void FPS_MoveToMenu(int iClient, FeatureMenus eType);
-public int Native_MoveToMenu(Handle hPlugin, int iNumParams)
+public int Native_FPSMoveToMenu(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
