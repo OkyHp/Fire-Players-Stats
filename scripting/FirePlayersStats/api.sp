@@ -261,11 +261,8 @@ public int Native_FPSIsCalibration(Handle hPlugin, int iNumParams)
 // 							ItemDrawCallback		OnItemDraw		= INVALID_FUNCTION);
 public int Native_FPSAddFeature(Handle hPlugin, int iNumParams)
 {
-	int iLen;
-	GetNativeStringLength(1, iLen);
-	char[] szFeature = new char[iLen];
-	GetNativeString(1, szFeature, iLen);
-
+	char szFeature[128];
+	GetNativeString(1, SZF(szFeature));
 	if(szFeature[0])
 	{
 		if(g_hItems.FindString(szFeature) == -1)
