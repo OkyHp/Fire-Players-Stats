@@ -20,7 +20,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Hint Info",
 	author	=	"OkyHp",
-	version	=	"1.0.0",
+	version	=	"1.1.0",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
