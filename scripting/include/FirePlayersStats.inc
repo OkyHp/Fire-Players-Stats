@@ -312,9 +312,10 @@ native void FPS_RemoveFeature(const char[] szFeature);
  *
  *	@param iClient			Индекс игрока.
  *	@param eType			Секция меню. -1 - Откроет главное меню статистики (Относится толкьо к этому нативу!).
+ *	@param iPage			Страница меню для открытия (GetMenuSelectionPosition()).
  *	@noreturn
 */
-native void FPS_MoveToMenu(int iClient, FeatureMenus eType);
+native void FPS_MoveToMenu(int iClient, FeatureMenus eType, int iPage = 0);
 
 /////////////////////////////////////////////////////////////////////////////////
 

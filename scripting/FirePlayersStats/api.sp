@@ -312,7 +312,7 @@ public int Native_FPSRemoveFeature(Handle hPlugin, int iNumParams)
 	return 0;
 }
 
-// void FPS_MoveToMenu(int iClient, FeatureMenus eType);
+// void FPS_MoveToMenu(int iClient, FeatureMenus eType, int iPage = 0);
 public int Native_FPSMoveToMenu(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
@@ -321,9 +321,9 @@ public int Native_FPSMoveToMenu(Handle hPlugin, int iNumParams)
 		switch(GetNativeCell(2))
 		{
 			case -1:				ShowFpsMenu(iClient);
-			case FPS_STATS_MENU:	ShowMainStatsMenu(iClient);
-			case FPS_TOP_MENU:		ShowMainTopMenu(iClient);
-			case FPS_ADVANCED_MENU:	ShowMainAdditionalMenu(iClient);
+			case FPS_STATS_MENU:	ShowMainStatsMenu(iClient,		GetNativeCell(3));
+			case FPS_TOP_MENU:		ShowMainTopMenu(iClient,		GetNativeCell(3));
+			case FPS_ADVANCED_MENU:	ShowMainAdditionalMenu(iClient,	GetNativeCell(3));
 		}
 	}
 }
