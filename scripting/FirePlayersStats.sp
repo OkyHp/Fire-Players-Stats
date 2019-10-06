@@ -216,7 +216,7 @@ public Action TimerSaveStats(Handle hTimer)
 	}
 
 	LoadTopData();
-	for (int i = 1; i < MaxClients; ++i)
+	for (int i = 1; i <= MaxClients; ++i)
 	{
 		if (g_bStatsLoad[i])
 		{
