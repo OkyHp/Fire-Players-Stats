@@ -75,6 +75,8 @@ float	  g_flMinFlash = 5.0,
 static const char
 		  g_sNameUK[][] = {"op", "penetrated", "no_scope", "run", "jump", "flash", "smoke", "whirl", "last_clip"};
 
+static const char g_sFeature[] = "FPS_UnusualKills";
+
 EngineVersion
 		  g_iEngine;
 
@@ -168,6 +170,8 @@ public void SQL_Default_Callback(Database hDatabase, DBResultSet hResult, const 
 
 public void FPS_OnFPSStatsLoaded()
 {
+	FPS_AddFeature(g_sFeature, FPS_STATS_MENU, OnItemSelect, OnItemDisplay);
+
 	for (int i = 1; i <= MaxClients; ++i)
 	{
 		if (FPS_ClientLoaded(i))
@@ -175,6 +179,26 @@ public void FPS_OnFPSStatsLoaded()
 			FPS_OnClientLoaded(i, 0.0);
 		}
 	}
+}
+
+public void OnPluginEnd()
+{
+	if (CanTestFeatures())
+	{
+		FPS_RemoveFeature(g_sFeature);
+	}
+}
+
+public bool OnItemSelect(int iClient)
+{
+	UnusualKillMenu(iClient);
+	return false;
+}
+
+public bool OnItemDisplay(int iClient, char[] szDisplay, int iMaxLength)
+{
+	FormatEx(szDisplay, iMaxLength, "%T", "UnusualKill", iClient);
+	return true;
 }
 
 public void FPS_OnClientLoaded(int iClient, float fPoints)
@@ -491,46 +515,51 @@ public void OnClientSayCommand_Post(int iClient, const char[] sCommand, const ch
 {
 	if(g_hBuffer[ChatCommands].FindString(sArgs) != -1)
 	{
-		char szBuffer[512];
-		Panel hPanel = new Panel();
-		SetGlobalTransTarget(iClient);
+		UnusualKillMenu(iClient);
+	}
+}
 
-		int iKills = FPS_GetStatsData(iClient, KILLS);
+void UnusualKillMenu(int iClient)
+{
+	char szBuffer[512];
+	Panel hPanel = new Panel();
+	SetGlobalTransTarget(iClient);
 
-		char sBuffer[512],
-			 sTrans[48];
+	int iKills = FPS_GetStatsData(iClient, KILLS);
 
-		FormatEx(sBuffer, sizeof(sBuffer), "[ %t ]\n ", "UnusualKill");
-		hPanel.SetTitle(sBuffer);
+	char sBuffer[512],
+		 sTrans[48];
 
-		if(iKills)
+	FormatEx(sBuffer, sizeof(sBuffer), "[ %t ]\n ", "UnusualKill");
+	hPanel.SetTitle(sBuffer);
+
+	if(iKills)
+	{
+		for(int i = 0; i != MAX_UKTYPES; i++)
 		{
-			for(int i = 0; i != MAX_UKTYPES; i++)
+			if(g_bShowItem[i])
 			{
-				if(g_bShowItem[i])
-				{
-					int iPercent = 100 * g_iUK[iClient][i] / iKills;
+				int iPercent = 100 * g_iUK[iClient][i] / iKills;
 
-					FormatEx(sTrans, sizeof(sTrans), "Menu_%s", g_sNameUK[i]);
-					Format(sBuffer, sizeof(sBuffer), "%s%t\n", sBuffer, sTrans, g_iUK[iClient][i], iPercent || !g_iUK[iClient][i] ? iPercent : 1);
-				}
+				FormatEx(sTrans, sizeof(sTrans), "Menu_%s", g_sNameUK[i]);
+				Format(sBuffer, sizeof(sBuffer), "%s%t\n", sBuffer, sTrans, g_iUK[iClient][i], iPercent || !g_iUK[iClient][i] ? iPercent : 1);
 			}
 		}
-
-		Format(sBuffer, sizeof(sBuffer), "%s\n ", sBuffer);
-		hPanel.DrawItem(sBuffer);
-
-		FormatEx(sBuffer, sizeof(sBuffer), "%t", "Back");
-		hPanel.CurrentKey = 7;
-		hPanel.DrawItem(szBuffer);
-
-		FormatEx(sBuffer, sizeof(sBuffer), "%t", "Exit");
-		hPanel.CurrentKey = 9;
-		hPanel.DrawItem(szBuffer);
-
-		hPanel.Send(iClient, Handler_Panel, MENU_TIME_FOREVER);
-		delete hPanel;
 	}
+
+	Format(sBuffer, sizeof(sBuffer), "%s\n ", sBuffer);
+	hPanel.DrawItem(sBuffer);
+
+	FormatEx(sBuffer, sizeof(sBuffer), "%t", "Back");
+	hPanel.CurrentKey = 7;
+	hPanel.DrawItem(szBuffer);
+
+	FormatEx(sBuffer, sizeof(sBuffer), "%t", "Exit");
+	hPanel.CurrentKey = 9;
+	hPanel.DrawItem(szBuffer);
+
+	hPanel.Send(iClient, Handler_Panel, MENU_TIME_FOREVER);
+	delete hPanel;
 }
 
 public int Handler_Panel(Menu hPanel, MenuAction action, int iClient, int iOption)
