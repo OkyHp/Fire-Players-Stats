@@ -147,9 +147,6 @@ public void OnMapStart()
 	// Custom download
 	if (g_iRanksType > 2)
 	{
-		// Calibration download
-		RanksAddToDownloads(g_iRanksIndex[3]);
-
 		g_hConfig.Rewind();
 		if (g_hConfig.JumpToKey("custom_ranks") && g_hConfig.GotoFirstSubKey(false))
 		{
@@ -174,7 +171,7 @@ public void OnMapStart()
 	}
 }
 
-void RanksAddToDownloads(int iRanks)
+void RanksAddToDownloads(const int iRanks)
 {
 	char szBuffer[256];
 	FormatEx(szBuffer, sizeof(szBuffer), "materials/panorama/images/icons/skillgroups/skillgroup%i.svg", iRanks);
