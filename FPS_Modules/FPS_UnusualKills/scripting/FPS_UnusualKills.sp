@@ -27,7 +27,7 @@
 #define SQL_CreateTable "\
 CREATE TABLE IF NOT EXISTS `fps_unusualkills` \
 (\
-	`account_id` varchar(32) NOT NULL PRIMARY KEY DEFAULT '', \
+	`account_id` int NOT NULL PRIMARY KEY, \
 	`op` int NOT NULL DEFAULT 0, \
 	`penetrated` int NOT NULL DEFAULT 0, \
 	`no_scope` int NOT NULL DEFAULT 0, \
