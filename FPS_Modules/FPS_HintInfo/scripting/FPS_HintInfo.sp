@@ -87,7 +87,7 @@ public Action CommandHintStatus(int iClient, int iArgs)
 	if (FPS_ClientLoaded(iClient))
 	{
 		HintStatus(iClient);
-		FPS_PrintToChat(iClient, "%t", "ChangeHintStatusChat", g_bHintState[iClient] ? "DisabledChat" : "EnabledChat");
+		FPS_PrintToChat(iClient, "%t", "ChangeHintStatusChat", g_bHintState[iClient] ? "EnabledChat" : "DisabledChat");
 	}
 	return Plugin_Handled;
 }
