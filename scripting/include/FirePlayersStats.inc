@@ -32,7 +32,7 @@ public void __pl_fire_players_stats_SetNTVOptional()
 }
 #endif
 
-#define FPS_INC_VER				13
+#define FPS_INC_VER				14
 #define UID(%0)					GetClientUserId(%0)
 #define CID(%0)					GetClientOfUserId(%0)
 #define SZF(%0)					%0, sizeof(%0)
@@ -306,6 +306,15 @@ native void FPS_AddFeature(const char[]				szFeature,
  *	@noreturn
 */
 native void FPS_RemoveFeature(const char[] szFeature);
+
+/**
+ *	Проверка существования функции
+ *
+ *	@param szFeature		Название функции.
+ *	@return					true - Существует.
+ * 							false - Не существует.
+*/
+native bool FPS_IsExistFeature(const char[] szFeature);
 
 /**
  *	Открыть секцию

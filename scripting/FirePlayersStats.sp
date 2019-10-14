@@ -26,15 +26,14 @@
  */
 
 #pragma semicolon 1
+#pragma newdecls required
 
 #include <sourcemod>
 #include <sdktools>
 #include <FirePlayersStats>
 #include <SteamWorks>
 
-#pragma newdecls required
-
-#if FPS_INC_VER < 13
+#if FPS_INC_VER < 14
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
@@ -50,9 +49,9 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if USE_RANKS == 1
-	#define PLUGIN_VERSION		"1.4.0"
+	#define PLUGIN_VERSION		"1.4.1"
 #else
-	#define PLUGIN_VERSION		"1.4.0 NR"
+	#define PLUGIN_VERSION		"1.4.1 NR"
 #endif
 
 #if DEBUG == 1

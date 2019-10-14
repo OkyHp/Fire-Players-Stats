@@ -122,6 +122,7 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 	CreateNative("FPS_IsCalibration",			Native_FPSIsCalibration);
 	CreateNative("FPS_AddFeature",				Native_FPSAddFeature);
 	CreateNative("FPS_RemoveFeature",			Native_FPSRemoveFeature);
+	CreateNative("FPS_IsExistFeature",			Native_FPSIsExistFeature);
 	CreateNative("FPS_MoveToMenu",				Native_FPSMoveToMenu);
 
 	#if USE_RANKS == 1
@@ -309,6 +310,20 @@ public int Native_FPSRemoveFeature(Handle hPlugin, int iNumParams)
 	{
 		ThrowNativeError(SP_ERROR_NATIVE, "[FPS] Empty feature name.");
 	}
+	return 0;
+}
+
+// bool FPS_IsExistFeature(const char[] szFeature);
+public int Native_FPSIsExistFeature(Handle hPlugin, int iNumParams)
+{
+	char szFeature[128];
+	GetNativeString(1, SZF(szFeature));
+	if (szFeature[0])
+	{
+		return (g_hItems.FindString(szFeature) != -1);
+	}
+
+	ThrowNativeError(SP_ERROR_NATIVE, "[FPS] Empty feature name.");
 	return 0;
 }
 
