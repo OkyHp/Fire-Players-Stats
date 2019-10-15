@@ -183,7 +183,7 @@ public void FPS_OnFPSStatsLoaded()
 
 public void OnPluginEnd()
 {
-	if (CanTestFeatures())
+	if (CanTestFeatures() && FPS_IsExistFeature(g_sFeature))
 	{
 		FPS_RemoveFeature(g_sFeature);
 	}
@@ -321,7 +321,7 @@ void LoadSettings()
 		}
 
 		g_iExp[iUKType] = g_iExpMode ? hKv.GetNum("exp") : 0;
-		g_bShowItem[iUKType] = view_as<bool>(hKv.GetNum("menu"));
+		g_bShowItem[iUKType] = view_as<bool>(hKv.GetNum("menu", 1));
 	}
 	while(hKv.GotoNextKey());
 
@@ -465,7 +465,7 @@ public Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, fl
 					{
 						if(g_iExpMode == 1 && g_iExp[iType] > 0)
 						{
-							FPS_PrintToChat(iAttacker, "%T: %i", g_sNameUK[iType], iAttacker, g_iExp[iType]);
+							FPS_PrintToChat(iAttacker, "%T: \x04%i", g_sNameUK[iType], iAttacker, g_iExp[iType]);
 						}
 
 						fAddPointsAttacker += float(g_iExp[iType]);
@@ -542,13 +542,13 @@ void UnusualKillMenu(int iClient)
 				int iPercent = 100 * g_iUK[iClient][i] / iKills;
 
 				FormatEx(sTrans, sizeof(sTrans), "Menu_%s", g_sNameUK[i]);
-				Format(sBuffer, sizeof(sBuffer), "%s%t\n", sBuffer, sTrans, g_iUK[iClient][i], iPercent || !g_iUK[iClient][i] ? iPercent : 1);
+				Format(sBuffer, sizeof(sBuffer), "%s%t\n ", sBuffer, sTrans, g_iUK[iClient][i], iPercent || !g_iUK[iClient][i] ? iPercent : 1);
 			}
 		}
 	}
 
 	Format(sBuffer, sizeof(sBuffer), "%s\n ", sBuffer);
-	hPanel.DrawItem(sBuffer);
+	hPanel.DrawText(sBuffer);
 
 	FormatEx(sBuffer, sizeof(sBuffer), "%t", "Back");
 	hPanel.CurrentKey = 7;

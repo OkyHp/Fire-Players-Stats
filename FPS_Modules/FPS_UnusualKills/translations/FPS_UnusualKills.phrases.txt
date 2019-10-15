@@ -2,63 +2,54 @@
 {
 	"op"
 	{
-		"#format"		"{1:i}"
 		"en"			"Received points for the first murder"
 		"ru"			"Получено поинтов за первое убийство"
 		"ua"			"Отримано поінтів за перше вбивство"
 	}
 	"penetrated"
 	{
-		"#format"		"{1:i}"
 		"en"			"Received points for a penetrated shot"
 		"ru"			"Получено поинтов за прострел"
 		"ua"			"Отримано поінтів за простріл"
 	}
 	"no_scope"
 	{
-		"#format"		"{1:i}"
 		"en"			"Received points for murder without sight"
 		"ru"			"Получено поинтов за убийство без прицела"
 		"ua"			"Отримано поінтів за вбивство без прицілу"
 	}
 	"run"
 	{
-		"#format"		"{1:i}"
 		"en"			"Received points for murder on the run"
 		"ru"			"Получено поинтов за убийство на бегу"
 		"ua"			"Отримано поінтів за вбивство на бігу"
 	}
 	"jump"
 	{
-		"#format"		"{1:i}"
 		"en"			"Received points for murder in the jump"
 		"ru"			"Получено поинтов за убийство в прыжке"
 		"ua"			"Отримано поінтів за вбивство в стрибку"
 	}
 	"flash"
 	{
-		"#format"		"{1:i}"
 		"en"			"Received points for murder being blinded by a flashbang"
 		"ru"			"Получено поинтов за убийство, будучи ослепленным флешкой"
 		"ua"			"Отримано поінтів за вбивство, будучи засліпленим флешкою"
 	}
 	"smoke"
 	{
-		"#format"		"{1:i}"
 		"en"			"Received points for murder in smoke"
 		"ru"			"Получено поинтов за убийство в дым"
 		"ua"			"Отримано поінтів за вбивство в дим"
 	}
 	"whirl"
 	{
-		"#format"		"{1:i}"
 		"en"			"Received points for murder with reversal"
 		"ru"			"Получено поинтов за убийство с разворота"
 		"ua"			"Отримано поінтів за вбивство з розвороту"
 	}
 	"last_clip"
 	{
-		"#format"		"{1:i}"
 		"en"			"Received points for murder with a last clip"
 		"ru"			"Получено поинтов за убийство последним патроном"
 		"ua"			"Отримано поінтів за вбивство останнім патроном"
