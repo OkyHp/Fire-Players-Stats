@@ -521,7 +521,6 @@ public void OnClientSayCommand_Post(int iClient, const char[] sCommand, const ch
 
 void UnusualKillMenu(int iClient)
 {
-	char szBuffer[512];
 	Panel hPanel = new Panel();
 	SetGlobalTransTarget(iClient);
 
@@ -533,6 +532,7 @@ void UnusualKillMenu(int iClient)
 	FormatEx(sBuffer, sizeof(sBuffer), "[ %t ]\n ", "UnusualKill");
 	hPanel.SetTitle(sBuffer);
 
+	sBuffer[0] = 0;
 	if(iKills)
 	{
 		for(int i = 0; i != MAX_UKTYPES; i++)
@@ -542,7 +542,7 @@ void UnusualKillMenu(int iClient)
 				int iPercent = 100 * g_iUK[iClient][i] / iKills;
 
 				FormatEx(sTrans, sizeof(sTrans), "Menu_%s", g_sNameUK[i]);
-				Format(sBuffer, sizeof(sBuffer), "%s%t\n ", sBuffer, sTrans, g_iUK[iClient][i], iPercent || !g_iUK[iClient][i] ? iPercent : 1);
+				Format(sBuffer, sizeof(sBuffer), "%s%t\n", sBuffer, sTrans, g_iUK[iClient][i], iPercent || !g_iUK[iClient][i] ? iPercent : 1);
 			}
 		}
 	}
@@ -552,11 +552,11 @@ void UnusualKillMenu(int iClient)
 
 	FormatEx(sBuffer, sizeof(sBuffer), "%t", "Back");
 	hPanel.CurrentKey = 7;
-	hPanel.DrawItem(szBuffer);
+	hPanel.DrawItem(sBuffer);
 
 	FormatEx(sBuffer, sizeof(sBuffer), "%t", "Exit");
 	hPanel.CurrentKey = 9;
-	hPanel.DrawItem(szBuffer);
+	hPanel.DrawItem(sBuffer);
 
 	hPanel.Send(iClient, Handler_Panel, MENU_TIME_FOREVER);
 	delete hPanel;
