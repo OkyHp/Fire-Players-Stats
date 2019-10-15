@@ -227,7 +227,7 @@ public Action TimerSaveStats(Handle hTimer)
 	return Plugin_Continue;
 }
 
-public int SteamWorks_SteamServersConnected()
+public void SteamWorks_SteamServersConnected()
 {
 	int iIP[4];
 	if (SteamWorks_GetPublicIP(iIP)) // && iIP[0] && iIP[1] && iIP[2] && iIP[3]

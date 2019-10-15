@@ -298,7 +298,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 						if (g_iPlayerSessionData[i][MAX_ROUNDS_KILLS])
 						{
 							float fPoints = g_fPlayerPoints[i] - fRoundPlayerPoints[i];
-							FPS_PrintToChat(i, "%t", "PrintPoints", fPoints > 0.0 ? "{GREEN}" : "{RED}", fPoints);
+							FPS_PrintToChat(i, "%t", "PrintPoints", g_fPlayerPoints[i], fPoints > 0.0 ? "{GREEN}+" : "{RED}", fPoints);
 						}
 
 						if (bSave)

@@ -59,3 +59,4 @@
 		Added mp_randomspawn support for correct saving of statistics in deathmatch.
 1.4.1 - Added new native FPS_IsExistFeature.
 		Fixed bug when getting knife in death event.
+		Changed message of total points at end of round.

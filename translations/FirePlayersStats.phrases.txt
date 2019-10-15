@@ -391,10 +391,10 @@
 
 	"PrintPoints"
 	{
-		"#format"	"{1:s},{2:.2f}"
-		"en"		"Points earned per round: {1}{2}"
-		"ru"		"Очки полученные за раунд: {1}{2}"
-		"ua"		"Поінти отримані за раунд: {1}{2}"
+		"#format"	"{1:.2f},{2:s},{3:.2f}"
+		"en"		"Your points: {OLIVE}{1} (Result for this round: {2}{3})"
+		"ru"		"Ваши поинты: {OLIVE}{1} (Итог за этот раунд: {2}{3})"
+		"ua"		"Ваші поінти: {OLIVE}{1} (Підсумок за цей раунд: {2}{3})"
 	}
 
 	"StatsWarmupBlocked"
