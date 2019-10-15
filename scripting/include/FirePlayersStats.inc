@@ -333,21 +333,25 @@ native void FPS_MoveToMenu(int iClient, FeatureMenus eType, int iPage = 0);
 /////////////////////////////////////////////////////////////////////////////////
 
 // Find translation rank
-stock char[] FindTranslationRank(int iClient, char szRank[64] = NULL_STRING)
+stock char[] FindTranslationRank(int iClient, char[] szRank = NULL_STRING)
 {
-	static char szRankTr[128];
-
+	static char szRankName[128];
+	
 	if (!szRank[0])
 	{
-		FPS_GetRanks(iClient, SZF(szRank));
+		FPS_GetRanks(iClient, SZF(szRankName));
 	}
-
-	if (TranslationPhraseExists(szRank))
+	else
 	{
-		Format(SZF(szRankTr), "%T", szRank, iClient);
+		strcopy(SZF(szRankName), szRank);
+	}
+	
+	if (TranslationPhraseExists(szRankName))
+	{
+		Format(SZF(szRankName), "%T", szRankName, iClient);
 	}
 
-	return szRankTr;
+	return szRankName;
 }
 
 // Taken from CS:GO COLORS by Феникс(komashchenko)
