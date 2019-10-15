@@ -285,12 +285,12 @@
 	"fps_double_kill"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Double kill: {1}"
+		"en"		"Doublekill: {1}"
 	}
 	"fps_triple_kill"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Triple kill: {1}"
+		"en"		"Triplekill: {1}"
 	}
 	"fps_domination"
 	{
@@ -305,7 +305,7 @@
 	"fps_mega_kill"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Mega kill: {1}"
+		"en"		"Megakill: {1}"
 	}
 
 	// ------------------------------------
