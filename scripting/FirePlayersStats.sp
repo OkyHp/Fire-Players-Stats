@@ -158,6 +158,11 @@ public void OnPluginStart()
 	g_bStatsLoaded = true;
 	CallForward_OnFPSStatsLoaded();
 
+	LoadTopData();
+	#if USE_RANKS == 1
+		LoadRanksSettings();
+	#endif
+		
 	for (int i = 1; i <= MaxClients; ++i)
 	{
 		if (IsClientInGame(i) && !IsFakeClient(i) && !IsClientSourceTV(i))
@@ -180,10 +185,10 @@ public void ChangeCvar_RandomSpawn(ConVar Convar, const char[] oldValue, const c
 
 public void OnMapStart()
 {
+	LoadTopData();
 	#if USE_RANKS == 1
 		LoadRanksSettings();
 	#endif
-	LoadTopData();
 
 	if (CanTestFeatures() && GetFeatureStatus(FeatureType_Native, "SteamWorks_CreateHTTPRequest") == FeatureStatus_Available)
 	{
@@ -194,7 +199,7 @@ public void OnMapStart()
 
 	if (g_bRandomspawn)
 	{
-		CreateTimer(float(g_iSaveInterval / 60), TimerSaveStats, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(float(g_iSaveInterval * 60), TimerSaveStats, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 

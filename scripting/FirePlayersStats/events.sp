@@ -301,7 +301,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 							FPS_PrintToChat(i, "%t", "PrintPoints", g_fPlayerPoints[i], fPoints > 0.0 ? "{GREEN}+" : "{RED}", fPoints);
 						}
 
-						if (bSave)
+						if (!g_bRandomspawn && bSave)
 						{
 							FPS_Debug("Call Save Function >> %N | %i", i, iSave)
 							SavePlayerData(i);
@@ -309,7 +309,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 					}
 				}
 
-				if (bSave)
+				if (!g_bRandomspawn && bSave)
 				{
 					LoadTopData();
 					for (int i = 1; i < MaxClients; ++i)

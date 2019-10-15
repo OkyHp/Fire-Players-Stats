@@ -61,3 +61,4 @@
 		Fixed bug when getting knife in death event.
 		Changed message of total points at end of round.
 		Fixed minor error.
+		Fixed timer time for save data.
