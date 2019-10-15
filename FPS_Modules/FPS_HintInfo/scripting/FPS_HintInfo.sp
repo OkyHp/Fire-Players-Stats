@@ -11,7 +11,7 @@ int		g_iPlayerLevel[MAXPLAYERS+1],
 		g_iPlayersCount;
 bool	g_bHintState[MAXPLAYERS+1];
 float	g_fPlayerPoints[MAXPLAYERS+1];
-char	g_sPlayerRank[MAXPLAYERS+1][256];
+char	g_sPlayerRank[MAXPLAYERS+1][64];
 Handle	g_hCookie;
 
 static const char g_sFeature[] = "FPS_HintInfo";
@@ -20,7 +20,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Hint Info",
 	author	=	"OkyHp",
-	version	=	"1.1.0",
+	version	=	"1.1.1",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -113,7 +113,7 @@ public void FPS_OnFPSStatsLoaded()
 
 public void OnPluginEnd()
 {
-	if (CanTestFeatures())
+	if (CanTestFeatures() && FPS_IsExistFeature(g_sFeature))
 	{
 		FPS_RemoveFeature(g_sFeature);
 	}
@@ -157,7 +157,7 @@ public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
 void GetPlayerLevel(int iClient, int iLevel)
 {
 	g_iPlayerLevel[iClient] = iLevel;
-	strcopy(g_sPlayerRank[iClient], sizeof(g_sPlayerRank[]), FindTranslationRank(iClient));
+	FPS_GetRanks(iClient, g_sPlayerRank[iClient], sizeof(g_sPlayerRank[]));
 }
 
 public void OnPlayerRunCmdPost(int iClient)
@@ -172,7 +172,7 @@ public void OnPlayerRunCmdPost(int iClient)
 				g_fPlayerPoints[iTarget], 
 				g_iPlayerPosition[iTarget], g_iPlayersCount, 
 				g_iPlayerLevel[iTarget], 
-				g_sPlayerRank[iTarget]);
+				FindTranslationRank(iClient, g_sPlayerRank[iTarget]));
 		}
 	}
 }

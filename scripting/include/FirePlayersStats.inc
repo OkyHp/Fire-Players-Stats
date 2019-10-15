@@ -29,6 +29,10 @@ public void __pl_fire_players_stats_SetNTVOptional()
 	MarkNativeAsOptional("FPS_GetMaxRanks");
 	MarkNativeAsOptional("FPS_GetStatsData");
 	MarkNativeAsOptional("FPS_IsCalibration");
+	MarkNativeAsOptional("FPS_AddFeature");
+	MarkNativeAsOptional("FPS_RemoveFeature");
+	MarkNativeAsOptional("FPS_IsExistFeature");
+	MarkNativeAsOptional("FPS_MoveToMenu");
 }
 #endif
 
@@ -329,16 +333,21 @@ native void FPS_MoveToMenu(int iClient, FeatureMenus eType, int iPage = 0);
 /////////////////////////////////////////////////////////////////////////////////
 
 // Find translation rank
-stock char[] FindTranslationRank(int iClient)
+stock char[] FindTranslationRank(int iClient, char szRank[64] = NULL_STRING)
 {
-	static char szRank[128];
-	FPS_GetRanks(iClient, SZF(szRank));
-	if (TranslationPhraseExists(szRank))
+	static char szRankTr[128];
+
+	if (!szRank[0])
 	{
-		Format(SZF(szRank), "%T", szRank, iClient);
+		FPS_GetRanks(iClient, SZF(szRank));
 	}
 
-	return szRank;
+	if (TranslationPhraseExists(szRank))
+	{
+		Format(SZF(szRankTr), "%T", szRank, iClient);
+	}
+
+	return szRankTr;
 }
 
 // Taken from CS:GO COLORS by Феникс(komashchenko)
