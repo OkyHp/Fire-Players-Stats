@@ -392,9 +392,9 @@
 	"PrintPoints"
 	{
 		"#format"	"{1:.2f},{2:s},{3:.2f}"
-		"en"		"Your points: {OLIVE}{1} {DEFAULT}(Result for this round: {2}{3}{DEFAULT})"
-		"ru"		"Ваши поинты: {OLIVE}{1} {DEFAULT}(Итог за этот раунд: {2}{3})"
-		"ua"		"Ваші поінти: {OLIVE}{1} {DEFAULT}(Підсумок за цей раунд: {2}{3}{DEFAULT})"
+		"en"		"Your points: {OLIVE}{1} {DEFAULT}[Result for this round: {2}{3}{DEFAULT}]"
+		"ru"		"Ваши поинты: {OLIVE}{1} {DEFAULT}[Итог за этот раунд: {2}{3}]"
+		"ua"		"Ваші поінти: {OLIVE}{1} {DEFAULT}[Підсумок за цей раунд: {2}{3}{DEFAULT}]"
 	}
 
 	"StatsWarmupBlocked"
