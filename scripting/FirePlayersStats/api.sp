@@ -124,6 +124,7 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 	CreateNative("FPS_RemoveFeature",			Native_FPSRemoveFeature);
 	CreateNative("FPS_IsExistFeature",			Native_FPSIsExistFeature);
 	CreateNative("FPS_MoveToMenu",				Native_FPSMoveToMenu);
+	CreateNative("FPS_StatsActive",				Native_FPSStatsActive);
 
 	#if USE_RANKS == 1
 		CreateNative("FPS_GetLevel",				Native_FPSGetLevel);
@@ -341,4 +342,10 @@ public int Native_FPSMoveToMenu(Handle hPlugin, int iNumParams)
 			case FPS_ADVANCED_MENU:	ShowMainAdditionalMenu(iClient,	GetNativeCell(3));
 		}
 	}
+}
+
+// bool FPS_StatsActive();
+public int Native_FPSStatsActive(Handle hPlugin, int iNumParams)
+{
+	return g_bStatsActive;
 }

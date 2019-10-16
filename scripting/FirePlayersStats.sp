@@ -94,15 +94,22 @@ Database	g_hDatabase;
 float		g_fTopData[10][4];
 char		g_sTopData[10][4][64];
 
-enum
-{
-	F_MENU_TYPE = 1,
-	F_PLUGIN,
-	F_SELECT,
-	F_DISPLAY,
-	F_DRAW,
-	F_COUNT
-};
+// enum
+// {
+// 	F_MENU_TYPE = 1,
+// 	F_PLUGIN,
+// 	F_SELECT,
+// 	F_DISPLAY,
+// 	F_DRAW,
+// 	F_COUNT
+// };
+
+#define	F_MENU_TYPE		1
+#define	F_PLUGIN		2
+#define	F_SELECT		3
+#define	F_DISPLAY		4
+#define	F_DRAW			5
+#define	F_COUNT			6
 
 #include "FirePlayersStats/config.sp"
 #include "FirePlayersStats/database.sp"

@@ -33,6 +33,7 @@ public void __pl_fire_players_stats_SetNTVOptional()
 	MarkNativeAsOptional("FPS_RemoveFeature");
 	MarkNativeAsOptional("FPS_IsExistFeature");
 	MarkNativeAsOptional("FPS_MoveToMenu");
+	MarkNativeAsOptional("FPS_StatsActive");
 }
 #endif
 
@@ -288,7 +289,7 @@ typedef ItemDisplayCallback	= function bool (int iClient, char[] szDisplay, int 
 typedef ItemDrawCallback	= function int (int iClient, int iStyle);
 
 /**
- *	Добавление новой функции
+ *	Добавляет новую функцию
  *
  *	@param szFeature		Название функции.
  *	@param eType			Секция меню для добавления.
@@ -304,7 +305,7 @@ native void FPS_AddFeature(const char[]				szFeature,
 							ItemDrawCallback		OnItemDraw		= INVALID_FUNCTION);
 
 /**
- *	Удаление функции
+ *	Удаляет функцию
  *
  *	@param szFeature		Название функции.
  *	@noreturn
@@ -312,7 +313,7 @@ native void FPS_AddFeature(const char[]				szFeature,
 native void FPS_RemoveFeature(const char[] szFeature);
 
 /**
- *	Проверка существования функции
+ *	Получает статус функции
  *
  *	@param szFeature		Название функции.
  *	@return					true - Существует.
@@ -321,7 +322,7 @@ native void FPS_RemoveFeature(const char[] szFeature);
 native bool FPS_IsExistFeature(const char[] szFeature);
 
 /**
- *	Открыть секцию
+ *	Открывает секцию статистики
  *
  *	@param iClient			Индекс игрока.
  *	@param eType			Секция меню. -1 - Откроет главное меню статистики (Относится толкьо к этому нативу!).
@@ -329,6 +330,14 @@ native bool FPS_IsExistFeature(const char[] szFeature);
  *	@noreturn
 */
 native void FPS_MoveToMenu(int iClient, FeatureMenus eType, int iPage = 0);
+
+/**
+ *	Получает статус, работает ли статистика (Ведет сбор данных и начисляет ли поинты).
+ *
+ *	@return					true - Работает.
+ * 							false - Отключена в данный момент.
+*/
+native bool FPS_StatsActive();
 
 /////////////////////////////////////////////////////////////////////////////////
 

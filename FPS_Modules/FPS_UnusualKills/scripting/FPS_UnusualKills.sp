@@ -465,7 +465,7 @@ public Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, fl
 					{
 						if(g_iExpMode == 1 && g_iExp[iType] > 0)
 						{
-							FPS_PrintToChat(iAttacker, "%T: \x04%i", g_sNameUK[iType], iAttacker, g_iExp[iType]);
+							FPS_PrintToChat(iAttacker, "%T: \x04+%i.0", g_sNameUK[iType], iAttacker, g_iExp[iType]);
 						}
 
 						fAddPointsAttacker += float(g_iExp[iType]);
