@@ -14,32 +14,34 @@ void ResetData(int iClient)
 	g_sRankName[iClient][0] = 0;
 }
 
-// Weapons stats KV
-bool JumpToWeapons(int iClient, const char[] szWeapon)
+// Weapons stats
+// int iArray[W_SIZE];
+// iArray[W_HITS_HEAD]++;
+// WriteWeaponData(iClient, "awp", iArray)
+void WriteWeaponData(int iClient, char[] szWeapon, int iArray[W_SIZE])
 {
-	if (!g_hWeaponsKV)
+	if (g_hWeaponsData[iClient])
 	{
-		return false;
-	}
+		static int iIndex;
+		iIndex = g_hWeaponsData[iClient].FindString(szWeapon);
+		if (iIndex == -1)
+		{
+			FPS_Debug("WriteWeaponData >> Weapon '%s' not finded! Added in array", szWeapon)
+			g_hWeaponsData[iClient].PushString(szWeapon);
+			g_hWeaponsData[iClient].PushArray(SZF(iArray));
+			return;
+		}
 
-	char szAccountID[32];
-	IntToString(g_iPlayerAccountID[iClient], SZF(szAccountID));
+		FPS_Debug("WriteWeaponData >> Weapon '%s' finded! Index: %i", szWeapon, iIndex)
 
-	g_hWeaponsKV.Rewind();
-	if (!g_hWeaponsKV.JumpToKey(szAccountID, true))
-	{
-		LogError("SetWeaponsStats: JumpToKey %s failed!", szAccountID);
-		return false;
+		static int iBuffArray[W_SIZE];
+		g_hWeaponsData[iClient].GetArray(++iIndex, SZF(iBuffArray));
+		for (int i = 0; i < W_SIZE; ++i)
+		{
+			iArray[i] += iBuffArray[i];
+		}
+		g_hWeaponsData[iClient].SetArray(iIndex, SZF(iArray));
 	}
-	if (!g_hWeaponsKV.JumpToKey(szWeapon, true))
-	{
-		LogError("SetWeaponsStats: JumpToKey %s failed!", szWeapon);
-		return false;
-	}
-
-	FPS_Debug("JumpToWeapons >> %N: %s -> %s", iClient, szAccountID, szWeapon)
-		
-	return true;
 }
 
 // Reset if less zero

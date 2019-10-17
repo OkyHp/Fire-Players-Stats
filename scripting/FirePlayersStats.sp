@@ -39,12 +39,11 @@
 
 /////////////////////////////////////// PRECOMPILATION SETTINGS ///////////////////////////////////////
 
-#define USE_RANKS			1	// 0 - There will be no ranks, only points.
-#define UPDATE_SERVER_IP	0	// 0 - Disable. It is necessary if you use the domain instead of IP. 
-#define DEFAULT_POINTS		1000.0
-#define DEBUG				0	// Enable/Disable debug mod
-#define LOAD_TYPE			0	// Use forvard for load player stats:	0 - OnClientPostAdminCheck 
-								//										1 - OnClientAuthorized
+#define UPDATE_SERVER_IP	0		// 0 - Disable. It is necessary if you use domain instead of IP. 
+#define DEFAULT_POINTS		1000.0	// Not recommended change
+#define DEBUG				0		// Enable/Disable debug mod
+#define LOAD_TYPE			1		// Use forvard for load player stats:	0 - OnClientPostAdminCheck 
+									//										1 - OnClientAuthorized
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -72,7 +71,16 @@ bool		g_bStatsLoaded,
 			g_bTeammatesAreEnemies,
 			g_bRandomspawn;
 char		g_sMap[256];
+
+// Features
 ArrayList	g_hItems;
+
+#define	F_MENU_TYPE			1
+#define	F_PLUGIN			2
+#define	F_SELECT			3
+#define	F_DISPLAY			4
+#define	F_DRAW				5
+#define	F_COUNT				6
 
 // Ranks settings
 int			g_iRanksCount,
@@ -81,29 +89,26 @@ char		g_sRankName[MAXPLAYERS+1][64];
 KeyValues	g_hRanksConfigKV;
 
 // Weapons stats vars
-KeyValues	g_hWeaponsKV;
+ArrayList	g_hWeaponsData[MAXPLAYERS+1];
+
+#define	W_KILLS				0
+#define	W_SHOOTS			1
+#define	W_HITS_HEAD			2
+#define	W_HITS_NECK			3
+#define	W_HITS_CHEST		4
+#define	W_HITS_STOMACH		5
+#define	W_HITS_LEFT_ARM		6
+#define	W_HITS_RIGHT_ARM	7
+#define	W_HITS_LEFT_LEG		8
+#define	W_HITS_RIGHT_LEG	9
+#define	W_HEADSHOTS			10
+#define W_SIZE				11
+
 // Database vars
 Database	g_hDatabase;
 // Top Data
 float		g_fTopData[10][4];
 char		g_sTopData[10][4][64];
-
-// enum
-// {
-// 	F_MENU_TYPE = 1,
-// 	F_PLUGIN,
-// 	F_SELECT,
-// 	F_DISPLAY,
-// 	F_DRAW,
-// 	F_COUNT
-// };
-
-#define	F_MENU_TYPE		1
-#define	F_PLUGIN		2
-#define	F_SELECT		3
-#define	F_DISPLAY		4
-#define	F_DRAW			5
-#define	F_COUNT			6
 
 #include "FirePlayersStats/config.sp"
 #include "FirePlayersStats/database.sp"
@@ -132,7 +137,6 @@ public void OnPluginStart()
 	HookEvents();
 	SetCommands();
 
-	g_hWeaponsKV	= new KeyValues("Weapons_Stats");
 	g_hItems		= new ArrayList(ByteCountToCells(128));
 
 	LoadTranslations("FirePlayersStats.phrases");
@@ -286,6 +290,7 @@ public void OnClientAuthorized(int iClient)
 		if (iAccountID)
 		{
 			g_iPlayerAccountID[iClient] = iAccountID;
+			g_hWeaponsData[iClient] = new ArrayList(ByteCountToCells(32));
 			LoadPlayerData(iClient);
 		}
 		else
@@ -301,6 +306,11 @@ public void OnClientDisconnect(int iClient)
 	{
 		SavePlayerData(iClient);
 	}
-	
+
+	if (g_hWeaponsData[iClient])
+	{
+		delete g_hWeaponsData[iClient];
+	}
+
 	ResetData(iClient);
 }

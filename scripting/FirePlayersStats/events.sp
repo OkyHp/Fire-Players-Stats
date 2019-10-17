@@ -32,10 +32,10 @@ void HookEvents()
 
 public void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 {
-	if (g_bStatsActive && g_hWeaponsKV)
+	if (g_bStatsActive)
 	{
 		int iClient = CID(hEvent.GetInt("userid"));
-		if (!iClient || !g_bStatsLoad[iClient])
+		if (!iClient || !g_bStatsLoad[iClient] || !g_hWeaponsData[iClient])
 		{
 			return;
 		}
@@ -48,22 +48,21 @@ public void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroad
 			{
 				szWeapon = "weapon_knife";
 			}
-			FPS_Debug("----->> Event_WeaponFire >>----- %s", szWeapon)
+			FPS_Debug("----->> Event_WeaponFire >>----- %s", szWeapon[7])
 
-			if (JumpToWeapons(iClient, szWeapon[7]))
-			{
-				g_hWeaponsKV.SetNum("shoots", g_hWeaponsKV.GetNum("shoots", 0) + 1);
-			}
+			int iArray[W_SIZE];
+			iArray[W_SHOOTS]++;
+			WriteWeaponData(iClient, szWeapon[7], iArray);
 		}
 	}
 }
 
 public void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 {
-	if (g_bStatsActive && g_hWeaponsKV)
+	if (g_bStatsActive)
 	{
 		int iAttacker = CID(hEvent.GetInt("attacker"));
-		if (!iAttacker || CID(hEvent.GetInt("userid")) == iAttacker || !g_bStatsLoad[iAttacker])
+		if (!iAttacker || CID(hEvent.GetInt("userid")) == iAttacker || !g_bStatsLoad[iAttacker] || !g_hWeaponsData[iAttacker])
 		{
 			return;
 		}
@@ -80,22 +79,24 @@ public void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroad
 			{
 				szWeapon = "weapon_knife";
 			}
-			FPS_Debug("----->> Event_PlayerHurt >>----- %s", szWeapon)
+			FPS_Debug("----->> Event_PlayerHurt >>----- %s", szWeapon[7])
 
 			int iHitgroup = hEvent.GetInt("hitgroup");
-			if (iHitgroup != HITGROUP_GENERIC && iHitgroup != HITGROUP_GEAR && JumpToWeapons(iAttacker, szWeapon[7]))
+			if (iHitgroup != HITGROUP_GENERIC && iHitgroup != HITGROUP_GEAR)
 			{
+				int iArray[W_SIZE];
 				switch(iHitgroup)
 				{
-					case HITGROUP_HEAD:		g_hWeaponsKV.SetNum("hitsHead",		g_hWeaponsKV.GetNum("hitsHead", 0)		+ 1);
-					case HITGROUP_NECK:		g_hWeaponsKV.SetNum("hitsNeck",		g_hWeaponsKV.GetNum("hitsNeck", 0)		+ 1);
-					case HITGROUP_CHEST:	g_hWeaponsKV.SetNum("hitsChest",	g_hWeaponsKV.GetNum("hitsChest", 0)		+ 1);
-					case HITGROUP_STOMACH:	g_hWeaponsKV.SetNum("hitsStomach",	g_hWeaponsKV.GetNum("hitsStomach", 0)	+ 1);
-					case HITGROUP_LEFTARM:	g_hWeaponsKV.SetNum("hitsLeftArm",	g_hWeaponsKV.GetNum("hitsLeftArm", 0)	+ 1);
-					case HITGROUP_RIGHTARM:	g_hWeaponsKV.SetNum("hitsRightArm",	g_hWeaponsKV.GetNum("hitsRightArm", 0)	+ 1);
-					case HITGROUP_LEFTLEG:	g_hWeaponsKV.SetNum("hitsLeftLeg",	g_hWeaponsKV.GetNum("hitsLeftLeg", 0)	+ 1);
-					case HITGROUP_RIGHTLEG:	g_hWeaponsKV.SetNum("hitsRightLeg",	g_hWeaponsKV.GetNum("hitsRightLeg", 0)	+ 1);
+					case HITGROUP_HEAD:		iArray[W_HITS_HEAD]++;
+					case HITGROUP_NECK:		iArray[W_HITS_NECK]++;
+					case HITGROUP_CHEST:	iArray[W_HITS_CHEST]++;
+					case HITGROUP_STOMACH:	iArray[W_HITS_STOMACH]++;
+					case HITGROUP_LEFTARM:	iArray[W_HITS_LEFT_ARM]++;
+					case HITGROUP_RIGHTARM:	iArray[W_HITS_RIGHT_ARM]++;
+					case HITGROUP_LEFTLEG:	iArray[W_HITS_LEFT_LEG]++;
+					case HITGROUP_RIGHTLEG:	iArray[W_HITS_RIGHT_LEG]++;
 				}
+				WriteWeaponData(iAttacker, szWeapon[7], iArray);
 			}
 		}
 	}
@@ -142,22 +143,21 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 			bool	bHeadshot = hEvent.GetBool("headshot"),
 					bIsGrenade = IsGrenade(szWeapon);
 
-			if (g_hWeaponsKV && !bIsGrenade)
+			if (g_hWeaponsData[iAttacker] && !bIsGrenade)
 			{
 				if (IsKnife(szWeapon))
 				{
 					szWeapon = "knife";
 				}
 
-				if (JumpToWeapons(iAttacker, szWeapon))
+				int iArray[W_SIZE];
+				iArray[W_KILLS]++;
+				if (bHeadshot)
 				{
-					g_hWeaponsKV.SetNum("kills", g_hWeaponsKV.GetNum("kills", 0) + 1);
-					if (bHeadshot)
-					{
-						g_hWeaponsKV.SetNum("headshots", g_hWeaponsKV.GetNum("headshots", 0) + 1);
-					}
-					FPS_Debug("Event_Death >> g_hWeaponsKV >> Kills (%s)", bHeadshot ? "HS" : "No HS")
+					iArray[W_HEADSHOTS]++;
 				}
+				FPS_Debug("Event_Death >> Weapon: %s >> HS: %s", szWeapon, bHeadshot ? "TRUE" : "FALSE")
+				WriteWeaponData(iAttacker, szWeapon, iArray);
 			}
 
 			float	fPointsAttacker = ((g_fPlayerPoints[iVictim] / g_fPlayerPoints[iAttacker]) * 5.0 + (bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0) + StreakPoints(iAttacker) * (!bIsGrenade ? GetWeaponExtraPoints(szWeapon[7]) : 0.0)),
