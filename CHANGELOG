@@ -62,5 +62,5 @@
 		Changed message of total points at end of round.
 		Fixed minor error.
 		Fixed timer time for save data.
-		Added native FPS_StatsActive.
+		Added native FPS_StatsActive, FPS_GetID.
 		Update source for SM 1.10 compiler.

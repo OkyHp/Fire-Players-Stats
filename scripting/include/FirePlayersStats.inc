@@ -34,6 +34,7 @@ public void __pl_fire_players_stats_SetNTVOptional()
 	MarkNativeAsOptional("FPS_IsExistFeature");
 	MarkNativeAsOptional("FPS_MoveToMenu");
 	MarkNativeAsOptional("FPS_StatsActive");
+	MarkNativeAsOptional("FPS_GetID");
 }
 #endif
 
@@ -61,6 +62,12 @@ enum FeatureMenus
 	FPS_STATS_MENU = 0,	// Секция меню статистики
 	FPS_TOP_MENU,		// Секция меню списка топов
 	FPS_ADVANCED_MENU	// Секция дополнительного меню
+};
+
+enum StatsID
+{
+	FPS_SERVER_ID = 0,
+	FPS_RANK_ID
 };
 
 /****************** FORWARDS ******************/
@@ -338,6 +345,14 @@ native void FPS_MoveToMenu(int iClient, FeatureMenus eType, int iPage = 0);
  * 							false - Отключена в данный момент.
 */
 native bool FPS_StatsActive();
+
+/**
+ *	Получает ID.
+ *
+ *	@param eType			Тип получаемого ID.
+ *	@return					ID.
+*/
+native int FPS_GetID(StatsID eType);
 
 /////////////////////////////////////////////////////////////////////////////////
 

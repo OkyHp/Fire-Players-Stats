@@ -125,6 +125,7 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 	CreateNative("FPS_IsExistFeature",			Native_FPSIsExistFeature);
 	CreateNative("FPS_MoveToMenu",				Native_FPSMoveToMenu);
 	CreateNative("FPS_StatsActive",				Native_FPSStatsActive);
+	CreateNative("FPS_GetID",					Native_FPSGetID);
 
 	#if USE_RANKS == 1
 		CreateNative("FPS_GetLevel",				Native_FPSGetLevel);
@@ -340,6 +341,7 @@ public int Native_FPSMoveToMenu(Handle hPlugin, int iNumParams)
 			case FPS_STATS_MENU:	ShowMainStatsMenu(iClient,		GetNativeCell(3));
 			case FPS_TOP_MENU:		ShowMainTopMenu(iClient,		GetNativeCell(3));
 			case FPS_ADVANCED_MENU:	ShowMainAdditionalMenu(iClient,	GetNativeCell(3));
+			default: ThrowNativeError(SP_ERROR_NATIVE, "[FPS] Invalid FeatureMenus type!");
 		}
 	}
 }
@@ -348,4 +350,16 @@ public int Native_FPSMoveToMenu(Handle hPlugin, int iNumParams)
 public int Native_FPSStatsActive(Handle hPlugin, int iNumParams)
 {
 	return g_bStatsActive;
+}
+
+// int FPS_GetID(StatsID eType)
+public int Native_FPSGetID(Handle hPlugin, int iNumParams)
+{
+	switch(GetNativeCell(1))
+	{
+		case FPS_SERVER_ID:	return g_iServerID;
+		case FPS_RANK_ID:	return g_iRanksID;
+		default: ThrowNativeError(SP_ERROR_NATIVE, "[FPS] Invalid StatsID type!");
+	}
+	return 0;
 }
