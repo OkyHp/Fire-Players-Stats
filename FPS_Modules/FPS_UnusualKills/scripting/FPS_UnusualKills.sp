@@ -27,20 +27,24 @@
 #define SQL_CreateTable "\
 CREATE TABLE IF NOT EXISTS `fps_unusualkills` \
 (\
-	`account_id` int NOT NULL PRIMARY KEY, \
-	`op` int NOT NULL DEFAULT 0, \
-	`penetrated` int NOT NULL DEFAULT 0, \
-	`no_scope` int NOT NULL DEFAULT 0, \
-	`run` int NOT NULL DEFAULT 0, \
-	`jump` int NOT NULL DEFAULT 0, \
-	`flash` int NOT NULL DEFAULT 0, \
-	`smoke` int NOT NULL DEFAULT 0, \
-	`whirl` int NOT NULL DEFAULT 0, \
-	`last_clip` int NOT NULL DEFAULT 0 \
+	`id`			int NOT NULL AUTO_INCREMENT, \
+	`account_id`	int NOT NULL, \
+	`server_id`		int	NOT NULL, \
+	`op`			int NOT NULL DEFAULT 0, \
+	`penetrated`	int NOT NULL DEFAULT 0, \
+	`no_scope`		int NOT NULL DEFAULT 0, \
+	`run`			int NOT NULL DEFAULT 0, \
+	`jump`			int NOT NULL DEFAULT 0, \
+	`flash`			int NOT NULL DEFAULT 0, \
+	`smoke`			int NOT NULL DEFAULT 0, \
+	`whirl`			int NOT NULL DEFAULT 0, \
+	`last_clip`		int NOT NULL DEFAULT 0, \
+	PRIMARY KEY (`id`), \
+	UNIQUE(`account_id`, `server_id`) \
 ) CHARSET = utf8mb4 COLLATE utf8mb4_general_ci;"
-#define SQL_CreatePlayer "INSERT INTO `fps_unusualkills` (`account_id`) VALUES ('%i');"
-#define SQL_LoadPlayer "SELECT `op`, `penetrated`, `no_scope`, `run`, `jump`, `flash`, `smoke`, `whirl`, `last_clip` FROM `fps_unusualkills` WHERE `account_id` = '%i';"
-#define SQL_SavePlayer "UPDATE `fps_unusualkills` SET %s WHERE `account_id` = '%i';"
+#define SQL_CreatePlayer "INSERT INTO `fps_unusualkills` (`account_id`, `server_id`) VALUES ('%i', '%i');"
+#define SQL_LoadPlayer "SELECT `op`, `penetrated`, `no_scope`, `run`, `jump`, `flash`, `smoke`, `whirl`, `last_clip` FROM `fps_unusualkills` WHERE `account_id` = '%i' AND `server_id` = '%i';"
+#define SQL_SavePlayer "UPDATE `fps_unusualkills` SET %s WHERE `account_id` = '%i' AND `server_id` = '%i';"
 
 #define RadiusSmoke 100.0
 
@@ -209,7 +213,7 @@ public void FPS_OnClientLoaded(int iClient, float fPoints)
 		g_iPlayerAccountID[iClient] = iAccountID;
 
 		static char sQuery[256];
-		FormatEx(sQuery, sizeof(sQuery), SQL_LoadPlayer, g_iPlayerAccountID[iClient]);
+		FormatEx(sQuery, sizeof(sQuery), SQL_LoadPlayer, g_iPlayerAccountID[iClient], FPS_GetID(FPS_SERVER_ID));
 		g_hDatabase.Query(SQL_Callback_LoadPlayer, sQuery, GetClientUserId(iClient));
 
 		return;
@@ -236,7 +240,7 @@ public void SQL_Callback_LoadPlayer(Database db, DBResultSet dbRs, const char[] 
 			if (g_hDatabase)
 			{
 				static char sQuery[256];
-				FormatEx(sQuery, sizeof(sQuery), SQL_CreatePlayer, g_iPlayerAccountID[iClient]);
+				FormatEx(sQuery, sizeof(sQuery), SQL_CreatePlayer, g_iPlayerAccountID[iClient], FPS_GetID(FPS_SERVER_ID));
 				g_hDatabase.Query(SQL_Default_Callback, sQuery, 4);
 			}
 
@@ -361,124 +365,127 @@ void OnRoundStart()
 
 public Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, float& fAddPointsAttacker, float& fAddPointsVictim)
 {
-	static char sWeapon[32];
-	hEvent.GetString("weapon", sWeapon, sizeof(sWeapon));
-
-	if(g_hBuffer[ProhibitedWeapons].FindString(sWeapon) == -1)
+	if (FPS_StatsActive())
 	{
-		int iActiveWeapon = GetEntDataEnt2(iAttacker, m_hActiveWeapon),
-			iUKFlags = UnusualKill_None;
+		static char sWeapon[32];
+		hEvent.GetString("weapon", sWeapon, sizeof(sWeapon));
 
-		static float vecVelocity[3];
-
-		if(!g_bOPKill)
+		if(g_hBuffer[ProhibitedWeapons].FindString(sWeapon) == -1)
 		{
-			iUKFlags |= UnusualKill_OpenFrag;
-			g_bOPKill = true;
-		}
+			int iActiveWeapon = GetEntDataEnt2(iAttacker, m_hActiveWeapon),
+				iUKFlags = UnusualKill_None;
 
-		if(hEvent.GetBool("penetrated"))
-		{
-			iUKFlags |= UnusualKill_Penetrated;
-		}
+			static float vecVelocity[3];
 
-		if(g_iEngine == Engine_CSGO && !GetEntData(iAttacker, m_bIsScoped) && g_hBuffer[NoScope_Weapons].FindString(sWeapon) != -1)
-		{
-			iUKFlags |= UnusualKill_NoScope;
-		}
-
-		GetEntDataVector(iAttacker, m_vecVelocity, vecVelocity);
-
-		if(vecVelocity[2])
-		{
-			iUKFlags |= UnusualKill_Jump;
-			vecVelocity[2] = 0.0;
-		}
-
-		if(GetVectorDistance(NULL_VECTOR, vecVelocity) > g_flMinLenVelocity)
-		{
-			iUKFlags |= UnusualKill_Run;
-		}
-
-		if(g_flMinFlash < GetEntDataFloat(iAttacker, m_flFlashDuration))
-		{
-			iUKFlags |= UnusualKill_Flash;
-		}
-
-		for(int i = g_iMinSmokes, iSmokeEntity; i != g_hSmokeEnt.Length;)
-		{
-			if(IsValidEntity((iSmokeEntity = g_hSmokeEnt.Get(i++))))
+			if(!g_bOPKill)
 			{
-				static float vecClient[3], 
-							vecAttacker[3], 
-							vecSmoke[3],
-
-							flDistance,
-							flDistance2,
-							flDistance3;
-
-				GetEntDataVector(iVictim, m_vecOrigin, vecClient);
-				GetEntDataVector(iAttacker, m_vecOrigin, vecAttacker);
-				GetEntDataVector(iSmokeEntity, m_vecOrigin, vecSmoke);
-
-				vecClient[2] -= 64.0;
-
-				flDistance = GetVectorDistance(vecClient, vecSmoke);
-				flDistance2 = GetVectorDistance(vecAttacker, vecSmoke);
-				flDistance3 = GetVectorDistance(vecClient, vecAttacker);
-
-				if((flDistance + flDistance2) * 0.7 <= flDistance3 + RadiusSmoke)
-				{
-					float flHalfPerimeter = (flDistance + flDistance2 + flDistance3) / 2.0;
-
-					if((2.0 * SquareRoot(flHalfPerimeter * (flHalfPerimeter - flDistance) * (flHalfPerimeter - flDistance2) * (flHalfPerimeter - flDistance3))) / flDistance3 < RadiusSmoke)
-					{
-						iUKFlags |= UnusualKill_Smoke;
-						break;
-					}
-				}
+				iUKFlags |= UnusualKill_OpenFrag;
+				g_bOPKill = true;
 			}
-		}
 
-		if((g_iMouceX[iAttacker] < 0 ? -g_iMouceX[iAttacker] : g_iMouceX[iAttacker]) > g_iWhirl)
-		{
-			iUKFlags |= UnusualKill_Whirl;
-		}
-
-		if(iActiveWeapon != -1 && !GetEntData(iActiveWeapon, m_iClip1))
-		{
-			iUKFlags |= UnusualKill_LastClip;
-		}
-
-		if(iUKFlags)
-		{
-			char sColumns[MAX_UKTYPES * 16],
-				 sQuery[256];
-
-			for(int iType = 0; iType != MAX_UKTYPES; iType++)
+			if(hEvent.GetBool("penetrated"))
 			{
-				if(iUKFlags & (1 << iType + 1))
-				{
-					FormatEx(sColumns, sizeof(sColumns), "%s`%s` = %d, ", sColumns, g_sNameUK[iType], ++g_iUK[iAttacker][iType]);
+				iUKFlags |= UnusualKill_Penetrated;
+			}
 
-					if(g_iExp[iType])
+			if(g_iEngine == Engine_CSGO && !GetEntData(iAttacker, m_bIsScoped) && g_hBuffer[NoScope_Weapons].FindString(sWeapon) != -1)
+			{
+				iUKFlags |= UnusualKill_NoScope;
+			}
+
+			GetEntDataVector(iAttacker, m_vecVelocity, vecVelocity);
+
+			if(vecVelocity[2])
+			{
+				iUKFlags |= UnusualKill_Jump;
+				vecVelocity[2] = 0.0;
+			}
+
+			if(GetVectorDistance(NULL_VECTOR, vecVelocity) > g_flMinLenVelocity)
+			{
+				iUKFlags |= UnusualKill_Run;
+			}
+
+			if(g_flMinFlash < GetEntDataFloat(iAttacker, m_flFlashDuration))
+			{
+				iUKFlags |= UnusualKill_Flash;
+			}
+
+			for(int i = g_iMinSmokes, iSmokeEntity; i != g_hSmokeEnt.Length;)
+			{
+				if(IsValidEntity((iSmokeEntity = g_hSmokeEnt.Get(i++))))
+				{
+					static float vecClient[3], 
+								vecAttacker[3], 
+								vecSmoke[3],
+
+								flDistance,
+								flDistance2,
+								flDistance3;
+
+					GetEntDataVector(iVictim, m_vecOrigin, vecClient);
+					GetEntDataVector(iAttacker, m_vecOrigin, vecAttacker);
+					GetEntDataVector(iSmokeEntity, m_vecOrigin, vecSmoke);
+
+					vecClient[2] -= 64.0;
+
+					flDistance = GetVectorDistance(vecClient, vecSmoke);
+					flDistance2 = GetVectorDistance(vecAttacker, vecSmoke);
+					flDistance3 = GetVectorDistance(vecClient, vecAttacker);
+
+					if((flDistance + flDistance2) * 0.7 <= flDistance3 + RadiusSmoke)
 					{
-						if(g_iExpMode == 1 && g_iExp[iType] > 0)
+						float flHalfPerimeter = (flDistance + flDistance2 + flDistance3) / 2.0;
+
+						if((2.0 * SquareRoot(flHalfPerimeter * (flHalfPerimeter - flDistance) * (flHalfPerimeter - flDistance2) * (flHalfPerimeter - flDistance3))) / flDistance3 < RadiusSmoke)
 						{
-							FPS_PrintToChat(iAttacker, "%T: \x04+%i.0", g_sNameUK[iType], iAttacker, g_iExp[iType]);
+							iUKFlags |= UnusualKill_Smoke;
+							break;
 						}
-
-						fAddPointsAttacker += float(g_iExp[iType]);
 					}
 				}
 			}
 
-			sColumns[strlen(sColumns)-2] = '\0';
+			if((g_iMouceX[iAttacker] < 0 ? -g_iMouceX[iAttacker] : g_iMouceX[iAttacker]) > g_iWhirl)
+			{
+				iUKFlags |= UnusualKill_Whirl;
+			}
 
-			FormatEx(sQuery, sizeof(sQuery), SQL_SavePlayer, sColumns, g_iPlayerAccountID[iAttacker]);
-			g_hDatabase.Query(SQL_Default_Callback, sQuery, 3);
+			if(iActiveWeapon != -1 && !GetEntData(iActiveWeapon, m_iClip1))
+			{
+				iUKFlags |= UnusualKill_LastClip;
+			}
 
-			return Plugin_Changed;
+			if(iUKFlags)
+			{
+				char sColumns[MAX_UKTYPES * 16],
+					 sQuery[256];
+
+				for(int iType = 0; iType != MAX_UKTYPES; iType++)
+				{
+					if(iUKFlags & (1 << iType + 1))
+					{
+						FormatEx(sColumns, sizeof(sColumns), "%s`%s` = %d, ", sColumns, g_sNameUK[iType], ++g_iUK[iAttacker][iType]);
+
+						if(g_iExp[iType])
+						{
+							if(g_iExpMode == 1 && g_iExp[iType] > 0)
+							{
+								FPS_PrintToChat(iAttacker, "%T: \x04+%i.0", g_sNameUK[iType], iAttacker, g_iExp[iType]);
+							}
+
+							fAddPointsAttacker += float(g_iExp[iType]);
+						}
+					}
+				}
+
+				sColumns[strlen(sColumns)-2] = '\0';
+
+				FormatEx(sQuery, sizeof(sQuery), SQL_SavePlayer, sColumns, g_iPlayerAccountID[iAttacker], FPS_GetID(FPS_SERVER_ID));
+				g_hDatabase.Query(SQL_Default_Callback, sQuery, 3);
+
+				return Plugin_Changed;
+			}
 		}
 	}
 
