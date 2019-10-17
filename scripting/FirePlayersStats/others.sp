@@ -10,10 +10,8 @@ void ResetData(int iClient)
 		g_iPlayerSessionData[iClient][i] = g_iPlayerData[iClient][i] = 0;
 	}
 
-	#if USE_RANKS == 1
-		g_iPlayerRanks[iClient] = 0;
-		g_sRankName[iClient][0] = 0;
-	#endif
+	g_iPlayerRanks[iClient] = 0;
+	g_sRankName[iClient][0] = 0;
 }
 
 // Weapons stats KV
@@ -112,50 +110,48 @@ float GetWeaponExtraPoints(const char[] szWeapon)
 	return 1.0;
 }
 
-#if USE_RANKS == 1
-	// Check rank level
-	void CheckRank(int iClient)
+// Check rank level
+void CheckRank(int iClient)
+{
+	if (FPS_IsCalibration(iClient))
 	{
-		if (FPS_IsCalibration(iClient))
-		{
-			g_iPlayerRanks[iClient] = 0;
-			g_sRankName[iClient] = "Calibration";
-			return;
-		}
+		g_iPlayerRanks[iClient] = 0;
+		g_sRankName[iClient] = "Calibration";
+		return;
+	}
 
-		if (g_hRanksConfigKV)
+	if (g_hRanksConfigKV)
+	{
+		int iLevel = g_iRanksCount;
+		g_hRanksConfigKV.Rewind();
+		if (g_hRanksConfigKV.GotoFirstSubKey(false))
 		{
-			int iLevel = g_iRanksCount;
-			g_hRanksConfigKV.Rewind();
-			if (g_hRanksConfigKV.GotoFirstSubKey(false))
-			{
-				do {
-					if (g_hRanksConfigKV.GetFloat(NULL_STRING) <= g_fPlayerPoints[iClient])
+			do {
+				if (g_hRanksConfigKV.GetFloat(NULL_STRING) <= g_fPlayerPoints[iClient])
+				{
+					if (iLevel == g_iPlayerRanks[iClient])
 					{
-						if (iLevel == g_iPlayerRanks[iClient])
-						{
-							return;
-						}
-
-						g_hRanksConfigKV.GetSectionName(g_sRankName[iClient], sizeof(g_sRankName[]));
-
-						if (g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS])
-						{
-							FPS_PrintToChat(iClient, "%t", g_iPlayerRanks[iClient] ? (iLevel > g_iPlayerRanks[iClient] ? "RankUpped" : "RankDowned") : "CalibrationCompleted", FindTranslationRank(iClient));
-							CallForward_OnFPSLevelChange(iClient, g_iPlayerRanks[iClient], iLevel);
-							FPS_Debug("CheckRank Notification (New level) >> %N: %i", iClient, iLevel)
-						}
-
-						g_iPlayerRanks[iClient] = iLevel;
-						FPS_Debug("CheckRank >> %N: %i | %s", iClient, g_iPlayerRanks[iClient], g_sRankName[iClient])
 						return;
 					}
-					--iLevel;
-				} while (g_hRanksConfigKV.GotoNextKey(false));
-			}
+
+					g_hRanksConfigKV.GetSectionName(g_sRankName[iClient], sizeof(g_sRankName[]));
+
+					if (g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS])
+					{
+						FPS_PrintToChat(iClient, "%t", g_iPlayerRanks[iClient] ? (iLevel > g_iPlayerRanks[iClient] ? "RankUpped" : "RankDowned") : "CalibrationCompleted", FindTranslationRank(iClient));
+						CallForward_OnFPSLevelChange(iClient, g_iPlayerRanks[iClient], iLevel);
+						FPS_Debug("CheckRank Notification (New level) >> %N: %i", iClient, iLevel)
+					}
+
+					g_iPlayerRanks[iClient] = iLevel;
+					FPS_Debug("CheckRank >> %N: %i | %s", iClient, g_iPlayerRanks[iClient], g_sRankName[iClient])
+					return;
+				}
+				--iLevel;
+			} while (g_hRanksConfigKV.GotoNextKey(false));
 		}
 	}
-#endif
+}
 
 // Check grenade
 bool IsGrenade(const char[] szWeapon)

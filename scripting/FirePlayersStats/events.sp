@@ -112,9 +112,7 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 			{
 				g_iPlayerData[iAssister][ASSISTS]++;
 				g_fPlayerPoints[iAssister] += g_fExtraPoints[CFG_ASSIST];
-				#if USE_RANKS == 1
-					CheckRank(iAssister);
-				#endif
+				CheckRank(iAssister);
 			}
 		}
 
@@ -130,9 +128,7 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 			if(!g_bTeammatesAreEnemies && g_fExtraPoints[CFG_TEAMKILL] && GetClientTeam(iAttacker) == GetClientTeam(iVictim))
 			{
 				g_fPlayerPoints[iAttacker] += g_fExtraPoints[CFG_TEAMKILL];
-				#if USE_RANKS == 1
-					CheckRank(iAttacker);
-				#endif
+				CheckRank(iAttacker);
 				FPS_Debug("Event_PlayerDeath >> TeamKill >> Attacker: %f", g_fPlayerPoints[iAttacker])
 				return;
 			}
@@ -194,10 +190,8 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 				}
 			}
 
-			#if USE_RANKS == 1
-				CheckRank(iAttacker);
-				CheckRank(iVictim);
-			#endif
+			CheckRank(iAttacker);
+			CheckRank(iVictim);
 
 			CallForward_OnFPSPointsChange(iAttacker, iVictim, g_fPlayerPoints[iAttacker], g_fPlayerPoints[iVictim]);
 			return;
@@ -253,9 +247,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 				if (iClient && g_bStatsLoad[iClient])
 				{
 					g_fPlayerPoints[iClient] += g_fExtraPoints[CFG_MVP_PLAYER];
-					#if USE_RANKS == 1
-						CheckRank(iClient);
-					#endif
+					CheckRank(iClient);
 				}
 
 				FPS_Debug("Event_RoundAction (m) >> MVP: %N", iClient)
@@ -290,9 +282,8 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 								g_iPlayerData[i][ROUND_LOSE]++;
 								g_fPlayerPoints[i] += g_fExtraPoints[CFG_LOSE_ROUND];
 							}
-							#if USE_RANKS == 1
-								CheckRank(i);
-							#endif
+							
+							CheckRank(i);
 						}
 
 						if (g_iPlayerSessionData[i][MAX_ROUNDS_KILLS])
@@ -360,9 +351,7 @@ public void Event_OtherAction(Event hEvent, const char[] sEvName, bool bDontBroa
 			}
 		}
 
-		#if USE_RANKS == 1
-			CheckRank(iClient);
-		#endif
+		CheckRank(iClient);
 
 		FPS_Debug("Event_OtherAction >> %s", sEvName)
 	}

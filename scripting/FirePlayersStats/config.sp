@@ -1,5 +1,6 @@
 // Conf vars
 int			g_iServerID,
+			g_iRanksID,
 			g_iMinPlayers,
 			g_iResetStatsTime,
 			g_iDeletePlayersTime,
@@ -11,10 +12,6 @@ float		g_fDBRetryConnTime,
 			g_fCoeff,
 			g_fExtraPoints[18];
 KeyValues	g_hWeaponsConfigKV;
-
-#if USE_RANKS == 1
-	int g_iRanksID;
-#endif
 
 // enum
 // {
@@ -95,15 +92,13 @@ void SetCvars()
 	)).AddChangeHook(ChangeCvar_ServerID);
 	ChangeCvar_ServerID(Convar, NULL_STRING, NULL_STRING);
 
-	#if USE_RANKS == 1
-		(Convar = CreateConVar(
-			"sm_fps_ranks_id",					"1", 
-			"ID настройки рангов. Позволит использовать одну и туже настройку \
-			\nрангов для некоторых серверов, при этом можно сделать уникальную для других",
-			_, true, 0.0
-		)).AddChangeHook(ChangeCvar_RanksID);
-		ChangeCvar_RanksID(Convar, NULL_STRING, NULL_STRING);
-	#endif
+	(Convar = CreateConVar(
+		"sm_fps_ranks_id",					"1", 
+		"ID настройки рангов. Позволит использовать одну и туже настройку \
+		\nрангов для некоторых серверов, при этом можно сделать уникальную для других",
+		_, true, 0.0
+	)).AddChangeHook(ChangeCvar_RanksID);
+	ChangeCvar_RanksID(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_min_players",				"4", 
@@ -183,12 +178,10 @@ public void ChangeCvar_ServerID(ConVar Convar, const char[] oldValue, const char
 	g_iServerID = Convar.IntValue;
 }
 
-#if USE_RANKS == 1
 public void ChangeCvar_RanksID(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iRanksID = Convar.IntValue;
 }
-#endif
 
 public void ChangeCvar_MinPlayers(ConVar Convar, const char[] oldValue, const char[] newValue)
 {

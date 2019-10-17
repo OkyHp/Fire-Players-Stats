@@ -64,11 +64,7 @@ void ShowFpsMenu(int iClient)
 {
 	Menu hMenu = new Menu(Handler_FpsMenu);
 	SetGlobalTransTarget(iClient);
-	#if USE_RANKS == 1
-		hMenu.SetTitle("%t\n ", "MiniDataTitle", "FpsTitle", g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], FindTranslationRank(iClient), g_iPlayerPosition[iClient], g_iPlayersCount);
-	#else
-		hMenu.SetTitle("%t\n ", "MiniDataTitleNoRanks", "FpsTitle", g_fPlayerPoints[iClient], g_iPlayerPosition[iClient], g_iPlayersCount);
-	#endif
+	hMenu.SetTitle("%t\n ", "MiniDataTitle", "FpsTitle", g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], FindTranslationRank(iClient), g_iPlayerPosition[iClient], g_iPlayersCount);
 	
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "%t", "MainStatsMenu");
@@ -103,11 +99,7 @@ void ShowMainStatsMenu(int iClient, int iPage = 0)
 {
 	Menu hMenu = new Menu(Handler_MainStatsMenu, MENU_ACTIONS_ALL);
 	SetGlobalTransTarget(iClient);
-	#if USE_RANKS == 1
-		hMenu.SetTitle("%t\n ", "MiniDataTitle", "MainStatsMenu", g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], FindTranslationRank(iClient), g_iPlayerPosition[iClient], g_iPlayersCount);
-	#else
-		hMenu.SetTitle("%t\n ", "MiniDataTitleNoRanks", "MainStatsMenu", g_fPlayerPoints[iClient], g_iPlayerPosition[iClient], g_iPlayersCount);
-	#endif
+	hMenu.SetTitle("%t\n ", "MiniDataTitle", "MainStatsMenu", g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], FindTranslationRank(iClient), g_iPlayerPosition[iClient], g_iPlayersCount);
 	
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "%t", "GeneralStats");
@@ -412,10 +404,8 @@ void ShowMainAdditionalMenu(int iClient, int iPage = 0)
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "%t", "StatsInfo");
 	hMenu.AddItem(NULL_STRING, szBuffer);
-	#if USE_RANKS == 1
-		FormatEx(SZF(szBuffer), "%t", "RanksInfo");
-		hMenu.AddItem(NULL_STRING, szBuffer);
-	#endif
+	FormatEx(SZF(szBuffer), "%t", "RanksInfo");
+	hMenu.AddItem(NULL_STRING, szBuffer);
 	
 	AddFeatureItemToMenu(hMenu, FPS_ADVANCED_MENU);
 
@@ -445,9 +435,7 @@ public int Handler_MainAdditionalMenu(Menu hMenu, MenuAction action, int iClient
 				switch(iItem)
 				{
 					case 0: ShowStatsInfoMenu(iClient);
-					#if USE_RANKS == 1
-						case 1: ShowRankInfoMenu(iClient);
-					#endif
+					case 1: ShowRankInfoMenu(iClient);
 				}
 			}
 		}
@@ -482,41 +470,39 @@ public int Handler_BackToFpsMenu(Menu hMenu, MenuAction action, int iClient, int
 	}
 }
 
-#if USE_RANKS == 1
-	void ShowRankInfoMenu(int iClient)
+void ShowRankInfoMenu(int iClient)
+{
+	Menu hMenu = new Menu(Handler_BackToFpsMenu);
+	SetGlobalTransTarget(iClient);
+	hMenu.SetTitle("[ %t ]\n ", "RanksInfo");
+
+	char szBuffer[72];
+	if (g_hRanksConfigKV)
 	{
-		Menu hMenu = new Menu(Handler_BackToFpsMenu);
-		SetGlobalTransTarget(iClient);
-		hMenu.SetTitle("[ %t ]\n ", "RanksInfo");
-
-		char szBuffer[72];
-		if (g_hRanksConfigKV)
+		float	fRank;
+		char	szRank[64];
+		g_hRanksConfigKV.Rewind();
+		if (g_hRanksConfigKV.GotoFirstSubKey(false))
 		{
-			float	fRank;
-			char	szRank[64];
-			g_hRanksConfigKV.Rewind();
-			if (g_hRanksConfigKV.GotoFirstSubKey(false))
-			{
-				do {
-					fRank = g_hRanksConfigKV.GetFloat(NULL_STRING);
-					g_hRanksConfigKV.GetSectionName(SZF(szRank));
-					FormatEx(SZF(szBuffer), "[%.2f] %s (%s)", fRank, szRank, g_fPlayerPoints[iClient] < fRank ? "✗" : "✓");
-					hMenu.AddItem(NULL_STRING, szBuffer, ITEMDRAW_DISABLED);
-				} while (g_hRanksConfigKV.GotoNextKey(false));
-			}
+			do {
+				fRank = g_hRanksConfigKV.GetFloat(NULL_STRING);
+				g_hRanksConfigKV.GetSectionName(SZF(szRank));
+				FormatEx(SZF(szBuffer), "[%.2f] %s (%s)", fRank, szRank, g_fPlayerPoints[iClient] < fRank ? "✗" : "✓");
+				hMenu.AddItem(NULL_STRING, szBuffer, ITEMDRAW_DISABLED);
+			} while (g_hRanksConfigKV.GotoNextKey(false));
 		}
-
-		if (!hMenu.ItemCount)
-		{
-			FormatEx(SZF(szBuffer), "%t", "NoRanks");
-			hMenu.AddItem(NULL_STRING, szBuffer, ITEMDRAW_DISABLED);
-		}
-
-		hMenu.ExitBackButton = true;
-		hMenu.ExitButton = true;
-		hMenu.Display(iClient, MENU_TIME_FOREVER);
 	}
-#endif
+
+	if (!hMenu.ItemCount)
+	{
+		FormatEx(SZF(szBuffer), "%t", "NoRanks");
+		hMenu.AddItem(NULL_STRING, szBuffer, ITEMDRAW_DISABLED);
+	}
+
+	hMenu.ExitBackButton = true;
+	hMenu.ExitButton = true;
+	hMenu.Display(iClient, MENU_TIME_FOREVER);
+}
 
 void ShowStatsInfoMenu(int iClient)
 {

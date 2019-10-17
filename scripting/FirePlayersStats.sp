@@ -48,11 +48,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#if USE_RANKS == 1
-	#define PLUGIN_VERSION		"1.4.1"
-#else
-	#define PLUGIN_VERSION		"1.4.1 NR"
-#endif
+#define PLUGIN_VERSION		"1.4.1"
 
 #if DEBUG == 1
 	char g_sLogPath[256];
@@ -78,13 +74,11 @@ bool		g_bStatsLoaded,
 char		g_sMap[256];
 ArrayList	g_hItems;
 
-#if USE_RANKS == 1
 // Ranks settings
 int			g_iRanksCount,
 			g_iPlayerRanks[MAXPLAYERS+1];
 char		g_sRankName[MAXPLAYERS+1][64];
 KeyValues	g_hRanksConfigKV;
-#endif
 
 // Weapons stats vars
 KeyValues	g_hWeaponsKV;
@@ -142,17 +136,15 @@ public void OnPluginStart()
 	g_hItems		= new ArrayList(ByteCountToCells(128));
 
 	LoadTranslations("FirePlayersStats.phrases");
-	#if USE_RANKS == 1
-		char szPath[256];
-		BuildPath(Path_SM, SZF(szPath), "translations/FirePlayersStatsRanks.phrases.txt");
-		if (FileExists(szPath, false, NULL_STRING))
-		{
-			LoadTranslations("FirePlayersStatsRanks.phrases");
-		}
+	char szPath[256];
+	BuildPath(Path_SM, SZF(szPath), "translations/FirePlayersStatsRanks.phrases.txt");
+	if (FileExists(szPath, false, NULL_STRING))
+	{
+		LoadTranslations("FirePlayersStatsRanks.phrases");
+	}
 
-		RegAdminCmd("sm_fps_create_default_ranks", CommandCreateRanks, ADMFLAG_ROOT, "Создание настройки рангов. \
-		\n0 - Стандартные ранги (18 lvl). 1 - Ранги опасной зоны (15 lvl). 2 - Фейсит ранги (10 lvl).");
-	#endif
+	RegAdminCmd("sm_fps_create_default_ranks", CommandCreateRanks, ADMFLAG_ROOT, "Создание настройки рангов. \
+	\n0 - Стандартные ранги (18 lvl). 1 - Ранги опасной зоны (15 lvl). 2 - Фейсит ранги (10 lvl).");
 
 
 	ConVar Convar;
@@ -166,9 +158,7 @@ public void OnPluginStart()
 	CallForward_OnFPSStatsLoaded();
 
 	LoadTopData();
-	#if USE_RANKS == 1
-		LoadRanksSettings();
-	#endif
+	LoadRanksSettings();
 		
 	for (int i = 1; i <= MaxClients; ++i)
 	{
@@ -193,9 +183,7 @@ public void ChangeCvar_RandomSpawn(ConVar Convar, const char[] oldValue, const c
 public void OnMapStart()
 {
 	LoadTopData();
-	#if USE_RANKS == 1
-		LoadRanksSettings();
-	#endif
+	LoadRanksSettings();
 
 	if (CanTestFeatures() && GetFeatureStatus(FeatureType_Native, "SteamWorks_CreateHTTPRequest") == FeatureStatus_Available)
 	{

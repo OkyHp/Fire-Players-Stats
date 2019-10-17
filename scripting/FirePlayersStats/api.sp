@@ -6,10 +6,8 @@ static Handle	g_hGlobalForvard_OnFPSStatsLoaded,
 				g_hGlobalForvard_OnFPSPointsChangePre,
 				g_hGlobalForvard_OnFPSPointsChange,
 				g_hGlobalForvard_OnFPSPlayerPosition,
-				g_hGlobalForvard_OnFPSSecondDataUpdated;
-#if USE_RANKS == 1
-	static Handle	g_hGlobalForvard_OnFPSLevelChange;
-#endif
+				g_hGlobalForvard_OnFPSSecondDataUpdated,
+				g_hGlobalForvard_OnFPSLevelChange;
 
 void CreateGlobalForwards()
 {
@@ -21,10 +19,7 @@ void CreateGlobalForwards()
 	g_hGlobalForvard_OnFPSPointsChange				= CreateGlobalForward("FPS_OnPointsChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Float, Param_Float);
 	g_hGlobalForvard_OnFPSPlayerPosition			= CreateGlobalForward("FPS_PlayerPosition",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
 	g_hGlobalForvard_OnFPSSecondDataUpdated			= CreateGlobalForward("FPS_OnSecondDataUpdated",		ET_Ignore);
-
-	#if USE_RANKS == 1
-		g_hGlobalForvard_OnFPSLevelChange			= CreateGlobalForward("FPS_OnLevelChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
-	#endif
+	g_hGlobalForvard_OnFPSLevelChange				= CreateGlobalForward("FPS_OnLevelChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
 }
 
 void CallForward_OnFPSStatsLoaded()
@@ -77,16 +72,14 @@ void CallForward_OnFPSPointsChange(int iAttacker, int iVictim, float fPointsAtta
 	Call_Finish();
 }
 
-#if USE_RANKS == 1
-	void CallForward_OnFPSLevelChange(int iClient, int iOldLevel, int iNewLevel)
-	{
-		Call_StartForward(g_hGlobalForvard_OnFPSLevelChange);
-		Call_PushCell(iClient);
-		Call_PushCell(iOldLevel);
-		Call_PushCell(iNewLevel);
-		Call_Finish();
-	}
-#endif
+void CallForward_OnFPSLevelChange(int iClient, int iOldLevel, int iNewLevel)
+{
+	Call_StartForward(g_hGlobalForvard_OnFPSLevelChange);
+	Call_PushCell(iClient);
+	Call_PushCell(iOldLevel);
+	Call_PushCell(iNewLevel);
+	Call_Finish();
+}
 
 void CallForward_OnFPSPlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
@@ -127,11 +120,9 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 	CreateNative("FPS_StatsActive",				Native_FPSStatsActive);
 	CreateNative("FPS_GetID",					Native_FPSGetID);
 
-	#if USE_RANKS == 1
-		CreateNative("FPS_GetLevel",				Native_FPSGetLevel);
-		CreateNative("FPS_GetRanks",				Native_FPSGetRanks);
-		CreateNative("FPS_GetMaxRanks",				Native_FPSGetMaxRanks);
-	#endif
+	CreateNative("FPS_GetLevel",				Native_FPSGetLevel);
+	CreateNative("FPS_GetRanks",				Native_FPSGetRanks);
+	CreateNative("FPS_GetMaxRanks",				Native_FPSGetMaxRanks);
 
 	RegPluginLibrary("FirePlayersStats");
 	
@@ -203,34 +194,32 @@ public int Native_FPSGetPoints(Handle hPlugin, int iNumParams)
 	return view_as<int>(IsValidClient(iClient) && g_bStatsLoad[iClient] ? (!GetNativeCell(1) ? g_fPlayerPoints[iClient] : (g_fPlayerPoints[iClient] - g_fPlayerSessionPoints[iClient])) : DEFAULT_POINTS);
 }
 
-#if USE_RANKS == 1
-	// int FPS_GetLevel(int iClient);
-	public int Native_FPSGetLevel(Handle hPlugin, int iNumParams)
+// int FPS_GetLevel(int iClient);
+public int Native_FPSGetLevel(Handle hPlugin, int iNumParams)
+{
+	int iClient = GetNativeCell(1);
+	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
 	{
-		int iClient = GetNativeCell(1);
-		if (IsValidClient(iClient) && g_bStatsLoad[iClient])
-		{
-			return g_iPlayerRanks[iClient];
-		}
-		return 0;
+		return g_iPlayerRanks[iClient];
 	}
+	return 0;
+}
 
-	// void FPS_GetRanks(int iClient, char[] szBufferRank, int iMaxLength);
-	public int Native_FPSGetRanks(Handle hPlugin, int iNumParams)
+// void FPS_GetRanks(int iClient, char[] szBufferRank, int iMaxLength);
+public int Native_FPSGetRanks(Handle hPlugin, int iNumParams)
+{
+	int iClient = GetNativeCell(1);
+	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
 	{
-		int iClient = GetNativeCell(1);
-		if (IsValidClient(iClient) && g_bStatsLoad[iClient])
-		{
-			SetNativeString(2, g_sRankName[iClient], GetNativeCell(3), true);
-		}
+		SetNativeString(2, g_sRankName[iClient], GetNativeCell(3), true);
 	}
+}
 
-	// int FPS_GetMaxRanks();
-	public int Native_FPSGetMaxRanks(Handle hPlugin, int iNumParams)
-	{
-		return g_iRanksCount;
-	}
-#endif
+// int FPS_GetMaxRanks();
+public int Native_FPSGetMaxRanks(Handle hPlugin, int iNumParams)
+{
+	return g_iRanksCount;
+}
 
 // int FPS_GetStatsData(int iClient, StatsData eData, bool bSession = false);
 public int Native_FPSGetStatsData(Handle hPlugin, int iNumParams)
