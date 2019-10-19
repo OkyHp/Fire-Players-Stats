@@ -157,10 +157,6 @@ public void OnPluginStart()
 	(Convar = FindConVar("mp_randomspawn")).AddChangeHook(ChangeCvar_RandomSpawn);
 	ChangeCvar_RandomSpawn(Convar, NULL_STRING, NULL_STRING);
 
-
-	g_bStatsLoaded = true;
-	CallForward_OnFPSStatsLoaded();
-
 	LoadTopData();
 	LoadRanksSettings();
 		
@@ -171,6 +167,15 @@ public void OnPluginStart()
 			OnClientDisconnect(i);
 			LoadPlayerData(i);
 		}
+	}
+}
+
+public void OnLibraryAdded(const char[] szName)
+{
+	if(!strcmp(szName, "FirePlayersStats", false))
+	{
+		g_bStatsLoaded = true;
+		CallForward_OnFPSStatsLoaded();
 	}
 }
 
