@@ -26,13 +26,13 @@ void WriteWeaponData(int iClient, char[] szWeapon, int iArray[W_SIZE])
 		iIndex = g_hWeaponsData[iClient].FindString(szWeapon);
 		if (iIndex == -1)
 		{
-			FPS_Debug("WriteWeaponData >> Weapon '%s' not finded! Added in array", szWeapon)
+			FPS_Debug("WriteWeaponData >> %N >> Weapon '%s' added in array.", iClient, szWeapon)
 			g_hWeaponsData[iClient].PushString(szWeapon);
 			g_hWeaponsData[iClient].PushArray(SZF(iArray));
 			return;
 		}
 
-		FPS_Debug("WriteWeaponData >> Weapon '%s' finded! Index: %i", szWeapon, iIndex)
+		FPS_Debug("WriteWeaponData >> %N >> Weapon '%s' finded! Index: %i", iClient, szWeapon, iIndex)
 
 		static int iBuffArray[W_SIZE];
 		g_hWeaponsData[iClient].GetArray(++iIndex, SZF(iBuffArray));
@@ -158,7 +158,7 @@ void CheckRank(int iClient)
 // Check grenade
 bool IsGrenade(const char[] szWeapon)
 {
-	FPS_Debug("IsGrenade >> %s", szWeapon)
+	// FPS_Debug("IsGrenade >> %s", szWeapon)
 	return (szWeapon[0] == 'i' // inferno + incgrenade
 			|| szWeapon[4] == 'y' // decoy
 			|| (szWeapon[0] == 'h' && szWeapon[1] == 'e') // hegrenade + healthshot
@@ -172,7 +172,7 @@ bool IsGrenade(const char[] szWeapon)
 // Check knife
 bool IsKnife(const char[] szWeapon)
 {
-	FPS_Debug("IsKnife >> %s", szWeapon)
+	// FPS_Debug("IsKnife >> %s", szWeapon)
 	return (szWeapon[0] == 'k' || szWeapon[2] == 'y');
 }
 
