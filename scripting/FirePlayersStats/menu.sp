@@ -476,20 +476,18 @@ void ShowRankInfoMenu(int iClient)
 	SetGlobalTransTarget(iClient);
 	hMenu.SetTitle("[ %t ]\n ", "RanksInfo");
 
-	char szBuffer[72];
-	if (g_hRanksConfigKV)
+	char szBuffer[160];
+	if (g_hRanks)
 	{
+		int		iSize = g_hRanks.Length;
 		float	fRank;
 		char	szRank[64];
-		g_hRanksConfigKV.Rewind();
-		if (g_hRanksConfigKV.GotoFirstSubKey(false))
+		for (int i = 0; i < iSize; i += 2)
 		{
-			do {
-				fRank = g_hRanksConfigKV.GetFloat(NULL_STRING);
-				g_hRanksConfigKV.GetSectionName(SZF(szRank));
-				FormatEx(SZF(szBuffer), "[%.2f] %s (%s)", fRank, szRank, g_fPlayerPoints[iClient] < fRank ? "✗" : "✓");
-				hMenu.AddItem(NULL_STRING, szBuffer, ITEMDRAW_DISABLED);
-			} while (g_hRanksConfigKV.GotoNextKey(false));
+			fRank = g_hRanks.Get(i);
+			g_hRanks.GetString(i+1, SZF(szRank));
+			FormatEx(SZF(szBuffer), "[%.2f] - %s (%s)", fRank, FindTranslationRank(iClient, szRank), g_fPlayerPoints[iClient] < fRank ? "✗" : "✓");
+			hMenu.AddItem(NULL_STRING, szBuffer, ITEMDRAW_DISABLED);
 		}
 	}
 

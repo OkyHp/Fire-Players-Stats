@@ -13,23 +13,6 @@ float		g_fDBRetryConnTime,
 			g_fExtraPoints[18];
 KeyValues	g_hWeaponsConfigKV;
 
-// enum
-// {
-// 	CFG_HEADSHOT = 0,
-// 	CFG_ASSIST,
-// 	CFG_SUICIDE,
-// 	CFG_TEAMKILL,
-// 	CFG_WIN_ROUND,
-// 	CFG_LOSE_ROUND,
-// 	CFG_MVP_PLAYER,
-// 	CFG_BOMB_PLANTED,
-// 	CFG_BOMB_DEFUSED,
-// 	CFG_BOMB_DROPPED,
-// 	CFG_BOMB_PICK_UP,
-// 	CFG_HOSTAGE_KILLED,
-// 	CFG_HOSTAGE_RESCUED
-// };
-
 #define	CFG_HEADSHOT			0
 #define	CFG_ASSIST				1
 #define	CFG_SUICIDE				2

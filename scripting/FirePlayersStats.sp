@@ -86,7 +86,7 @@ ArrayList	g_hItems;
 int			g_iRanksCount,
 			g_iPlayerRanks[MAXPLAYERS+1];
 char		g_sRankName[MAXPLAYERS+1][64];
-KeyValues	g_hRanksConfigKV;
+ArrayList	g_hRanks;
 
 // Weapons stats vars
 ArrayList	g_hWeaponsData[MAXPLAYERS+1];
@@ -137,7 +137,8 @@ public void OnPluginStart()
 	HookEvents();
 	SetCommands();
 
-	g_hItems		= new ArrayList(ByteCountToCells(128));
+	g_hItems = new ArrayList(ByteCountToCells(128));
+	g_hRanks = new ArrayList(ByteCountToCells(64));
 
 	LoadTranslations("FirePlayersStats.phrases");
 	char szPath[256];

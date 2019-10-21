@@ -255,51 +255,28 @@ void LoadRanksSettings()
 
 public void SQL_Callback_LoadRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any data)
 {
-	if (g_hRanksConfigKV)
+	if (g_hRanks && CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_LoadRanks"))
 	{
-		delete g_hRanksConfigKV;
-	}
-	char szPath[256];
-	BuildPath(Path_SM, SZF(szPath), "configs/FirePlayersStats/catch_ranks.ini");
-	g_hRanksConfigKV = new KeyValues("Ranks_Settings");
+		g_hRanks.Clear();
 
-	int iLevel;
-	if (!CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_LoadRanks"))
-	{
-		if (!g_hDatabase)
+		int		iLevel;
+		char	szBuffer[64];
+		while(hResult.FetchRow())
 		{
-			if (!g_hRanksConfigKV.ImportFromFile(szPath))
-			{
-				SetFailState("Not fount ranks setting cache file. If it`s first run of the plugin - check database connection.");
-			}
-
-			g_hRanksConfigKV.Rewind();
-			if (g_hRanksConfigKV.GotoFirstSubKey(false))
-			{
-				do {
-					++iLevel;
-				} while (g_hRanksConfigKV.GotoNextKey(false));
-			}
-			g_iRanksCount = iLevel;
-
-			FPS_Debug("SQL_Callback_LoadRanks >> Catch KV >> %i", iLevel)
+			g_hRanks.Push(hResult.FetchFloat(1));
+			hResult.FetchString(0, SZF(szBuffer));
+			g_hRanks.PushString(szBuffer);
+			++iLevel;
 		}
-		return;
-	}
-	
-	char	szBuffer[128];
-	while(hResult.FetchRow())
-	{
-		hResult.FetchString(0, SZF(szBuffer));
-		g_hRanksConfigKV.SetFloat(szBuffer, hResult.FetchFloat(1));
-		++iLevel;
-	}
-	g_iRanksCount = iLevel;
+		g_iRanksCount = iLevel;
 
-	FPS_Debug("SQL_Callback_LoadRanks >> Database KV >> %i", iLevel)
+		if (!g_iRanksCount)
+		{
+			LogError("[FPS] No rank! Add them using 'sm_fps_create_default_ranks' or manually.");
+		}
 
-	g_hRanksConfigKV.Rewind();
-	g_hRanksConfigKV.ExportToFile(szPath);
+		FPS_Debug("SQL_Callback_LoadRanks >> Ranks count: %i", g_iRanksCount)
+	}
 }
 
 // Load player data
