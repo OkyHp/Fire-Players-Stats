@@ -486,7 +486,7 @@ void ShowRankInfoMenu(int iClient)
 		{
 			fRank = g_hRanks.Get(i);
 			g_hRanks.GetString(i+1, SZF(szRank));
-			FormatEx(SZF(szBuffer), "[%.2f] - %s (%s)", fRank, FindTranslationRank(iClient, szRank), g_fPlayerPoints[iClient] < fRank ? "✗" : "✓");
+			FormatEx(SZF(szBuffer), "%.2f %t - %s [%s]", fRank, "Points", FindTranslationRank(iClient, szRank), g_fPlayerPoints[iClient] < fRank ? "✗" : "✓");
 			hMenu.AddItem(NULL_STRING, szBuffer, ITEMDRAW_DISABLED);
 		}
 	}
