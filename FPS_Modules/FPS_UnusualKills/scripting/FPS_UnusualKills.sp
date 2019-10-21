@@ -187,7 +187,7 @@ public void FPS_OnFPSStatsLoaded()
 
 public void OnPluginEnd()
 {
-	if (CanTestFeatures() && FPS_IsExistFeature(g_sFeature))
+	if (CanTestFeatures() && GetFeatureStatus(FeatureType_Native, "FPS_RemoveFeature") == FeatureStatus_Available)
 	{
 		FPS_RemoveFeature(g_sFeature);
 	}

@@ -20,7 +20,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Hint Info",
 	author	=	"OkyHp",
-	version	=	"1.1.1",
+	version	=	"1.1.2",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -113,7 +113,7 @@ public void FPS_OnFPSStatsLoaded()
 
 public void OnPluginEnd()
 {
-	if (CanTestFeatures() && FPS_IsExistFeature(g_sFeature))
+	if (CanTestFeatures() && GetFeatureStatus(FeatureType_Native, "FPS_RemoveFeature") == FeatureStatus_Available)
 	{
 		FPS_RemoveFeature(g_sFeature);
 	}
