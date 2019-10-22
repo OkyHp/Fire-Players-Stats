@@ -223,7 +223,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 			int iPlayers;
 			for (int i = 1; i <= MaxClients; ++i)
 			{
-				if (g_bStatsLoad[i])
+				if (g_bStatsLoad[i] && GetClientTeam(i) > 1)
 				{
 					iMaxRoundsKills[i] = 0;
 					fRoundPlayerPoints[i] = g_fPlayerPoints[i];

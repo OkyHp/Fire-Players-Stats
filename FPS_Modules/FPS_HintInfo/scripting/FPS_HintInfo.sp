@@ -111,6 +111,11 @@ public void FPS_OnFPSStatsLoaded()
 	}
 }
 
+public void OnClientDisconnect(int iClient)
+{
+	g_bHintState[iClient] = false;
+}
+
 public void OnPluginEnd()
 {
 	if (CanTestFeatures() && GetFeatureStatus(FeatureType_Native, "FPS_RemoveFeature") == FeatureStatus_Available)
