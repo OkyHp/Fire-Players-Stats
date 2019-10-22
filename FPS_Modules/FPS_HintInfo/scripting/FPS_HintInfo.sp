@@ -77,6 +77,12 @@ public void OnPluginStart()
 
 public void OnClientCookiesCached(int iClient)
 {
+	if (IsClientSourceTV(iClient))
+	{
+		g_bHintState[iClient] = false;
+		return;
+	}
+
 	char szBuffer[4];
 	GetClientCookie(iClient, g_hCookie, SZF(szBuffer));
 	g_bHintState[iClient] = szBuffer[0] ? view_as<bool>(StringToInt(szBuffer)) : true;
@@ -109,11 +115,6 @@ public void FPS_OnFPSStatsLoaded()
 			FPS_OnClientLoaded(i, FPS_GetPoints(i));
 		}
 	}
-}
-
-public void OnClientDisconnect(int iClient)
-{
-	g_bHintState[iClient] = false;
 }
 
 public void OnPluginEnd()
