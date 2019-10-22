@@ -65,5 +65,5 @@
 		Added native FPS_StatsActive, FPS_GetID.
 		Update source for SM 1.10 compiler.
 		Stopped support for mode of statistics without ranks.
-		Large optimization of work. KV to collect information on weapons and KV for ranks replaced by ArrayList.
+		Large optimization of work. KV to collect information on weapons and KV for ranks replaced by ArrayList, deleted file catch_ranks.ini.
 		Fixed player count for stats work, excluded observers.
