@@ -223,12 +223,16 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 			int iPlayers;
 			for (int i = 1; i <= MaxClients; ++i)
 			{
-				if (g_bStatsLoad[i] && GetClientTeam(i) > 1)
+				if (g_bStatsLoad[i])
 				{
 					iMaxRoundsKills[i] = 0;
 					fRoundPlayerPoints[i] = g_fPlayerPoints[i];
 					g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] = 1;
-					++iPlayers;
+
+					if (GetClientTeam(i) > 1)
+					{
+						++iPlayers;
+					}
 				}
 			}
 			g_bStatsActive = (iPlayers >= g_iMinPlayers);

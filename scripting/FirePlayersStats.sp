@@ -42,8 +42,8 @@
 #define UPDATE_SERVER_IP	0		// 0 - Disable. It is necessary if you use domain instead of IP. 
 #define DEFAULT_POINTS		1000.0	// Not recommended change
 #define DEBUG				0		// Enable/Disable debug mod
-#define LOAD_TYPE			1		// Use forvard for load player stats:	0 - OnClientPostAdminCheck 
-									//										1 - OnClientAuthorized
+#define LOAD_TYPE			0		// Use forvard for load player stats:	0 - OnClientPostAdminCheck 
+									//										1 - OnClientPutInServer
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -285,7 +285,7 @@ public void OnMapEnd()
 #if LOAD_TYPE == 0
 public void OnClientPostAdminCheck(int iClient)
 #else
-public void OnClientAuthorized(int iClient)
+public void OnClientPutInServer(int iClient)
 #endif
 {
 	if (iClient && !IsFakeClient(iClient) && !IsClientSourceTV(iClient))
