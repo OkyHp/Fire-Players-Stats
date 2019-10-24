@@ -75,31 +75,10 @@ float StreakPoints(int iClient)
 	return 0.0;
 }
 
-// Fix name by Pheonix
-char[] GetFixNamePlayer(int iClient)
-{
-	char sName[MAX_NAME_LENGTH * 2 + 1];
-	GetClientName(iClient, sName, sizeof(sName));
-
-	for(int i = 0, len = strlen(sName), CharBytes; i < len;)
-	{
-		if((CharBytes = GetCharBytes(sName[i])) >= 4)
-		{
-			len -= CharBytes;
-			for(int u = i; u <= len; u++)
-			{
-				sName[u] = sName[u + CharBytes];
-			}
-		}
-		else i += CharBytes;
-	}
-	return sName;
-}
-
 // Set extra points for killing weapons
-float GetWeaponExtraPoints(const char[] szWeapon)
+float GetWeaponExtraPoints(const char[] szWeapon, bool bIsGrenade)
 {
-	if (g_hWeaponsConfigKV)
+	if (g_hWeaponsConfigKV && !bIsGrenade)
 	{
 		g_hWeaponsConfigKV.Rewind();
 		if (g_hWeaponsConfigKV.JumpToKey("WeaponCoeff") && ( g_hWeaponsConfigKV.JumpToKey(g_sMap) || g_hWeaponsConfigKV.JumpToKey("default") ))

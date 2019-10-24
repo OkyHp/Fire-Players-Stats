@@ -33,7 +33,7 @@
 #include <FirePlayersStats>
 #include <SteamWorks>
 
-#if FPS_INC_VER < 14
+#if FPS_INC_VER < 15
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
@@ -47,7 +47,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define PLUGIN_VERSION		"1.4.1"
+#define PLUGIN_VERSION		"1.5.0"
 
 #if DEBUG == 1
 	char g_sLogPath[256];
@@ -169,15 +169,9 @@ public void OnPluginStart()
 			LoadPlayerData(i);
 		}
 	}
-}
 
-public void OnLibraryAdded(const char[] szName)
-{
-	if(!strcmp(szName, "FirePlayersStats", false))
-	{
-		g_bStatsLoaded = true;
-		CallForward_OnFPSStatsLoaded();
-	}
+	g_bStatsLoaded = true;
+	CallForward_OnFPSStatsLoaded();
 }
 
 public void ChangeCvar_TeammatesAreEnemies(ConVar Convar, const char[] oldValue, const char[] newValue)
@@ -269,7 +263,7 @@ public int OnTransferComplete(Handle hRequest, bool bFailure, bool bRequestSucce
 			case 403:	PrintToServer("[FPS Stats] >> Не верный IP:PORT");
 			case 404:	PrintToServer("[FPS Stats] >> Сервер или версия не найдены в базе данных");
 			case 406:	PrintToServer("[FPS Stats] >> Не верный API KEY");
-			case 410:	PrintToServer("[FPS Stats] >> Не верная версия Fire Players Stats");
+			case 410:	PrintToServer("[FPS Stats] >> Ваша версия Fire Players Stats не поддерживается!");
 			case 413:	PrintToServer("[FPS Stats] >> Не верный размер аргументов");
 			case 429:	return;
 			default:	PrintToServer("[FPS Stats] >> Не известная ошибка: %i", iStatus);								

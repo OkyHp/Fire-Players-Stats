@@ -160,10 +160,15 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 				WriteWeaponData(iAttacker, szWeapon, iArray);
 			}
 
-			float	fPointsAttacker = ((g_fPlayerPoints[iVictim] / g_fPlayerPoints[iAttacker]) * 5.0 + (bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0) + StreakPoints(iAttacker) * (!bIsGrenade ? GetWeaponExtraPoints(szWeapon[7]) : 0.0)),
-					fDiss = (g_fPlayerPoints[iAttacker] / g_fPlayerPoints[iVictim]),
-					fPointsVictim = (fPointsAttacker * g_fCoeff) * (fDiss < 0.5 && FPS_IsCalibration(iAttacker) ? fDiss : 1.0);
-			FPS_Debug("Event_PlayerDeath >> Points Data: \n ----->> HS: %f \n ----->> SP: %f \n ----->> EP: %f \n ----->> DS: %f : %f", (bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0), StreakPoints(iAttacker), (!bIsGrenade ? GetWeaponExtraPoints(szWeapon[7]) : 0.0), fDiss, (fDiss < 0.5 && FPS_IsCalibration(iAttacker) ? fDiss : 1.0))
+			float	fPointsAttacker	= (g_fPlayerPoints[iVictim] / g_fPlayerPoints[iAttacker]) * 5.0,
+					fDiss			= g_fPlayerPoints[iAttacker] / g_fPlayerPoints[iVictim],
+					fPointsVictim	= fPointsAttacker * g_fCoeff * (fDiss < 0.5 && FPS_IsCalibration(iAttacker) ? fDiss : 1.0),
+					fExtPoints		= GetWeaponExtraPoints(szWeapon, bIsGrenade),
+					fHeadshot		= bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0,
+					fStreak			= StreakPoints(iAttacker);
+
+			fPointsAttacker	= (fPointsAttacker * fExtPoints) + fHeadshot + fStreak;
+			FPS_Debug("Event_PlayerDeath >> Points Data: \n ----->> EP: %f \n ----->> HS: %f \n ----->> ST: %f \n ----->> DS: %f", fExtPoints, fHeadshot, fStreak, fDiss)
 			FPS_Debug("Event_PlayerDeath >> Points >> Attacker (%N): %f / Victim (%N): %f", iAttacker, fPointsAttacker, iVictim, fPointsVictim)
 
 			ResetIfLessZero(fPointsAttacker);
@@ -219,6 +224,12 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 				g_bDisableStatisPerRound = false;
 				return;
 			}
+
+			if (g_bRandomspawn)
+			{
+				g_bStatsActive = true;
+				return;
+			}
 			
 			int iPlayers;
 			for (int i = 1; i <= MaxClients; ++i)
@@ -260,7 +271,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 		case 'e':
 		{
 			static int iSave;
-			if (g_bStatsActive && GameRules_GetProp("m_totalRoundsPlayed"))
+			if (g_bStatsActive && !g_bRandomspawn && GameRules_GetProp("m_totalRoundsPlayed"))
 			{
 				bool bSave = !(++iSave%g_iSaveInterval);
 				int iTeam, iWinTeam = GetEventInt(hEvent, "winner");
@@ -296,7 +307,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 							FPS_PrintToChat(i, "%t", "PrintPoints", g_fPlayerPoints[i], fPoints > 0.0 ? "{GREEN}+" : "{RED}", fPoints);
 						}
 
-						if (!g_bRandomspawn && bSave)
+						if (bSave)
 						{
 							FPS_Debug("Call Save Function >> %N | %i", i, iSave)
 							SavePlayerData(i);
@@ -304,7 +315,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 					}
 				}
 
-				if (!g_bRandomspawn && bSave)
+				if (bSave)
 				{
 					LoadTopData();
 					for (int i = 1; i < MaxClients; ++i)

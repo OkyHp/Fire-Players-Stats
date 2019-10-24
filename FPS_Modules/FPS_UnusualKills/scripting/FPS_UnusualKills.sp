@@ -6,23 +6,25 @@
 #include <cstrike>
 #include <FirePlayersStats>
 
+#if SOURCEMOD_V_MINOR < 10
+	#error This plugin can only compile on SourceMod 1.10!
+#endif
+
 #if FPS_INC_VER < 13
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
-#define Crash(%0) SetFailState("[FPS] Unusual Kills: " ... %0)
-
 #define MAX_UKTYPES 9
 #define UnusualKill_None 0
-#define UnusualKill_OpenFrag (1 << 1)
-#define UnusualKill_Penetrated (1 << 2)
-#define UnusualKill_NoScope (1 << 3)
-#define UnusualKill_Run (1 << 4)
-#define UnusualKill_Jump (1 << 5)
-#define UnusualKill_Flash (1 << 6)
-#define UnusualKill_Smoke (1 << 7)
-#define UnusualKill_Whirl (1 << 8)
-#define UnusualKill_LastClip (1 << 9)
+#define UnusualKill_OpenFrag (1 << 0)
+#define UnusualKill_Penetrated (1 << 1)
+#define UnusualKill_NoScope (1 << 2)
+#define UnusualKill_Run (1 << 3)
+#define UnusualKill_Jump (1 << 4)
+#define UnusualKill_Flash (1 << 5)
+#define UnusualKill_Smoke (1 << 6)
+#define UnusualKill_Whirl (1 << 7)
+#define UnusualKill_LastClip (1 << 8)
 
 #define SQL_CreateTable "\
 CREATE TABLE IF NOT EXISTS `fps_unusualkills` \
@@ -43,17 +45,35 @@ CREATE TABLE IF NOT EXISTS `fps_unusualkills` \
 	UNIQUE(`account_id`, `server_id`) \
 ) CHARSET = utf8mb4 COLLATE utf8mb4_general_ci;"
 #define SQL_CreatePlayer "INSERT INTO `fps_unusualkills` (`account_id`, `server_id`) VALUES ('%i', '%i');"
-#define SQL_LoadPlayer "SELECT `op`, `penetrated`, `no_scope`, `run`, `jump`, `flash`, `smoke`, `whirl`, `last_clip` FROM `fps_unusualkills` WHERE `account_id` = '%i' AND `server_id` = '%i';"
+#define SQL_LoadPlayer "SELECT \
+	`op`, \
+	`penetrated`, \
+	`no_scope`, \
+	`run`, \
+	`jump`, \
+	`flash`, \
+	`smoke`, \
+	`whirl`, \
+	`last_clip` \
+FROM `fps_unusualkills` WHERE `account_id` = '%i' AND `server_id` = '%i';"
 #define SQL_SavePlayer "UPDATE `fps_unusualkills` SET %s WHERE `account_id` = '%i' AND `server_id` = '%i';"
+#define SQL_PrintTop \
+"SELECT \
+	`p`.`nickname`, \
+	`u`.`%s` \
+FROM \
+	`fps_unusualkills` AS `u` \
+	INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `u`.`account_id` \
+ORDER BY `u`.`%s` DESC LIMIT 10;"
 
 #define RadiusSmoke 100.0
 
-enum ArrayListBuffer
+enum struct UK_Settings
 {
-	ArrayList:ChatCommands = 0,
-	ArrayList:ProhibitedWeapons,
-	ArrayList:NoScope_Weapons
-};
+	ArrayList ChatCommands;
+	ArrayList ProhibitedWeapons;
+	ArrayList NoScopeWeapons;
+}
 
 bool  	  g_bOPKill,
 		  g_bShowItem[MAX_UKTYPES];
@@ -62,10 +82,8 @@ int 	  g_iPlayerAccountID[MAXPLAYERS+1],
 		  g_iExp[MAX_UKTYPES],
 		  g_iExpMode,
 		  g_iMinSmokes,
-		  g_iMouceX[MAXPLAYERS+1],
-		  g_iWhirlInterval = 1,
+		  g_iWhirlInterval = 2,
 		  g_iUK[MAXPLAYERS+1][MAX_UKTYPES],
-		  g_iWhirl = 300,
 		  m_bIsScoped,
 		  m_iClip1,
 		  m_hActiveWeapon,
@@ -73,21 +91,19 @@ int 	  g_iPlayerAccountID[MAXPLAYERS+1],
 		  m_vecOrigin,
 		  m_vecVelocity;
 
-float	  g_flMinFlash = 5.0,
-		  g_flMinLenVelocity = 100.0;
+float	  g_flRotation[MAXPLAYERS+1],
+		  g_flMinFlash = 5.0,
+		  g_flMinLenVelocity = 100.0,
+		  g_flWhirl = 200.0;
 
-static const char
-		  g_sNameUK[][] = {"op", "penetrated", "no_scope", "run", "jump", "flash", "smoke", "whirl", "last_clip"};
+static const char	g_sNameUK[][] = {"op", "penetrated", "no_scope", "run", "jump", "flash", "smoke", "whirl", "last_clip"},
+					g_sFeature[][] = {"FPS_UnusualKills_Menu", "FPS_UnusualKills_Top"};
 
-static const char g_sFeature[] = "FPS_UnusualKills";
+Database	g_hDatabase;
 
-EngineVersion
-		  g_iEngine;
+UK_Settings	g_hSettings;
 
-Database  g_hDatabase;
-
-ArrayList g_hBuffer[ArrayListBuffer],
-		  g_hSmokeEnt;
+ArrayList	g_hSmokeEnt;
 
 public Plugin myinfo = 
 {
@@ -99,12 +115,17 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	m_bIsScoped = FindSendPropInfo("CCSPlayer", "m_bIsScoped");
-	m_iClip1 = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-	m_hActiveWeapon = FindSendPropInfo("CBasePlayer", "m_hActiveWeapon");
-	m_flFlashDuration = FindSendPropInfo("CCSPlayer", "m_flFlashDuration");
-	m_vecOrigin = FindSendPropInfo("CBaseEntity", "m_vecOrigin");
-	m_vecVelocity = FindSendPropInfo("CBasePlayer", "m_vecVelocity[0]");
+	if(GetEngineVersion() != Engine_CSGO)
+	{
+		SetFailState("[FPS] Unusual Kills: This plugin works only on CS:GO");
+	}
+
+	m_bIsScoped			= FindSendPropInfo("CCSPlayer",			"m_bIsScoped");
+	m_iClip1			= FindSendPropInfo("CBaseCombatWeapon",	"m_iClip1");
+	m_hActiveWeapon		= FindSendPropInfo("CBasePlayer",		"m_hActiveWeapon");
+	m_flFlashDuration	= FindSendPropInfo("CCSPlayer",			"m_flFlashDuration");
+	m_vecOrigin			= FindSendPropInfo("CBaseEntity",		"m_vecOrigin");
+	m_vecVelocity		= FindSendPropInfo("CBasePlayer",		"m_vecVelocity[0]");
 
 	g_hSmokeEnt = new ArrayList();
 
@@ -174,7 +195,8 @@ public void SQL_Default_Callback(Database hDatabase, DBResultSet hResult, const 
 
 public void FPS_OnFPSStatsLoaded()
 {
-	FPS_AddFeature(g_sFeature, FPS_STATS_MENU, OnItemSelect, OnItemDisplay);
+	FPS_AddFeature(g_sFeature[0], FPS_STATS_MENU, OnItemSelectMenu, OnItemDisplayMenu);
+	FPS_AddFeature(g_sFeature[1], FPS_TOP_MENU, OnItemSelectTop, OnItemDisplayTop);
 
 	for (int i = 1; i <= MaxClients; ++i)
 	{
@@ -189,19 +211,32 @@ public void OnPluginEnd()
 {
 	if (CanTestFeatures() && GetFeatureStatus(FeatureType_Native, "FPS_RemoveFeature") == FeatureStatus_Available)
 	{
-		FPS_RemoveFeature(g_sFeature);
+		FPS_RemoveFeature(g_sFeature[0]);
+		FPS_RemoveFeature(g_sFeature[1]);
 	}
 }
 
-public bool OnItemSelect(int iClient)
+public bool OnItemSelectMenu(int iClient)
 {
 	UnusualKillMenu(iClient);
 	return false;
 }
 
-public bool OnItemDisplay(int iClient, char[] szDisplay, int iMaxLength)
+public bool OnItemDisplayMenu(int iClient, char[] szDisplay, int iMaxLength)
 {
-	FormatEx(szDisplay, iMaxLength, "%T", "UnusualKill", iClient);
+	FormatEx(szDisplay, iMaxLength, "%T", "UnusualKillMenu", iClient);
+	return true;
+}
+
+public bool OnItemSelectTop(int iClient)
+{
+	UnusualKillTop(iClient);
+	return false;
+}
+
+public bool OnItemDisplayTop(int iClient, char[] szDisplay, int iMaxLength)
+{
+	FormatEx(szDisplay, iMaxLength, "%T", "UnusualKillsTop", iClient);
 	return true;
 }
 
@@ -231,7 +266,7 @@ public void SQL_Callback_LoadPlayer(Database db, DBResultSet dbRs, const char[] 
 	}
 
 	int iClient = GetClientOfUserId(iUserID);
-	if(iClient > 0)
+	if(iClient)
 	{
 		bool bLoadData = true;
 
@@ -261,19 +296,24 @@ void LoadSettings()
 
 	KeyValues hKv = new KeyValues("FPS_UnusualKills");
 
-	if(!sPath[0])
+	if(sPath[0])
 	{
-		for(ArrayListBuffer i; i != ArrayListBuffer; i++)
-		{
-			g_hBuffer[i] = new ArrayList(64);
-		}
+		g_hSettings.ChatCommands.Clear();
+		g_hSettings.ProhibitedWeapons.Clear();
+		g_hSettings.NoScopeWeapons.Clear();
+	}
+	else
+	{
+		g_hSettings.ChatCommands = new ArrayList(64);
+		g_hSettings.ProhibitedWeapons = new ArrayList(64);
+		g_hSettings.NoScopeWeapons = new ArrayList(64);
 
 		BuildPath(Path_SM, sPath, sizeof(sPath), "configs/FirePlayersStats/unusual_kills.ini");
 	}
 
 	if(!hKv.ImportFromFile(sPath))
 	{
-		Crash("LoadSettings: %s - not found!", sPath);
+		SetFailState("[FPS] Unusual Kills: LoadSettings: %s - not found!", sPath);
 	}
 	hKv.GotoFirstSubKey();
 
@@ -283,10 +323,10 @@ void LoadSettings()
 	g_iExpMode = hKv.GetNum("Exp_Mode", 1);
 
 	hKv.GetString("ChatCommands", sBuffer, sizeof(sBuffer), "!uk,!ukstats,!unusualkills");
-	ExplodeInArrayList(sBuffer, ChatCommands);
+	ExplodeInArrayList(sBuffer, g_hSettings.ChatCommands);
 
 	hKv.GetString("ProhibitedWeapons", sBuffer, sizeof(sBuffer), "hegrenade,molotov,incgrenade");
-	ExplodeInArrayList(sBuffer, ProhibitedWeapons);
+	ExplodeInArrayList(sBuffer, g_hSettings.ProhibitedWeapons);
 
 	hKv.JumpToKey("TypeKills"); /**/
 
@@ -302,12 +342,11 @@ void LoadSettings()
 			case 127:
 			{
 				LogError("%s: \"FPS_UnusualKills\" -> \"Settings\" -> \"TypeKills\" -> \"%s\" - invalid selection", sPath, sBuffer);
-				continue;
 			}
 			case 2:
 			{
 				hKv.GetString("weapons", sBuffer, sizeof(sBuffer));
-				ExplodeInArrayList(sBuffer, NoScope_Weapons);
+				ExplodeInArrayList(sBuffer, g_hSettings.NoScopeWeapons);
 			}
 			case 3:
 			{
@@ -319,8 +358,8 @@ void LoadSettings()
 			}
 			case 7:
 			{
-				g_iWhirl = hKv.GetNum("whirl", 300);
-				g_iWhirlInterval = hKv.GetNum("interval", 1);
+				g_flWhirl = hKv.GetFloat("whirl", 200.0);
+				g_iWhirlInterval = hKv.GetNum("interval", 2);
 			}
 		}
 
@@ -332,18 +371,18 @@ void LoadSettings()
 	delete hKv;
 }
 
-void ExplodeInArrayList(const char[] sText, ArrayListBuffer Array)
+void ExplodeInArrayList(const char[] sText, ArrayList hArray)
 {
-	int  iLastSize = 0;
+	int iLastSize = 0;
 
-	for(int i = 0, iLen = strlen(sText)+1; i != iLen;)
+	for(int i = 0, iLen = strlen(sText) + 1; i != iLen;)
 	{
-		if(iLen == ++i || sText[i-1] == ',')
+		if(iLen == ++i || sText[i - 1] == ',')
 		{
 			char sBuf[64];
 
-			strcopy(sBuf, i-iLastSize, sText[iLastSize]);
-			g_hBuffer[Array].PushString(sBuf);
+			strcopy(sBuf, i - iLastSize, sText[iLastSize]);
+			hArray.PushString(sBuf);
 
 			iLastSize = i;
 		}
@@ -352,7 +391,7 @@ void ExplodeInArrayList(const char[] sText, ArrayListBuffer Array)
 	if(!iLastSize)
 	{
 		PrintToServer(sText);
-		g_hBuffer[Array].PushString(sText);
+		hArray.PushString(sText);
 	}
 }
 
@@ -370,7 +409,7 @@ public Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, fl
 		static char sWeapon[32];
 		hEvent.GetString("weapon", sWeapon, sizeof(sWeapon));
 
-		if(g_hBuffer[ProhibitedWeapons].FindString(sWeapon) == -1)
+		if(g_hSettings.ProhibitedWeapons.FindString(sWeapon) == -1 && sWeapon[0] != 'k' && sWeapon[2] != 'y')
 		{
 			int iActiveWeapon = GetEntDataEnt2(iAttacker, m_hActiveWeapon),
 				iUKFlags = UnusualKill_None;
@@ -388,7 +427,7 @@ public Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, fl
 				iUKFlags |= UnusualKill_Penetrated;
 			}
 
-			if(g_iEngine == Engine_CSGO && !GetEntData(iAttacker, m_bIsScoped) && g_hBuffer[NoScope_Weapons].FindString(sWeapon) != -1)
+			if(!GetEntData(iAttacker, m_bIsScoped) && g_hSettings.NoScopeWeapons.FindString(sWeapon) != -1)
 			{
 				iUKFlags |= UnusualKill_NoScope;
 			}
@@ -446,12 +485,12 @@ public Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, fl
 				}
 			}
 
-			if((g_iMouceX[iAttacker] < 0 ? -g_iMouceX[iAttacker] : g_iMouceX[iAttacker]) > g_iWhirl)
+			if((g_flRotation[iAttacker] < 0.0 ? -g_flRotation[iAttacker] : g_flRotation[iAttacker]) > g_flWhirl)
 			{
 				iUKFlags |= UnusualKill_Whirl;
 			}
 
-			if(iActiveWeapon != -1 && !GetEntData(iActiveWeapon, m_iClip1))
+			if(iActiveWeapon != -1 && GetEntData(iActiveWeapon, m_iClip1) == 1)
 			{
 				iUKFlags |= UnusualKill_LastClip;
 			}
@@ -463,7 +502,7 @@ public Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, fl
 
 				for(int iType = 0; iType != MAX_UKTYPES; iType++)
 				{
-					if(iUKFlags & (1 << iType + 1))
+					if(iUKFlags & (1 << iType))
 					{
 						FormatEx(sColumns, sizeof(sColumns), "%s`%s` = %d, ", sColumns, g_sNameUK[iType], ++g_iUK[iAttacker][iType]);
 
@@ -474,7 +513,10 @@ public Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, fl
 								FPS_PrintToChat(iAttacker, "%T: \x04+%i.0", g_sNameUK[iType], iAttacker, g_iExp[iType]);
 							}
 
-							fAddPointsAttacker += float(g_iExp[iType]);
+							if (g_iExpMode)
+							{
+								fAddPointsAttacker += float(g_iExp[iType]);
+							}
 						}
 					}
 				}
@@ -484,7 +526,7 @@ public Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, fl
 				FormatEx(sQuery, sizeof(sQuery), SQL_SavePlayer, sColumns, g_iPlayerAccountID[iAttacker], FPS_GetID(FPS_SERVER_ID));
 				g_hDatabase.Query(SQL_Default_Callback, sQuery, 3);
 
-				return Plugin_Changed;
+				return g_iExpMode ? Plugin_Changed : Plugin_Continue;
 			}
 		}
 	}
@@ -511,16 +553,16 @@ public void OnPlayerRunCmdPost(int iClient, int iButtons, int iImpulse, const fl
 {
 	static int iInterval[MAXPLAYERS+1];
 
-	if((g_iMouceX[iClient] += iMouse[0]) && iInterval[iClient] - GetTime() <= 0)
+	if(IsPlayerAlive(iClient) && (g_flRotation[iClient] += iMouse[0] / 50.0) && iInterval[iClient] - GetTime() < 1)
 	{
-		g_iMouceX[iClient] = 0;
+		g_flRotation[iClient] = 0.0;
 		iInterval[iClient] = GetTime() + g_iWhirlInterval;
 	}
 }
 
 public void OnClientSayCommand_Post(int iClient, const char[] sCommand, const char[] sArgs)
 {
-	if(g_hBuffer[ChatCommands].FindString(sArgs) != -1)
+	if(g_hSettings.ChatCommands.FindString(sArgs) != -1)
 	{
 		UnusualKillMenu(iClient);
 	}
@@ -536,21 +578,21 @@ void UnusualKillMenu(int iClient)
 	char sBuffer[512],
 		 sTrans[48];
 
-	FormatEx(sBuffer, sizeof(sBuffer), "[ %t ]\n ", "UnusualKill");
+	FormatEx(sBuffer, sizeof(sBuffer), "[ %t ]\n ", "UnusualKillMenu");
 	hPanel.SetTitle(sBuffer);
 
 	sBuffer[0] = 0;
-	if(iKills)
+	if(!iKills)
 	{
-		for(int i = 0; i != MAX_UKTYPES; i++)
-		{
-			if(g_bShowItem[i])
-			{
-				int iPercent = 100 * g_iUK[iClient][i] / iKills;
+		iKills = 1;
+	}
 
-				FormatEx(sTrans, sizeof(sTrans), "Menu_%s", g_sNameUK[i]);
-				Format(sBuffer, sizeof(sBuffer), "%s%t\n", sBuffer, sTrans, g_iUK[iClient][i], iPercent || !g_iUK[iClient][i] ? iPercent : 1);
-			}
+	for(int i = 0; i != MAX_UKTYPES; i++)
+	{
+		if(g_bShowItem[i])
+		{
+			FormatEx(sTrans, sizeof(sTrans), "Menu_%s", g_sNameUK[i]);
+			Format(sBuffer, sizeof(sBuffer), "%s%t\n", sBuffer, sTrans, g_iUK[iClient][i], RoundToCeil(100.0 / iKills * g_iUK[iClient][i]));
 		}
 	}
 
@@ -576,6 +618,116 @@ public int Handler_Panel(Menu hPanel, MenuAction action, int iClient, int iOptio
 		if (iOption == 7)
 		{
 			FPS_MoveToMenu(iClient, FPS_STATS_MENU);
+		}
+		ClientCommand(iClient, "playgamesound *buttons/combine_button7.wav");
+	}
+}
+
+void UnusualKillTop(int iClient)
+{
+	Menu hMenu = new Menu(Handler_ShowTopsMenu);
+	SetGlobalTransTarget(iClient);
+	hMenu.SetTitle("[ %t ]\n ", "UnusualKillsTop");
+
+	static char sText[96],
+		 		sTrans[32];
+
+	for(int i = 0; i != MAX_UKTYPES; i++)
+	{
+		if(g_bShowItem[i])
+		{
+			FormatEx(sTrans, sizeof(sTrans), "Top_%s", g_sNameUK[i]);
+			FormatEx(sText, sizeof(sText), "%t", sTrans);
+
+			sTrans[0] = i;
+			sTrans[1] = '\0';
+
+			hMenu.AddItem(sTrans, sText);
+		}
+	}
+
+	hMenu.ExitBackButton = true;
+	hMenu.ExitButton = true;
+	hMenu.Display(iClient, MENU_TIME_FOREVER);
+}
+
+public int Handler_ShowTopsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
+{
+	switch(action)
+	{
+		case MenuAction_End: delete hMenu;
+		case MenuAction_Cancel:
+		{
+			if(iItem == MenuCancel_ExitBack)
+			{
+				FPS_MoveToMenu(iClient, FPS_TOP_MENU);
+			}
+		}
+		case MenuAction_Select:
+		{
+			static char sInfo[2],
+						sQuery[512];
+			hMenu.GetItem(iItem, sInfo, sizeof(sInfo));
+
+			FormatEx(sQuery, sizeof(sQuery), SQL_PrintTop, g_sNameUK[sInfo[0]], g_sNameUK[sInfo[0]]);
+			g_hDatabase.Query(SQL_Callback_TopData, sQuery, GetClientUserId(iClient) << 4 | sInfo[0] + 1);
+		}
+	}
+}
+
+public void SQL_Callback_TopData(Database hDatabase, DBResultSet hResult, const char[] sError, int iIndex)
+{
+	if (!hResult || sError[0])
+	{
+		LogError("SQL_Callback_TopData: error when sending the request (%s)", sError);
+		return;
+	}
+
+	int iClient = GetClientOfUserId(iIndex >> 4);
+	if(iClient && (iIndex &= 0xF))
+	{
+		Panel hPanel = new Panel();
+		SetGlobalTransTarget(iClient);
+
+		char sText[768],
+			 sName[32],
+			 sTrans[48];
+
+		FormatEx(sTrans, sizeof(sTrans), "Top_%s", g_sNameUK[iIndex - 1]);
+		FormatEx(sText, sizeof(sText), "[ %t ]\n ", sTrans);
+		hPanel.SetTitle(sText);
+
+		if(hResult.HasResults)
+		{
+			for(int j = 0; hResult.FetchRow();)
+			{
+				hResult.FetchString(0, sName, sizeof(sName));
+				FormatEx(sText, sizeof(sText), "%t\n", "Top_Open", ++j, hResult.FetchInt(1), sName);
+			}
+		}
+		strcopy(sText[strlen(sText)], 4, "\n ");
+		hPanel.DrawItem(sText);
+		
+		FormatEx(sText, sizeof(sText), "%t", "Back");
+		hPanel.CurrentKey = 7;
+		hPanel.DrawItem(sText);
+
+		FormatEx(sText, sizeof(sText), "%t", "Exit");
+		hPanel.CurrentKey = 9;
+		hPanel.DrawItem(sText);
+
+		hPanel.Send(iClient, Handler_PanelTop, MENU_TIME_FOREVER);
+		delete hPanel;
+	}
+}
+
+public int Handler_PanelTop(Menu hPanel, MenuAction action, int iClient, int iOption)
+{
+	if(action == MenuAction_Select)
+	{
+		if (iOption == 7)
+		{
+			UnusualKillTop(iClient);
 		}
 		ClientCommand(iClient, "playgamesound *buttons/combine_button7.wav");
 	}

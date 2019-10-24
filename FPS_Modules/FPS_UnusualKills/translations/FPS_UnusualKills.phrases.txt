@@ -57,11 +57,11 @@
 
 	// MENU ------------
 
-	"UnusualKill"
+	"UnusualKillMenu"
 	{
-		"en"			"Unusual Kills"
-		"ru"			"Необычные убийства"
-		"ua"			"Незвичайні вбивства"
+		"en"			"Statistics on unusual kills"
+		"ru"			"Cтатистика по необычным убийствам"
+		"ua"			"Cтатистика незвичайних вбивств"
 	}
 	"Menu_op"
 	{
@@ -125,5 +125,73 @@
 		"en"			"Last clip: {1} ({2}%%)"
 		"ru"			"Последним патроном: {1} ({2}%%)"
 		"ua"			"Останнім патроном: {1} ({2}%%)"
+	}
+	
+	"UnusualKillsTop"
+	{
+		"en"			"Top on unusual kills"
+		"ru"			"Top по необычным убийствам"
+		"ua"			"Top по незвичайних вбивствах"
+	}
+	"Top_Open"
+	{
+		"#format"		"{1:i},{2:i},{3:s}"
+		"en"			"{1} - {2} kills - {3}"
+		"ru"			"{1} - {2} Киллов - {3}"
+		"ua"			"{1} - {2} Вбивств - {3}"
+	}
+	"Top_op"
+	{
+		"en"			"TOP-10 by open kills"
+		"ru"			"TOP-10 по первым убийствам"
+		"ua"			"TOP-10 перших вбивств"
+	}
+	"Top_penetrated"
+	{
+		"en"			"TOP-10 by penetration kills"
+		"ru"			"TOP-10 по убийствам с прострелом"
+		"ua"			"TOP-10 вбивств за простріл"
+	}
+	"Top_no_scope"
+	{
+		"en"			"TOP-10 by NoScope kills"
+		"ru"			"TOP-10 по убийствам без прицела"
+		"ua"			"TOP-10 вбивств без прицілу"
+	}
+	"Top_run"
+	{
+		"en"			"TOP-10 by run kills"
+		"ru"			"TOP-10 по убийствам на бегу"
+		"ua"			"TOP-10 вбивств на бігу"
+	}
+	"Top_jump"
+	{
+		"en"			"TOP-10 by jump kills"
+		"ru"			"TOP-10 по убийствам в прыжке"
+		"ua"			"TOP-10 вбивств в стрибку"
+	}
+	"Top_flash"
+	{
+		"en"			"TOP-10 by light grenade kills"
+		"ru"			"TOP-10 по убийствам с ослеплением от световой гранаты"
+		"ua"			"TOP-10 вбивств з осліпленням від світлової гранати"
+	}
+	"Top_smoke"
+	{
+		"en"			"TOP-10 by in the smoke kills"
+		"ru"			"TOP-10 по убийствам в дым"
+		"ua"			"TOP-10 вбивств в дим"
+	}
+	"Top_whirl"
+	{
+		"en"			"TOP-10 by with a reversal kills"
+		"ru"			"TOP-10 по убийствам с разворота"
+		"ua"			"TOP-10 вбивств з розвороту"
+	}
+	"Top_last_clip"
+	{
+		"en"			"TOP-10 by last clip kills"
+		"ru"			"TOP-10 по убийствам последним патроном"
+		"ua"			"TOP-10 вбивств останнім патроном"
 	}
 }

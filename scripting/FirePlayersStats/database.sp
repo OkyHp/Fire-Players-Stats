@@ -339,7 +339,7 @@ void SavePlayerData(int iClient)
 				szName[MAX_NAME_LENGTH * 2 + 1],
 				szIp[32];
 		GetClientAuthId(iClient, AuthId_SteamID64, SZF(szAuth), true);
-		strcopy(SZF(szName), GetFixNamePlayer(iClient)); // <-----------------------------
+		GetClientName(iClient, SZF(szName));
 		GetClientIP(iClient, SZF(szIp));
 
 		Transaction	hTxn = new Transaction();
