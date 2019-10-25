@@ -58,13 +58,11 @@ CREATE TABLE IF NOT EXISTS `fps_unusualkills` \
 FROM `fps_unusualkills` WHERE `account_id` = '%i' AND `server_id` = '%i';"
 #define SQL_SavePlayer "UPDATE `fps_unusualkills` SET %s WHERE `account_id` = '%i' AND `server_id` = '%i';"
 #define SQL_PrintTop \
-"SELECT \
-	`p`.`nickname`, \
-	`u`.`%s` \
+"SELECT `p`.`nickname`, `u`.`%s` \
 FROM \
 	`fps_unusualkills` AS `u` \
 	INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `u`.`account_id` \
-ORDER BY `u`.`%s` DESC LIMIT 10;"
+WHERE `u`.`server_id` = %i ORDER BY `u`.`%s` DESC LIMIT 10;"
 
 #define RadiusSmoke 100.0
 
@@ -669,7 +667,7 @@ public int Handler_ShowTopsMenu(Menu hMenu, MenuAction action, int iClient, int 
 						sQuery[512];
 			hMenu.GetItem(iItem, sInfo, sizeof(sInfo));
 
-			FormatEx(sQuery, sizeof(sQuery), SQL_PrintTop, g_sNameUK[sInfo[0]], g_sNameUK[sInfo[0]]);
+			FormatEx(sQuery, sizeof(sQuery), SQL_PrintTop, g_sNameUK[sInfo[0]], FPS_GetID(FPS_SERVER_ID), g_sNameUK[sInfo[0]]);
 			g_hDatabase.Query(SQL_Callback_TopData, sQuery, GetClientUserId(iClient) << 4 | sInfo[0] + 1);
 		}
 	}
@@ -697,16 +695,17 @@ public void SQL_Callback_TopData(Database hDatabase, DBResultSet hResult, const 
 		FormatEx(sText, sizeof(sText), "[ %t ]\n ", sTrans);
 		hPanel.SetTitle(sText);
 
+		sText[0] = 0;
 		if(hResult.HasResults)
 		{
 			for(int j = 0; hResult.FetchRow();)
 			{
 				hResult.FetchString(0, sName, sizeof(sName));
-				FormatEx(sText, sizeof(sText), "%t\n", "Top_Open", ++j, hResult.FetchInt(1), sName);
+				FormatEx(sText, sizeof(sText), "%s\n%t\n", sText, "Top_Open", ++j, hResult.FetchInt(1), sName);
 			}
 		}
 		strcopy(sText[strlen(sText)], 4, "\n ");
-		hPanel.DrawItem(sText);
+		hPanel.DrawText(sText);
 		
 		FormatEx(sText, sizeof(sText), "%t", "Back");
 		hPanel.CurrentKey = 7;
