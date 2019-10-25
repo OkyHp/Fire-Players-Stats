@@ -10,7 +10,7 @@
 	#error This plugin can only compile on SourceMod 1.10!
 #endif
 
-#if FPS_INC_VER < 13
+#if FPS_INC_VER < 15
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
 #endif
 
