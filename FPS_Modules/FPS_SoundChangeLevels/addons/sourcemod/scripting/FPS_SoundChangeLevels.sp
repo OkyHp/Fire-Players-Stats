@@ -7,17 +7,14 @@
 
 char g_sSounds[2][256];
 
-enum name
-{
-	LVL_UP = 0,
-	LVL_DOWN
-};
+#define LVL_UP		0
+#define LVL_DOWN	1
 
 public Plugin myinfo =
 {
 	name	=	"FPS Sound Change Levels",
 	author	=	"OkyHp",
-	version	=	"1.0.0",
+	version	=	"1.0.1",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -33,13 +30,13 @@ public void OnPluginStart()
 		"sm_fpsm_sound_up",		"fps/level_up.mp3", 
 		"Звук воспроизводимый при повышении уровня без папки sound"
 	)).AddChangeHook(ChangeCvar_SoundUp);
-	Convar.GetString(g_sSounds[LVL_UP], sizeof(g_sSounds[]));
+	ChangeCvar_SoundUp(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fpsm_sound_down",	"fps/level_down.mp3", 
 		"Звук воспроизводимый при понижении уровня без папки sound"
 	)).AddChangeHook(ChangeCvar_SoundDown);
-	Convar.GetString(g_sSounds[LVL_DOWN], sizeof(g_sSounds[]));
+	ChangeCvar_SoundDown(Convar, NULL_STRING, NULL_STRING);
 
 	AutoExecConfig(true, "FPS_SoundChangeLevels");
 }
