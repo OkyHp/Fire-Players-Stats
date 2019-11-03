@@ -384,7 +384,7 @@ void SavePlayerData(int iClient)
 			{
 				g_hWeaponsData[iClient].GetString(i, SZF(szWeapon));
 				FPS_Debug("SavePlayerData >> Weapon '%s' finded! Index: %i", szWeapon, i)
-				g_hWeaponsData[iClient].GetArray(i+1, SZF(iArray));
+				g_hWeaponsData[iClient].GetArray((i+1), SZF(iArray));
 
 				g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_weapons_stats` ( \
 						`account_id`, `server_id`, `weapon`, `kills`, `shoots`, \

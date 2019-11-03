@@ -38,9 +38,10 @@ void WriteWeaponData(int iClient, char[] szWeapon, int iArray[W_SIZE])
 		g_hWeaponsData[iClient].GetArray(++iIndex, SZF(iBuffArray));
 		for (int i = 0; i < W_SIZE; ++i)
 		{
-			iArray[i] += iBuffArray[i];
+			FPS_Debug(">> WriteWeaponData #%i >> Source: %i | Added: %i ", i, iBuffArray[i], iArray[i])
+			iBuffArray[i] += iArray[i];
 		}
-		g_hWeaponsData[iClient].SetArray(iIndex, SZF(iArray));
+		g_hWeaponsData[iClient].SetArray(iIndex, SZF(iBuffArray));
 	}
 }
 

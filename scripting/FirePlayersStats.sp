@@ -47,7 +47,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define PLUGIN_VERSION		"1.5.0"
+#define PLUGIN_VERSION		"1.5.1"
 
 #if DEBUG == 1
 	char g_sLogPath[256];
@@ -290,7 +290,7 @@ public void OnClientPutInServer(int iClient)
 		if (iAccountID)
 		{
 			g_iPlayerAccountID[iClient] = iAccountID;
-			g_hWeaponsData[iClient] = new ArrayList(ByteCountToCells(32));
+			g_hWeaponsData[iClient] = new ArrayList(64);
 			LoadPlayerData(iClient);
 		}
 		else

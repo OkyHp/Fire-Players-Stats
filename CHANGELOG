@@ -68,3 +68,4 @@
 		Large optimization of work. KV to collect information on weapons and KV for ranks replaced by ArrayList, deleted file catch_ranks.ini.
 		Fixed player count for stats work, excluded observers.
 		Minor corrections to formula for calculating points.
+1.5.1 - Fixed a bug with the lack of memory allocated to the array for weapons.
