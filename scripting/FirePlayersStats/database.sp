@@ -21,9 +21,9 @@ public Action Timer_DatabaseRetryConn(Handle hTimer)
 	return Plugin_Stop;
 }
 
-bool CheckDatabaseConnection(Database hDatabase, const char[] szError, const char[] szErrorTag)
+bool CheckDatabaseConnection(const char[] szError, const char[] szErrorTag)
 {
-	if (!hDatabase || szError[0])
+	if (szError[0])
 	{
 		LogError("%s: %s", szErrorTag, szError);
 		if(StrContains(szError, "Lost connection to MySQL", false) != -1)
@@ -41,7 +41,7 @@ bool CheckDatabaseConnection(Database hDatabase, const char[] szError, const cha
 
 public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 {
-	if (!CheckDatabaseConnection(hDatabase, szError, "OnDatabaseConnect"))
+	if (!CheckDatabaseConnection(szError, "OnDatabaseConnect"))
 	{
 		return;
 	}
@@ -123,7 +123,7 @@ public void SQL_Default_Callback(Database hDatabase, DBResultSet hResult, const 
 {
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "SQL_Default_Callback #%i", QueryID);
-	CheckDatabaseConnection(hDatabase, szError, szBuffer);
+	CheckDatabaseConnection(szError, szBuffer);
 }
 
 public void SQL_TxnSuccess_CreateTable(Database hDatabase, any Data, int iNumQueries, DBResultSet[] results, any[] QueryData)
@@ -228,7 +228,7 @@ public Action CommandCreateRanks(int iClient, int iArgs)
 
 public void SQL_Callback_CreateRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
-	if (CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_CreateRanks"))
+	if (CheckDatabaseConnection(szError, "SQL_Callback_CreateRanks"))
 	{
 		LoadRanksSettings();
 
@@ -255,7 +255,7 @@ void LoadRanksSettings()
 
 public void SQL_Callback_LoadRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any data)
 {
-	if (g_hRanks && CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_LoadRanks"))
+	if (g_hRanks && CheckDatabaseConnection(szError, "SQL_Callback_LoadRanks"))
 	{
 		g_hRanks.Clear();
 
@@ -300,7 +300,7 @@ void LoadPlayerData(int iClient)
 public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	int iClient = CID(iUserID);
-	if (!iClient || !CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_LoadPlayerData"))
+	if (!iClient || !CheckDatabaseConnection(szError, "SQL_Callback_LoadPlayerData"))
 	{
 		return;
 	}
@@ -429,7 +429,7 @@ public void SQL_TxnFailure_UpdateOrInsertPlayerData(Database hDatabase, any Data
 {
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "SQL_TxnFailure_UpdateOrInsertPlayerData #%i", iFailIndex);
-	CheckDatabaseConnection(hDatabase, szError, szBuffer);
+	CheckDatabaseConnection(szError, szBuffer);
 }
 
 void DeleteInactivePlayers()
@@ -518,7 +518,7 @@ public void SQL_TxnFailure_TopData(Database hDatabase, any Data, int iNumQueries
 {
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "SQL_TxnFailure_TopData #%i", iFailIndex);
-	CheckDatabaseConnection(hDatabase, szError, szBuffer);
+	CheckDatabaseConnection(szError, szBuffer);
 }
 
 // Get player position
@@ -537,7 +537,7 @@ void GetPlayerPosition(int iClient)
 public void SQL_Callback_PlayerPosition(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	int iClient = CID(iUserID);
-	if (!iClient || !CheckDatabaseConnection(hDatabase, szError, "SQL_Callback_PlayerPosition"))
+	if (!iClient || !CheckDatabaseConnection(szError, "SQL_Callback_PlayerPosition"))
 	{
 		return;
 	}
