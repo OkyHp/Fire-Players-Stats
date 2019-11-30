@@ -55,7 +55,7 @@ void ResetIfLessZero(float fValue)
 }
 
 // Get steak points
-float StreakPoints(int iClient)
+stock float StreakPoints(int iClient)
 {
 	static int iStrick[MAXPLAYERS+1][2];
 	int iTime = GetTime();

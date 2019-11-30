@@ -274,7 +274,7 @@ native bool FPS_IsCalibration(int iClient);
  *	@param iClient			Индекс игрока.
  *	@return					true - Вернет обратно в секцию.
 */
-typedef ItemSelectCallback	= function bool (int iClient);
+typedef FPS_ItemSelectCallback		= function bool (int iClient);
 
 /**
  *	Вызывается, при отображении пункта.
@@ -284,7 +284,7 @@ typedef ItemSelectCallback	= function bool (int iClient);
  *	@param iMaxLength		Размер буфера.
  *	@return					true - Установит новое название с szDisplay.
 */
-typedef ItemDisplayCallback	= function bool (int iClient, char[] szDisplay, int iMaxLength);
+typedef FPS_ItemDisplayCallback		= function bool (int iClient, char[] szDisplay, int iMaxLength);
 
 /**
  *	Вызывается, при обращении к пункту.
@@ -293,7 +293,7 @@ typedef ItemDisplayCallback	= function bool (int iClient, char[] szDisplay, int 
  *	@param iStyle			Текущий стиль пункта.
  *	@return					Новый стиль для пункта (ITEMDRAW_DEFAULT, ITEMDRAW_DISABLED, ITEMDRAW_RAWLINE).
 */
-typedef ItemDrawCallback	= function int (int iClient, int iStyle);
+typedef FPS_ItemDrawCallback		= function int (int iClient, int iStyle);
 
 /**
  *	Добавляет новую функцию
@@ -305,11 +305,11 @@ typedef ItemDrawCallback	= function int (int iClient, int iStyle);
  *	@param OnItemDraw		Обратный вызов при обращении к пункту.
  *	@noreturn
 */
-native void FPS_AddFeature(const char[]				szFeature,
-							FeatureMenus			eType,
-							ItemSelectCallback		OnItemSelect	= INVALID_FUNCTION,
-							ItemDisplayCallback		OnItemDisplay	= INVALID_FUNCTION,
-							ItemDrawCallback		OnItemDraw		= INVALID_FUNCTION);
+native void FPS_AddFeature(const char[]					szFeature,
+							FeatureMenus				eType,
+							FPS_ItemSelectCallback		OnItemSelect	= INVALID_FUNCTION,
+							FPS_ItemDisplayCallback		OnItemDisplay	= INVALID_FUNCTION,
+							FPS_ItemDrawCallback		OnItemDraw		= INVALID_FUNCTION);
 
 /**
  *	Удаляет функцию

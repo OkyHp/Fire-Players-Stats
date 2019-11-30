@@ -165,7 +165,11 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 					fPointsVictim	= fPointsAttacker * g_fCoeff * (fDiss < 0.5 && FPS_IsCalibration(iAttacker) ? fDiss : 1.0),
 					fExtPoints		= GetWeaponExtraPoints(szWeapon, bIsGrenade),
 					fHeadshot		= bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0,
-					fStreak			= StreakPoints(iAttacker);
+					fStreak;
+
+			#if USE_STREAK_POINTS == 1
+				fStreak = StreakPoints(iAttacker);
+			#endif
 
 			fPointsAttacker	= (fPointsAttacker * fExtPoints) + fHeadshot + fStreak;
 			FPS_Debug("Event_PlayerDeath >> Points Data: \n ----->> EP: %f \n ----->> HS: %f \n ----->> ST: %f \n ----->> DS: %f", fExtPoints, fHeadshot, fStreak, fDiss)
