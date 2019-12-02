@@ -347,7 +347,7 @@ void SavePlayerData(int iClient)
 		g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_players` ( \
 				`account_id`, `steam_id`, `nickname`, `ip` \
 			) VALUES ( \
-				%i, '%s', '%s', '%s' \
+				'%i', '%s', '%s', '%s' \
 			) ON DUPLICATE KEY UPDATE `nickname` = '%s', `ip` = '%s';", 
 			g_iPlayerAccountID[iClient], szAuth, szName, szIp, szName, szIp);
 		FPS_Debug("SavePlayerData >> Query#1: %s", szQuery)
@@ -391,19 +391,19 @@ void SavePlayerData(int iClient)
 						`hits_head`, `hits_neck`, `hits_chest`, `hits_stomach`, \
 						`hits_left_arm`, `hits_right_arm`, `hits_left_leg`, `hits_right_leg`, `headshots` \
 					) VALUES \
-						(%i, %i, '%s', %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
+						('%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i') ON DUPLICATE KEY \
 					UPDATE \
-						`kills` = `kills` + %i, \
-						`shoots` = `shoots` + %i, \
-						`hits_head` = `hits_head` + %i, \
-						`hits_neck` = `hits_neck` + %i, \
-						`hits_chest` = `hits_chest` + %i, \
-						`hits_stomach` = `hits_stomach` + %i, \
-						`hits_left_arm` = `hits_left_arm` + %i, \
-						`hits_right_arm` = `hits_right_arm` + %i, \
-						`hits_left_leg` = `hits_left_leg` + %i, \
-						`hits_right_leg` = `hits_right_leg` + %i, \
-						`headshots` = `headshots` + %i;", 
+						`kills` = `kills` + '%i', \
+						`shoots` = `shoots` + '%i', \
+						`hits_head` = `hits_head` + '%i', \
+						`hits_neck` = `hits_neck` + '%i', \
+						`hits_chest` = `hits_chest` + '%i', \
+						`hits_stomach` = `hits_stomach` + '%i', \
+						`hits_left_arm` = `hits_left_arm` + '%i', \
+						`hits_right_arm` = `hits_right_arm` + '%i', \
+						`hits_left_leg` = `hits_left_leg` + '%i', \
+						`hits_right_leg` = `hits_right_leg` + '%i', \
+						`headshots` = `headshots` + '%i';", 
 					g_iPlayerAccountID[iClient], g_iServerID, szWeapon, iArray[W_KILLS], iArray[W_SHOOTS], 
 					iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
 					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS], 
