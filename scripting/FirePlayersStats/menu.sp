@@ -522,7 +522,7 @@ void ShowStatsInfoMenu(int iClient)
 				#if USE_STREAK_POINTS == 0
 					if (i == 13)
 					{
-						continue;
+						break;
 					}
 					++i;
 				#endif
