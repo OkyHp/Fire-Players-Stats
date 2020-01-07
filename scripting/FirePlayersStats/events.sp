@@ -232,7 +232,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 			if (g_iGameType[0] == 1 && g_iGameType[1] == 2)
 			{
 				g_bStatsActive = true;
-				FPS_Debug("Event_RoundAction (s) >> Stats %s (Randomspawn)", g_bStatsActive ? "ON" : "OFF")
+				FPS_Debug("Event_RoundAction (s) >> DM >> true")
 				return;
 			}
 			
