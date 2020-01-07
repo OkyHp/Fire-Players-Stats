@@ -33,8 +33,8 @@
 #include <FirePlayersStats>
 #include <SteamWorks>
 
-#if FPS_INC_VER < 15
-	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
+#if FPS_INC_VER != 152
+	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 152"
 #endif
 
 /////////////////////////////////////// PRECOMPILATION SETTINGS ///////////////////////////////////////

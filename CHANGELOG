@@ -72,3 +72,5 @@
 1.5.2 - Changed method for determining DM.
 		Colors used when displaying points displayed at the end of round are rendered in defines.
 		Fixed display of stick points with USE_STREAK_POINTS 0.
+		New colors added: PINK, BRIGHTRED.
+		

@@ -38,7 +38,7 @@ public void __pl_fire_players_stats_SetNTVOptional()
 }
 #endif
 
-#define FPS_INC_VER				15
+#define FPS_INC_VER				152
 #define UID(%0)					GetClientUserId(%0)
 #define CID(%0)					GetClientOfUserId(%0)
 #define SZF(%0)					%0, sizeof(%0)
@@ -380,20 +380,20 @@ stock char[] FindTranslationRank(int iClient, char[] szRank = NULL_STRING)
 
 // Taken from CS:GO COLORS by Феникс(komashchenko)
 
-#define CSGO_COL_COUNT		14
+#define CSGO_COL_COUNT		16
 static char g_sCsgoColorsBuff[2048];
-
 static const char g_sColorsT[CSGO_COL_COUNT][] = {
-	"{DEFAULT}", "{RED}", "{LIGHTPURPLE}", "{GREEN}", "{LIME}", 
-	"{LIGHTGREEN}", "{LIGHTRED}", "{GRAY}", "{LIGHTOLIVE}", "{OLIVE}", 
-	"{LIGHTBLUE}", "{BLUE}", "{PURPLE}", "{GRAYBLUE}"
+	"{DEFAULT}", "{RED}", "{LIGHTPURPLE}", "{GREEN}", 
+	"{LIME}", "{LIGHTGREEN}", "{LIGHTRED}", "{GRAY}", 
+	"{LIGHTOLIVE}", "{OLIVE}", "{LIGHTBLUE}", "{BLUE}", 
+	"{PURPLE}", "{GRAYBLUE}", "{PINK}", "{BRIGHTRED}"
 };
 static const char g_sColorsC[CSGO_COL_COUNT][] = {
-	"\x01", "\x02", "\x03", "\x04", "\x05", 
-	"\x06", "\x07", "\x08", "\x09", "\x10", 
-	"\x0B", "\x0C", "\x0E", "\x0A"
+	"\x01", "\x02", "\x03", "\x04", 
+	"\x05", "\x06", "\x07", "\x08", 
+	"\x09", "\x10", "\x0B", "\x0C", 
+	"\x0E", "\x0A", "\x0E", "\x0F"
 };
-
 
 stock void FPS_CGOPrintToChat(int iClient, const char[] message, any ...)
 {
