@@ -513,8 +513,20 @@ void ShowStatsInfoMenu(int iClient)
 		g_hWeaponsConfigKV.Rewind();
 		if (g_hWeaponsConfigKV.JumpToKey("ExtraPoints") && g_hWeaponsConfigKV.GotoFirstSubKey(false))
 		{
+			#if USE_STREAK_POINTS == 0
+				int i;
+			#endif
+
 			char szParam[32], szBuffer[128];
 			do {
+				#if USE_STREAK_POINTS == 0
+					if (i == 13)
+					{
+						continue;
+					}
+					++i;
+				#endif
+
 				g_hWeaponsConfigKV.GetSectionName(SZF(szParam));
 				FormatEx(SZF(szBuffer), "%t", szParam, g_hWeaponsConfigKV.GetFloat(NULL_STRING, 0.0));
 				hMenu.AddItem(NULL_STRING, szBuffer, ITEMDRAW_DISABLED);

@@ -229,9 +229,10 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 				return;
 			}
 
-			if (g_bRandomspawn)
+			if (g_iGameType[0] == 1 && g_iGameType[1] == 2)
 			{
 				g_bStatsActive = true;
+				FPS_Debug("Event_RoundAction (s) >> Stats %s (Randomspawn)", g_bStatsActive ? "ON" : "OFF")
 				return;
 			}
 			
@@ -274,9 +275,9 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 		}
 		case 'e':
 		{
-			static int iSave;
-			if (g_bStatsActive && !g_bRandomspawn && GameRules_GetProp("m_totalRoundsPlayed"))
+			if (g_bStatsActive && g_iGameType[0] != 1 && g_iGameType[1] != 2 && GameRules_GetProp("m_totalRoundsPlayed"))
 			{
+				static int iSave;
 				bool bSave = !(++iSave%g_iSaveInterval);
 				int iTeam, iWinTeam = GetEventInt(hEvent, "winner");
 
@@ -308,7 +309,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 						if (g_iPlayerSessionData[i][MAX_ROUNDS_KILLS])
 						{
 							float fPoints = g_fPlayerPoints[i] - fRoundPlayerPoints[i];
-							FPS_PrintToChat(i, "%t", "PrintPoints", g_fPlayerPoints[i], fPoints > 0.0 ? "{GREEN}+" : "{RED}", fPoints);
+							FPS_PrintToChat(i, "%t", "PrintPoints", g_fPlayerPoints[i], fPoints > 0.0 ? COLOR_POINTS_ADDED : COLOR_POINTS_REDUCED, fPoints);
 						}
 
 						if (bSave)

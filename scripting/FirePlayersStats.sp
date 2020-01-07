@@ -39,16 +39,18 @@
 
 /////////////////////////////////////// PRECOMPILATION SETTINGS ///////////////////////////////////////
 
-#define UPDATE_SERVER_IP	0		// 0 - Disable. It is necessary if you use domain instead of IP. 
-#define DEFAULT_POINTS		1000.0	// Not recommended change
-#define DEBUG				0		// Enable/Disable debug mod
-#define USE_STREAK_POINTS	1		// Use streak points in stats
-#define LOAD_TYPE			0		// Use forvard for load player stats:	0 - OnClientPostAdminCheck 
-									//										1 - OnClientPutInServer
+#define UPDATE_SERVER_IP		0		// 0 - Disable. It is necessary if you use domain instead of IP. 
+#define DEFAULT_POINTS			1000.0	// Not recommended change
+#define DEBUG					0		// Enable/Disable debug mod
+#define USE_STREAK_POINTS		1		// Use streak points in stats
+#define LOAD_TYPE				0		// Use forvard for load player stats:	0 - OnClientPostAdminCheck 
+										//										1 - OnClientPutInServer
+#define COLOR_POINTS_ADDED		"{GREEN}+"
+#define COLOR_POINTS_REDUCED	"{RED}"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define PLUGIN_VERSION		"1.5.1"
+#define PLUGIN_VERSION		"1.5.2"
 
 #if DEBUG == 1
 	char g_sLogPath[256];
@@ -62,15 +64,15 @@ int			g_iPlayerData[MAXPLAYERS+1][7],
 			g_iPlayerSessionData[MAXPLAYERS+1][7],
 			g_iPlayerAccountID[MAXPLAYERS+1],
 			g_iPlayerPosition[MAXPLAYERS+1],
-			g_iPlayersCount;
+			g_iPlayersCount,
+			g_iGameType[2];
 float		g_fPlayerPoints[MAXPLAYERS+1],
 			g_fPlayerSessionPoints[MAXPLAYERS+1];
 bool		g_bStatsLoaded,
 			g_bStatsLoad[MAXPLAYERS+1],
 			g_bStatsActive,
 			g_bDisableStatisPerRound,
-			g_bTeammatesAreEnemies,
-			g_bRandomspawn;
+			g_bTeammatesAreEnemies;
 char		g_sMap[256];
 
 // Features
@@ -156,8 +158,10 @@ public void OnPluginStart()
 	ConVar Convar;
 	(Convar = FindConVar("mp_teammates_are_enemies")).AddChangeHook(ChangeCvar_TeammatesAreEnemies);
 	ChangeCvar_TeammatesAreEnemies(Convar, NULL_STRING, NULL_STRING);
-	(Convar = FindConVar("mp_randomspawn")).AddChangeHook(ChangeCvar_RandomSpawn);
-	ChangeCvar_RandomSpawn(Convar, NULL_STRING, NULL_STRING);
+	(Convar = FindConVar("game_type")).AddChangeHook(ChangeCvar_GameType);
+	ChangeCvar_GameType(Convar, NULL_STRING, NULL_STRING);
+	(Convar = FindConVar("game_mode")).AddChangeHook(ChangeCvar_GameMode);
+	ChangeCvar_GameMode(Convar, NULL_STRING, NULL_STRING);
 
 	LoadTopData();
 	LoadRanksSettings();
@@ -180,9 +184,14 @@ public void ChangeCvar_TeammatesAreEnemies(ConVar Convar, const char[] oldValue,
 	g_bTeammatesAreEnemies = Convar.BoolValue;
 }
 
-public void ChangeCvar_RandomSpawn(ConVar Convar, const char[] oldValue, const char[] newValue)
+public void ChangeCvar_GameType(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
-	g_bRandomspawn = Convar.BoolValue;
+	g_iGameType[0] = Convar.IntValue;
+}
+
+public void ChangeCvar_GameMode(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_iGameType[1] = Convar.IntValue;
 }
 
 public void OnMapStart()
@@ -197,7 +206,7 @@ public void OnMapStart()
 
 	GetCurrentMapEx(SZF(g_sMap));
 
-	if (g_bRandomspawn)
+	if (g_iGameType[0] == 1 && g_iGameType[1] == 2)
 	{
 		CreateTimer(float(g_iSaveInterval * 60), TimerSaveStats, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	}
@@ -205,7 +214,7 @@ public void OnMapStart()
 
 public Action TimerSaveStats(Handle hTimer)
 {
-	if (!g_bRandomspawn)
+	if (g_iGameType[0] != 1 && g_iGameType[1] != 2)
 	{
 		return Plugin_Stop;
 	}
