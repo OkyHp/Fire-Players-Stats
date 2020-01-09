@@ -228,13 +228,6 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 				g_bDisableStatisPerRound = false;
 				return;
 			}
-
-			if (g_iGameType[0] == 1 && g_iGameType[1] == 2)
-			{
-				g_bStatsActive = true;
-				FPS_Debug("Event_RoundAction (s) >> DM >> true")
-				return;
-			}
 			
 			int iPlayers;
 			for (int i = 1; i <= MaxClients; ++i)
@@ -251,6 +244,14 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 					}
 				}
 			}
+
+			if (g_iGameType[0] == 1 && g_iGameType[1] == 2)
+			{
+				g_bStatsActive = true;
+				FPS_Debug("Event_RoundAction (s) >> DM >> true")
+				return;
+			}
+
 			g_bStatsActive = (iPlayers >= g_iMinPlayers);
 			if (!g_bStatsActive)
 			{
@@ -277,6 +278,8 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 		{
 			if (g_bStatsActive && g_iGameType[0] != 1 && g_iGameType[1] != 2 && GameRules_GetProp("m_totalRoundsPlayed"))
 			{
+				g_bStatsActive = false;
+
 				static int iSave;
 				bool bSave = !(++iSave%g_iSaveInterval);
 				int iTeam, iWinTeam = GetEventInt(hEvent, "winner");
@@ -290,24 +293,24 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 							g_iPlayerData[i][MAX_ROUNDS_KILLS] = iMaxRoundsKills[i];
 						}
 
-						if (g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] && iWinTeam > 1)
-						{
-							if (iTeam == iWinTeam)
-							{
-								g_iPlayerData[i][ROUND_WIN]++;
-								g_fPlayerPoints[i] += g_fExtraPoints[CFG_WIN_ROUND];
-							}
-							else
-							{
-								g_iPlayerData[i][ROUND_LOSE]++;
-								g_fPlayerPoints[i] += g_fExtraPoints[CFG_LOSE_ROUND];
-							}
-							
-							CheckRank(i);
-						}
-
 						if (g_iPlayerSessionData[i][MAX_ROUNDS_KILLS])
 						{
+							if (iWinTeam > 1)
+							{
+								if (iTeam == iWinTeam)
+								{
+									g_iPlayerData[i][ROUND_WIN]++;
+									g_fPlayerPoints[i] += g_fExtraPoints[CFG_WIN_ROUND];
+								}
+								else
+								{
+									g_iPlayerData[i][ROUND_LOSE]++;
+									g_fPlayerPoints[i] += g_fExtraPoints[CFG_LOSE_ROUND];
+								}
+								
+								CheckRank(i);
+							}
+
 							float fPoints = g_fPlayerPoints[i] - fRoundPlayerPoints[i];
 							FPS_PrintToChat(i, "%t", "PrintPoints", g_fPlayerPoints[i], fPoints > 0.0 ? COLOR_POINTS_ADDED : COLOR_POINTS_REDUCED, fPoints);
 						}
