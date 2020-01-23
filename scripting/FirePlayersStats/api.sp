@@ -191,7 +191,7 @@ public int Native_FPSGetPlayedTime(Handle hPlugin, int iNumParams)
 public int Native_FPSGetPoints(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	return view_as<int>(IsValidClient(iClient) && g_bStatsLoad[iClient] ? (!GetNativeCell(1) ? g_fPlayerPoints[iClient] : (g_fPlayerPoints[iClient] - g_fPlayerSessionPoints[iClient])) : DEFAULT_POINTS);
+	return view_as<int>(IsValidClient(iClient) && g_bStatsLoad[iClient] ? (!GetNativeCell(2) ? g_fPlayerPoints[iClient] : (g_fPlayerPoints[iClient] - g_fPlayerSessionPoints[iClient])) : DEFAULT_POINTS);
 }
 
 // int FPS_GetLevel(int iClient);

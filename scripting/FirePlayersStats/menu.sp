@@ -261,15 +261,9 @@ public int Handler_PanelResetStats(Menu hPanel, MenuAction action, int iClient, 
 	{
 		if (iOption != 7 && iOption != 9)
 		{
-			ResetData(iClient);
-			int iAccountID = GetSteamAccountID(iClient, true);
-			if (iAccountID)
-			{
-				g_iPlayerAccountID[iClient] = iAccountID;
-				g_bStatsLoad[iClient] = true;
-				SavePlayerData(iClient);
-				FPS_PrintToChat(iClient, "%t", "YourStatsReset");
-			}
+			ResetData(iClient, true);
+			SavePlayerData(iClient);
+			FPS_PrintToChat(iClient, "%t", "YourStatsReset");
 			PlayItemSelectSound(iClient, false);
 		}
 		else

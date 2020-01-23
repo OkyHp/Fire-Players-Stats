@@ -1,11 +1,20 @@
 // Reset vars data for player
-void ResetData(int iClient)
+void ResetData(int iClient, bool bResetStats = false)
 {
-	g_iPlayerAccountID[iClient] = 0;
+	int iLen = sizeof(g_iPlayerData[]);
+	if (!bResetStats)
+	{
+		g_iPlayerAccountID[iClient] = 0;
+		g_bStatsLoad[iClient] = false;
+	}
+	else
+	{
+		iLen--;
+	}
+
 	g_iPlayerPosition[iClient] = 0;
-	g_bStatsLoad[iClient] = false;
 	g_fPlayerSessionPoints[iClient]	= g_fPlayerPoints[iClient] = DEFAULT_POINTS;
-	for (int i = 0; i < sizeof(g_iPlayerData[]); ++i)
+	for (int i = 0; i < iLen; ++i)
 	{
 		g_iPlayerSessionData[iClient][i] = g_iPlayerData[iClient][i] = 0;
 	}

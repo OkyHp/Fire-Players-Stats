@@ -94,18 +94,22 @@ ArrayList	g_hRanks;
 // Weapons stats vars
 ArrayList	g_hWeaponsData[MAXPLAYERS+1];
 
-#define	W_KILLS				0
-#define	W_SHOOTS			1
-#define	W_HITS_HEAD			2
-#define	W_HITS_NECK			3
-#define	W_HITS_CHEST		4
-#define	W_HITS_STOMACH		5
-#define	W_HITS_LEFT_ARM		6
-#define	W_HITS_RIGHT_ARM	7
-#define	W_HITS_LEFT_LEG		8
-#define	W_HITS_RIGHT_LEG	9
-#define	W_HEADSHOTS			10
 #define W_SIZE				11
+
+enum WeaponsData
+{
+	W_KILLS = 0,
+	W_SHOOTS,
+	W_HITS_HEAD,
+	W_HITS_NECK,
+	W_HITS_CHEST,
+	W_HITS_STOMACH,
+	W_HITS_LEFT_ARM,
+	W_HITS_RIGHT_ARM,
+	W_HITS_LEFT_LEG,
+	W_HITS_RIGHT_LEG,
+	W_HEADSHOTS
+}
 
 // Database vars
 Database	g_hDatabase;
