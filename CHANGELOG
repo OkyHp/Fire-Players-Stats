@@ -78,4 +78,6 @@
 		When resetting personal statistics, played time will not be reset.
 		Deleted precompil param LOAD_TYPE.
 		Slight optimization.
+		Tryed fix call forward on stats load.
+		Fixed possible problem of obtaining player information when reload core.
 		
