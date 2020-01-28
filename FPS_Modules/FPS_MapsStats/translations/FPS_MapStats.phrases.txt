@@ -1,0 +1,69 @@
+"Phrases"
+{
+	"MapStatistics_Title"
+	{
+		"#format"	"{1:s}"
+		"en"		"Map statistics {1}"
+		"ru"		"Статистика карты {1}"
+		"ua"		"Статистика карти {1}"
+	}
+	"MapTop_Title"
+	{
+		"en"		"Top by maps"
+		"ru"		"Топ по картам"
+		"ua"		"Топ по картам"
+	}
+	"MapTop_PlayerKills"
+	{
+		"en"		"TOP-10 maps by kills"
+		"ru"		"TOP-10 карт по убийствам"
+		"ua"		"TOP-10 карт по вбивствам"
+	}
+	"MapTop_All"
+	{
+		"#format"	"{1:s}"
+		"en"		"TOP-10 killers on map: {1}"
+		"ru"		"TOP-10 убийц на карте: {1}"
+		"ua"		"TOP-10 вбивць на мапі: {1}"
+	}
+	"MapStatistics"
+	{
+		"#format"	"{1:i}, {2:.2f},{3:.2f},{4:i},{5:i},{6:i},{7:i},{8:i},{9:.2f},{10:s}"
+		"en"		"Played on map: {1} times ({2} h.) \nWin Rate on map: {3} %% \nRounds overall played: {4} \nRounds won for T: {5} \nRounds won for CT: {6} \nKills: {7} \nDeaths: {8} \nKDR: {9} \n{10}"
+		"ru"		"Сыграно на карте: {1} раз ({2} р.) \nВинрейт на карте: {3} %% \nВсего раундов сыграно: {4} \nВыигранные раунды за T: {5} \nВыигранные раунды за CT: {6} \nУбийств: {7} \nСмертей: {8} \nKDR: {9} \n{10}"
+		"ua"		"Зіграно на мапі: {1} раз ({2} г.). \nВРейтинг виграшу на карті: {3} %% \nВсього раундів зіграно: {4} \nВиграні раунди за T: {5} \nВиграні раунди за CT: {6} \nВбивств: {7} \nСмертей: {8} \nKDR: {9} \n{10}"
+	}
+	"MapStatistics_Cs"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"		"Hostage rescued: {1} \nHostage killed: {2}"
+		"ru"		"Заложников спасено: {1} \nЗаложников убито: {2}"
+		"ua"		"Заручників врятовано: {1} \nзаручників вбито: {2}"
+	}
+	"MapStatistics_De"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"		"Bomb planted: {1} \nBomb defused: {2}"
+		"ru"		"Бомб установлено: {1} \nБомб разминировано: {2}"
+		"ua"		"Бомб встановлено: {1} \nбомб разміновано: {2}"
+	}
+	"MapStatistics_Custom"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"		"Rounds won \nRounds for CT: {1} \nRounds for T: {2}"
+		"ru"		"Выигранные раунды \nРаундов за КТ: {1} \nРаундов за Т: {2}"
+		"ua"		"Виграні раунди \nРаундів за КТ: {1} \nРаундів за Т: {2}"
+	}
+	"NoData"
+	{
+		"en"		"No data!"
+		"ru"		"Нет данных!"
+		"ua"		"Немає даних!"
+	}
+	"ResetPlayerStatsByMaps"
+	{
+		"en"		"Reset my stat by maps"
+		"ru"		"Сбросить мою статистику по картам"
+		"ua"		"Стерти мою статистику по картам"
+	}
+}
