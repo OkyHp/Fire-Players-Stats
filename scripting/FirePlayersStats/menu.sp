@@ -8,7 +8,7 @@ void SetCommands()
 	RegConsoleCmd("sm_rank",		CommandFpsMenu);
 }
 
-public Action CommandPosition(int iClient, int iArgs)
+Action CommandPosition(int iClient, int iArgs)
 {
 	if (IsPlayerLoaded(iClient))
 	{
@@ -17,7 +17,7 @@ public Action CommandPosition(int iClient, int iArgs)
 	return Plugin_Handled;
 }
 
-public Action CommandTop(int iClient, int iArgs)
+Action CommandTop(int iClient, int iArgs)
 {
 	if (IsPlayerLoaded(iClient))
 	{
@@ -51,7 +51,7 @@ public Action CommandTop(int iClient, int iArgs)
 	return Plugin_Handled;
 }
 
-public Action CommandFpsMenu(int iClient, int iArgs)
+Action CommandFpsMenu(int iClient, int iArgs)
 {
 	if (IsPlayerLoaded(iClient))
 	{
@@ -78,7 +78,7 @@ void ShowFpsMenu(int iClient)
 	hMenu.Display(iClient, MENU_TIME_FOREVER);
 }
 
-public int Handler_FpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
+int Handler_FpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 {
 	switch(action)
 	{
@@ -130,7 +130,7 @@ void ShowMainStatsMenu(int iClient, int iPage = 0)
 	hMenu.DisplayAt(iClient, iPage, MENU_TIME_FOREVER);
 }
 
-public int Handler_MainStatsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
+int Handler_MainStatsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 {
 	switch(action)
 	{
@@ -215,7 +215,7 @@ void ShowPlayerMenu(int iClient, bool bSession = false)
 	delete hPanel;
 }
 
-public int Handler_PanelStats(Menu hPanel, MenuAction action, int iClient, int iOption)
+int Handler_PanelStats(Menu hPanel, MenuAction action, int iClient, int iOption)
 {
 	if(g_bStatsLoad[iClient] && action == MenuAction_Select)
 	{
@@ -255,7 +255,7 @@ void ResetPlayerStatsMenu(int iClient)
 	delete hPanel;
 }
 
-public int Handler_PanelResetStats(Menu hPanel, MenuAction action, int iClient, int iOption)
+int Handler_PanelResetStats(Menu hPanel, MenuAction action, int iClient, int iOption)
 {
 	if(g_bStatsLoad[iClient] && action == MenuAction_Select)
 	{
@@ -301,7 +301,7 @@ void ShowMainTopMenu(int iClient, int iPage = 0)
 	hMenu.DisplayAt(iClient, iPage, MENU_TIME_FOREVER);
 }
 
-public int Handler_MainTopMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
+int Handler_MainTopMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 {
 	switch(action)
 	{
@@ -377,7 +377,7 @@ void ShowTopMenu(int iClient, int iMenuType)
 	delete hPanel;
 }
 
-public int Handler_PanelTop(Menu hPanel, MenuAction action, int iClient, int iOption)
+int Handler_PanelTop(Menu hPanel, MenuAction action, int iClient, int iOption)
 {
 	if(g_bStatsLoad[iClient] && action == MenuAction_Select)
 	{
@@ -408,7 +408,7 @@ void ShowMainAdditionalMenu(int iClient, int iPage = 0)
 	hMenu.DisplayAt(iClient, iPage, MENU_TIME_FOREVER);
 }
 
-public int Handler_MainAdditionalMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
+int Handler_MainAdditionalMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 {
 	switch(action)
 	{
@@ -449,7 +449,7 @@ public int Handler_MainAdditionalMenu(Menu hMenu, MenuAction action, int iClient
 // 	}
 // }
 
-public int Handler_BackToFpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
+int Handler_BackToFpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 {
 	switch(action)
 	{
@@ -539,7 +539,7 @@ void ShowPosition(int iClient)
 	FPS_PrintToChat(iClient, "%t", "ShowMePosition", g_iPlayerPosition[iClient], g_iPlayersCount, g_fPlayerPoints[iClient], fKDR);
 	if (g_bShowStatsEveryone)
 	{
-		for (int i = 1; i < MaxClients; ++i)
+		for (int i = MaxClients + 1; --i;)
 		{
 			if (g_bStatsLoad[i] && iClient != i)
 			{

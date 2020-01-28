@@ -76,4 +76,6 @@
 		Added disabling statistics immediately after end of round.
 		Fixed 2 param in native FPS_GetPoints.
 		When resetting personal statistics, played time will not be reset.
+		Deleted precompil param LOAD_TYPE.
+		Slight optimization.
 		

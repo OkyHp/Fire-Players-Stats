@@ -151,57 +151,57 @@ void SetCvars()
 	LoadConfigKV();
 }
 
-public void ChangeCvar_DBRetryConnTime(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_DBRetryConnTime(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_fDBRetryConnTime = Convar.FloatValue;
 }
 
-public void ChangeCvar_ServerID(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_ServerID(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iServerID = Convar.IntValue;
 }
 
-public void ChangeCvar_RanksID(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_RanksID(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iRanksID = Convar.IntValue;
 }
 
-public void ChangeCvar_MinPlayers(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_MinPlayers(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iMinPlayers = Convar.IntValue;
 }
 
-public void ChangeCvar_ResetStatsTime(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_ResetStatsTime(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iResetStatsTime = Convar.IntValue;
 }
 
-public void ChangeCvar_ShowStatsEveryone(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_ShowStatsEveryone(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_bShowStatsEveryone = Convar.BoolValue;
 }
 
-public void ChangeCvar_BlockStatsOnWarmup(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_BlockStatsOnWarmup(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_bBlockStatsOnWarmup = Convar.BoolValue;
 }
 
-public void ChangeCvar_DeletePlayersTime(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_DeletePlayersTime(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iDeletePlayersTime = Convar.IntValue * 24 * 60 * 60;
 }
 
-public void ChangeCvar_EloCoeff(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_EloCoeff(ConVar Convar, const char[] oldValue, const char[] newValue)
 {	
 	g_fCoeff = Convar.FloatValue;
 }
 
-public void ChangeCvar_CalibrationFix(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_CalibrationFix(ConVar Convar, const char[] oldValue, const char[] newValue)
 {	
 	g_iCalibrationFixTime = Convar.IntValue;
 }
 
-public void ChangeCvar_SaveInterval(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_SaveInterval(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iSaveInterval = Convar.IntValue;
 }

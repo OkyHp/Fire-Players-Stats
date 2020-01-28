@@ -30,7 +30,7 @@ void HookEvents()
 	HookEvent("hostage_rescued",	Event_OtherAction);
 }
 
-public void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 {
 	if (g_bStatsActive)
 	{
@@ -57,7 +57,7 @@ public void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroad
 	}
 }
 
-public void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 {
 	if (g_bStatsActive)
 	{
@@ -102,7 +102,7 @@ public void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroad
 	}
 }
 
-public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 {
 	if (g_bStatsActive)
 	{
@@ -209,7 +209,7 @@ public void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroa
 	}
 }
 
-public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 {
 	switch(sEvName[6])
 	{
@@ -230,7 +230,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 			}
 			
 			int iPlayers;
-			for (int i = 1; i <= MaxClients; ++i)
+			for (int i = MaxClients + 1; --i;)
 			{
 				if (g_bStatsLoad[i])
 				{
@@ -284,7 +284,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 				bool bSave = !(++iSave%g_iSaveInterval);
 				int iTeam, iWinTeam = GetEventInt(hEvent, "winner");
 
-				for (int i = 1; i <= MaxClients; ++i)
+				for (int i = MaxClients + 1; --i;)
 				{
 					if (g_bStatsLoad[i] && (iTeam = GetClientTeam(i)) > 1)
 					{
@@ -326,7 +326,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 				if (bSave)
 				{
 					LoadTopData();
-					for (int i = 1; i < MaxClients; ++i)
+					for (int i = MaxClients + 1; --i;)
 					{
 						if (g_bStatsLoad[i])
 						{
@@ -342,7 +342,7 @@ public void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroa
 	}
 }
 
-public void Event_OtherAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+void Event_OtherAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 {
 	if (g_bStatsActive)
 	{
@@ -352,30 +352,17 @@ public void Event_OtherAction(Event hEvent, const char[] sEvName, bool bDontBroa
 			return;
 		}
 
-		switch(sEvName[0])
+		switch(sEvName[9])
 		{
-			case 'b':
-			{
-				switch(sEvName[6])
-				{
-					case 'l': g_fPlayerPoints[iClient] += g_fExtraPoints[CFG_BOMB_PLANTED];
-					case 'e': g_fPlayerPoints[iClient] += g_fExtraPoints[CFG_BOMB_DEFUSED];
-					case 'r': g_fPlayerPoints[iClient] += g_fExtraPoints[CFG_BOMB_DROPPED];
-					case 'i': g_fPlayerPoints[iClient] += g_fExtraPoints[CFG_BOMB_PICK_UP];
-				}
-			}
-			case 'h':
-			{
-				switch(sEvName[8])
-				{
-					case 'k': g_fPlayerPoints[iClient] += g_fExtraPoints[CFG_HOSTAGE_KILLED];
-					case 'r': g_fPlayerPoints[iClient] += g_fExtraPoints[CFG_HOSTAGE_RESCUED];
-				}
-			}
+			case 't': g_fPlayerPoints[iClient] += g_fExtraPoints[CFG_BOMB_PLANTED];
+			case 's': g_fPlayerPoints[iClient] += g_fExtraPoints[CFG_BOMB_DEFUSED];
+			case 'p': g_fPlayerPoints[iClient] += g_fExtraPoints[CFG_BOMB_DROPPED];
+			case 'u': g_fPlayerPoints[iClient] += g_fExtraPoints[CFG_BOMB_PICK_UP];
+			case 'i': g_fPlayerPoints[iClient] += g_fExtraPoints[CFG_HOSTAGE_KILLED];
+			case 'e': g_fPlayerPoints[iClient] += g_fExtraPoints[CFG_HOSTAGE_RESCUED];
 		}
 
 		CheckRank(iClient);
-
 		FPS_Debug("Event_OtherAction >> %s", sEvName)
 	}
 }

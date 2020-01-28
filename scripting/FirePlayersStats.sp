@@ -43,8 +43,6 @@
 #define DEFAULT_POINTS			1000.0	// Not recommended change
 #define DEBUG					0		// Enable/Disable debug mod
 #define USE_STREAK_POINTS		1		// Use streak points in stats
-#define LOAD_TYPE				0		// Use forvard for load player stats:	0 - OnClientPostAdminCheck 
-										//										1 - OnClientPutInServer
 #define COLOR_POINTS_ADDED		"{GREEN}+"
 #define COLOR_POINTS_REDUCED	"{RED}"
 
@@ -166,36 +164,27 @@ public void OnPluginStart()
 	ChangeCvar_GameType(Convar, NULL_STRING, NULL_STRING);
 	(Convar = FindConVar("game_mode")).AddChangeHook(ChangeCvar_GameMode);
 	ChangeCvar_GameMode(Convar, NULL_STRING, NULL_STRING);
-
-	LoadTopData();
-	LoadRanksSettings();
-		
-	for (int i = 1; i <= MaxClients; ++i)
-	{
-		if (IsClientInGame(i) && !IsFakeClient(i) && !IsClientSourceTV(i))
-		{
-			OnClientDisconnect(i);
-			LoadPlayerData(i);
-		}
-	}
-
-	g_bStatsLoaded = true;
-	CallForward_OnFPSStatsLoaded();
 }
 
-public void ChangeCvar_TeammatesAreEnemies(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_TeammatesAreEnemies(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_bTeammatesAreEnemies = Convar.BoolValue;
 }
 
-public void ChangeCvar_GameType(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_GameType(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iGameType[0] = Convar.IntValue;
 }
 
-public void ChangeCvar_GameMode(ConVar Convar, const char[] oldValue, const char[] newValue)
+void ChangeCvar_GameMode(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iGameType[1] = Convar.IntValue;
+}
+
+public void OnAllPluginsLoaded()
+{
+	g_bStatsLoaded = true;
+	CallForward_OnFPSStatsLoaded();
 }
 
 public void OnMapStart()
@@ -216,14 +205,14 @@ public void OnMapStart()
 	}
 }
 
-public Action TimerSaveStats(Handle hTimer)
+Action TimerSaveStats(Handle hTimer)
 {
 	if (g_iGameType[0] != 1 && g_iGameType[1] != 2)
 	{
 		return Plugin_Stop;
 	}
 
-	for (int i = 1; i <= MaxClients; ++i)
+	for (int i = MaxClients + 1; --i;)
 	{
 		if (g_bStatsLoad[i])
 		{
@@ -233,7 +222,7 @@ public Action TimerSaveStats(Handle hTimer)
 	}
 
 	LoadTopData();
-	for (int i = 1; i <= MaxClients; ++i)
+	for (int i = MaxClients + 1; --i;)
 	{
 		if (g_bStatsLoad[i])
 		{
@@ -264,7 +253,7 @@ public void SteamWorks_SteamServersConnected()
 	}
 }
 
-public int OnTransferComplete(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode)
+int OnTransferComplete(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode)
 {
 	delete hRequest;
 	int iStatus = view_as<int>(eStatusCode);
@@ -290,15 +279,11 @@ public void OnMapEnd()
 	DeleteInactivePlayers();
 }
 
-#if LOAD_TYPE == 0
-public void OnClientPostAdminCheck(int iClient)
-#else
 public void OnClientPutInServer(int iClient)
-#endif
 {
 	if (iClient && !IsFakeClient(iClient) && !IsClientSourceTV(iClient))
 	{
-		FPS_Debug("Client connected (Type: %i) >> LoadStats: %N", LOAD_TYPE, iClient)
+		FPS_Debug("Client connected >> %N", iClient)
 
 		int iAccountID = GetSteamAccountID(iClient, true);
 		if (iAccountID)

@@ -119,7 +119,6 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 	CreateNative("FPS_MoveToMenu",				Native_FPSMoveToMenu);
 	CreateNative("FPS_StatsActive",				Native_FPSStatsActive);
 	CreateNative("FPS_GetID",					Native_FPSGetID);
-
 	CreateNative("FPS_GetLevel",				Native_FPSGetLevel);
 	CreateNative("FPS_GetRanks",				Native_FPSGetRanks);
 	CreateNative("FPS_GetMaxRanks",				Native_FPSGetMaxRanks);
@@ -140,44 +139,45 @@ bool IsValidClient(int iClient)
 }
 
 // bool FPS_StatsLoad();
-public int Native_FPSStatsLoad(Handle hPlugin, int iNumParams)
+int Native_FPSStatsLoad(Handle hPlugin, int iNumParams)
 {
 	return g_bStatsLoaded;
 }
 
 // Database FPS_GetDatabase();
-public int Native_FPSGetDatabase(Handle hPlugin, int iNumParams)
+int Native_FPSGetDatabase(Handle hPlugin, int iNumParams)
 {
 	return g_hDatabase ? view_as<int>(CloneHandle(g_hDatabase, hPlugin)) : 0;
 }
 
 // bool FPS_ClientLoaded(int iClient);
-public int Native_FPSClientLoad(Handle hPlugin, int iNumParams)
+int Native_FPSClientLoad(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	return (IsValidClient(iClient) && g_bStatsLoad[iClient]);
 }
 
 // void FPS_ClientReloadData(int iClient);
-public int Native_FPSClientReloadData(Handle hPlugin, int iNumParams)
+int Native_FPSClientReloadData(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
 	{
 		FPS_Debug("Native_FPSClientReloadData >> LoadStats: %N", iClient)
+		SavePlayerData(iClient);
 		OnClientDisconnect(iClient);
 		LoadPlayerData(iClient);
 	}
 }
 
 // void FPS_DisableStatisPerRound();
-public int Native_FPSDisableStatisPerRound(Handle hPlugin, int iNumParams)
+int Native_FPSDisableStatisPerRound(Handle hPlugin, int iNumParams)
 {
 	g_bDisableStatisPerRound = true;
 }
 
 // int FPS_GetPlayedTime(int iClient);
-public int Native_FPSGetPlayedTime(Handle hPlugin, int iNumParams)
+int Native_FPSGetPlayedTime(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	if (IsValidClient(iClient) && g_bStatsLoad[iClient] && g_iPlayerSessionData[iClient][PLAYTIME])
@@ -188,14 +188,14 @@ public int Native_FPSGetPlayedTime(Handle hPlugin, int iNumParams)
 }
 
 // float FPS_GetPoints(int iClient, bool bSession = false);
-public int Native_FPSGetPoints(Handle hPlugin, int iNumParams)
+int Native_FPSGetPoints(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	return view_as<int>(IsValidClient(iClient) && g_bStatsLoad[iClient] ? (!GetNativeCell(2) ? g_fPlayerPoints[iClient] : (g_fPlayerPoints[iClient] - g_fPlayerSessionPoints[iClient])) : DEFAULT_POINTS);
 }
 
 // int FPS_GetLevel(int iClient);
-public int Native_FPSGetLevel(Handle hPlugin, int iNumParams)
+int Native_FPSGetLevel(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
@@ -206,7 +206,7 @@ public int Native_FPSGetLevel(Handle hPlugin, int iNumParams)
 }
 
 // void FPS_GetRanks(int iClient, char[] szBufferRank, int iMaxLength);
-public int Native_FPSGetRanks(Handle hPlugin, int iNumParams)
+int Native_FPSGetRanks(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
@@ -216,13 +216,13 @@ public int Native_FPSGetRanks(Handle hPlugin, int iNumParams)
 }
 
 // int FPS_GetMaxRanks();
-public int Native_FPSGetMaxRanks(Handle hPlugin, int iNumParams)
+int Native_FPSGetMaxRanks(Handle hPlugin, int iNumParams)
 {
 	return g_iRanksCount;
 }
 
 // int FPS_GetStatsData(int iClient, StatsData eData, bool bSession = false);
-public int Native_FPSGetStatsData(Handle hPlugin, int iNumParams)
+int Native_FPSGetStatsData(Handle hPlugin, int iNumParams)
 {
 	int	iClient	= GetNativeCell(1),
 		iData	= GetNativeCell(2);
@@ -240,7 +240,7 @@ public int Native_FPSGetStatsData(Handle hPlugin, int iNumParams)
 }
 
 // bool FPS_IsCalibration(int iClient);
-public int Native_FPSIsCalibration(Handle hPlugin, int iNumParams)
+int Native_FPSIsCalibration(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	return (IsValidClient(iClient) && g_bStatsLoad[iClient] && FPS_GetPlayedTime(iClient) < g_iCalibrationFixTime);
@@ -251,7 +251,7 @@ public int Native_FPSIsCalibration(Handle hPlugin, int iNumParams)
 // 							ItemSelectCallback		OnItemSelect	= INVALID_FUNCTION,
 // 							ItemDisplayCallback		OnItemDisplay	= INVALID_FUNCTION,
 // 							ItemDrawCallback		OnItemDraw		= INVALID_FUNCTION);
-public int Native_FPSAddFeature(Handle hPlugin, int iNumParams)
+int Native_FPSAddFeature(Handle hPlugin, int iNumParams)
 {
 	char szFeature[128];
 	GetNativeString(1, SZF(szFeature));
@@ -279,7 +279,7 @@ public int Native_FPSAddFeature(Handle hPlugin, int iNumParams)
 }
 
 // void FPS_RemoveFeature(const char[] szFeature);
-public int Native_FPSRemoveFeature(Handle hPlugin, int iNumParams)
+int Native_FPSRemoveFeature(Handle hPlugin, int iNumParams)
 {
 	char szFeature[128];
 	GetNativeString(1, SZF(szFeature));
@@ -305,7 +305,7 @@ public int Native_FPSRemoveFeature(Handle hPlugin, int iNumParams)
 }
 
 // bool FPS_IsExistFeature(const char[] szFeature);
-public int Native_FPSIsExistFeature(Handle hPlugin, int iNumParams)
+int Native_FPSIsExistFeature(Handle hPlugin, int iNumParams)
 {
 	char szFeature[128];
 	GetNativeString(1, SZF(szFeature));
@@ -319,7 +319,7 @@ public int Native_FPSIsExistFeature(Handle hPlugin, int iNumParams)
 }
 
 // void FPS_MoveToMenu(int iClient, FeatureMenus eType, int iPage = 0);
-public int Native_FPSMoveToMenu(Handle hPlugin, int iNumParams)
+int Native_FPSMoveToMenu(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
@@ -336,13 +336,13 @@ public int Native_FPSMoveToMenu(Handle hPlugin, int iNumParams)
 }
 
 // bool FPS_StatsActive();
-public int Native_FPSStatsActive(Handle hPlugin, int iNumParams)
+int Native_FPSStatsActive(Handle hPlugin, int iNumParams)
 {
 	return g_bStatsActive;
 }
 
 // int FPS_GetID(StatsID eType)
-public int Native_FPSGetID(Handle hPlugin, int iNumParams)
+int Native_FPSGetID(Handle hPlugin, int iNumParams)
 {
 	switch(GetNativeCell(1))
 	{

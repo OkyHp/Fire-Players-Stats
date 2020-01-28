@@ -15,7 +15,7 @@ void DatabaseConnect()
 	}
 }
 
-public Action Timer_DatabaseRetryConn(Handle hTimer)
+Action Timer_DatabaseRetryConn(Handle hTimer)
 {
 	DatabaseConnect();
 	return Plugin_Stop;
@@ -39,7 +39,7 @@ bool CheckDatabaseConnection(const char[] szError, const char[] szErrorTag)
 	return true;
 }
 
-public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
+void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 {
 	if (!CheckDatabaseConnection(szError, "OnDatabaseConnect"))
 	{
@@ -51,10 +51,10 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 	g_hDatabase = hDatabase;
 	CallForward_OnFPSDatabaseConnected();
 
-	static bool bCrateTables;
-	if (!bCrateTables)
+	static bool bFirstConnect;
+	if (!bFirstConnect)
 	{
-		bCrateTables = true;
+		bFirstConnect = true;
 
 		Transaction hTxn = new Transaction();
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_players` ( \
@@ -116,17 +116,29 @@ public void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data
 				PRIMARY KEY (`id`) \
 			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		g_hDatabase.Execute(hTxn, SQL_TxnSuccess_CreateTable, SQL_TxnFailure_CreateTable);
+
+		LoadTopData();
+		LoadRanksSettings();
+
+		for (int i = MaxClients + 1; --i;)
+		{
+			if (IsClientInGame(i) && !IsFakeClient(i) && !IsClientSourceTV(i))
+			{
+				OnClientDisconnect(i);
+				LoadPlayerData(i);
+			}
+		}
 	}
 }
 
-public void SQL_Default_Callback(Database hDatabase, DBResultSet hResult, const char[] szError, any QueryID)
+void SQL_Default_Callback(Database hDatabase, DBResultSet hResult, const char[] szError, any QueryID)
 {
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "SQL_Default_Callback #%i", QueryID);
 	CheckDatabaseConnection(szError, szBuffer);
 }
 
-public void SQL_TxnSuccess_CreateTable(Database hDatabase, any Data, int iNumQueries, DBResultSet[] results, any[] QueryData)
+void SQL_TxnSuccess_CreateTable(Database hDatabase, any Data, int iNumQueries, DBResultSet[] results, any[] QueryData)
 {
 	if (g_hDatabase)
 	{
@@ -136,12 +148,12 @@ public void SQL_TxnSuccess_CreateTable(Database hDatabase, any Data, int iNumQue
 	}
 }
 
-public void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQueries, const char[] szError, int iFailIndex, any[] QueryData)
+void SQL_TxnFailure_CreateTable(Database hDatabase, any Data, int iNumQueries, const char[] szError, int iFailIndex, any[] QueryData)
 {
 	SetFailState("SQL_TxnFailure_CreateTable #%i: %s", iFailIndex, szError);
 }
 
-public Action CommandCreateRanks(int iClient, int iArgs) 
+Action CommandCreateRanks(int iClient, int iArgs) 
 { 
 	if (g_hDatabase)
 	{
@@ -226,7 +238,7 @@ public Action CommandCreateRanks(int iClient, int iArgs)
 	return Plugin_Handled;
 }
 
-public void SQL_Callback_CreateRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
+void SQL_Callback_CreateRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	if (CheckDatabaseConnection(szError, "SQL_Callback_CreateRanks"))
 	{
@@ -253,7 +265,7 @@ void LoadRanksSettings()
 	}
 }
 
-public void SQL_Callback_LoadRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any data)
+void SQL_Callback_LoadRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any data)
 {
 	if (g_hRanks && CheckDatabaseConnection(szError, "SQL_Callback_LoadRanks"))
 	{
@@ -284,6 +296,9 @@ void LoadPlayerData(int iClient)
 {
 	if (g_hDatabase)
 	{
+		g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS] = 0; // (not used var) for blocked accrual of experience to connected player
+		g_iPlayerSessionData[iClient][PLAYTIME] = GetTime();
+
 		char szQuery[256];
 		g_hDatabase.Format(SZF(szQuery), "SELECT \
 				`points`, `kills`, `deaths`, `assists`, \
@@ -297,7 +312,7 @@ void LoadPlayerData(int iClient)
 	}
 }
 
-public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
+void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	int iClient = CID(iUserID);
 	if (!iClient || !CheckDatabaseConnection(szError, "SQL_Callback_LoadPlayerData"))
@@ -321,8 +336,6 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 		FPS_Debug("SQL_Callback_LoadPlayerData >> New player: %N", iClient)
 	}
 
-	g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS] = 0; // (not used var) for blocked accrual of experience to connected player
-	g_iPlayerSessionData[iClient][PLAYTIME] = GetTime();
 	GetPlayerPosition(iClient);
 	g_bStatsLoad[iClient] = true;
 	CheckRank(iClient);
@@ -420,12 +433,12 @@ void SavePlayerData(int iClient)
 	}
 }
 
-public void SQL_TxnSuccess_UpdateOrInsertPlayerData(Database hDatabase, any Data, int iNumQueries, DBResultSet[] results, any[] QueryData)
+void SQL_TxnSuccess_UpdateOrInsertPlayerData(Database hDatabase, any Data, int iNumQueries, DBResultSet[] results, any[] QueryData)
 {
 	FPS_Debug("SQL_TxnSuccess_UpdateOrInsertPlayerData >> Success")
 }
 
-public void SQL_TxnFailure_UpdateOrInsertPlayerData(Database hDatabase, any Data, int iNumQueries, const char[] szError, int iFailIndex, any[] QueryData)
+void SQL_TxnFailure_UpdateOrInsertPlayerData(Database hDatabase, any Data, int iNumQueries, const char[] szError, int iFailIndex, any[] QueryData)
 {
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "SQL_TxnFailure_UpdateOrInsertPlayerData #%i", iFailIndex);
@@ -495,7 +508,7 @@ void LoadTopData()
 	}
 }
 
-public void SQL_TxnSuccess_TopData(Database hDatabase, any Data, int iNumQueries, DBResultSet[] hResult, any[] QueryData)
+void SQL_TxnSuccess_TopData(Database hDatabase, any Data, int iNumQueries, DBResultSet[] hResult, any[] QueryData)
 {
 	for (int i = 0; i < sizeof(g_fTopData[]); ++i)
 	{
@@ -514,7 +527,7 @@ public void SQL_TxnSuccess_TopData(Database hDatabase, any Data, int iNumQueries
 	}
 }
 
-public void SQL_TxnFailure_TopData(Database hDatabase, any Data, int iNumQueries, const char[] szError, int iFailIndex, any[] QueryData)
+void SQL_TxnFailure_TopData(Database hDatabase, any Data, int iNumQueries, const char[] szError, int iFailIndex, any[] QueryData)
 {
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "SQL_TxnFailure_TopData #%i", iFailIndex);
@@ -534,7 +547,7 @@ void GetPlayerPosition(int iClient)
 	}
 }
 
-public void SQL_Callback_PlayerPosition(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
+void SQL_Callback_PlayerPosition(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	int iClient = CID(iUserID);
 	if (!iClient || !CheckDatabaseConnection(szError, "SQL_Callback_PlayerPosition"))
