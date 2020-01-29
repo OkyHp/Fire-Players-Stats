@@ -149,6 +149,11 @@ public void OnPluginEnd()
 		FPS_RemoveFeature(g_sFeature[0]);
 		FPS_RemoveFeature(g_sFeature[1]);
 	}
+
+	for (int i = MaxClients+1; --i;)
+	{
+		OnClientDisconnect(i);
+	}
 }
 
 public void FPS_OnClientLoaded(int iClient, float fPoints)
@@ -195,7 +200,7 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 
 public void OnClientDisconnect(int iClient)
 {
-	if (iClient && g_iPlayerData[iClient][ACCOUNT_ID])
+	if (g_iPlayerData[iClient][ACCOUNT_ID])
 	{
 		SavePlayerData(iClient);
 	}
@@ -606,15 +611,15 @@ public int Handler_PanelTop(Menu hPanel, MenuAction action, int iClient, int iOp
 
 Action CommandTopCallback(int iClient, const char[] szCommand, int iArgs)
 {
-	char szArg[2];
-	GetCmdArg(1, SZF(szArg));
-	if (szArg[0])
+	if (iArgs)
 	{
+		char szArg[8];
+		GetCmdArg(1, SZF(szArg));
 		if (!strcmp(szArg, "maps", false))
 		{
 			TopMapmenu(iClient);
+			return Plugin_Handled;
 		}
-		return Plugin_Handled;
 	}
 	return Plugin_Continue;
 }
