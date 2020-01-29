@@ -125,7 +125,7 @@ void CheckRank(int iClient)
 				}
 
 				g_hRanks.GetString(i+1, g_sRankName[iClient], sizeof(g_sRankName[]));
-
+				
 				if (g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS])
 				{
 					FPS_PrintToChat(iClient, "%t", g_iPlayerRanks[iClient] ? (iLevel > g_iPlayerRanks[iClient] ? "RankUpped" : "RankDowned") : "CalibrationCompleted", FindTranslationRank(iClient, g_sRankName[iClient]));

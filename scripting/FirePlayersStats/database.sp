@@ -296,9 +296,6 @@ void LoadPlayerData(int iClient)
 {
 	if (g_hDatabase)
 	{
-		g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS] = 0; // (not used var) for blocked accrual of experience to connected player
-		g_iPlayerSessionData[iClient][PLAYTIME] = GetTime();
-
 		char szQuery[256];
 		g_hDatabase.Format(SZF(szQuery), "SELECT \
 				`points`, `kills`, `deaths`, `assists`, \
@@ -336,8 +333,10 @@ void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult, const 
 		FPS_Debug("SQL_Callback_LoadPlayerData >> New player: %N", iClient)
 	}
 
-	GetPlayerPosition(iClient);
+	g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS] = 0; // (not used var) for blocked accrual of experience to connected player
+	g_iPlayerSessionData[iClient][PLAYTIME] = GetTime();
 	g_bStatsLoad[iClient] = true;
+	GetPlayerPosition(iClient);
 	CheckRank(iClient);
 
 	CallForward_OnFPSClientLoaded(iClient, g_fPlayerPoints[iClient]);
