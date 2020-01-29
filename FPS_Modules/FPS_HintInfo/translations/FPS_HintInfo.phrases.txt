@@ -3,9 +3,9 @@
 	"HudMessage"
 	{
 		"#format"	"{1:.2f},{2:i},{3:i},{4:i},{5:s}"
-		"en"		"Points: <font color='#b52b2b'>{1}</font>⠀⠀Position: <font color='#2e592b'>{2}/{3}</font>\nLevel: <font color='#1e4c7a'>{4}</font>⠀⠀Rank: <font color='#a65e16'>{5}</font>"
-		"ru"		"Поинты: <font color='#7a1e1e'>{1}</font>⠀⠀Поз.: <font color='#2e592b'>{2}/{3}</font>\nУровень: <font color='#1e4c7a'>{4}</font>⠀⠀Ранг: <font color='#a65e16'>{5}</font>"
-		"ua"		"Поінти: <font color='#7a1e1e'>{1}</font>⠀⠀Поз.: <font color='#2e592b'>{2}/{3}</font>\nРівень: <font color='#1e4c7a'>{4}</font>⠀⠀Ранг: <font color='#a65e16'>{5}</font>"
+		"en"		"<pre>Points: <font color='#b52b2b'>{1}</font>\tPosition: <font color='#2e592b'>{2}/{3}</font>\nLevel: <font color='#1e4c7a'>{4}</font>\tRank: <font color='#a65e16'>{5}</font></pre>"
+		"ru"		"<pre>Поинты: <font color='#7a1e1e'>{1}</font>\tПоз.: <font color='#2e592b'>{2}/{3}</font>\nУровень: <font color='#1e4c7a'>{4}</font>\tРанг: <font color='#a65e16'>{5}</font></pre>"
+		"ua"		"<pre>Поінти: <font color='#7a1e1e'>{1}</font>\tПоз.: <font color='#2e592b'>{2}/{3}</font>\nРівень: <font color='#1e4c7a'>{4}</font>\tРанг: <font color='#a65e16'>{5}</font></pre>"
 	}
 
 	"ChangeHintStatusChat"

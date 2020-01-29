@@ -161,7 +161,7 @@ public void FPS_OnClientLoaded(int iClient, float fPoints)
 
 		if (g_hDatabase)
 		{
-			char szQuery[256];
+			char szQuery[512];
 			g_hDatabase.Format(SZF(szQuery), "SELECT \
 					`countplays`, `kills`, `deaths`, `assists`, `rounds_overall`, `rounds_t`, \
 					`rounds_ct`, `bomb_planted`, `bomb_defused`, `hostage_rescued`, `hostage_killed`, `playtime` \
@@ -195,7 +195,7 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 
 public void OnClientDisconnect(int iClient)
 {
-	if (iClient && FPS_ClientLoaded(iClient))
+	if (iClient && g_iPlayerData[iClient][ACCOUNT_ID])
 	{
 		SavePlayerData(iClient);
 	}
@@ -214,7 +214,7 @@ public void OnMapStart()
 
 void SavePlayerData(int iClient, bool bReset = false)
 {
-	if (g_hDatabase && FPS_ClientLoaded(iClient))
+	if (g_hDatabase)
 	{
 		int iPlayTime = g_iMapSessionTime[iClient] ? ((GetTime() - g_iMapSessionTime[iClient]) + g_iPlayerData[iClient][MAP_TIME]) : 0;
 
@@ -223,7 +223,7 @@ void SavePlayerData(int iClient, bool bReset = false)
 			g_iPlayerData[iClient][PLAYED_ON_MAP]++;
 		}
 
-		char szQuery[256];
+		char szQuery[1024];
 		g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_maps` ( \
 				`account_id`, `server_id`, `name_map`, `countplays`, `kills`, \
 				`deaths`, `assists`, `rounds_overall`, `rounds_t`, `rounds_ct`, \
@@ -264,7 +264,7 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 	if (FPS_StatsActive())
 	{
 		int iClient = CID(hEvent.GetInt("assister"));
-		if (iClient && FPS_ClientLoaded(iClient))
+		if (g_iPlayerData[iClient][ACCOUNT_ID])
 		{
 			g_iPlayerData[iClient][MAP_ASSISTS]++;
 		}
@@ -272,12 +272,12 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 		iClient = CID(hEvent.GetInt("userid"));
 
 		int iAttacker = CID(hEvent.GetInt("attacker"));
-		if (iAttacker && iAttacker != iClient && FPS_ClientLoaded(iAttacker))
+		if (g_iPlayerData[iAttacker][ACCOUNT_ID] && iAttacker != iClient)
 		{
 			g_iPlayerData[iAttacker][MAP_KILLS]++;
 		}
 
-		if (iClient && FPS_ClientLoaded(iClient))
+		if (g_iPlayerData[iClient][ACCOUNT_ID])
 		{
 			g_iPlayerData[iClient][MAP_DEATHS]++;
 		}
@@ -288,13 +288,23 @@ void Event_RoundEnd(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 {
 	if (FPS_StatsActive())
 	{
-		int iWinTeam = GetEventInt(hEvent, "winner");
+		int iWinTeam = GetEventInt(hEvent, "winner"),
+			iTeam;
 		if (iWinTeam > 1)
 		{
 			for(int i = MaxClients+1; --i;)
 			{
-				g_iPlayerData[i][MAP_ROUNDS_OVARALL]++;
-				if (FPS_ClientLoaded(i) && GetClientTeam(i) == iWinTeam)
+				if (!g_iPlayerData[i][ACCOUNT_ID])
+				{
+					continue;
+				}
+
+				iTeam = GetClientTeam(i);
+				if(iTeam > 1)
+				{
+					g_iPlayerData[i][MAP_ROUNDS_OVARALL]++;
+				}
+				if (iTeam == iWinTeam)
 				{
 					g_iPlayerData[i][view_as<int>(MAP_ASSISTS) + iWinTeam]++;
 				}
@@ -308,7 +318,7 @@ void Event_OtherAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 	if (FPS_StatsActive())
 	{
 		int iClient = CID(hEvent.GetInt("userid"));
-		if (!iClient || !FPS_ClientLoaded(iClient))
+		if (!iClient || !g_iPlayerData[iClient][ACCOUNT_ID])
 		{
 			return;
 		}
@@ -337,13 +347,14 @@ bool OnItemDisplayStatsMenu(int iClient, char[] szDisplay, int iMaxLength)
 
 void StatsMapMenu(int iClient)
 {
-	Menu hMenu = new Menu(Handler_StatsMapMenu);
+	Panel hPanel = new Panel();
 	SetGlobalTransTarget(iClient);
 	
-	char szBuffer[256];
+	char	szBuffer[512],
+			szSubData[128];
 	if (g_sCurrentMap[2] == '_')
 	{
-		static const char szSubData[][] = {"MapStatistics_De", "MapStatistics_Cs"};
+		static const char szTranslation[][] = {"MapStatistics_De", "MapStatistics_Cs"};
 
 		int iIndex[2] = {-1, ...};
 		switch (g_sCurrentMap[0])
@@ -354,11 +365,14 @@ void StatsMapMenu(int iClient)
 
 		if (iIndex[0] != -1)
 		{
-			FormatEx(SZF(szBuffer), "%t", szSubData[iIndex[0]], g_iPlayerData[iClient][iIndex[1]], g_iPlayerData[iClient][++iIndex[1]]);
+			FormatEx(SZF(szSubData), "%t", szTranslation[iIndex[0]], g_iPlayerData[iClient][iIndex[1]], g_iPlayerData[iClient][++iIndex[1]]);
 		}
 	}
 
-	hMenu.SetTitle("[ %t ]\n %t\n ", "MapStatistics_Title", "MapStatistics", g_sCurrentMap,
+	FormatEx(SZF(szBuffer), "[ %t ]\n ", "MapStatistics_Title", g_sCurrentMap);
+	hPanel.SetTitle(szBuffer);
+
+	FormatEx(SZF(szBuffer), "%t\n ", "MapStatistics",
 		g_iPlayerData[iClient][PLAYED_ON_MAP], 
 		(g_iPlayerData[iClient][MAP_TIME] ? (float(g_iPlayerData[iClient][MAP_TIME]) / 60.0 / 60.0) : 0.0),
 		(100.0 / float(g_iPlayerData[iClient][MAP_ROUNDS_OVARALL])) * float(g_iPlayerData[iClient][MAP_ROUNDS_T] + g_iPlayerData[iClient][MAP_ROUNDS_CT]),
@@ -368,36 +382,48 @@ void StatsMapMenu(int iClient)
 		g_iPlayerData[iClient][MAP_KILLS], 
 		g_iPlayerData[iClient][MAP_DEATHS],
 		(g_iPlayerData[iClient][MAP_KILLS] && g_iPlayerData[iClient][MAP_DEATHS] ? (float(g_iPlayerData[iClient][MAP_KILLS]) / float(g_iPlayerData[iClient][MAP_DEATHS])) : 0.0),
-		szBuffer
-	);
+		szSubData);
+	hPanel.DrawText(szBuffer);
 
-	FormatEx(SZF(szBuffer), "%t", "ResetPlayerStatsByMaps");
-	hMenu.AddItem(NULL_STRING, szBuffer);
+	FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsByMaps");
+	hPanel.CurrentKey = 1;
+	hPanel.DrawItem(szBuffer);
 
-	hMenu.ExitBackButton = true;
-	hMenu.ExitButton = true;
-	hMenu.Display(iClient, MENU_TIME_FOREVER);
+	FormatEx(SZF(szBuffer), "%t", "Back");
+	hPanel.CurrentKey = 7;
+	hPanel.DrawItem(szBuffer);
+
+	FormatEx(SZF(szBuffer), "%t", "Exit");
+	hPanel.CurrentKey = 9;
+	hPanel.DrawItem(szBuffer);
+
+	hPanel.Send(iClient, Handler_PanelStatsMap, MENU_TIME_FOREVER);
+	delete hPanel;
 }
 
-int Handler_StatsMapMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
+int Handler_PanelStatsMap(Menu hPanel, MenuAction action, int iClient, int iOption)
 {
-	switch(action)
+	if(g_iPlayerData[iClient][ACCOUNT_ID] && action == MenuAction_Select)
 	{
-		case MenuAction_End: delete hMenu;
-		case MenuAction_Cancel:
+		if (iOption == 1)
 		{
-			if(iItem == MenuCancel_ExitBack)
+			ResetPlayerStatsByMaps(iClient);
+			PlayItemSelectSound(iClient, false);
+		}
+		else
+		{
+			if (iOption == 7)
 			{
 				FPS_MoveToMenu(iClient, FPS_STATS_MENU);
 			}
+			PlayItemSelectSound(iClient, true);
 		}
-		case MenuAction_Select: ResetPlayerStatsByMaps(iClient);
 	}
 }
 
 void ResetPlayerStatsByMaps(int iClient)
 {
-	char szBuffer[512];
+	char szBuffer[256];
 	Panel hPanel = new Panel();
 	SetGlobalTransTarget(iClient);
 
@@ -425,7 +451,7 @@ void ResetPlayerStatsByMaps(int iClient)
 
 int Handler_PanelResetStatsByMaps(Menu hPanel, MenuAction action, int iClient, int iOption)
 {
-	if(FPS_ClientLoaded(iClient) && action == MenuAction_Select)
+	if(g_iPlayerData[iClient][ACCOUNT_ID] && action == MenuAction_Select)
 	{
 		if (iOption != 7 && iOption != 9 && g_hDatabase)
 		{
@@ -491,7 +517,7 @@ int Handler_TopMapmenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 		}
 		case MenuAction_Select:
 		{
-			if (g_hDatabase && FPS_ClientLoaded(iClient))
+			if (g_hDatabase && g_iPlayerData[iClient][ACCOUNT_ID])
 			{
 				char szQuery[256];
 				switch(iItem)
@@ -568,7 +594,7 @@ public void SQL_Callback_TopData(Database hDatabase, DBResultSet hResult, const 
 
 public int Handler_PanelTop(Menu hPanel, MenuAction action, int iClient, int iOption)
 {
-	if(FPS_ClientLoaded(iClient) && action == MenuAction_Select)
+	if(g_iPlayerData[iClient][ACCOUNT_ID] && action == MenuAction_Select)
 	{
 		if (iOption == 7)
 		{
