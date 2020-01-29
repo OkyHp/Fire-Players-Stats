@@ -1,30 +1,3 @@
-/**
- * TODO:
- * - Перекинуть конфиг для юзания с под БД.
- * ------------------------------------------------------------------------------------------------
- * Ranks settings query: 
-		INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) 
-		VALUES 
-			('1', 'Silver I', '0'),
-			('1', 'Silver II', '700'), 
-			('1', 'Silver III', '800'), 
-			('1', 'Silver IV', '850'), 
-			('1', 'Silver Elite', '900'), 
-			('1', 'Silver Elite Master', '925'), 
-			('1', 'Gold Nova I', '950'), 
-			('1', 'Gold Nova II', '975'), 
-			('1', 'Gold Nova III', '1000'), 
-			('1', 'Gold Nova Master', '1100'), 
-			('1', 'Master Guardian I', '1250'), 
-			('1', 'Master Guardian II', '1400'), 
-			('1', 'Master Guardian Elite', '1600'), 
-			('1', 'Distinguished Master Guardian', '1800'), 
-			('1', 'Legendary Eagle', '2100'), 
-			('1', 'Legendary Eagle Master', '2400'), 
-			('1', 'Supreme Master First Class', '3000'), 
-			('1', 'The Global Elite', '4000')
- */
-
 #pragma semicolon 1
 #pragma newdecls required
 

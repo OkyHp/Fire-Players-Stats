@@ -4,6 +4,10 @@
 #include <sourcemod>
 #include <FirePlayersStats>
 
+#if FPS_INC_VER != 152
+	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 152"
+#endif
+
 int			g_iPlayerData[MAXPLAYERS+1][13],
 			g_iMapSessionTime[MAXPLAYERS+1];
 char		g_sCurrentMap[256];

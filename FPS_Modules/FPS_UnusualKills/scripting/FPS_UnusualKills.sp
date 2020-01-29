@@ -10,8 +10,8 @@
 	#error This plugin can only compile on SourceMod 1.10!
 #endif
 
-#if FPS_INC_VER < 15
-	#error "FirePlayersStats.inc is outdated and not suitable for compilation!"
+#if FPS_INC_VER != 152
+	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 152"
 #endif
 
 #define MAX_UKTYPES 9
@@ -68,7 +68,6 @@ WHERE `u`.`server_id` = %i ORDER BY `u`.`%s` DESC LIMIT 10;"
 
 enum struct UK_Settings
 {
-	ArrayList ChatCommands;
 	ArrayList ProhibitedWeapons;
 	ArrayList NoScopeWeapons;
 }
@@ -107,17 +106,22 @@ public Plugin myinfo =
 {
 	name = "FPS Unusual Kills", 
 	author = "Wend4r, OkyHp", 
-	version = "1.0.0", 
+	version = "1.0.1",
 	url = "Discord: Wend4r#0001 | VK: vk.com/wend4r"
+}
+
+public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iErr_max)
+{
+	if(GetEngineVersion() != Engine_CSGO)
+	{
+		strcopy(szError, iErr_max, "This plugin works only on CS:GO!");
+		return APLRes_SilentFailure;
+	}
+	return APLRes_Success;
 }
 
 public void OnPluginStart()
 {
-	if(GetEngineVersion() != Engine_CSGO)
-	{
-		SetFailState("[FPS] Unusual Kills: This plugin works only on CS:GO");
-	}
-
 	m_bIsScoped			= FindSendPropInfo("CCSPlayer",			"m_bIsScoped");
 	m_iClip1			= FindSendPropInfo("CBaseCombatWeapon",	"m_iClip1");
 	m_hActiveWeapon		= FindSendPropInfo("CBasePlayer",		"m_hActiveWeapon");
@@ -129,7 +133,7 @@ public void OnPluginStart()
 
 	LoadSettings();
 
-	HookEvent("round_start",			view_as<EventHook>(OnRoundStart));
+	HookEvent("round_start",			view_as<EventHook>(OnRoundStart), EventHookMode_PostNoCopy);
 	HookEvent("smokegrenade_detonate",	view_as<EventHook>(OnSmokeEvent));
 	HookEventEx("smokegrenade_expired",	view_as<EventHook>(OnSmokeEvent));
 
@@ -141,6 +145,8 @@ public void OnPluginStart()
 
 	LoadTranslations("FPS_UnusualKills.phrases");
 	LoadTranslations("FirePlayersStats.phrases");
+
+	AddCommandListener(CommandTopCallback, "sm_top");
 }
 
 public void FPS_OnDatabaseLostConnection()
@@ -296,13 +302,11 @@ void LoadSettings()
 
 	if(sPath[0])
 	{
-		g_hSettings.ChatCommands.Clear();
 		g_hSettings.ProhibitedWeapons.Clear();
 		g_hSettings.NoScopeWeapons.Clear();
 	}
 	else
 	{
-		g_hSettings.ChatCommands = new ArrayList(64);
 		g_hSettings.ProhibitedWeapons = new ArrayList(64);
 		g_hSettings.NoScopeWeapons = new ArrayList(64);
 
@@ -319,9 +323,6 @@ void LoadSettings()
 	hKv.JumpToKey("Settings");	/**/
 
 	g_iExpMode = hKv.GetNum("Exp_Mode", 1);
-
-	hKv.GetString("ChatCommands", sBuffer, sizeof(sBuffer), "!uk,!ukstats,!unusualkills");
-	ExplodeInArrayList(sBuffer, g_hSettings.ChatCommands);
 
 	hKv.GetString("ProhibitedWeapons", sBuffer, sizeof(sBuffer), "hegrenade,molotov,incgrenade");
 	ExplodeInArrayList(sBuffer, g_hSettings.ProhibitedWeapons);
@@ -388,7 +389,6 @@ void ExplodeInArrayList(const char[] sText, ArrayList hArray)
 
 	if(!iLastSize)
 	{
-		PrintToServer(sText);
 		hArray.PushString(sText);
 	}
 }
@@ -502,13 +502,13 @@ public Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, fl
 				{
 					if(iUKFlags & (1 << iType))
 					{
-						FormatEx(sColumns, sizeof(sColumns), "%s`%s` = %d, ", sColumns, g_sNameUK[iType], ++g_iUK[iAttacker][iType]);
+						FormatEx(sColumns[strlen(sColumns)], sizeof(sColumns), "`%s` = %d, ", g_sNameUK[iType], ++g_iUK[iAttacker][iType]);
 
 						if(g_iExp[iType])
 						{
 							if(g_iExpMode == 1 && g_iExp[iType] > 0)
 							{
-								FPS_PrintToChat(iAttacker, "%T: \x04+%i.0", g_sNameUK[iType], iAttacker, g_iExp[iType]);
+								FPS_PrintToChat(iAttacker, "%t: \x04+%i.0 \x01[ %t ]", "AdditionalPoints", g_iExp[iType], g_sNameUK[iType]);
 							}
 
 							if (g_iExpMode)
@@ -555,14 +555,6 @@ public void OnPlayerRunCmdPost(int iClient, int iButtons, int iImpulse, const fl
 	{
 		g_flRotation[iClient] = 0.0;
 		iInterval[iClient] = GetTime() + g_iWhirlInterval;
-	}
-}
-
-public void OnClientSayCommand_Post(int iClient, const char[] sCommand, const char[] sArgs)
-{
-	if(g_hSettings.ChatCommands.FindString(sArgs) != -1)
-	{
-		UnusualKillMenu(iClient);
 	}
 }
 
@@ -730,4 +722,19 @@ public int Handler_PanelTop(Menu hPanel, MenuAction action, int iClient, int iOp
 		}
 		ClientCommand(iClient, "playgamesound *buttons/combine_button7.wav");
 	}
+}
+
+Action CommandTopCallback(int iClient, const char[] szCommand, int iArgs)
+{
+	if (iArgs)
+	{
+		char szArg[4];
+		GetCmdArg(1, SZF(szArg));
+		if (!strcmp(szArg, "uk", false))
+		{
+			UnusualKillTop(iClient);
+			return Plugin_Handled;
+		}
+	}
+	return Plugin_Continue;
 }

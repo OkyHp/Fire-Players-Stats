@@ -30,21 +30,14 @@ Action CommandTop(int iClient, int iArgs)
 		}
 		else
 		{
-			if (!strcmp(szArg, "points", false))
+			static const char szTops[][] = {"points", "kdr", "time", "clutch"};
+			for (int i = sizeof(szTops); i--;)
 			{
-				ShowTopMenu(iClient, 0);
-			}
-			else if (!strcmp(szArg, "kdr", false))
-			{
-				ShowTopMenu(iClient, 1);
-			}
-			else if (!strcmp(szArg, "time", false))
-			{
-				ShowTopMenu(iClient, 2);
-			}
-			else if (!strcmp(szArg, "clutch", false))
-			{
-				ShowTopMenu(iClient, 3);
+				if (!strcmp(szArg, szTops[i], false))
+				{
+					ShowTopMenu(iClient, i);
+					break;
+				}
 			}
 		}
 	}

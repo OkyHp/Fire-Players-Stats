@@ -101,7 +101,8 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 {
 	if(GetEngineVersion() != Engine_CSGO)
 	{
-		return APLRes_Failure;
+		strcopy(szError, iErr_max, "This plugin works only on CS:GO!");
+		return APLRes_SilentFailure;
 	}
 
 	CreateNative("FPS_StatsLoad",				Native_FPSStatsLoad);

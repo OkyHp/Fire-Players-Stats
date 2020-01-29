@@ -1,58 +1,64 @@
 "Phrases"
 {
+	"AdditionalPoints"
+	{
+		"en"			"Additional points"
+		"ru"			"Дополнительные поинты"
+		"ua"			"Додаткові поінти"
+	}
 	"op"
 	{
-		"en"			"Received points for the first murder"
-		"ru"			"Получено поинтов за первое убийство"
-		"ua"			"Отримано поінтів за перше вбивство"
+		"en"			"For first kill"
+		"ru"			"За первое убийство"
+		"ua"			"За перше вбивство"
 	}
 	"penetrated"
 	{
-		"en"			"Received points for a penetrated shot"
-		"ru"			"Получено поинтов за прострел"
-		"ua"			"Отримано поінтів за простріл"
+		"en"			"For killing through an obstacle"
+		"ru"			"За убийство через препятствие"
+		"ua"			"За вбивство через перешкоду"
 	}
 	"no_scope"
 	{
-		"en"			"Received points for murder without sight"
-		"ru"			"Получено поинтов за убийство без прицела"
-		"ua"			"Отримано поінтів за вбивство без прицілу"
+		"en"			"For killing by no scope"
+		"ru"			"За убийство без прицела"
+		"ua"			"За вбивство без прицілу"
 	}
 	"run"
 	{
-		"en"			"Received points for murder on the run"
-		"ru"			"Получено поинтов за убийство на бегу"
-		"ua"			"Отримано поінтів за вбивство на бігу"
+		"en"			"For killing on run"
+		"ru"			"За убийство на бегу"
+		"ua"			"За вбивство на бігу"
 	}
 	"jump"
 	{
-		"en"			"Received points for murder in the jump"
-		"ru"			"Получено поинтов за убийство в прыжке"
-		"ua"			"Отримано поінтів за вбивство в стрибку"
+		"en"			"For killing in jump"
+		"ru"			"За убийство в прыжке"
+		"ua"			"За вбивство в стрибку"
 	}
 	"flash"
 	{
-		"en"			"Received points for murder being blinded by a flashbang"
-		"ru"			"Получено поинтов за убийство, будучи ослепленным флешкой"
-		"ua"			"Отримано поінтів за вбивство, будучи засліпленим флешкою"
+		"en"			"For killing, being blinded flashbang"
+		"ru"			"За убийство, будучи ослепленным флешкой"
+		"ua"			"За вбивство, будучи засліпленим флешкою"
 	}
 	"smoke"
 	{
-		"en"			"Received points for murder in smoke"
-		"ru"			"Получено поинтов за убийство в дым"
-		"ua"			"Отримано поінтів за вбивство в дим"
+		"en"			"For killing being in smoke"
+		"ru"			"За убийство в дым"
+		"ua"			"За вбивство в дим"
 	}
 	"whirl"
 	{
-		"en"			"Received points for murder with reversal"
-		"ru"			"Получено поинтов за убийство с разворота"
-		"ua"			"Отримано поінтів за вбивство з розвороту"
+		"en"			"For killing by with reversal"
+		"ru"			"За убийство с разворота"
+		"ua"			"За вбивство з розвороту"
 	}
 	"last_clip"
 	{
-		"en"			"Received points for murder with a last clip"
-		"ru"			"Получено поинтов за убийство последним патроном"
-		"ua"			"Отримано поінтів за вбивство останнім патроном"
+		"en"			"For killing by with a last clip"
+		"ru"			"За убийство последним патроном"
+		"ua"			"За вбивство останнім патроном"
 	}
 
 	// MENU ------------
