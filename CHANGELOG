@@ -81,4 +81,5 @@
 		Tryed fix call forward on stats load.
 		Fixed possible problem of obtaining player information when reload core.
 		Fixed save player data in FPS_ClientReloadData native.
+		Changes have been made for calculation points on calibration.
 		

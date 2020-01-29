@@ -161,8 +161,8 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			}
 
 			float	fPointsAttacker	= (g_fPlayerPoints[iVictim] / g_fPlayerPoints[iAttacker]) * 5.0,
-					fDiss			= g_fPlayerPoints[iAttacker] / g_fPlayerPoints[iVictim],
-					fPointsVictim	= fPointsAttacker * g_fCoeff * (fDiss < 0.5 && FPS_IsCalibration(iAttacker) ? fDiss : 1.0),
+					fDiff			= (g_fPlayerPoints[iAttacker] / g_fPlayerPoints[iVictim]) + 0.6,
+					fPointsVictim	= fPointsAttacker * g_fCoeff * (fDiff < 1.0 && FPS_IsCalibration(iAttacker) ? fDiff : 1.0),
 					fExtPoints		= GetWeaponExtraPoints(szWeapon, bIsGrenade),
 					fHeadshot		= bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0,
 					fStreak;
@@ -172,7 +172,7 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			#endif
 
 			fPointsAttacker	= (fPointsAttacker * fExtPoints) + fHeadshot + fStreak;
-			FPS_Debug("Event_PlayerDeath >> Points Data: \n ----->> EP: %f \n ----->> HS: %f \n ----->> ST: %f \n ----->> DS: %f", fExtPoints, fHeadshot, fStreak, fDiss)
+			FPS_Debug("Event_PlayerDeath >> Points Data: \n ----->> EP: %f \n ----->> HS: %f \n ----->> ST: %f \n ----->> DF: %f", fExtPoints, fHeadshot, fStreak, fDiff)
 			FPS_Debug("Event_PlayerDeath >> Points >> Attacker (%N): %f / Victim (%N): %f", iAttacker, fPointsAttacker, iVictim, fPointsVictim)
 
 			ResetIfLessZero(fPointsAttacker);
