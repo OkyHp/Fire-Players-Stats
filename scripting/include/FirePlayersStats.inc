@@ -70,7 +70,7 @@ enum StatsID
 	FPS_RANK_ID
 };
 
-/****************** FORWARDS ******************/
+
 
 /**
  *	Вызывается когда ядро/статистика загрузилась.
@@ -160,7 +160,6 @@ forward void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount);
 forward void FPS_OnSecondDataUpdated();
 
 
-/****************** NATIVES ******************/
 
 /**
  *	Получает статус ядра/статистики

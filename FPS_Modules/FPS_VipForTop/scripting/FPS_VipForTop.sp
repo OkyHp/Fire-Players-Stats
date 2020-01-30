@@ -21,13 +21,18 @@ public Plugin myinfo =
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
-public void OnPluginStart()
+public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iErr_max)
 {
 	if(GetEngineVersion() != Engine_CSGO)
 	{
-		SetFailState("This plugin works only on CS:GO");
+		strcopy(szError, iErr_max, "This plugin works only on CS:GO!");
+		return APLRes_SilentFailure;
 	}
+	return APLRes_Success;
+}
 
+public void OnMapStart()
+{
 	char szPath[256];
 	g_hConfig = new KeyValues("Config");
 	BuildPath(Path_SM, szPath, sizeof(szPath), "configs/FirePlayersStats/vip_for_top.ini");
@@ -36,6 +41,7 @@ public void OnPluginStart()
 		SetFailState("No found file: '%s'.", szPath);
 	}
 
+	g_iVipQuota = 0;
 	g_hConfig.Rewind();
 	if (g_hConfig.GotoFirstSubKey(false))
 	{
@@ -43,14 +49,12 @@ public void OnPluginStart()
 			++g_iVipQuota;
 		} while (g_hConfig.GotoNextKey(false));
 	}
-
-	LoadTranslations("FPS_VipForTop.phrases");
 }
 
 public void VIP_OnClientLoaded(int iClient, bool bIsVIP)
 {
 	g_bIsVip[iClient] = bIsVIP;
-	g_iPos[iClient] = 0;
+	g_iPos[iClient] = -1;
 }
 
 public void VIP_OnVIPClientAdded(int iClient, int iAdmin)
@@ -65,7 +69,7 @@ public void VIP_OnVIPClientRemoved(int iClient, const char[] szReason, int iAdmi
 
 public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
-	if (!g_bIsVip[iClient] && !FPS_IsCalibration(iClient) && g_iPos[iClient] < iPosition)
+	if (!g_bIsVip[iClient] && !FPS_IsCalibration(iClient) && g_iPos[iClient] == -1)
 	{
 		if(iPosition <= g_iVipQuota)
 		{
@@ -79,7 +83,14 @@ public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
 			{
 				// VIP_SetClientVIP(iClient, 0, 0, szVipGroup, false);
 				VIP_GiveClientVIP(-1, iClient, 0, szVipGroup, false);
-				FPS_PrintToChat(iClient, "%t", "YouGotPrivilege", szVipGroup, szPos);
+
+				switch(GetClientLanguage(iClient))
+				{
+					case 22: FPS_PrintToChat(iClient, "Вы получили привилегию {GREEN}%s {DEFAULT}за {OLIVE}%s {DEFAULT}место на сервере!", szVipGroup, szPos);
+					case 30: FPS_PrintToChat(iClient, "Ви отримали привілей {GREEN}%s {DEFAULT}за {OLIVE}%s {DEFAULT}місце на сервері!", szVipGroup, szPos);
+					default: FPS_PrintToChat(iClient, "You got {GREEN}%s {DEFAULT}privilege for {OLIVE}%s {DEFAULT}place on the server!", szVipGroup, szPos);
+				}
+
 				PrintToServer("[FPS_VipForTop] >> Игроку %N за %i место установлена вип группа (Период: сессия): %s", iClient, iPosition, szVipGroup);
 			}
 		}
