@@ -1,3 +1,11 @@
+-----
+
+<h1 align="center">
+    <img src="https://hlmod.ru/data/resource_icons/1/1232.jpg?1562012872"> Fire Players Stats - Плагин статистики для серверов
+</h1>
+
+-----
+
 ## Информация о статистике:
 
  - Поддержка только **CS:GO**.
@@ -17,8 +25,6 @@
 ### Важно понимать, что статистика по функционалу очень схожа с ЛР, ибо та бралась за основу, но плагин писался полностью с нуля! Он лишен возможных болячек ЛРа, но может иметь свой букетик!
 
 <!-- <details><summary>Меню плагина</summary> </details> -->
-
-![](https://hlmod.ru/attachments/fps_menus-png.47269/) ![](https://hlmod.ru/attachments/fps-chat-info-png.43167/)
 
  [**_Список модулей к статистике_**](https://gitlab.com/OkyHp/fire-players-stats/tree/master/FPS_Modules)
 
