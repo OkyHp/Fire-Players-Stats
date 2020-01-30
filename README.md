@@ -1,10 +1,4 @@
------
-
-<h1 align="center">
-    <img src="https://hlmod.ru/data/resource_icons/1/1232.jpg?1562012872"> Fire Players Stats - Плагин статистики для серверов
-</h1>
-
------
+# Fire Players Stats - Плагин статистики для серверов ![](https://assets.gitlab-static.net/uploads/-/system/project/avatar/13095639/FPS_Icon.png?width=64)
 
 ## Информация о статистике:
 
