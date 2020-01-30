@@ -1,4 +1,7 @@
-# Fire Players Stats - Плагин статистики для серверов ![](https://assets.gitlab-static.net/uploads/-/system/project/avatar/13095639/FPS_Icon.png?width=64)
+![](https://assets.gitlab-static.net/uploads/-/system/project/avatar/13095639/FPS_Icon.png)
+# Fire Players Stats - Плагин статистики для серверов
+
+----
 
 ## Информация о статистике:
 
