@@ -116,13 +116,13 @@
 	"TopTitle"
 	{
 		"#format"	"{1:t}"
-		"en"		"[ {1} ] \nAttention, information is updated after a certain time"
+		"en"		"[ {1} ] \nAttention, information is updated periodically"
 		"ru"		"[ {1} ] \nВнимание, информация обновляется через определенное время"
 		"ua"		"[ {1} ] \nУвага, інформація оновлюеться через певний час"
 	}
 	"ListsOfTops"
 	{
-		"en"		"Lists of tops"
+		"en"		"Available lists"
 		"ru"		"Списки топов"
 		"ua"		"Списки топів"
 	}
@@ -154,7 +154,7 @@
 	// ------------------------------------
 	"RanksInfo"
 	{
-		"en"		"Ranks info"
+		"en"		"Rank information"
 		"ru"		"Информация о рангах"
 		"ua"		"Інформація про ранги"
 	}
@@ -162,7 +162,7 @@
 	// ------------------------------------
 	"StatsInfo"
 	{
-		"en"		"Stats info"
+		"en"		"Stats information"
 		"ru"		"Информация о статистике"
 		"ua"		"Інформація про статистику"
 	}
@@ -264,7 +264,7 @@
 	"fps_bombpickup"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Bomb pick up: {1}"
+		"en"		"Picking up bomb: {1}"
 		"ru"		"Подбор бомбы: {1}"
 		"ua"		"Підбір бомби: {1}"
 	}
@@ -318,13 +318,13 @@
 	}
 	"AreYouSureResetStats"
 	{
-		"en"		"Are you sure reset your stats?"
-		"ru"		"Вы уверены, что сбросить статистику?"
+		"en"		"Are you sure you want to reset your statistics?"
+		"ru"		"Вы уверены, что хотите сбросить статистику?"
 		"ua"		"Ви впевнені, що хочете стерти вашу статистику?"
 	}
 	"YesImSure"
 	{
-		"en"		"Yes I`m Sure"
+		"en"		"Yes, I`m Sure"
 		"ru"		"Да, я уверен"
 		"ua"		"Так, я впевнений"
 	}
@@ -347,7 +347,7 @@
 
 	"YourStatsReset"
 	{
-		"en"		"Your stats reset"
+		"en"		"Your statistics have been reset"
 		"ru"		"Ваша статистика обнулена"
 		"ua"		"Ваша статистика обнулена"
 	}
@@ -355,21 +355,21 @@
 	"RankUpped"
 	{
 		"#format"	"{1:s}"
-		"en"		"Rank upped: {GREEN}{1}"
+		"en"		"Ranked up: {GREEN}{1}"
 		"ru"		"Ранг повышен: {GREEN}{1}"
 		"ua"		"Ранг підвищений: {GREEN}{1}"
 	}
 	"RankDowned"
 	{
 		"#format"	"{1:s}"
-		"en"		"Rank downed: {RED}{1}"
+		"en"		"Ranked down: {RED}{1}"
 		"ru"		"Ранг понижен: {RED}{1}"
 		"ua"		"Ранг знижений: {RED}{1}"
 	}
 	"CalibrationCompleted"
 	{
 		"#format"	"{1:s}"
-		"en"		"Calibration completed with the rank {OLIVE}{1}"
+		"en"		"Calibration completed with rank {OLIVE}{1}"
 		"ru"		"Калибровка завершена с рангом {OLIVE}{1}"
 		"ua"		"Калібрування завершено з рангом {OLIVE}{1}"
 	}
