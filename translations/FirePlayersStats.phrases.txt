@@ -187,7 +187,7 @@
 	"StatsInfoTitle"
 	{
 		"#format"	"{1:t},{2:.2f}"
-		"en"		"[ {1} ] \Rank is determined by how well you play.\n \nAdditional points for:"
+		"en"		"[ {1} ] \nRank is determined by how well you play.\n \nAdditional points for:"
 		"ru"		"[ {1} ] \nВ зависимости от того, насколько хорошо вы играете будет зависит ваше звание.\n \nДополнительные поинты за:"
 		"ua"		"[ {1} ] \nВ залежності від того, наскільки гарно ви граете буде залежить ваше звання.\n \nДодаткові поінти за:"
 	}
