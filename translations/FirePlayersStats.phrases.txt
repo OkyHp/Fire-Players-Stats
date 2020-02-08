@@ -48,7 +48,7 @@
 
 	"Points"
 	{
-		"en"		"points"
+		"en"		"Points"
 		"ru"		"п."
 		"ua"		"п."
 	}
@@ -60,7 +60,7 @@
 	}
 	"Kills"
 	{
-		"en"		"kills"
+		"en"		"Kills"
 		"ru"		"уб."
 		"ua"		"вб."
 	}
@@ -81,7 +81,7 @@
 	// ------------------------------------
 	"FpsTitle"
 	{
-		"en"		"Fire Players Stats | Main menu"
+		"en"		"Fire Players Stats | Main Menu"
 		"ru"		"Fire Players Stats | Главное меню"
 		"ua"		"Fire Players Stats | Головне меню"
 	}
@@ -128,7 +128,7 @@
 	}
 	"TopPoints"
 	{
-		"en"		"Top players by points"
+		"en"		"Top Players by Points"
 		"ru"		"Лучшие игроки по очкам"
 		"ua"		"Кращі гравці по очкам"
 	}
@@ -140,13 +140,13 @@
 	}
 	"TopTime"
 	{
-		"en"		"Top players by played time"
+		"en"		"Top Players by play time"
 		"ru"		"Игроки с наибольшим наигранным временем"
 		"ua"		"Гравці з найбільшим награним часом"
 	}
 	"TopClutch"
 	{
-		"en"		"Top players by most kills per round"
+		"en"		"Top players by Most Kills per Round"
 		"ru"		"Игроки с наибольшим количеством убийств за раунд"
 		"ua"		"Гравці з найбільшою кількістю вбивств за раунд"
 	}
@@ -154,7 +154,7 @@
 	// ------------------------------------
 	"RanksInfo"
 	{
-		"en"		"Rank information"
+		"en"		"Rank Information"
 		"ru"		"Информация о рангах"
 		"ua"		"Інформація про ранги"
 	}
@@ -162,7 +162,7 @@
 	// ------------------------------------
 	"StatsInfo"
 	{
-		"en"		"Stats information"
+		"en"		"Stats Information"
 		"ru"		"Информация о статистике"
 		"ua"		"Інформація про статистику"
 	}
@@ -171,14 +171,14 @@
 	"PlayerGeneralData"
 	{
 		"#format"	"{1:.2f},{2:i},{3:i},{4:.2f},{5:i},{6:i},{7:i},{8:i},{9:i},{10:.2f}"
-		"en"		"Points: {1} \nKills: {2} \nDeaths: {3} \nKDR: {4} \nAssists: {5} \nMaximum kills per round: {6} \nRounds played: {7} \nWin rounds: {8} \nLose rounds: {9} \nPlayed time: {10} h"
+		"en"		"Points: {1} \nKills: {2} \nDeaths: {3} \nKDR: {4} \nAssists: {5} \nMaximum kills per round: {6} \nRounds played: {7} \nWon rounds: {8} \nLost rounds: {9} \nPlayed time: {10} h"
 		"ru"		"Поинты: {1} \nУбийств: {2} \nСмертей: {3} \nKDR: {4} \nАссистов: {5} \nМаксимум убийств за раунд: {6} \nРаундов сыграно: {7} \nВыиграно: {8} \nПроиграно: {9} \nНаигранное время: {10} ч"
 		"ua"		"Поінти: {1} \nВбивств: {2} \nСмертей: {3} \nKDR: {4} \nАсистів: {5} \nМаксимум вбивств за раунд: {6} \nРаундів відіграно: {7} \nВиграно: {8} \nПрограно: {9} \nНаграний час: {10} г"
 	}
 	"PlayerSessionData"
 	{
 		"#format"	"{1:.2f},{2:i},{3:i},{4:.2f},{5:i},{6:i},{7:i},{8:i}"
-		"en"		"Points: {1} \nKills: {2} \nDeaths: {3} \nKDR: {4} \nAssists: {5} \nRounds played: {6} \nWin rounds: {7} \nLose rounds: {8}"
+		"en"		"Points: {1} \nKills: {2} \nDeaths: {3} \nKDR: {4} \nAssists: {5} \nRounds played: {6} \nWon rounds: {7} \nLost rounds: {8}"
 		"ru"		"Поинты: {1} \nУбийств: {2} \nСмертей: {3} \nKDR: {4} \nАссистов: {5} \nРаундов сыграно: {6} \nВыиграно: {7} \nПроиграно: {8}"
 		"ua"		"Поінти: {1} \nВбивств: {2} \nСмертей: {3} \nKDR: {4} \nАсистів: {5} \nРаундів відіграно: {6} \nВиграно: {7} \nПрограно: {8}"
 	}
@@ -187,7 +187,7 @@
 	"StatsInfoTitle"
 	{
 		"#format"	"{1:t},{2:.2f}"
-		"en"		"[ {1} ] \nDepending on how well you play will depend on your rank.\n \nAdditional points for:"
+		"en"		"[ {1} ] \Rank is determined by how well you play.\n \nAdditional points for:"
 		"ru"		"[ {1} ] \nВ зависимости от того, насколько хорошо вы играете будет зависит ваше звание.\n \nДополнительные поинты за:"
 		"ua"		"[ {1} ] \nВ залежності від того, наскільки гарно ви граете буде залежить ваше звання.\n \nДодаткові поінти за:"
 	}
@@ -271,7 +271,7 @@
 	"fps_hostagekilled"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Hostage killed: {1}"
+		"en"		"Hostages killed: {1}"
 		"ru"		"Убиство заложника: {1}"
 		"ua"		"Вбивство заручника: {1}"
 	}
@@ -312,7 +312,7 @@
 	"ResetPlayerStatsLock"
 	{
 		"#format"	"{1:.2f}"
-		"en"		"Reset statistics will be available in {1} h"
+		"en"		"Statistics Resetting will be available in {1} h"
 		"ru"		"Сброс статистики будет доступен через {1} ч"
 		"ua"		"Стерти статистику можна буде через {1} г"
 	}
@@ -324,7 +324,7 @@
 	}
 	"YesImSure"
 	{
-		"en"		"Yes, I`m Sure"
+		"en"		"Yes, I'm Sure"
 		"ru"		"Да, я уверен"
 		"ua"		"Так, я впевнений"
 	}
@@ -340,7 +340,7 @@
 	// Chat -------------------------------
 	"ErrorDataLoad"
 	{
-		"en"		"Error data load!"
+		"en"		"Error loading data!"
 		"ru"		"Ошибка загрузки данных"
 		"ua"		"Помилка загрузки даних"
 	}
@@ -369,7 +369,7 @@
 	"CalibrationCompleted"
 	{
 		"#format"	"{1:s}"
-		"en"		"Calibration completed with rank {OLIVE}{1}"
+		"en"		"Rank Calibration completed, your rank is {OLIVE}{1}"
 		"ru"		"Калибровка завершена с рангом {OLIVE}{1}"
 		"ua"		"Калібрування завершено з рангом {OLIVE}{1}"
 	}
@@ -407,7 +407,7 @@
 	"NoPlayersForStatsWork"
 	{
 		"#format"	"{1:i}"
-		"en"		"To work statistics need minimum {GREEN}{1} {DEFAULT}players."
+		"en"		"Statistics need a minimum of {GREEN}{1} {DEFAULT}players."
 		"ru"		"Для работы статистики нужно минимум {GREEN}{1} {DEFAULT}игрока."
 		"ua"		"Для роботи статистики необхідно мінімум {GREEN}{1} {DEFAULT}гравці."
 	}
