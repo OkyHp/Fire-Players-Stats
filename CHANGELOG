@@ -84,4 +84,5 @@
 		Changes have been made for calculation points on calibration.
 1.5.3 - Fixed minor bug in database handler.
 		Added cvar sm_fps_chat_prefix.
+		Phrase about score for points at the end of round is completely redirected to translation file.
 		

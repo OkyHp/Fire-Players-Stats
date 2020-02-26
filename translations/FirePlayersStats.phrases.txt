@@ -389,12 +389,20 @@
 		"ua"		"Гравець {GREEN}{1} {DEFAULT}на {RED}{2} {DEFAULT}місці з {BLUE}{3}{DEFAULT}, з {GREEN}{4} {DEFAULT}поінтами та KDR: {OLIVE}{5}"
 	}
 
-	"PrintPoints"
+	"PrintPointsPositive"
 	{
-		"#format"	"{1:.2f},{2:s},{3:.2f}"
-		"en"		"Your points: {OLIVE}{1} {DEFAULT}[Result for this round: {2}{3}{DEFAULT}]"
-		"ru"		"Ваши поинты: {OLIVE}{1} {DEFAULT}[Итог за этот раунд: {2}{3}{DEFAULT}]"
-		"ua"		"Ваші поінти: {OLIVE}{1} {DEFAULT}[Підсумок за цей раунд: {2}{3}{DEFAULT}]"
+		"#format"	"{1:.2f},{2:.2f}"
+		"en"		"Your points: {OLIVE}{1} {DEFAULT}[Result for this round: {GREEN}+{2}{DEFAULT}]"
+		"ru"		"Ваши поинты: {OLIVE}{1} {DEFAULT}[Итог за этот раунд: {GREEN}+{2}{DEFAULT}]"
+		"ua"		"Ваші поінти: {OLIVE}{1} {DEFAULT}[Підсумок за цей раунд: {GREEN}+{2}{DEFAULT}]"
+	}
+
+	"PrintPointsNegative"
+	{
+		"#format"	"{1:.2f},{2:.2f}"
+		"en"		"Your points: {OLIVE}{1} {DEFAULT}[Result for this round: {RED}{2}{DEFAULT}]"
+		"ru"		"Ваши поинты: {OLIVE}{1} {DEFAULT}[Итог за этот раунд: {RED}{2}{DEFAULT}]"
+		"ua"		"Ваші поінти: {OLIVE}{1} {DEFAULT}[Підсумок за цей раунд: {RED}{2}{DEFAULT}]"
 	}
 
 	"StatsWarmupBlocked"

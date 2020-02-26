@@ -312,7 +312,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 							}
 
 							float fPoints = g_fPlayerPoints[i] - fRoundPlayerPoints[i];
-							FPS_PrintToChat(i, "%t", "PrintPoints", g_fPlayerPoints[i], fPoints > 0.0 ? COLOR_POINTS_ADDED : COLOR_POINTS_REDUCED, fPoints);
+							FPS_PrintToChat(i, "%t", fPoints > 0.0 ? "PrintPointsPositive" : "PrintPointsNegative", g_fPlayerPoints[i], fPoints);
 						}
 
 						if (bSave)
