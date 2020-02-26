@@ -167,9 +167,7 @@ public void FPS_OnDatabaseConnected(Database hDatabase)
 		if (!bLoaded)
 		{
 			bLoaded = true;
-			SQL_LockDatabase(g_hDatabase);
 			g_hDatabase.Query(SQL_Callback_CreateTable, SQL_CreateTable);
-			SQL_UnlockDatabase(g_hDatabase);
 		}
 	}
 }
