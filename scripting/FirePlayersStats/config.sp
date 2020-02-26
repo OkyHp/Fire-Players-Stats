@@ -11,6 +11,7 @@ bool		g_bShowStatsEveryone,
 float		g_fDBRetryConnTime,
 			g_fCoeff,
 			g_fExtraPoints[18];
+char		g_sPrefix[32];
 KeyValues	g_hWeaponsConfigKV;
 
 #define	CFG_HEADSHOT			0
@@ -146,6 +147,12 @@ void SetCvars()
 	)).AddChangeHook(ChangeCvar_SaveInterval);
 	ChangeCvar_SaveInterval(Convar, NULL_STRING, NULL_STRING);
 
+	(Convar = CreateConVar(
+		"sm_fps_chat_prefix",	"\x04[ \x02FPS \x04] \x01", 
+		"Префикс в чате. Поддерживает '{GREEN}' и т.д."
+	)).AddChangeHook(ChangeCvar_SaveInterval);
+	ChangeCvar_ChatPrefix(Convar, NULL_STRING, NULL_STRING);
+
 	AutoExecConfig(true, "FirePlayersStats");
 
 	LoadConfigKV();
@@ -204,4 +211,9 @@ void ChangeCvar_CalibrationFix(ConVar Convar, const char[] oldValue, const char[
 void ChangeCvar_SaveInterval(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iSaveInterval = Convar.IntValue;
+}
+
+void ChangeCvar_ChatPrefix(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	Convar.GetString(g_sPrefix, sizeof(g_sPrefix));
 }

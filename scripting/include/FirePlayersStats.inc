@@ -35,16 +35,15 @@ public void __pl_fire_players_stats_SetNTVOptional()
 	MarkNativeAsOptional("FPS_MoveToMenu");
 	MarkNativeAsOptional("FPS_StatsActive");
 	MarkNativeAsOptional("FPS_GetID");
+	MarkNativeAsOptional("FPS_PrintToChat");
+	MarkNativeAsOptional("FPS_PrintToChatAll");
 }
 #endif
 
-#define FPS_INC_VER				152
+#define FPS_INC_VER				153
 #define UID(%0)					GetClientUserId(%0)
 #define CID(%0)					GetClientOfUserId(%0)
 #define SZF(%0)					%0, sizeof(%0)
-#define FPS_CHAT_PREFIX			" \x04[ \x02FPS \x04] \x01"
-#define FPS_PrintToChat(%0,%1)	FPS_CGOPrintToChat(%0, FPS_CHAT_PREFIX ... %1)
-#define FPS_PrintToChatAll(%0)	FPS_CGOPrintToChatAll(FPS_CHAT_PREFIX ... %0)
 
 enum StatsData
 {
@@ -353,6 +352,25 @@ native bool FPS_StatsActive();
 */
 native int FPS_GetID(StatsID eType);
 
+/**
+ *	Выводит игроку сообщение в чат с префиксом (квар sm_fps_chat_prefix).
+ *
+ *	@param iClient			Индекс игрока.
+ *	@param szMessage		Правила форматирования сообщение.
+ *	@param ...				Параметры форматирования.
+ *	@noreturn
+*/
+native void FPS_PrintToChat(int iClient, const char[] szMessage, any ...);
+
+/**
+ *	Выводит всем игрокам сообщение в чат с префиксом (квар sm_fps_chat_prefix).
+ *
+ *	@param szMessage		Правила форматирования сообщение.
+ *	@param ...				Параметры форматирования.
+ *	@noreturn
+*/
+native void FPS_PrintToChatAll(const char[] szMessage, any ...);
+
 /////////////////////////////////////////////////////////////////////////////////
 
 // Find translation rank
@@ -375,81 +393,4 @@ stock char[] FindTranslationRank(int iClient, char[] szRank = NULL_STRING)
 	}
 
 	return szRankName;
-}
-
-// Taken from CS:GO COLORS by Феникс(komashchenko)
-
-#define CSGO_COL_COUNT		16
-static char g_sCsgoColorsBuff[2048];
-static const char g_sColorsT[CSGO_COL_COUNT][] = {
-	"{DEFAULT}", "{RED}", "{LIGHTPURPLE}", "{GREEN}", 
-	"{LIME}", "{LIGHTGREEN}", "{LIGHTRED}", "{GRAY}", 
-	"{LIGHTOLIVE}", "{OLIVE}", "{LIGHTBLUE}", "{BLUE}", 
-	"{PURPLE}", "{GRAYBLUE}", "{PINK}", "{BRIGHTRED}"
-};
-static const char g_sColorsC[CSGO_COL_COUNT][] = {
-	"\x01", "\x02", "\x03", "\x04", 
-	"\x05", "\x06", "\x07", "\x08", 
-	"\x09", "\x10", "\x0B", "\x0C", 
-	"\x0E", "\x0A", "\x0E", "\x0F"
-};
-
-stock void FPS_CGOPrintToChat(int iClient, const char[] message, any ...)
-{
-	SetGlobalTransTarget(iClient);
-	VFormat(g_sCsgoColorsBuff, sizeof g_sCsgoColorsBuff, message, 3);
-	
-	int iLastStart = 0, i = 0;
-	for(; i < CSGO_COL_COUNT; i++)
-	{
-		ReplaceString(g_sCsgoColorsBuff, sizeof g_sCsgoColorsBuff, g_sColorsT[i], g_sColorsC[i], false);
-	}
-	
-	i = 0;
-	
-	while(g_sCsgoColorsBuff[i])
-	{
-		if(g_sCsgoColorsBuff[i] == '\n')
-		{
-			g_sCsgoColorsBuff[i] = 0;
-			PrintToChat(iClient, " %s", g_sCsgoColorsBuff[iLastStart]);
-			iLastStart = i+1;
-		}
-		
-		i++;
-	}
-	
-	PrintToChat(iClient, " %s", g_sCsgoColorsBuff[iLastStart]);
-}
-
-stock void FPS_CGOPrintToChatAll(const char[] message, any ...)
-{
-	int iLastStart = 0, i = 0;
-	
-	for (int iClient = 1; iClient <= MaxClients; iClient++) if(IsClientInGame(iClient) && !IsFakeClient(iClient))
-	{
-		SetGlobalTransTarget(iClient);
-		VFormat(g_sCsgoColorsBuff, sizeof g_sCsgoColorsBuff, message, 2);
-		
-		for(i = 0; i < CSGO_COL_COUNT; i++)
-		{
-			ReplaceString(g_sCsgoColorsBuff, sizeof g_sCsgoColorsBuff, g_sColorsT[i], g_sColorsC[i], false);
-		}
-		
-		iLastStart = 0, i = 0;
-		
-		while(g_sCsgoColorsBuff[i])
-		{
-			if(g_sCsgoColorsBuff[i] == '\n')
-			{
-				g_sCsgoColorsBuff[i] = 0;
-				PrintToChat(iClient, " %s", g_sCsgoColorsBuff[iLastStart]);
-				iLastStart = i+1;
-			}
-			
-			i++;
-		}
-		
-		PrintToChat(iClient, " %s", g_sCsgoColorsBuff[iLastStart]);
-	}
 }

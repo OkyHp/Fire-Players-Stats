@@ -82,4 +82,6 @@
 		Fixed possible problem of obtaining player information when reload core.
 		Fixed save player data in FPS_ClientReloadData native.
 		Changes have been made for calculation points on calibration.
+1.5.3 - Fixed minor bug in database handler.
+		Added cvar sm_fps_chat_prefix.
 		

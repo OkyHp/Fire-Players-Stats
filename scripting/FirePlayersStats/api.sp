@@ -9,6 +9,22 @@ static Handle	g_hGlobalForvard_OnFPSStatsLoaded,
 				g_hGlobalForvard_OnFPSSecondDataUpdated,
 				g_hGlobalForvard_OnFPSLevelChange;
 
+// For print natives
+#define CSGO_COL_COUNT		16
+static char g_sCsgoColorsBuff[2048];
+static const char g_sColorsT[CSGO_COL_COUNT][] = {
+	"{DEFAULT}", "{RED}", "{LIGHTPURPLE}", "{GREEN}", 
+	"{LIME}", "{LIGHTGREEN}", "{LIGHTRED}", "{GRAY}", 
+	"{LIGHTOLIVE}", "{OLIVE}", "{LIGHTBLUE}", "{BLUE}", 
+	"{PURPLE}", "{GRAYBLUE}", "{PINK}", "{BRIGHTRED}"
+};
+static const char g_sColorsC[CSGO_COL_COUNT][] = {
+	"\x01", "\x02", "\x03", "\x04", 
+	"\x05", "\x06", "\x07", "\x08", 
+	"\x09", "\x10", "\x0B", "\x0C", 
+	"\x0E", "\x0A", "\x0E", "\x0F"
+};
+
 void CreateGlobalForwards()
 {
 	g_hGlobalForvard_OnFPSStatsLoaded				= CreateGlobalForward("FPS_OnFPSStatsLoaded",			ET_Ignore);
@@ -105,24 +121,35 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 		return APLRes_SilentFailure;
 	}
 
-	CreateNative("FPS_StatsLoad",				Native_FPSStatsLoad);
-	CreateNative("FPS_GetDatabase",				Native_FPSGetDatabase);
-	CreateNative("FPS_ClientLoaded",			Native_FPSClientLoad);
-	CreateNative("FPS_ClientReloadData",		Native_FPSClientReloadData);
-	CreateNative("FPS_DisableStatisPerRound",	Native_FPSDisableStatisPerRound);
-	CreateNative("FPS_GetPlayedTime",			Native_FPSGetPlayedTime);
-	CreateNative("FPS_GetPoints",				Native_FPSGetPoints);
-	CreateNative("FPS_GetStatsData",			Native_FPSGetStatsData);
-	CreateNative("FPS_IsCalibration",			Native_FPSIsCalibration);
-	CreateNative("FPS_AddFeature",				Native_FPSAddFeature);
-	CreateNative("FPS_RemoveFeature",			Native_FPSRemoveFeature);
-	CreateNative("FPS_IsExistFeature",			Native_FPSIsExistFeature);
-	CreateNative("FPS_MoveToMenu",				Native_FPSMoveToMenu);
-	CreateNative("FPS_StatsActive",				Native_FPSStatsActive);
-	CreateNative("FPS_GetID",					Native_FPSGetID);
-	CreateNative("FPS_GetLevel",				Native_FPSGetLevel);
-	CreateNative("FPS_GetRanks",				Native_FPSGetRanks);
-	CreateNative("FPS_GetMaxRanks",				Native_FPSGetMaxRanks);
+	// General
+	CreateNative("FPS_StatsLoad",				Native_FPS_StatsLoad);
+	CreateNative("FPS_GetDatabase",				Native_FPS_GetDatabase);
+	CreateNative("FPS_GetID",					Native_FPS_GetID);
+	CreateNative("FPS_ClientLoaded",			Native_FPS_ClientLoad);
+	CreateNative("FPS_ClientReloadData",		Native_FPS_ClientReloadData);
+	CreateNative("FPS_DisableStatisPerRound",	Native_FPS_DisableStatisPerRound);
+	CreateNative("FPS_StatsActive",				Native_FPS_StatsActive);
+
+	// Stats
+	CreateNative("FPS_GetPlayedTime",			Native_FPS_GetPlayedTime);
+	CreateNative("FPS_GetPoints",				Native_FPS_GetPoints);
+	CreateNative("FPS_GetStatsData",			Native_FPS_GetStatsData);
+	CreateNative("FPS_IsCalibration",			Native_FPS_IsCalibration);
+
+	// Menu
+	CreateNative("FPS_AddFeature",				Native_FPS_AddFeature);
+	CreateNative("FPS_RemoveFeature",			Native_FPS_RemoveFeature);
+	CreateNative("FPS_IsExistFeature",			Native_FPS_IsExistFeature);
+	CreateNative("FPS_MoveToMenu",				Native_FPS_MoveToMenu);
+
+	// Ranks
+	CreateNative("FPS_GetLevel",				Native_FPS_GetLevel);
+	CreateNative("FPS_GetRanks",				Native_FPS_GetRanks);
+	CreateNative("FPS_GetMaxRanks",				Native_FPS_GetMaxRanks);
+
+	// Chat
+	CreateNative("FPS_PrintToChat",				Native_FPS_PrintToChat);
+	CreateNative("FPS_PrintToChatAll",			Native_FPS_PrintToChatAll);
 
 	RegPluginLibrary("FirePlayersStats");
 	
@@ -140,31 +167,31 @@ bool IsValidClient(int iClient)
 }
 
 // bool FPS_StatsLoad();
-int Native_FPSStatsLoad(Handle hPlugin, int iNumParams)
+int Native_FPS_StatsLoad(Handle hPlugin, int iNumParams)
 {
 	return g_bStatsLoaded;
 }
 
 // Database FPS_GetDatabase();
-int Native_FPSGetDatabase(Handle hPlugin, int iNumParams)
+int Native_FPS_GetDatabase(Handle hPlugin, int iNumParams)
 {
 	return g_hDatabase ? view_as<int>(CloneHandle(g_hDatabase, hPlugin)) : 0;
 }
 
 // bool FPS_ClientLoaded(int iClient);
-int Native_FPSClientLoad(Handle hPlugin, int iNumParams)
+int Native_FPS_ClientLoad(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	return (IsValidClient(iClient) && g_bStatsLoad[iClient]);
 }
 
 // void FPS_ClientReloadData(int iClient);
-int Native_FPSClientReloadData(Handle hPlugin, int iNumParams)
+int Native_FPS_ClientReloadData(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
 	{
-		FPS_Debug("Native_FPSClientReloadData >> LoadStats: %N", iClient)
+		FPS_Debug("Native_FPS_ClientReloadData >> LoadStats: %N", iClient)
 		SavePlayerData(iClient);
 		OnClientDisconnect(iClient);
 		LoadPlayerData(iClient);
@@ -172,13 +199,13 @@ int Native_FPSClientReloadData(Handle hPlugin, int iNumParams)
 }
 
 // void FPS_DisableStatisPerRound();
-int Native_FPSDisableStatisPerRound(Handle hPlugin, int iNumParams)
+int Native_FPS_DisableStatisPerRound(Handle hPlugin, int iNumParams)
 {
 	g_bDisableStatisPerRound = true;
 }
 
 // int FPS_GetPlayedTime(int iClient);
-int Native_FPSGetPlayedTime(Handle hPlugin, int iNumParams)
+int Native_FPS_GetPlayedTime(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	if (IsValidClient(iClient) && g_bStatsLoad[iClient] && g_iPlayerSessionData[iClient][PLAYTIME])
@@ -189,14 +216,14 @@ int Native_FPSGetPlayedTime(Handle hPlugin, int iNumParams)
 }
 
 // float FPS_GetPoints(int iClient, bool bSession = false);
-int Native_FPSGetPoints(Handle hPlugin, int iNumParams)
+int Native_FPS_GetPoints(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	return view_as<int>(IsValidClient(iClient) && g_bStatsLoad[iClient] ? (!GetNativeCell(2) ? g_fPlayerPoints[iClient] : (g_fPlayerPoints[iClient] - g_fPlayerSessionPoints[iClient])) : DEFAULT_POINTS);
 }
 
 // int FPS_GetLevel(int iClient);
-int Native_FPSGetLevel(Handle hPlugin, int iNumParams)
+int Native_FPS_GetLevel(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
@@ -207,7 +234,7 @@ int Native_FPSGetLevel(Handle hPlugin, int iNumParams)
 }
 
 // void FPS_GetRanks(int iClient, char[] szBufferRank, int iMaxLength);
-int Native_FPSGetRanks(Handle hPlugin, int iNumParams)
+int Native_FPS_GetRanks(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
@@ -217,13 +244,13 @@ int Native_FPSGetRanks(Handle hPlugin, int iNumParams)
 }
 
 // int FPS_GetMaxRanks();
-int Native_FPSGetMaxRanks(Handle hPlugin, int iNumParams)
+int Native_FPS_GetMaxRanks(Handle hPlugin, int iNumParams)
 {
 	return g_iRanksCount;
 }
 
 // int FPS_GetStatsData(int iClient, StatsData eData, bool bSession = false);
-int Native_FPSGetStatsData(Handle hPlugin, int iNumParams)
+int Native_FPS_GetStatsData(Handle hPlugin, int iNumParams)
 {
 	int	iClient	= GetNativeCell(1),
 		iData	= GetNativeCell(2);
@@ -241,7 +268,7 @@ int Native_FPSGetStatsData(Handle hPlugin, int iNumParams)
 }
 
 // bool FPS_IsCalibration(int iClient);
-int Native_FPSIsCalibration(Handle hPlugin, int iNumParams)
+int Native_FPS_IsCalibration(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	return (IsValidClient(iClient) && g_bStatsLoad[iClient] && FPS_GetPlayedTime(iClient) < g_iCalibrationFixTime);
@@ -252,7 +279,7 @@ int Native_FPSIsCalibration(Handle hPlugin, int iNumParams)
 // 							ItemSelectCallback		OnItemSelect	= INVALID_FUNCTION,
 // 							ItemDisplayCallback		OnItemDisplay	= INVALID_FUNCTION,
 // 							ItemDrawCallback		OnItemDraw		= INVALID_FUNCTION);
-int Native_FPSAddFeature(Handle hPlugin, int iNumParams)
+int Native_FPS_AddFeature(Handle hPlugin, int iNumParams)
 {
 	char szFeature[128];
 	GetNativeString(1, SZF(szFeature));
@@ -280,7 +307,7 @@ int Native_FPSAddFeature(Handle hPlugin, int iNumParams)
 }
 
 // void FPS_RemoveFeature(const char[] szFeature);
-int Native_FPSRemoveFeature(Handle hPlugin, int iNumParams)
+int Native_FPS_RemoveFeature(Handle hPlugin, int iNumParams)
 {
 	char szFeature[128];
 	GetNativeString(1, SZF(szFeature));
@@ -306,7 +333,7 @@ int Native_FPSRemoveFeature(Handle hPlugin, int iNumParams)
 }
 
 // bool FPS_IsExistFeature(const char[] szFeature);
-int Native_FPSIsExistFeature(Handle hPlugin, int iNumParams)
+int Native_FPS_IsExistFeature(Handle hPlugin, int iNumParams)
 {
 	char szFeature[128];
 	GetNativeString(1, SZF(szFeature));
@@ -320,10 +347,10 @@ int Native_FPSIsExistFeature(Handle hPlugin, int iNumParams)
 }
 
 // void FPS_MoveToMenu(int iClient, FeatureMenus eType, int iPage = 0);
-int Native_FPSMoveToMenu(Handle hPlugin, int iNumParams)
+int Native_FPS_MoveToMenu(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	if (iClient > 0 && iClient <= MaxClients && g_bStatsLoad[iClient])
+	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
 	{
 		switch(GetNativeCell(2))
 		{
@@ -337,13 +364,13 @@ int Native_FPSMoveToMenu(Handle hPlugin, int iNumParams)
 }
 
 // bool FPS_StatsActive();
-int Native_FPSStatsActive(Handle hPlugin, int iNumParams)
+int Native_FPS_StatsActive(Handle hPlugin, int iNumParams)
 {
 	return g_bStatsActive;
 }
 
 // int FPS_GetID(StatsID eType)
-int Native_FPSGetID(Handle hPlugin, int iNumParams)
+int Native_FPS_GetID(Handle hPlugin, int iNumParams)
 {
 	switch(GetNativeCell(1))
 	{
@@ -352,4 +379,72 @@ int Native_FPSGetID(Handle hPlugin, int iNumParams)
 		default: ThrowNativeError(SP_ERROR_NATIVE, "[FPS] Invalid StatsID type!");
 	}
 	return 0;
+}
+
+// void FPS_PrintToChat(int iClient, const char[] szMessage, any ...)
+int Native_FPS_PrintToChat(Handle hPlugin, int iNumParams)
+{
+	int	iClient	= GetNativeCell(1);
+	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
+	{
+		SetGlobalTransTarget(iClient);
+		FormatNativeString(0, 2, 3, sizeof(g_sCsgoColorsBuff), _, g_sCsgoColorsBuff);
+		Format(SZF(g_sCsgoColorsBuff), " %s%s", g_sPrefix, g_sCsgoColorsBuff);
+		
+		int iLastStart = 0, i = 0;
+		for(; i < CSGO_COL_COUNT; i++)
+		{
+			ReplaceString(g_sCsgoColorsBuff, sizeof g_sCsgoColorsBuff, g_sColorsT[i], g_sColorsC[i], false);
+		}
+		
+		i = 0;
+		
+		while(g_sCsgoColorsBuff[i])
+		{
+			if(g_sCsgoColorsBuff[i] == '\n')
+			{
+				g_sCsgoColorsBuff[i] = 0;
+				PrintToChat(iClient, g_sCsgoColorsBuff[iLastStart]);
+				iLastStart = i+1;
+			}
+			
+			i++;
+		}
+		
+		PrintToChat(iClient, g_sCsgoColorsBuff[iLastStart]);
+	}
+}
+
+// void FPS_PrintToChatAll(const char[] szMessage, any ...)
+int Native_FPS_PrintToChatAll(Handle hPlugin, int iNumParams)
+{
+	int iLastStart = 0, i = 0;
+	
+	for (int iClient = 1; iClient <= MaxClients; iClient++) if(IsValidClient(iClient) && g_bStatsLoad[iClient])
+	{
+		SetGlobalTransTarget(iClient);
+		FormatNativeString(0, 1, 2, sizeof(g_sCsgoColorsBuff), _, g_sCsgoColorsBuff);
+		Format(SZF(g_sCsgoColorsBuff), " %s%s", g_sPrefix, g_sCsgoColorsBuff);
+		
+		for(i = 0; i < CSGO_COL_COUNT; i++)
+		{
+			ReplaceString(g_sCsgoColorsBuff, sizeof g_sCsgoColorsBuff, g_sColorsT[i], g_sColorsC[i], false);
+		}
+		
+		iLastStart = 0, i = 0;
+		
+		while(g_sCsgoColorsBuff[i])
+		{
+			if(g_sCsgoColorsBuff[i] == '\n')
+			{
+				g_sCsgoColorsBuff[i] = 0;
+				PrintToChat(iClient, g_sCsgoColorsBuff[iLastStart]);
+				iLastStart = i+1;
+			}
+			
+			i++;
+		}
+		
+		PrintToChat(iClient, g_sCsgoColorsBuff[iLastStart]);
+	}
 }
