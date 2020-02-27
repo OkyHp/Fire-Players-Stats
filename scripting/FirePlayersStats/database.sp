@@ -452,7 +452,7 @@ void SQL_TxnFailure_UpdateOrInsertPlayerData(Database hDatabase, any Data, int i
 
 void DeleteInactivePlayers()
 {
-	if (g_hDatabase)
+	if (g_hDatabase && g_iDeletePlayersTime)
 	{
 		char szQuery[256];
 		g_hDatabase.Format(SZF(szQuery), "DELETE `s`, `w` \

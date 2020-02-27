@@ -115,8 +115,7 @@ void SetCvars()
 
 	(Convar = CreateConVar(
 		"sm_fps_clean_players_time",		"14", 
-		"Через сколько дней удалить данные игрока", 
-		_, true, 7.0, true, 90.0
+		"Через сколько дней удалить данные игрока. 0 - Отключить",
 	)).AddChangeHook(ChangeCvar_DeletePlayersTime);
 	ChangeCvar_DeletePlayersTime(Convar, NULL_STRING, NULL_STRING);
 
