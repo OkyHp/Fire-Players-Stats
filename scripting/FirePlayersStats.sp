@@ -170,7 +170,7 @@ public void OnMapStart()
 
 	GetCurrentMapEx(SZF(g_sMap));
 
-	if (g_iGameType[0] == 1 && g_iGameType[1] == 2)
+	if (g_iGameType[0] == 1 && g_iGameType[1] == 2 && g_iSaveInterval)
 	{
 		CreateTimer(float(g_iSaveInterval * 60), TimerSaveStats, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	}

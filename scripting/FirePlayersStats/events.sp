@@ -281,7 +281,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				g_bStatsActive = false;
 
 				static int iSave;
-				bool bSave = !(++iSave%g_iSaveInterval);
+				bool bSave = g_iSaveInterval ? !(++iSave%g_iSaveInterval) : false;
 				int iTeam, iWinTeam = GetEventInt(hEvent, "winner");
 
 				for (int i = MaxClients + 1; --i;)

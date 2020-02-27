@@ -64,7 +64,7 @@ void SetCvars()
 	ConVar Convar;
 	(Convar = CreateConVar(
 		"sm_fps_db_lost_conn_retry_time",	"15", 
-		"Через сколько секунд повторить попытку коннекта к БД", 
+		"Через сколько секунд повторить попытку коннекта к БД, если соединение будет потеряно?", 
 		_, true, 5.0, true, 120.0
 	)).AddChangeHook(ChangeCvar_DBRetryConnTime);
 	ChangeCvar_DBRetryConnTime(Convar, NULL_STRING, NULL_STRING);
@@ -78,8 +78,9 @@ void SetCvars()
 
 	(Convar = CreateConVar(
 		"sm_fps_ranks_id",					"1", 
-		"ID настройки рангов. Позволит использовать одну и туже настройку \
-		\nрангов для некоторых серверов, при этом можно сделать уникальную для других",
+		"ID настройки рангов. \
+		\nПозволит использовать одну и туже настройку рангов для некоторых серверов, \
+		\nпри этом можно сделать уникальную для других серверов",
 		_, true, 0.0
 	)).AddChangeHook(ChangeCvar_RanksID);
 	ChangeCvar_RanksID(Convar, NULL_STRING, NULL_STRING);
@@ -93,16 +94,14 @@ void SetCvars()
 
 	(Convar = CreateConVar(
 		"sm_fps_reset_stats_time",			"90000", 
-		"Минимальное наиграное время в секундах, через которое можно \
-		\nобнулить статистику (0 - Выключить возможность обнуления)", 
+		"Минимальное наиграное время в секундах, через которое можно обнулить статистику (0 - Выключить возможность обнуления)", 
 		_, true, 0.0
 	)).AddChangeHook(ChangeCvar_ResetStatsTime);
 	ChangeCvar_ResetStatsTime(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_show_stats_everyone",		"1", 
-		"Показывать статиститку игрока всем при использовании команд \
-		\nпросмотра позиции (sm_pos) (1 - Да / 0 - Нет)", 
+		"Показывать статистику игрока всем при использовании команд просмотра позиции (sm_pos) (1 - Да / 0 - Нет)", 
 		_, true, 0.0, true, 1.0
 	)).AddChangeHook(ChangeCvar_ShowStatsEveryone);
 	ChangeCvar_ShowStatsEveryone(Convar, NULL_STRING, NULL_STRING);
@@ -126,31 +125,32 @@ void SetCvars()
 		"Коэффициент расчета очков.\
 		\n1.9 - Игрок теряет на 90% больше, чем получает за него убийца \
 		\n1.0 - Игрок теряет столько же очков опыта, сколько получает убийца \
-		\n0.1 - Игрок теряет только 10% очков опыта от реального значения", 
+		\n0.1 - Игрок теряет только 10% очков опыта, чем получает за него убийца", 
 		_, true, 0.1, true, 1.9
 	)).AddChangeHook(ChangeCvar_EloCoeff);
 	ChangeCvar_EloCoeff(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_calibration_time",	"1800", 
-		"Время калибровки игрока. Снижает ущерб всем кого убил калибрующийся \
-		\nв течение времени в сек, если доля делимых очек менее 0.5. 0 - Отключить.", 
-		_, true, 0.0, true, 7200.0
+		"Время калибровки игрока. Снижает ущерб полученным всем, кого убил калибрующийся, \
+		\nесли присутствует значительная разница в поинтах, в течение времени в сек, . 0 - Отключить.", 
+		_, true, 0.0, true, 3600.0
 	)).AddChangeHook(ChangeCvar_CalibrationFix);
 	ChangeCvar_CalibrationFix(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_save_period",	"5", 
-		"Интервал раундов сохранения статистики. 1 - каждый раунд, 2 - каждый второй, ... \
-		Если mp_randomspawn 1 - будет использоваться как время в мин. для сохранения статистики.", 
-		_, true, 1.0, true, 10.0
+		"Интервал раундов сохранения статистики. 1 - каждый раунд, 2 - каждый второй раунд, ... \
+		Если режим сервера DM - будет использоваться как время в мин. для сохранения статистики. \
+		0 - Сохранение будет производится только при отключении игрока.", 
+		_, true, 0.0, true, 10.0
 	)).AddChangeHook(ChangeCvar_SaveInterval);
 	ChangeCvar_SaveInterval(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
 		"sm_fps_chat_prefix",	"\x04[ \x02FPS \x04] \x01", 
 		"Префикс в чате. Поддерживает '{GREEN}' и т.д."
-	)).AddChangeHook(ChangeCvar_SaveInterval);
+	)).AddChangeHook(ChangeCvar_ChatPrefix);
 	ChangeCvar_ChatPrefix(Convar, NULL_STRING, NULL_STRING);
 
 	AutoExecConfig(true, "FirePlayersStats");
