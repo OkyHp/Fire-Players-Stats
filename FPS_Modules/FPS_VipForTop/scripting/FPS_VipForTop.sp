@@ -42,7 +42,7 @@ public void OnMapStart()
 
 public void VIP_OnClientLoaded(int iClient, bool bIsVIP)
 {
-	CreateTimer(1.0, TimerCheckVip, (view_as<int>(bIsVIP) << 16) | GetClientUserId(iClient), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(3.0, TimerCheckVip, (view_as<int>(bIsVIP) << 16) | GetClientUserId(iClient), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
 
 Action TimerCheckVip(Handle hTimer, any aData)

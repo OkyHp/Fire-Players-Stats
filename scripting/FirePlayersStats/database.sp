@@ -555,15 +555,13 @@ void GetPlayerPosition(int iClient)
 void SQL_Callback_PlayerPosition(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	int iClient = CID(iUserID);
-	if (!iClient || !CheckDatabaseConnection("SQL_Callback_PlayerPosition", szError, hResult))
+	if (iClient && CheckDatabaseConnection("SQL_Callback_PlayerPosition", szError, hResult))
 	{
-		return;
+		g_iPlayerPosition[iClient] = hResult.FetchRow() ? hResult.FetchInt(0) : 0;
+		FPS_Debug("SQL_Callback_PlayerPosition >> %N: position: %i / %i", iClient, g_iPlayerPosition[iClient], g_iPlayersCount)
+
+		CallForward_OnFPSPlayerPosition(iClient, g_iPlayerPosition[iClient], g_iPlayersCount);
 	}
-
-	g_iPlayerPosition[iClient] = hResult.FetchRow() ? hResult.FetchInt(0) : 0;
-	FPS_Debug("SQL_Callback_PlayerPosition >> %N: position: %i / %i", iClient, g_iPlayerPosition[iClient], g_iPlayersCount)
-
-	CallForward_OnFPSPlayerPosition(iClient, g_iPlayerPosition[iClient], g_iPlayersCount);
 }
 
 void UpdateServerData(char[] szIP, int iPort)
@@ -572,7 +570,6 @@ void UpdateServerData(char[] szIP, int iPort)
 	{
 		char	szQuery[512],
 				szServerName[256];
-
 		FindConVar("hostname").GetString(SZF(szServerName));
 
 		#if UPDATE_SERVER_IP == 1
