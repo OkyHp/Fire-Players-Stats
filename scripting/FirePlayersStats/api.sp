@@ -136,6 +136,9 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 	CreateNative("FPS_GetStatsData",			Native_FPS_GetStatsData);
 	CreateNative("FPS_IsCalibration",			Native_FPS_IsCalibration);
 
+	CreateNative("FPS_GetPosition",				Native_FPS_GetPosition);
+	CreateNative("FPS_GetPlayersCount",			Native_FPS_GetPlayersCount);
+
 	// Menu
 	CreateNative("FPS_AddFeature",				Native_FPS_AddFeature);
 	CreateNative("FPS_RemoveFeature",			Native_FPS_RemoveFeature);
@@ -379,6 +382,22 @@ int Native_FPS_GetID(Handle hPlugin, int iNumParams)
 		default: ThrowNativeError(SP_ERROR_NATIVE, "[FPS] Invalid StatsID type!");
 	}
 	return 0;
+}
+
+// int FPS_GetPosition(int iClient);
+int Native_FPS_GetPosition(Handle hPlugin, int iNumParams)
+{
+	int iClient = GetNativeCell(1);
+	if (IsValidClient(iClient))
+	{
+		return g_iPlayerPosition[iClient];
+	}
+}
+
+// int FPS_GetPlayersCount();
+int Native_FPS_GetPlayersCount(Handle hPlugin, int iNumParams)
+{
+	return g_iPlayersCount;
 }
 
 // void FPS_PrintToChat(int iClient, const char[] szMessage, any ...)

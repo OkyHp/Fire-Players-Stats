@@ -35,6 +35,8 @@ public void __pl_fire_players_stats_SetNTVOptional()
 	MarkNativeAsOptional("FPS_MoveToMenu");
 	MarkNativeAsOptional("FPS_StatsActive");
 	MarkNativeAsOptional("FPS_GetID");
+	MarkNativeAsOptional("FPS_GetPosition");
+	MarkNativeAsOptional("FPS_GetPlayersCount");
 	MarkNativeAsOptional("FPS_PrintToChat");
 	MarkNativeAsOptional("FPS_PrintToChatAll");
 }
@@ -351,6 +353,21 @@ native bool FPS_StatsActive();
  *	@return					ID.
 */
 native int FPS_GetID(StatsID eType);
+
+/**
+ *	Получает текущую позицию игрока.
+ *
+ *	@param iClient			Индекс игрока.
+ *	@return					Позиция.
+*/
+native int FPS_GetPosition(int iClient);
+
+/**
+ *	Получает количество игроков.
+ *
+ *	@return					Количество игроков.
+*/
+native int FPS_GetPlayersCount();
 
 /**
  *	Выводит игроку сообщение в чат с префиксом (квар sm_fps_chat_prefix).
