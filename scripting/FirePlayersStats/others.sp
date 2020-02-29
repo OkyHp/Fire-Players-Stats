@@ -177,6 +177,28 @@ bool IsPlayerLoaded(int iClient)
 	return false;
 }
 
+void GetCurrentMapEx(char[] szMapBuffer, int iSize)
+{
+	char szBuffer[256];
+	GetCurrentMap(szBuffer, sizeof szBuffer);
+	int iIndex = -1, iLen = strlen(szBuffer);
+	
+	for(int i = 0; i < iLen; i++)
+	{
+		if(FindCharInString(szBuffer[i], '/') != -1 || FindCharInString(szBuffer[i], '\\') != -1)
+		{
+			if(i != iLen - 1)
+			{
+				iIndex = i;
+			}
+			continue;
+		}
+		break;
+	}
+
+	strcopy(szMapBuffer, iSize, szBuffer[iIndex+1]);
+}
+
 void AddFeatureItemToMenu(Menu hMenu, FeatureMenus eType)
 {
 	int 	iSize = g_hItems.Length;

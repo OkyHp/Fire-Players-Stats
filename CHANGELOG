@@ -92,4 +92,3 @@
 		Minor bug fixed in function ResetIfLessZero.
 		Weapon statistics processing optimization (thanks Someone).
 		Optimization of individual sections of code (thanks Someone & Wend4r).
-		Changed map name getter method.
