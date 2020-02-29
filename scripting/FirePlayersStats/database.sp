@@ -401,7 +401,7 @@ void SavePlayerData(int iClient)
 			for (int i = 0; i < iSize; i += 2)
 			{
 				g_hWeaponsData[iClient].GetString(i, SZF(szWeapon));
-				FPS_Debug("SavePlayerData >> Weapon '%s' finded! Index: %i", szWeapon, i)
+				FPS_Debug("SavePlayerData >> Weapon '%s' finded >> Index: %i", szWeapon, i)
 				g_hWeaponsData[iClient].GetArray((i+1), SZF(iArray));
 
 				g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_weapons_stats` ( \
@@ -427,7 +427,12 @@ void SavePlayerData(int iClient)
 					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS], 
 					iArray[W_KILLS], iArray[W_SHOOTS], iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
 					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS]);
-				FPS_Debug("SavePlayerData >> WeaponQuery#%i: %s", ++u, szQuery)
+
+				#if DEBUG == 1
+					int u;
+					FPS_Debug("SavePlayerData >> WeaponQuery #%i: %s", ++u, szQuery)
+				#endif
+
 				hTxn.AddQuery(szQuery);
 			}
 

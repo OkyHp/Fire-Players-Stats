@@ -31,19 +31,21 @@ void WriteWeaponData(int iClient, char[] szWeapon, int iData, bool bLast = false
 		static int iIndex;
 		if (!bLast && !(iIndex = g_hWeaponsData[iClient].FindString(szWeapon) + 1))
 		{
-			FPS_Debug("WriteWeaponData >> %N >> Weapon '%s' added in array.", iClient, szWeapon)
+			FPS_Debug("WriteWeaponData >> %N >> Weapon '%s' added in array >> Data: %i", iClient, szWeapon, iData)
+			PrintToChatAll("WriteWeaponData >> %N >> Weapon '%s' added in array >> Data: %i", iClient, szWeapon, iData);
 			g_hWeaponsData[iClient].PushString(szWeapon);
 
 			int iArray[W_SIZE];
 			iArray[iData]++;
-			g_hWeaponsData[iClient].PushArray(SZF(iArray));
+			iIndex = g_hWeaponsData[iClient].PushArray(SZF(iArray));
 			return;
 		}
 
 		if (iIndex)
 		{
-			FPS_Debug("WriteWeaponData >> %N >> (bLast: %i) Weapon '%s' finded >> Index: %i >> Source: %i", iClient, bLast, szWeapon, iIndex, g_hWeaponsData[iClient].Get(iIndex))
-			g_hWeaponsData[iClient].Set(iIndex, (g_hWeaponsData[iClient].Get(iIndex) + 1), iData);
+			g_hWeaponsData[iClient].Set(iIndex, (g_hWeaponsData[iClient].Get(iIndex, iData) + 1), iData);
+			FPS_Debug("WriteWeaponData >> %N >> (bLast: %i) Weapon '%s' finded >> Data: %i >> Index: %i >> Source: %i", iClient, bLast, szWeapon, iData, iIndex, g_hWeaponsData[iClient].Get(iIndex, iData))
+			PrintToChatAll("WriteWeaponData >> %N >> (bLast: %i) Weapon '%s' finded >> Data: %i >> Index: %i >> Source: %i", iClient, bLast, szWeapon, iData, iIndex, g_hWeaponsData[iClient].Get(iIndex, iData));
 		}
 	}
 }
