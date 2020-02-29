@@ -168,7 +168,8 @@ public void OnMapStart()
 		SteamWorks_SteamServersConnected();
 	}
 
-	GetCurrentMapEx(SZF(g_sMap));
+	GetCurrentMap(SZF(g_sMap));
+	GetMapDisplayName(g_sMap, SZF(g_sMap));
 
 	if (g_iGameType[0] == 1 && g_iGameType[1] == 2 && g_iSaveInterval)
 	{
