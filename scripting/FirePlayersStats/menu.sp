@@ -270,7 +270,6 @@ int Handler_PanelResetStats(Menu hPanel, MenuAction action, int iClient, int iOp
 	}
 }
 
-
 void ShowMainTopMenu(int iClient, int iPage = 0)
 {
 	Menu hMenu = new Menu(Handler_MainTopMenu, MENU_ACTIONS_ALL);

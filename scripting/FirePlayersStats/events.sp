@@ -81,7 +81,7 @@ void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			int iHitgroup = hEvent.GetInt("hitgroup");
 			if (iHitgroup != HITGROUP_GENERIC && iHitgroup != HITGROUP_GEAR)
 			{
-				WeaponsData iHits;
+				int iHits;
 				switch(iHitgroup)
 				{
 					case HITGROUP_HEAD:		iHits = W_HITS_HEAD;

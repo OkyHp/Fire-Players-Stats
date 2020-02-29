@@ -24,7 +24,7 @@ void ResetData(int iClient, bool bResetStats = false)
 }
 
 // Weapons stats
-void WriteWeaponData(int iClient, char[] szWeapon, WeaponsData eData, bool bLast = false)
+void WriteWeaponData(int iClient, char[] szWeapon, int iData, bool bLast = false)
 {
 	if (g_hWeaponsData[iClient])
 	{
@@ -35,7 +35,7 @@ void WriteWeaponData(int iClient, char[] szWeapon, WeaponsData eData, bool bLast
 			g_hWeaponsData[iClient].PushString(szWeapon);
 
 			int iArray[W_SIZE];
-			iArray[eData]++;
+			iArray[iData]++;
 			g_hWeaponsData[iClient].PushArray(SZF(iArray));
 			return;
 		}
@@ -43,7 +43,7 @@ void WriteWeaponData(int iClient, char[] szWeapon, WeaponsData eData, bool bLast
 		if (iIndex)
 		{
 			FPS_Debug("WriteWeaponData >> %N >> (bLast: %i) Weapon '%s' finded >> Index: %i >> Source: %i", iClient, bLast, szWeapon, iIndex, g_hWeaponsData[iClient].Get(iIndex))
-			g_hWeaponsData[iClient].Set(iIndex, (g_hWeaponsData[iClient].Get(iIndex) + 1), view_as<int>(eData));
+			g_hWeaponsData[iClient].Set(iIndex, (g_hWeaponsData[iClient].Get(iIndex) + 1), iData);
 		}
 	}
 }
