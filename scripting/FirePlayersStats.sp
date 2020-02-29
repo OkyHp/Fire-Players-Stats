@@ -12,7 +12,7 @@
 
 /////////////////////////////////////// PRECOMPILATION SETTINGS ///////////////////////////////////////
 
-#define DEBUG					1		// Enable/Disable debug mod
+#define DEBUG					0		// Enable/Disable debug mod
 #define USE_STREAK_POINTS		1		// Use streak points in stats
 #define UPDATE_SERVER_IP		0		// 0 - Disable. It is necessary if you use domain instead of IP. 
 #define DEFAULT_POINTS			1000.0	// Not recommended change
