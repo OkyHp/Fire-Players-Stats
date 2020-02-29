@@ -119,7 +119,7 @@ forward void FPS_OnClientLoaded(int iClient, float fPoints);
  								Plugin_Changed - разрешит переключение опыта на fAddPointsAttacker и fAddPointsVictim.
 
 */
-forward Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, float& fAddPointsAttacker, float& fAddPointsVictim);
+forward Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, float &fAddPointsAttacker, float &fAddPointsVictim);
 
 /**
  *	Вызывается после установкой поинтов игроку.

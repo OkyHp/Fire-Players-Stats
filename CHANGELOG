@@ -89,3 +89,6 @@
 		Added the ability to save statistics only when player is disconnect.
 		Limits for deleting player data have been removed. Added ability to disable deletion of player data.
 		Added natives FPS_GetPosition and FPS_GetPlayersCount.
+		Minor bug fixed in function ResetIfLessZero.
+		Weapon statistics processing optimization (thanks Someone).
+		Optimization of individual sections of code (thanks Someone & Wend4r).

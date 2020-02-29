@@ -21,7 +21,7 @@ Action Timer_DatabaseRetryConn(Handle hTimer)
 	return Plugin_Stop;
 }
 
-bool CheckDatabaseConnection(const char[] szErrorTag, const char[] szError, Handle hResult = -1)
+bool CheckDatabaseConnection(const char[] szErrorTag, const char[] szError, Handle hResult = view_as<Handle>(1))
 {
 	if (!hResult || szError[0])
 	{

@@ -177,7 +177,7 @@ void ShowPlayerMenu(int iClient, bool bSession = false)
 		FormatEx(SZF(szBuffer), "%t\n ", "PlayerGeneralData", g_fPlayerPoints[iClient], g_iPlayerData[iClient][KILLS], g_iPlayerData[iClient][DEATHS], 
 			(g_iPlayerData[iClient][KILLS] && g_iPlayerData[iClient][DEATHS] ? (float(g_iPlayerData[iClient][KILLS]) / float(g_iPlayerData[iClient][DEATHS])) : 0.0), 
 			g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], (g_iPlayerData[iClient][ROUND_WIN] + g_iPlayerData[iClient][ROUND_LOSE]), 
-			g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], (iPlayedTime ? (float(iPlayedTime) / 60.0 / 60.0) : 0.0));
+			g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], (iPlayedTime ? (float(iPlayedTime) / 3600.0) : 0.0));
 	}
 	else
 	{
@@ -344,7 +344,7 @@ void ShowTopMenu(int iClient, int iMenuType)
 		{
 			case 0: FormatEx(SZF(szBuffer), "%i. %.2f %t - %s", i+1, g_fTopData[i][iMenuType], "Points", g_sTopData[i][iMenuType]);
 			case 1: FormatEx(SZF(szBuffer), "%i. %.2f KDR - %s", i+1, g_fTopData[i][iMenuType], g_sTopData[i][iMenuType]);
-			case 2: FormatEx(SZF(szBuffer), "%i. %.2f %t - %s", i+1, (g_fTopData[i][iMenuType] / 60.0 / 60.0), "Hours", g_sTopData[i][iMenuType]);
+			case 2: FormatEx(SZF(szBuffer), "%i. %.2f %t - %s", i+1, (g_fTopData[i][iMenuType] / 3600.0), "Hours", g_sTopData[i][iMenuType]);
 			case 3: FormatEx(SZF(szBuffer), "%i. %.0f %t - %s", i+1, g_fTopData[i][iMenuType], "Kills", g_sTopData[i][iMenuType]);
 		}
 		hPanel.DrawText(szBuffer);
@@ -415,15 +415,10 @@ int Handler_MainAdditionalMenu(Menu hMenu, MenuAction action, int iClient, int i
 		}
 		case MenuAction_Select:
 		{
-			static char szItem[128];
-			hMenu.GetItem(iItem, SZF(szItem));
-			if (!szItem[0])
+			switch(iItem)
 			{
-				switch(iItem)
-				{
-					case 0: ShowStatsInfoMenu(iClient);
-					case 1: ShowRankInfoMenu(iClient);
-				}
+				case 0: ShowStatsInfoMenu(iClient);
+				case 1: ShowRankInfoMenu(iClient);
 			}
 		}
 	}

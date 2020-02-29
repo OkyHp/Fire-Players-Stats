@@ -388,10 +388,7 @@ int Native_FPS_GetID(Handle hPlugin, int iNumParams)
 int Native_FPS_GetPosition(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
-	if (IsValidClient(iClient))
-	{
-		return g_iPlayerPosition[iClient];
-	}
+	return IsValidClient(iClient) ? g_iPlayerPosition[iClient] : 0;
 }
 
 // int FPS_GetPlayersCount();

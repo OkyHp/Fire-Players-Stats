@@ -14,19 +14,22 @@ float		g_fDBRetryConnTime,
 char		g_sPrefix[32];
 KeyValues	g_hWeaponsConfigKV;
 
-#define	CFG_HEADSHOT			0
-#define	CFG_ASSIST				1
-#define	CFG_SUICIDE				2
-#define	CFG_TEAMKILL			3
-#define	CFG_WIN_ROUND			4
-#define	CFG_LOSE_ROUND			5
-#define	CFG_MVP_PLAYER			6
-#define	CFG_BOMB_PLANTED		7
-#define	CFG_BOMB_DEFUSED		8
-#define	CFG_BOMB_DROPPED		9
-#define	CFG_BOMB_PICK_UP		10
-#define	CFG_HOSTAGE_KILLED		11
-#define	CFG_HOSTAGE_RESCUED		12
+enum
+{
+	CFG_HEADSHOT = 0,
+	CFG_ASSIST,
+	CFG_SUICIDE,
+	CFG_TEAMKILL,
+	CFG_WIN_ROUND,
+	CFG_LOSE_ROUND,
+	CFG_MVP_PLAYER,
+	CFG_BOMB_PLANTED,
+	CFG_BOMB_DEFUSED,
+	CFG_BOMB_DROPPED,
+	CFG_BOMB_PICK_UP,
+	CFG_HOSTAGE_KILLED,
+	CFG_HOSTAGE_RESCUED,
+}
 
 void LoadConfigKV()
 {
@@ -115,7 +118,7 @@ void SetCvars()
 
 	(Convar = CreateConVar(
 		"sm_fps_clean_players_time",		"14", 
-		"Через сколько дней удалить данные игрока. 0 - Отключить",
+		"Через сколько дней удалить данные игрока. 0 - Отключить"
 	)).AddChangeHook(ChangeCvar_DeletePlayersTime);
 	ChangeCvar_DeletePlayersTime(Convar, NULL_STRING, NULL_STRING);
 

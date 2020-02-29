@@ -49,10 +49,7 @@ void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				szWeapon = "weapon_knife";
 			}
 			FPS_Debug("----->> Event_WeaponFire >>----- %s", szWeapon[7])
-
-			int iArray[W_SIZE];
-			iArray[W_SHOOTS]++;
-			WriteWeaponData(iClient, szWeapon[7], iArray);
+			WriteWeaponData(iClient, szWeapon[7], W_SHOOTS);
 		}
 	}
 }
@@ -84,19 +81,19 @@ void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			int iHitgroup = hEvent.GetInt("hitgroup");
 			if (iHitgroup != HITGROUP_GENERIC && iHitgroup != HITGROUP_GEAR)
 			{
-				int iArray[W_SIZE];
+				WeaponsData iHits;
 				switch(iHitgroup)
 				{
-					case HITGROUP_HEAD:		iArray[W_HITS_HEAD]++;
-					case HITGROUP_NECK:		iArray[W_HITS_NECK]++;
-					case HITGROUP_CHEST:	iArray[W_HITS_CHEST]++;
-					case HITGROUP_STOMACH:	iArray[W_HITS_STOMACH]++;
-					case HITGROUP_LEFTARM:	iArray[W_HITS_LEFT_ARM]++;
-					case HITGROUP_RIGHTARM:	iArray[W_HITS_RIGHT_ARM]++;
-					case HITGROUP_LEFTLEG:	iArray[W_HITS_LEFT_LEG]++;
-					case HITGROUP_RIGHTLEG:	iArray[W_HITS_RIGHT_LEG]++;
+					case HITGROUP_HEAD:		iHits = W_HITS_HEAD;
+					case HITGROUP_NECK:		iHits = W_HITS_NECK;
+					case HITGROUP_CHEST:	iHits = W_HITS_CHEST;
+					case HITGROUP_STOMACH:	iHits = W_HITS_STOMACH;
+					case HITGROUP_LEFTARM:	iHits = W_HITS_LEFT_ARM;
+					case HITGROUP_RIGHTARM:	iHits = W_HITS_RIGHT_ARM;
+					case HITGROUP_LEFTLEG:	iHits = W_HITS_LEFT_LEG;
+					case HITGROUP_RIGHTLEG:	iHits = W_HITS_RIGHT_LEG;
 				}
-				WriteWeaponData(iAttacker, szWeapon[7], iArray);
+				WriteWeaponData(iAttacker, szWeapon[7], iHits);
 			}
 		}
 	}
@@ -150,14 +147,13 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 					szWeapon = "knife";
 				}
 
-				int iArray[W_SIZE];
-				iArray[W_KILLS]++;
+				WriteWeaponData(iAttacker, szWeapon, W_KILLS);
 				if (bHeadshot)
 				{
-					iArray[W_HEADSHOTS]++;
+					WriteWeaponData(iAttacker, szWeapon, W_HEADSHOTS, true);
 				}
-				FPS_Debug("Event_Death >> Weapon: %s >> HS: %s", szWeapon, bHeadshot ? "TRUE" : "FALSE")
-				WriteWeaponData(iAttacker, szWeapon, iArray);
+
+				FPS_Debug("Event_Death >> Weapon: %s >> HS: %i", szWeapon, bHeadshot)
 			}
 
 			float	fPointsAttacker	= (g_fPlayerPoints[iVictim] / g_fPlayerPoints[iAttacker]) * 5.0,
