@@ -5,13 +5,14 @@ int			g_iServerID,
 			g_iResetStatsTime,
 			g_iDeletePlayersTime,
 			g_iCalibrationFixTime,
-			g_iSaveInterval;
+			g_iSaveInterval,
+			g_iInfoMessage;
 bool		g_bShowStatsEveryone,
 			g_bBlockStatsOnWarmup;
 float		g_fDBRetryConnTime,
 			g_fCoeff,
 			g_fExtraPoints[18];
-char		g_sPrefix[32];
+char		g_sPrefix[64];
 KeyValues	g_hWeaponsConfigKV;
 
 enum
@@ -135,7 +136,7 @@ void SetCvars()
 	(Convar = CreateConVar(
 		"sm_fps_calibration_time",	"1800", 
 		"Время калибровки игрока. Снижает ущерб полученным всем, кого убил калибрующийся, \
-		\nесли присутствует значительная разница в поинтах, в течение времени в сек, . 0 - Отключить.", 
+		\nесли присутствует значительная разница в поинтах, в течение времени в сек. 0 - Отключить.", 
 		_, true, 0.0, true, 3600.0
 	)).AddChangeHook(ChangeCvar_CalibrationFix);
 	ChangeCvar_CalibrationFix(Convar, NULL_STRING, NULL_STRING);
@@ -150,10 +151,20 @@ void SetCvars()
 	ChangeCvar_SaveInterval(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
-		"sm_fps_chat_prefix",	"\x04[ \x02FPS \x04] \x01", 
+		"sm_fps_chat_prefix",	"{GREEN}[ {RED}FPS {GREEN}] {DEFAULT}", 
 		"Префикс в чате. Поддерживает '{GREEN}' и т.д."
 	)).AddChangeHook(ChangeCvar_ChatPrefix);
 	ChangeCvar_ChatPrefix(Convar, NULL_STRING, NULL_STRING);
+
+	(Convar = CreateConVar(
+		"sm_fps_info_message",	"1", 
+		"Уведомление от статистики об итогах получаемых поинтов. \
+		\n0 - Выключить \
+		\n1 - Уведомление в конце раунда \
+		\n2 - Уведомление при каждой смерти",
+		_, true, 0.0, true, 2.0
+	)).AddChangeHook(ChangeCvar_InfoMessage);
+	ChangeCvar_InfoMessage(Convar, NULL_STRING, NULL_STRING);
 
 	AutoExecConfig(true, "FirePlayersStats");
 
@@ -218,4 +229,9 @@ void ChangeCvar_SaveInterval(ConVar Convar, const char[] oldValue, const char[] 
 void ChangeCvar_ChatPrefix(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	Convar.GetString(g_sPrefix, sizeof(g_sPrefix));
+}
+
+void ChangeCvar_InfoMessage(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_iInfoMessage = Convar.IntValue;
 }

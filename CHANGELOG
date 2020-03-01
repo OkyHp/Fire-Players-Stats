@@ -92,3 +92,4 @@
 		Minor bug fixed in function ResetIfLessZero.
 		Weapon statistics processing optimization (thanks Someone).
 		Optimization of individual sections of code (thanks Someone & Wend4r).
+		Added cvar sm_fps_info_message, responsible for displaying totals by points.

@@ -199,9 +199,17 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			CheckRank(iVictim);
 
 			CallForward_OnFPSPointsChange(iAttacker, iVictim, g_fPlayerPoints[iAttacker], g_fPlayerPoints[iVictim]);
-			return;
 		}
-		g_fPlayerPoints[iVictim] += g_fExtraPoints[CFG_SUICIDE];
+		else
+		{
+			g_fPlayerPoints[iVictim] += g_fExtraPoints[CFG_SUICIDE];
+		}
+
+		if (g_iInfoMessage == 2)
+		{
+			float fPoints = g_fPlayerPoints[iVictim] - fRoundPlayerPoints[iVictim];
+			FPS_PrintToChat(iVictim, "%t [ %t ]", "PrintPoints", g_fPlayerPoints[iVictim], fPoints > 0.0 ? "ResultOfLifetimePositive" : "ResultOfLifetimeNegative", fPoints);
+		}
 	}
 }
 
@@ -297,18 +305,29 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 								{
 									g_iPlayerData[i][ROUND_WIN]++;
 									g_fPlayerPoints[i] += g_fExtraPoints[CFG_WIN_ROUND];
+									if (g_iInfoMessage == 2)
+									{
+										FPS_PrintToChat(i, "%t [ %t ]", "AdditionalPointsPositive", g_fExtraPoints[CFG_WIN_ROUND], "WinRound");
+									}
 								}
 								else
 								{
 									g_iPlayerData[i][ROUND_LOSE]++;
 									g_fPlayerPoints[i] += g_fExtraPoints[CFG_LOSE_ROUND];
+									if (g_iInfoMessage == 2)
+									{
+										FPS_PrintToChat(i, "%t [ %t ]", "AdditionalPointsNegative", -g_fExtraPoints[CFG_LOSE_ROUND], "LoseRound");
+									}
 								}
 								
 								CheckRank(i);
 							}
 
-							float fPoints = g_fPlayerPoints[i] - fRoundPlayerPoints[i];
-							FPS_PrintToChat(i, "%t", fPoints > 0.0 ? "PrintPointsPositive" : "PrintPointsNegative", g_fPlayerPoints[i], fPoints);
+							if (g_iInfoMessage == 1)
+							{
+								float fPoints = g_fPlayerPoints[i] - fRoundPlayerPoints[i];
+								FPS_PrintToChat(i, "%t [ %t ]", "PrintPoints", g_fPlayerPoints[i], fPoints > 0.0 ? "ResultOfRoundPositive" : "ResultOfRoundNegative", fPoints);
+							}
 						}
 
 						if (bSave)

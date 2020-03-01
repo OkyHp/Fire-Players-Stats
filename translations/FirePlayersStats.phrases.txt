@@ -389,20 +389,74 @@
 		"ua"		"Гравець {GREEN}{1} {DEFAULT}на {RED}{2} {DEFAULT}місці з {BLUE}{3}{DEFAULT}, з {GREEN}{4} {DEFAULT}поінтами та KDR: {OLIVE}{5}"
 	}
 
-	"PrintPointsPositive"
+	"PrintPoints"
 	{
-		"#format"	"{1:.2f},{2:.2f}"
-		"en"		"Your points: {OLIVE}{1} {DEFAULT}[Result for this round: {GREEN}+{2}{DEFAULT}]"
-		"ru"		"Ваши поинты: {OLIVE}{1} {DEFAULT}[Итог за этот раунд: {GREEN}+{2}{DEFAULT}]"
-		"ua"		"Ваші поінти: {OLIVE}{1} {DEFAULT}[Підсумок за цей раунд: {GREEN}+{2}{DEFAULT}]"
+		"#format"	"{1:.2f}"
+		"en"		"Your points: {OLIVE}{1}{DEFAULT}"
+		"ru"		"Ваши поинты: {OLIVE}{1}{DEFAULT}"
+		"ua"		"Ваші поінти: {OLIVE}{1}{DEFAULT}"
 	}
 
-	"PrintPointsNegative"
+	"ResultOfRoundPositive"
 	{
-		"#format"	"{1:.2f},{2:.2f}"
-		"en"		"Your points: {OLIVE}{1} {DEFAULT}[Result for this round: {RED}{2}{DEFAULT}]"
-		"ru"		"Ваши поинты: {OLIVE}{1} {DEFAULT}[Итог за этот раунд: {RED}{2}{DEFAULT}]"
-		"ua"		"Ваші поінти: {OLIVE}{1} {DEFAULT}[Підсумок за цей раунд: {RED}{2}{DEFAULT}]"
+		"#format"	"{1:.2f}"
+		"en"		"Result for this round: {GREEN}+{1}{DEFAULT}"
+		"ru"		"Итог за этот раунд: {GREEN}+{1}{DEFAULT}"
+		"ua"		"Підсумок за цей раунд: {GREEN}+{1}{DEFAULT}"
+	}
+
+	"ResultOfRoundNegative"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Result for this round: {RED}{1}{DEFAULT}"
+		"ru"		"Итог за этот раунд: {RED}{1}{DEFAULT}"
+		"ua"		"Підсумок за цей раунд: {RED}{1}{DEFAULT}"
+	}
+
+	"ResultOfLifetimePositive"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Result for this lifetime: {GREEN}+{1}{DEFAULT}"
+		"ru"		"Результат за эту жизнь: {GREEN}+{1}{DEFAULT}"
+		"ua"		"Результат за це життя: {GREEN}+{1}{DEFAULT}"
+	}
+
+	"ResultOfLifetimeNegative"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Result for this lifetime: {RED}{1}{DEFAULT}"
+		"ru"		"Результат за эту жизнь: {RED}{1}{DEFAULT}"
+		"ua"		"Результат за це життя: {RED}{1}{DEFAULT}"
+	}
+
+	"AdditionalPointsPositive"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Additional points: {GREEN}+{1}{DEFAULT}"
+		"ru"		"Дополнительные поинты: {GREEN}+{1}{DEFAULT}"
+		"ua"		"Додаткові поінти: {GREEN}+{1}{DEFAULT}"
+	}
+
+	"AdditionalPointsNegative"
+	{
+		"#format"	"{1:.2f}"
+		"en"		"Additional points: {RED}{1}{DEFAULT}"
+		"ru"		"Дополнительные поинты: {RED}{1}{DEFAULT}"
+		"ua"		"Додаткові поінти: {RED}{1}{DEFAULT}"
+	}
+
+	"WinRound"
+	{
+		"en"		"For win round"
+		"ru"		"За победу в раунде"
+		"ua"		"За перемогу в раунді"
+	}
+
+	"LoseRound"
+	{
+		"en"		"For lose round"
+		"ru"		"За проигрыш раунда"
+		"ua"		"За програш у раунді"
 	}
 
 	"StatsWarmupBlocked"
