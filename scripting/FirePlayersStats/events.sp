@@ -17,6 +17,7 @@ void HookEvents()
 	HookEvent("weapon_fire", 		Event_WeaponFire);
 	HookEvent("player_hurt", 		Event_PlayerHurt);
 	HookEvent("player_death", 		Event_PlayerDeath);
+	HookEvent("player_spawn",		Event_PlayerSpawn);
 
 	HookEvent("round_prestart",		Event_RoundAction, EventHookMode_PostNoCopy);
 	HookEvent("round_mvp",			Event_RoundAction);
@@ -213,6 +214,18 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 	}
 }
 
+void Event_PlayerSpawn(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+{
+	if (g_bStatsActive)
+	{
+		int iClient = CID(hEvent.GetInt("userid"));
+		if (iClient)
+		{
+			fRoundPlayerPoints[iClient] = g_fPlayerPoints[iClient];
+		}
+	}
+}
+
 void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 {
 	switch(sEvName[6])
@@ -239,7 +252,6 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				if (g_bStatsLoad[i])
 				{
 					iMaxRoundsKills[i] = 0;
-					fRoundPlayerPoints[i] = g_fPlayerPoints[i];
 					g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] = 1;
 
 					if (GetClientTeam(i) > 1)
