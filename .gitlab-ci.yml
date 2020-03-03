@@ -8,8 +8,8 @@ UpdateData:
   script:
     - commits=`git rev-list --all --count`
     - release=`git describe --abbrev=0`
-    - curl -i -X GET https://blackflash.ru/git-data/?file=fps-commits&data=Commits-${commits}-yellow
-    - curl -i -X GET https://blackflash.ru/git-data/?file=fps-release&data=Release-${release}-red
+    - curl --data "file=fps-commits&data=Commits-${commits}-yellow" https://blackflash.ru/git-badges/
+    - curl --data "file=fps-release&data=Release-${release}-red" https://blackflash.ru/git-badges/
   #after_script:
   # artifacts:
   #   paths:
