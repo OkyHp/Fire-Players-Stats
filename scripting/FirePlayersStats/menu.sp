@@ -436,7 +436,7 @@ int Handler_MainAdditionalMenu(Menu hMenu, MenuAction action, int iClient, int i
 // 	}
 // }
 
-int Handler_BackToFpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
+int Handler_InfoMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 {
 	switch(action)
 	{
@@ -445,7 +445,7 @@ int Handler_BackToFpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 		{
 			if(iItem == MenuCancel_ExitBack)
 			{
-				ShowFpsMenu(iClient);
+				ShowMainAdditionalMenu(iClient);
 			}
 		}
 	}
@@ -453,7 +453,7 @@ int Handler_BackToFpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 
 void ShowRankInfoMenu(int iClient)
 {
-	Menu hMenu = new Menu(Handler_BackToFpsMenu);
+	Menu hMenu = new Menu(Handler_InfoMenu);
 	SetGlobalTransTarget(iClient);
 	hMenu.SetTitle("[ %t ]\n ", "RanksInfo");
 
@@ -485,7 +485,7 @@ void ShowRankInfoMenu(int iClient)
 
 void ShowStatsInfoMenu(int iClient)
 {
-	Menu hMenu = new Menu(Handler_BackToFpsMenu);
+	Menu hMenu = new Menu(Handler_InfoMenu);
 	SetGlobalTransTarget(iClient);
 	hMenu.SetTitle("%t", "StatsInfoTitle", "StatsInfo", DEFAULT_POINTS);
 
