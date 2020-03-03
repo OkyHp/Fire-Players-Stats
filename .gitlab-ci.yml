@@ -1,13 +1,21 @@
-Badge:
+stages:
+    - build
+build_badges:
   stage: build
-  image: python:3.6
-  before_script:
-    - echo "Python other dependencies installation"
-    - pip install anybadge
+  # tags:
+  #   - docker
+  #before_script:
+  #  - chmod +x get-updated-badge-info.sh
   script:
-    - anybadge -l "Last Commit" -v "$(date '+%d.%m.%Y %H:%M')" -f last-commit.svg -c green
+    - commits=`git rev-list --all --count`
+    - latest_release_tag=`git describe --abbrev=0`
+    - echo "{\"commits\":\"$commits\", \"release_tag\":\"$latest_release_tag\"}" > stats.json
+  #after_script:
+  #  - ./get-updated-badge-info.sh
   artifacts:
     paths:
-      - last-commit.svg
+        - stats.json
     when: always
     expire_in: 4 weeks
+  only:
+    - master
