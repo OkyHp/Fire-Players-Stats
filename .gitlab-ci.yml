@@ -1,18 +1,13 @@
-stages:
-    - build
-
-build_badges:
+Badge:
   stage: build
-  tags:
-    - docker
+  image: python:3.6
   before_script:
-    - chmod +x get-updated-badge-info.sh
+    - echo "Python other dependencies installation"
+    - pip install anybadge
   script:
-    - echo "Some script to build your code"
-  after_script:
-    - ./get-updated-badge-info.sh
+    - anybadge -l "Last Commit" -v "$(date '+%d.%m.%Y %H:%M')" -f last-commit.svg -c green
   artifacts:
     paths:
-        - badges.json
+      - last-commit.svg
     when: always
     expire_in: 4 weeks
