@@ -447,16 +447,16 @@
 
 	"WinRound"
 	{
-		"en"		"For win round"
-		"ru"		"За победу в раунде"
-		"ua"		"За перемогу в раунді"
+		"en"		"for win round"
+		"ru"		"за победу в раунде"
+		"ua"		"за перемогу в раунді"
 	}
 
 	"LoseRound"
 	{
-		"en"		"For lose round"
-		"ru"		"За проигрыш раунда"
-		"ua"		"За програш у раунді"
+		"en"		"for lose round"
+		"ru"		"за проигрыш раунда"
+		"ua"		"за програш у раунді"
 	}
 
 	"StatsWarmupBlocked"
