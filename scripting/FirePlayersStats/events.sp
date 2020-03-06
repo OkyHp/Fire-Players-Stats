@@ -17,6 +17,7 @@ void HookEvents()
 	HookEvent("weapon_fire", 		Event_WeaponFire);
 	HookEvent("player_hurt", 		Event_PlayerHurt);
 	HookEvent("player_death", 		Event_PlayerDeath);
+	HookEvent("player_spawn",		Event_PlayerSpawn);
 
 	HookEvent("round_prestart",		Event_RoundAction, EventHookMode_PostNoCopy);
 	HookEvent("round_mvp",			Event_RoundAction);
@@ -49,10 +50,7 @@ void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				szWeapon = "weapon_knife";
 			}
 			FPS_Debug("----->> Event_WeaponFire >>----- %s", szWeapon[7])
-
-			int iArray[W_SIZE];
-			iArray[W_SHOOTS]++;
-			WriteWeaponData(iClient, szWeapon[7], iArray);
+			WriteWeaponData(iClient, szWeapon[7], W_SHOOTS);
 		}
 	}
 }
@@ -84,19 +82,19 @@ void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			int iHitgroup = hEvent.GetInt("hitgroup");
 			if (iHitgroup != HITGROUP_GENERIC && iHitgroup != HITGROUP_GEAR)
 			{
-				int iArray[W_SIZE];
+				int iHits;
 				switch(iHitgroup)
 				{
-					case HITGROUP_HEAD:		iArray[W_HITS_HEAD]++;
-					case HITGROUP_NECK:		iArray[W_HITS_NECK]++;
-					case HITGROUP_CHEST:	iArray[W_HITS_CHEST]++;
-					case HITGROUP_STOMACH:	iArray[W_HITS_STOMACH]++;
-					case HITGROUP_LEFTARM:	iArray[W_HITS_LEFT_ARM]++;
-					case HITGROUP_RIGHTARM:	iArray[W_HITS_RIGHT_ARM]++;
-					case HITGROUP_LEFTLEG:	iArray[W_HITS_LEFT_LEG]++;
-					case HITGROUP_RIGHTLEG:	iArray[W_HITS_RIGHT_LEG]++;
+					case HITGROUP_HEAD:		iHits = W_HITS_HEAD;
+					case HITGROUP_NECK:		iHits = W_HITS_NECK;
+					case HITGROUP_CHEST:	iHits = W_HITS_CHEST;
+					case HITGROUP_STOMACH:	iHits = W_HITS_STOMACH;
+					case HITGROUP_LEFTARM:	iHits = W_HITS_LEFT_ARM;
+					case HITGROUP_RIGHTARM:	iHits = W_HITS_RIGHT_ARM;
+					case HITGROUP_LEFTLEG:	iHits = W_HITS_LEFT_LEG;
+					case HITGROUP_RIGHTLEG:	iHits = W_HITS_RIGHT_LEG;
 				}
-				WriteWeaponData(iAttacker, szWeapon[7], iArray);
+				WriteWeaponData(iAttacker, szWeapon[7], iHits);
 			}
 		}
 	}
@@ -150,14 +148,13 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 					szWeapon = "knife";
 				}
 
-				int iArray[W_SIZE];
-				iArray[W_KILLS]++;
+				WriteWeaponData(iAttacker, szWeapon, W_KILLS);
 				if (bHeadshot)
 				{
-					iArray[W_HEADSHOTS]++;
+					WriteWeaponData(iAttacker, szWeapon, W_HEADSHOTS, true);
 				}
-				FPS_Debug("Event_Death >> Weapon: %s >> HS: %s", szWeapon, bHeadshot ? "TRUE" : "FALSE")
-				WriteWeaponData(iAttacker, szWeapon, iArray);
+
+				FPS_Debug("Event_Death >> Weapon: %s >> HS: %i", szWeapon, bHeadshot)
 			}
 
 			float	fPointsAttacker	= (g_fPlayerPoints[iVictim] / g_fPlayerPoints[iAttacker]) * 5.0,
@@ -203,9 +200,29 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			CheckRank(iVictim);
 
 			CallForward_OnFPSPointsChange(iAttacker, iVictim, g_fPlayerPoints[iAttacker], g_fPlayerPoints[iVictim]);
-			return;
 		}
-		g_fPlayerPoints[iVictim] += g_fExtraPoints[CFG_SUICIDE];
+		else
+		{
+			g_fPlayerPoints[iVictim] += g_fExtraPoints[CFG_SUICIDE];
+		}
+
+		if (g_iInfoMessage == 2)
+		{
+			float fPoints = g_fPlayerPoints[iVictim] - fRoundPlayerPoints[iVictim];
+			FPS_PrintToChat(iVictim, "%t [ %t ]", "PrintPoints", g_fPlayerPoints[iVictim], fPoints > 0.0 ? "ResultOfLifetimePositive" : "ResultOfLifetimeNegative", fPoints);
+		}
+	}
+}
+
+void Event_PlayerSpawn(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+{
+	if (g_bStatsActive)
+	{
+		int iClient = CID(hEvent.GetInt("userid"));
+		if (iClient)
+		{
+			fRoundPlayerPoints[iClient] = g_fPlayerPoints[iClient];
+		}
 	}
 }
 
@@ -235,7 +252,6 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				if (g_bStatsLoad[i])
 				{
 					iMaxRoundsKills[i] = 0;
-					fRoundPlayerPoints[i] = g_fPlayerPoints[i];
 					g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] = 1;
 
 					if (GetClientTeam(i) > 1)
@@ -281,7 +297,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				g_bStatsActive = false;
 
 				static int iSave;
-				bool bSave = !(++iSave%g_iSaveInterval);
+				bool bSave = g_iSaveInterval ? !(++iSave%g_iSaveInterval) : false;
 				int iTeam, iWinTeam = GetEventInt(hEvent, "winner");
 
 				for (int i = MaxClients + 1; --i;)
@@ -301,18 +317,29 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 								{
 									g_iPlayerData[i][ROUND_WIN]++;
 									g_fPlayerPoints[i] += g_fExtraPoints[CFG_WIN_ROUND];
+									if (g_iInfoMessage == 2)
+									{
+										FPS_PrintToChat(i, "%t [ %t ]", "AdditionalPointsPositive", g_fExtraPoints[CFG_WIN_ROUND], "WinRound");
+									}
 								}
 								else
 								{
 									g_iPlayerData[i][ROUND_LOSE]++;
 									g_fPlayerPoints[i] += g_fExtraPoints[CFG_LOSE_ROUND];
+									if (g_iInfoMessage == 2)
+									{
+										FPS_PrintToChat(i, "%t [ %t ]", "AdditionalPointsNegative", -g_fExtraPoints[CFG_LOSE_ROUND], "LoseRound");
+									}
 								}
 								
 								CheckRank(i);
 							}
 
-							float fPoints = g_fPlayerPoints[i] - fRoundPlayerPoints[i];
-							FPS_PrintToChat(i, "%t", "PrintPoints", g_fPlayerPoints[i], fPoints > 0.0 ? COLOR_POINTS_ADDED : COLOR_POINTS_REDUCED, fPoints);
+							if (g_iInfoMessage == 1)
+							{
+								float fPoints = g_fPlayerPoints[i] - fRoundPlayerPoints[i];
+								FPS_PrintToChat(i, "%t [ %t ]", "PrintPoints", g_fPlayerPoints[i], fPoints > 0.0 ? "ResultOfRoundPositive" : "ResultOfRoundNegative", fPoints);
+							}
 						}
 
 						if (bSave)

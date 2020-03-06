@@ -21,12 +21,12 @@ Action Timer_DatabaseRetryConn(Handle hTimer)
 	return Plugin_Stop;
 }
 
-bool CheckDatabaseConnection(const char[] szError, const char[] szErrorTag)
+bool CheckDatabaseConnection(const char[] szErrorTag, const char[] szError, Handle hResult = view_as<Handle>(1))
 {
-	if (szError[0])
+	if (!hResult || szError[0])
 	{
 		LogError("%s: %s", szErrorTag, szError);
-		if(StrContains(szError, "Lost connection to MySQL", false) != -1)
+		if (StrContains(szError, "Lost connection to MySQL", false) != -1)
 		{
 			FPS_Debug("%s >> Lost connection to MySQL", szErrorTag)
 
@@ -41,8 +41,14 @@ bool CheckDatabaseConnection(const char[] szError, const char[] szErrorTag)
 
 void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 {
-	if (!CheckDatabaseConnection(szError, "OnDatabaseConnect"))
+	if (!hDatabase || szError[0])
 	{
+		LogError("OnDatabaseConnect: %s", szError);
+		if (StrContains(szError, "Can't connect to MySQL server", false) != -1)
+		{
+			FPS_Debug("OnDatabaseConnect >> Can't connect to MySQL server")
+			CreateTimer(g_fDBRetryConnTime, Timer_DatabaseRetryConn, _, TIMER_FLAG_NO_MAPCHANGE);
+		}
 		return;
 	}
 
@@ -135,7 +141,7 @@ void SQL_Default_Callback(Database hDatabase, DBResultSet hResult, const char[] 
 {
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "SQL_Default_Callback #%i", QueryID);
-	CheckDatabaseConnection(szError, szBuffer);
+	CheckDatabaseConnection(szBuffer, szError, hResult);
 }
 
 void SQL_TxnSuccess_CreateTable(Database hDatabase, any Data, int iNumQueries, DBResultSet[] results, any[] QueryData)
@@ -240,7 +246,7 @@ Action CommandCreateRanks(int iClient, int iArgs)
 
 void SQL_Callback_CreateRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
-	if (CheckDatabaseConnection(szError, "SQL_Callback_CreateRanks"))
+	if (CheckDatabaseConnection("SQL_Callback_CreateRanks", szError, hResult))
 	{
 		LoadRanksSettings();
 
@@ -267,7 +273,7 @@ void LoadRanksSettings()
 
 void SQL_Callback_LoadRanks(Database hDatabase, DBResultSet hResult, const char[] szError, any data)
 {
-	if (g_hRanks && CheckDatabaseConnection(szError, "SQL_Callback_LoadRanks"))
+	if (g_hRanks && CheckDatabaseConnection("SQL_Callback_LoadRanks", szError, hResult))
 	{
 		g_hRanks.Clear();
 
@@ -312,7 +318,7 @@ void LoadPlayerData(int iClient)
 void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	int iClient = CID(iUserID);
-	if (!iClient || !CheckDatabaseConnection(szError, "SQL_Callback_LoadPlayerData"))
+	if (!iClient || !CheckDatabaseConnection("SQL_Callback_LoadPlayerData", szError, hResult))
 	{
 		return;
 	}
@@ -395,7 +401,7 @@ void SavePlayerData(int iClient)
 			for (int i = 0; i < iSize; i += 2)
 			{
 				g_hWeaponsData[iClient].GetString(i, SZF(szWeapon));
-				FPS_Debug("SavePlayerData >> Weapon '%s' finded! Index: %i", szWeapon, i)
+				FPS_Debug("SavePlayerData >> Weapon '%s' finded >> Index: %i", szWeapon, i)
 				g_hWeaponsData[iClient].GetArray((i+1), SZF(iArray));
 
 				g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_weapons_stats` ( \
@@ -421,7 +427,12 @@ void SavePlayerData(int iClient)
 					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS], 
 					iArray[W_KILLS], iArray[W_SHOOTS], iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
 					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS]);
-				FPS_Debug("SavePlayerData >> WeaponQuery#%i: %s", ++u, szQuery)
+
+				#if DEBUG == 1
+					int u;
+					FPS_Debug("SavePlayerData >> WeaponQuery #%i: %s", ++u, szQuery)
+				#endif
+
 				hTxn.AddQuery(szQuery);
 			}
 
@@ -441,12 +452,12 @@ void SQL_TxnFailure_UpdateOrInsertPlayerData(Database hDatabase, any Data, int i
 {
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "SQL_TxnFailure_UpdateOrInsertPlayerData #%i", iFailIndex);
-	CheckDatabaseConnection(szError, szBuffer);
+	CheckDatabaseConnection(szBuffer, szError);
 }
 
 void DeleteInactivePlayers()
 {
-	if (g_hDatabase)
+	if (g_hDatabase && g_iDeletePlayersTime)
 	{
 		char szQuery[256];
 		g_hDatabase.Format(SZF(szQuery), "DELETE `s`, `w` \
@@ -530,7 +541,7 @@ void SQL_TxnFailure_TopData(Database hDatabase, any Data, int iNumQueries, const
 {
 	char szBuffer[128];
 	FormatEx(SZF(szBuffer), "SQL_TxnFailure_TopData #%i", iFailIndex);
-	CheckDatabaseConnection(szError, szBuffer);
+	CheckDatabaseConnection(szBuffer, szError);
 }
 
 // Get player position
@@ -549,15 +560,13 @@ void GetPlayerPosition(int iClient)
 void SQL_Callback_PlayerPosition(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	int iClient = CID(iUserID);
-	if (!iClient || !CheckDatabaseConnection(szError, "SQL_Callback_PlayerPosition"))
+	if (iClient && CheckDatabaseConnection("SQL_Callback_PlayerPosition", szError, hResult))
 	{
-		return;
+		g_iPlayerPosition[iClient] = hResult.FetchRow() ? hResult.FetchInt(0) : 0;
+		FPS_Debug("SQL_Callback_PlayerPosition >> %N: position: %i / %i", iClient, g_iPlayerPosition[iClient], g_iPlayersCount)
+
+		CallForward_OnFPSPlayerPosition(iClient, g_iPlayerPosition[iClient], g_iPlayersCount);
 	}
-
-	g_iPlayerPosition[iClient] = hResult.FetchRow() ? hResult.FetchInt(0) : 0;
-	FPS_Debug("SQL_Callback_PlayerPosition >> %N: position: %i / %i", iClient, g_iPlayerPosition[iClient], g_iPlayersCount)
-
-	CallForward_OnFPSPlayerPosition(iClient, g_iPlayerPosition[iClient], g_iPlayersCount);
 }
 
 void UpdateServerData(char[] szIP, int iPort)
@@ -566,7 +575,6 @@ void UpdateServerData(char[] szIP, int iPort)
 	{
 		char	szQuery[512],
 				szServerName[256];
-
 		FindConVar("hostname").GetString(SZF(szServerName));
 
 		#if UPDATE_SERVER_IP == 1

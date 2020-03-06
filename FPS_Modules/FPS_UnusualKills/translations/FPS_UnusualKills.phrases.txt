@@ -8,57 +8,57 @@
 	}
 	"op"
 	{
-		"en"			"For first kill"
-		"ru"			"За первое убийство"
-		"ua"			"За перше вбивство"
+		"en"			"for first kill"
+		"ru"			"за первое убийство"
+		"ua"			"за перше вбивство"
 	}
 	"penetrated"
 	{
-		"en"			"For killing through an obstacle"
-		"ru"			"За убийство через препятствие"
-		"ua"			"За вбивство через перешкоду"
+		"en"			"for killing through an obstacle"
+		"ru"			"за убийство через препятствие"
+		"ua"			"за вбивство через перешкоду"
 	}
 	"no_scope"
 	{
-		"en"			"For killing by no scope"
-		"ru"			"За убийство без прицела"
-		"ua"			"За вбивство без прицілу"
+		"en"			"for killing by no scope"
+		"ru"			"за убийство без прицела"
+		"ua"			"за вбивство без прицілу"
 	}
 	"run"
 	{
-		"en"			"For killing on run"
-		"ru"			"За убийство на бегу"
-		"ua"			"За вбивство на бігу"
+		"en"			"for killing on run"
+		"ru"			"за убийство на бегу"
+		"ua"			"за вбивство на бігу"
 	}
 	"jump"
 	{
-		"en"			"For killing in jump"
-		"ru"			"За убийство в прыжке"
-		"ua"			"За вбивство в стрибку"
+		"en"			"for killing in jump"
+		"ru"			"за убийство в прыжке"
+		"ua"			"за вбивство в стрибку"
 	}
 	"flash"
 	{
-		"en"			"For killing, being blinded flashbang"
-		"ru"			"За убийство, будучи ослепленным флешкой"
-		"ua"			"За вбивство, будучи засліпленим флешкою"
+		"en"			"for killing, being blinded flashbang"
+		"ru"			"за убийство, будучи ослепленным флешкой"
+		"ua"			"за вбивство, будучи засліпленим флешкою"
 	}
 	"smoke"
 	{
-		"en"			"For killing being in smoke"
-		"ru"			"За убийство в дым"
-		"ua"			"За вбивство в дим"
+		"en"			"for killing being in smoke"
+		"ru"			"за убийство в дым"
+		"ua"			"за вбивство в дим"
 	}
 	"whirl"
 	{
-		"en"			"For killing by with reversal"
-		"ru"			"За убийство с разворота"
-		"ua"			"За вбивство з розвороту"
+		"en"			"for killing by with reversal"
+		"ru"			"за убийство с разворота"
+		"ua"			"за вбивство з розвороту"
 	}
 	"last_clip"
 	{
-		"en"			"For killing by with a last clip"
-		"ru"			"За убийство последним патроном"
-		"ua"			"За вбивство останнім патроном"
+		"en"			"for killing by with a last clip"
+		"ru"			"за убийство последним патроном"
+		"ua"			"за вбивство останнім патроном"
 	}
 
 	// MENU ------------

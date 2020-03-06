@@ -17,19 +17,9 @@ public Plugin myinfo =
 {
 	name	=	"FPS Vip For Top",
 	author	=	"OkyHp",
-	version	=	"1.2.0",
+	version	=	"1.3.0",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
-
-public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iErr_max)
-{
-	if(GetEngineVersion() != Engine_CSGO)
-	{
-		strcopy(szError, iErr_max, "This plugin works only on CS:GO!");
-		return APLRes_SilentFailure;
-	}
-	return APLRes_Success;
-}
 
 public void OnMapStart()
 {
@@ -54,7 +44,7 @@ public void OnMapStart()
 public void VIP_OnClientLoaded(int iClient, bool bIsVIP)
 {
 	g_bIsVip[iClient] = bIsVIP;
-	g_iPos[iClient] = -1;
+	CreateTimer(5.0, TimerCheckVip, GetClientUserId(iClient), TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public void VIP_OnVIPClientAdded(int iClient, int iAdmin)
@@ -67,33 +57,41 @@ public void VIP_OnVIPClientRemoved(int iClient, const char[] szReason, int iAdmi
 	g_bIsVip[iClient] = false;
 }
 
-public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
+Action TimerCheckVip(Handle hTimer, any iUserID)
 {
-	if (!g_bIsVip[iClient] && !FPS_IsCalibration(iClient) && g_iPos[iClient] == -1)
+	int iClient = GetClientOfUserId(iUserID);
+	if (iClient && !g_bIsVip[iClient] && g_iPos[iClient] != -1 && g_iPos[iClient] <= g_iVipQuota)
 	{
-		if(iPosition <= g_iVipQuota)
+		char	szPos[4],
+				szVipGroup[32];
+		IntToString(g_iPos[iClient], szPos, sizeof(szPos));
+
+		g_hConfig.Rewind();
+		g_hConfig.GetString(szPos, szVipGroup, sizeof(szVipGroup), NULL_STRING);
+		if (szVipGroup[0])
 		{
-			char	szPos[4],
-					szVipGroup[32];
-			IntToString(iPosition, szPos, sizeof(szPos));
+			// VIP_SetClientVIP(iClient, 0, 0, szVipGroup, false);
+			VIP_GiveClientVIP(-1, iClient, 0, szVipGroup, false);
 
-			g_hConfig.Rewind();
-			g_hConfig.GetString(szPos, szVipGroup, sizeof(szVipGroup), NULL_STRING);
-			if (szVipGroup[0])
+			switch(GetClientLanguage(iClient))
 			{
-				// VIP_SetClientVIP(iClient, 0, 0, szVipGroup, false);
-				VIP_GiveClientVIP(-1, iClient, 0, szVipGroup, false);
-
-				switch(GetClientLanguage(iClient))
-				{
-					case 22: FPS_PrintToChat(iClient, "Вы получили привилегию {GREEN}%s {DEFAULT}за {OLIVE}%s {DEFAULT}место на сервере!", szVipGroup, szPos);
-					case 30: FPS_PrintToChat(iClient, "Ви отримали привілей {GREEN}%s {DEFAULT}за {OLIVE}%s {DEFAULT}місце на сервері!", szVipGroup, szPos);
-					default: FPS_PrintToChat(iClient, "You got {GREEN}%s {DEFAULT}privilege for {OLIVE}%s {DEFAULT}place on the server!", szVipGroup, szPos);
-				}
-
-				PrintToServer("[FPS_VipForTop] >> Игроку %N за %i место установлена вип группа (Период: сессия): %s", iClient, iPosition, szVipGroup);
+				case 22: FPS_PrintToChat(iClient, "Вы получили привилегию {GREEN}%s {DEFAULT}за {OLIVE}%s {DEFAULT}место на сервере!", szVipGroup, szPos);
+				case 30: FPS_PrintToChat(iClient, "Ви отримали привілей {GREEN}%s {DEFAULT}за {OLIVE}%s {DEFAULT}місце на сервері!", szVipGroup, szPos);
+				default: FPS_PrintToChat(iClient, "You got {GREEN}%s {DEFAULT}privilege for {OLIVE}%s {DEFAULT}place on the server!", szVipGroup, szPos);
 			}
+
+			PrintToServer("[FPS_VipForTop] >> Игроку %N за %i место установлена вип группа (Период: сессия): %s", iClient, g_iPos[iClient], szVipGroup);
 		}
 	}
+	return Plugin_Stop;
+}
+
+public void OnClientDisconnect(int iClient)
+{
+	g_iPos[iClient] = -1;
+}
+
+public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
+{
 	g_iPos[iClient] = iPosition;
 }

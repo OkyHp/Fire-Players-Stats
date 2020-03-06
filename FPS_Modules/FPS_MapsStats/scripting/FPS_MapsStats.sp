@@ -4,8 +4,8 @@
 #include <sourcemod>
 #include <FirePlayersStats>
 
-#if FPS_INC_VER != 152
-	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 152"
+#if FPS_INC_VER != 153
+	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 153"
 #endif
 
 int			g_iPlayerData[MAXPLAYERS+1][13],
@@ -13,7 +13,7 @@ int			g_iPlayerData[MAXPLAYERS+1][13],
 char		g_sCurrentMap[256];
 Database	g_hDatabase;
 
-enum PlayerData
+enum
 {
 	ACCOUNT_ID = 0,
 	PLAYED_ON_MAP,
@@ -315,7 +315,7 @@ void Event_RoundEnd(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				}
 				if (iTeam == iWinTeam)
 				{
-					g_iPlayerData[i][view_as<int>(MAP_ASSISTS) + iWinTeam]++;
+					g_iPlayerData[i][MAP_ASSISTS + iWinTeam]++;
 				}
 			}
 		}

@@ -10,7 +10,7 @@
 	#error This plugin can only compile on SourceMod 1.10!
 #endif
 
-#if FPS_INC_VER != 152
+#if FPS_INC_VER != 153
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 152"
 #endif
 
@@ -167,9 +167,7 @@ public void FPS_OnDatabaseConnected(Database hDatabase)
 		if (!bLoaded)
 		{
 			bLoaded = true;
-			SQL_LockDatabase(g_hDatabase);
 			g_hDatabase.Query(SQL_Callback_CreateTable, SQL_CreateTable);
-			SQL_UnlockDatabase(g_hDatabase);
 		}
 	}
 }
@@ -508,7 +506,7 @@ public Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, fl
 						{
 							if(g_iExpMode == 1 && g_iExp[iType] > 0)
 							{
-								FPS_PrintToChat(iAttacker, "%t: \x04+%i.0 \x01[ %t ]", "AdditionalPoints", g_iExp[iType], g_sNameUK[iType]);
+								FPS_PrintToChat(iAttacker, "%t [ %t ]", "AdditionalPointsPositive", float(g_iExp[iType]), g_sNameUK[iType]);
 							}
 
 							if (g_iExpMode)

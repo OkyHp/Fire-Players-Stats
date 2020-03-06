@@ -6,22 +6,20 @@
 #include <FirePlayersStats>
 #include <SteamWorks>
 
-#if FPS_INC_VER != 152
-	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 152"
+#if FPS_INC_VER != 153
+	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 153"
 #endif
 
 /////////////////////////////////////// PRECOMPILATION SETTINGS ///////////////////////////////////////
 
-#define UPDATE_SERVER_IP		0		// 0 - Disable. It is necessary if you use domain instead of IP. 
-#define DEFAULT_POINTS			1000.0	// Not recommended change
 #define DEBUG					0		// Enable/Disable debug mod
 #define USE_STREAK_POINTS		1		// Use streak points in stats
-#define COLOR_POINTS_ADDED		"{GREEN}+"
-#define COLOR_POINTS_REDUCED	"{RED}"
+#define UPDATE_SERVER_IP		0		// 0 - Disable. It is necessary if you use domain instead of IP. 
+#define DEFAULT_POINTS			1000.0	// Not recommended change
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define PLUGIN_VERSION		"1.5.2"
+#define PLUGIN_VERSION		"1.5.3"
 
 #if DEBUG == 1
 	char g_sLogPath[256];
@@ -49,12 +47,15 @@ char		g_sMap[256];
 // Features
 ArrayList	g_hItems;
 
-#define	F_MENU_TYPE			1
-#define	F_PLUGIN			2
-#define	F_SELECT			3
-#define	F_DISPLAY			4
-#define	F_DRAW				5
-#define	F_COUNT				6
+enum
+{
+	F_MENU_TYPE = 1,
+	F_PLUGIN,
+	F_SELECT,
+	F_DISPLAY,
+	F_DRAW,
+	F_COUNT
+}
 
 // Ranks settings
 int			g_iRanksCount,
@@ -65,9 +66,7 @@ ArrayList	g_hRanks;
 // Weapons stats vars
 ArrayList	g_hWeaponsData[MAXPLAYERS+1];
 
-#define W_SIZE				11
-
-enum WeaponsData
+enum
 {
 	W_KILLS = 0,
 	W_SHOOTS,
@@ -79,11 +78,13 @@ enum WeaponsData
 	W_HITS_RIGHT_ARM,
 	W_HITS_LEFT_LEG,
 	W_HITS_RIGHT_LEG,
-	W_HEADSHOTS
+	W_HEADSHOTS,
+	W_SIZE
 }
 
 // Database vars
 Database	g_hDatabase;
+
 // Top Data
 float		g_fTopData[10][4];
 char		g_sTopData[10][4][64];
@@ -165,14 +166,14 @@ public void OnMapStart()
 	LoadTopData();
 	LoadRanksSettings();
 
+	GetCurrentMapEx(SZF(g_sMap));
+
 	if (CanTestFeatures() && GetFeatureStatus(FeatureType_Native, "SteamWorks_CreateHTTPRequest") == FeatureStatus_Available)
 	{
 		SteamWorks_SteamServersConnected();
 	}
-
-	GetCurrentMapEx(SZF(g_sMap));
-
-	if (g_iGameType[0] == 1 && g_iGameType[1] == 2)
+	
+	if (g_iGameType[0] == 1 && g_iGameType[1] == 2 && g_iSaveInterval)
 	{
 		CreateTimer(float(g_iSaveInterval * 60), TimerSaveStats, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	}

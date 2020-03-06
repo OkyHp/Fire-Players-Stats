@@ -82,4 +82,15 @@
 		Fixed possible problem of obtaining player information when reload core.
 		Fixed save player data in FPS_ClientReloadData native.
 		Changes have been made for calculation points on calibration.
-		
+1.5.3 - Fixed minor bug in database handler.
+		Added cvar sm_fps_chat_prefix.
+		Phrase about score for points at the end of round is completely redirected to translation file.
+		Added English translation for config.
+		Added the ability to save statistics only when player is disconnect.
+		Limits for deleting player data have been removed. Added ability to disable deletion of player data.
+		Added natives FPS_GetPosition and FPS_GetPlayersCount.
+		Minor bug fixed in function ResetIfLessZero.
+		Weapon statistics processing optimization (thanks Someone).
+		Optimization of individual sections of code (thanks Someone & Wend4r).
+		Added cvar sm_fps_info_message, responsible for displaying totals by points.
+		Fixed back button in information sub-items.
