@@ -8,7 +8,9 @@
 
 int		g_iPlayerLevel[MAXPLAYERS+1],
 		g_iPlayerPosition[MAXPLAYERS+1],
-		g_iPlayersCount;
+		g_iPlayersCount,
+		m_iObserverMode,
+		m_hObserverTarget;
 bool	g_bHintState[MAXPLAYERS+1];
 float	g_fPlayerPoints[MAXPLAYERS+1];
 char	g_sPlayerRank[MAXPLAYERS+1][64];
@@ -20,8 +22,8 @@ public Plugin myinfo =
 {
 	name	=	"FPS Hint Info",
 	author	=	"OkyHp",
-	version	=	"1.1.2",
-	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
+	version	=	"1.1.3",
+	url		=	"Discord: OkyHek#2441"
 };
 
 public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iErr_max)
@@ -56,7 +58,12 @@ public int Native_FPSHintInfo_SetState(Handle hPlugin, int iNumParams)
 
 public void OnPluginStart()
 {
+	m_iObserverMode = FindSendPropInfo("CBasePlayer", "m_iObserverMode");
+	m_hObserverTarget = FindSendPropInfo("CBasePlayer", "m_hObserverTarget");
+
 	g_hCookie = RegClientCookie("FPS_HintStatus", "FPS Hint Status", CookieAccess_Private);
+
+	CreateTimer(4.5, TimerUpdateHint, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
 	LoadTranslations("FPS_HintInfo.phrases");
 
@@ -166,19 +173,24 @@ void GetPlayerLevel(int iClient, int iLevel)
 	FPS_GetRanks(iClient, g_sPlayerRank[iClient], sizeof(g_sPlayerRank[]));
 }
 
-public void OnPlayerRunCmdPost(int iClient)
+Action TimerUpdateHint(Handle hTimer)
 {
-	if (g_bHintState[iClient] && GetEntProp(iClient, Prop_Send, "m_iObserverMode") != 6)
+	for (int i = MaxClients + 1; --i;)
 	{
-		static int iTarget;
-		iTarget = GetEntPropEnt(iClient, Prop_Send, "m_hObserverTarget");
-		if (iTarget > 0 && iTarget <= MaxClients && FPS_ClientLoaded(iTarget))
+		if (g_bHintState[i] &&  GetEntData(i, m_iObserverMode) != 6)
 		{
-			PrintHintText(iClient, "%t", "HudMessage", 
-				g_fPlayerPoints[iTarget], 
-				g_iPlayerPosition[iTarget], g_iPlayersCount, 
-				g_iPlayerLevel[iTarget], 
-				FindTranslationRank(iClient, g_sPlayerRank[iTarget]));
+			static int iTarget;
+			iTarget = GetEntDataEnt2(i, m_hObserverTarget);
+			if (iTarget != -1 && FPS_ClientLoaded(iTarget))
+			{
+				PrintHintText(i, "%t", "HudMessage", 
+					g_fPlayerPoints[iTarget], 
+					g_iPlayerPosition[iTarget], g_iPlayersCount, 
+					g_iPlayerLevel[iTarget], 
+					FindTranslationRank(i, g_sPlayerRank[iTarget])
+				);
+			}
 		}
 	}
+	return Plugin_Continue;
 }
