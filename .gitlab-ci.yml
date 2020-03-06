@@ -9,7 +9,7 @@ UpdateData:
     - commits=`git rev-list --all --count`
     - release=`git describe --abbrev=0`
     - curl --data "file=fps-commits&data=Commits-${commits}-yellow" https://blackflash.ru/git-badges/
-    - curl --data "file=fps-release&data=Release-${release}-red" https://blackflash.ru/git-badges/
+    - curl --data "file=fps-release&data=Release-${release}-success" https://blackflash.ru/git-badges/
   #after_script:
   # artifacts:
   #   paths:
