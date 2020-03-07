@@ -93,4 +93,5 @@
 		Weapon statistics processing optimization (thanks Someone).
 		Optimization of individual sections of code (thanks Someone & Wend4r).
 		Added cvar sm_fps_info_message, responsible for displaying totals by points.
-		Fixed back button in information sub-items.
+		Fixed back button in information sub-items,
+		Database query optimization (thanks Wend4r).

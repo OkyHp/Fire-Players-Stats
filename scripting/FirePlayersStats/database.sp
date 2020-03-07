@@ -362,33 +362,27 @@ void SavePlayerData(int iClient)
 
 		Transaction	hTxn = new Transaction();
 
-		g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_players` ( \
+		g_hDatabase.Format(SZF(szQuery), "REPLACE INTO `fps_players`( \
 				`account_id`, `steam_id`, `nickname`, `ip` \
-			) VALUES ( \
+			) \
+			VALUES ( \
 				'%i', '%s', '%s', '%s' \
-			) ON DUPLICATE KEY UPDATE `nickname` = '%s', `ip` = '%s';", 
-			g_iPlayerAccountID[iClient], szAuth, szName, szIp, szName, szIp);
+			);", g_iPlayerAccountID[iClient], szAuth, szName, szIp
+		);
 		FPS_Debug("SavePlayerData >> Query#1: %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
-		int iPlayTime = FPS_GetPlayedTime(iClient);
-		g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers_stats` ( \
+		g_hDatabase.Format(SZF(szQuery), "REPLACE INTO `fps_servers_stats`( \
 				`account_id`,`server_id`,`points`, `rank`, `kills`, \
 				`deaths`,`assists`,`round_max_kills`,`round_win`, \
 				`round_lose`,`playtime`,`lastconnect` \
 			) \
-			VALUES \
-				(%i, %i, %f, %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
-			UPDATE \
-				`points` = %f, `rank` = %i, `kills` = %i, `deaths` = %i, `assists` = %i, `round_max_kills` = %i, \
-				`round_win` = %i, `round_lose` = %i, `playtime` = %i, `lastconnect` = %i;", 
-			g_iPlayerAccountID[iClient], g_iServerID, g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], g_iPlayerData[iClient][KILLS],
+			VALUES ( \
+				%i, %i, %f, %i, %i, %i, %i, %i, %i, %i, %i, %i \
+			);", g_iPlayerAccountID[iClient], g_iServerID, g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], g_iPlayerData[iClient][KILLS],
 			g_iPlayerData[iClient][DEATHS], g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], g_iPlayerData[iClient][ROUND_WIN],
-			g_iPlayerData[iClient][ROUND_LOSE], iPlayTime, g_iPlayerSessionData[iClient][PLAYTIME],
-
-			g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], g_iPlayerData[iClient][KILLS], g_iPlayerData[iClient][DEATHS], 
-			g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], 
-			g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], iPlayTime, g_iPlayerSessionData[iClient][PLAYTIME]);
+			g_iPlayerData[iClient][ROUND_LOSE], FPS_GetPlayedTime(iClient), g_iPlayerSessionData[iClient][PLAYTIME]
+		);
 		FPS_Debug("SavePlayerData >> Query#2: %s", szQuery)
 		hTxn.AddQuery(szQuery);
 
@@ -404,29 +398,16 @@ void SavePlayerData(int iClient)
 				FPS_Debug("SavePlayerData >> Weapon '%s' finded >> Index: %i", szWeapon, i)
 				g_hWeaponsData[iClient].GetArray((i+1), SZF(iArray));
 
-				g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_weapons_stats` ( \
+				g_hDatabase.Format(SZF(szQuery), "REPLACE INTO `fps_weapons_stats` ( \
 						`account_id`, `server_id`, `weapon`, `kills`, `shoots`, \
 						`hits_head`, `hits_neck`, `hits_chest`, `hits_stomach`, \
 						`hits_left_arm`, `hits_right_arm`, `hits_left_leg`, `hits_right_leg`, `headshots` \
-					) VALUES \
-						('%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i') ON DUPLICATE KEY \
-					UPDATE \
-						`kills` = `kills` + '%i', \
-						`shoots` = `shoots` + '%i', \
-						`hits_head` = `hits_head` + '%i', \
-						`hits_neck` = `hits_neck` + '%i', \
-						`hits_chest` = `hits_chest` + '%i', \
-						`hits_stomach` = `hits_stomach` + '%i', \
-						`hits_left_arm` = `hits_left_arm` + '%i', \
-						`hits_right_arm` = `hits_right_arm` + '%i', \
-						`hits_left_leg` = `hits_left_leg` + '%i', \
-						`hits_right_leg` = `hits_right_leg` + '%i', \
-						`headshots` = `headshots` + '%i';", 
-					g_iPlayerAccountID[iClient], g_iServerID, szWeapon, iArray[W_KILLS], iArray[W_SHOOTS], 
+					) VALUES ( \
+						'%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i' \
+					);", g_iPlayerAccountID[iClient], g_iServerID, szWeapon, iArray[W_KILLS], iArray[W_SHOOTS], 
 					iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
-					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS], 
-					iArray[W_KILLS], iArray[W_SHOOTS], iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
-					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS]);
+					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS]
+				);
 
 				#if DEBUG == 1
 					int u;
@@ -578,12 +559,11 @@ void UpdateServerData(char[] szIP, int iPort)
 		FindConVar("hostname").GetString(SZF(szServerName));
 
 		#if UPDATE_SERVER_IP == 1
-			g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers` ( \
+			g_hDatabase.Format(SZF(szQuery), "REPLACE INTO `fps_servers` ( \
 				`id`, `server_name`, `settings_rank_id`, `settings_points_id`, `server_ip` \
-			) VALUES ( %i, '%s', %i, %i, '%s:%i' ) ON DUPLICATE KEY UPDATE \
-				`id` = %i, `server_name` = '%s', `settings_rank_id` = %i, `settings_points_id` = %i, `server_ip` = '%s:%i';", 
-			g_iServerID, szServerName, g_iRanksID, 1, szIP, iPort,
-			g_iServerID, szServerName, g_iRanksID, 1, szIP, iPort);
+			) VALUES ( \
+				%i, '%s', %i, %i, '%s:%i' \
+			);", g_iServerID, szServerName, g_iRanksID, 1, szIP, iPort);
 		#else
 			g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers` ( \
 				`id`, `server_name`, `settings_rank_id`, `settings_points_id`, `server_ip` \
