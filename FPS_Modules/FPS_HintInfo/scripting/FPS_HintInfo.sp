@@ -6,7 +6,8 @@
 #include <FirePlayersStats>
 #include <FPS_HintInfo>
 
-int		g_iPlayerLevel[MAXPLAYERS+1],
+int		g_iHintType,
+		g_iPlayerLevel[MAXPLAYERS+1],
 		g_iPlayerPosition[MAXPLAYERS+1],
 		g_iPlayersCount,
 		m_iObserverMode,
@@ -63,8 +64,6 @@ public void OnPluginStart()
 
 	g_hCookie = RegClientCookie("FPS_HintStatus", "FPS Hint Status", CookieAccess_Private);
 
-	CreateTimer(4.5, TimerUpdateHint, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-
 	LoadTranslations("FPS_HintInfo.phrases");
 
 	char szPath[256];
@@ -79,7 +78,31 @@ public void OnPluginStart()
 		FPS_OnFPSStatsLoaded();
 	}
 
+	HookEvent("spec_target_updated", Event_TargetUpdate);
+	HookEvent("spec_mode_updated", Event_TargetUpdate);
+
+	ConVar Convar;
+	(Convar = CreateConVar(
+		"sm_fps_hint_type",	"0", 
+		"Тип работы плагина. \n0 - Постоянно отображать информацию в хинте. \n1 - Отобразить информацию один раз, при переключении на игрока.", 
+		_, true, 0.0, true, 1.0
+	)).AddChangeHook(ChangeCvar_HintType);
+	ChangeCvar_HintType(Convar, NULL_STRING, NULL_STRING);
+
 	RegConsoleCmd("sm_fps_hint", CommandHintStatus);
+}
+
+void ChangeCvar_HintType(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_iHintType = Convar.IntValue;
+}
+
+public void OnMapStart()
+{
+	if (!g_iHintType)
+	{
+		CreateTimer(3.5, TimerUpdateHint, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	}
 }
 
 public void OnClientCookiesCached(int iClient)
@@ -173,24 +196,38 @@ void GetPlayerLevel(int iClient, int iLevel)
 	FPS_GetRanks(iClient, g_sPlayerRank[iClient], sizeof(g_sPlayerRank[]));
 }
 
+void SendHintMessage(int iClient)
+{
+	if (g_bHintState[iClient] && FPS_ClientLoaded(iClient) && GetEntData(iClient, m_iObserverMode) != 6)
+	{
+		static int iTarget;
+		iTarget = GetEntDataEnt2(iClient, m_hObserverTarget);
+		if (iTarget > 0 && iTarget <= MaxClients && FPS_ClientLoaded(iTarget))
+		{
+			PrintHintText(iClient, "%t", "HudMessage", 
+				g_fPlayerPoints[iTarget], 
+				g_iPlayerPosition[iTarget], g_iPlayersCount, 
+				g_iPlayerLevel[iTarget], 
+				FindTranslationRank(iClient, g_sPlayerRank[iTarget])
+			);
+		}
+	}
+}
+
+void Event_TargetUpdate(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+{
+	int iClient = CID(hEvent.GetInt("userid"));
+	if (iClient)
+	{
+		SendHintMessage(iClient);
+	}
+}
+
 Action TimerUpdateHint(Handle hTimer)
 {
 	for (int i = MaxClients + 1; --i;)
 	{
-		if (g_bHintState[i] &&  GetEntData(i, m_iObserverMode) != 6)
-		{
-			static int iTarget;
-			iTarget = GetEntDataEnt2(i, m_hObserverTarget);
-			if (iTarget != -1 && FPS_ClientLoaded(iTarget))
-			{
-				PrintHintText(i, "%t", "HudMessage", 
-					g_fPlayerPoints[iTarget], 
-					g_iPlayerPosition[iTarget], g_iPlayersCount, 
-					g_iPlayerLevel[iTarget], 
-					FindTranslationRank(i, g_sPlayerRank[iTarget])
-				);
-			}
-		}
+		SendHintMessage(i);
 	}
 	return Plugin_Continue;
 }
