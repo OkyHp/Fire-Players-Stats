@@ -89,6 +89,8 @@ public void OnPluginStart()
 	)).AddChangeHook(ChangeCvar_HintType);
 	ChangeCvar_HintType(Convar, NULL_STRING, NULL_STRING);
 
+	AutoExecConfig(true, "FPS_HintInfo");
+
 	RegConsoleCmd("sm_fps_hint", CommandHintStatus);
 }
 
