@@ -9,16 +9,23 @@ void ResetData(int iClient, bool bResetStats = false)
 	}
 	else
 	{
+		if (g_hWeaponsData[iClient])
+		{
+			g_hWeaponsData[iClient].Clear();
+		}
+
+		g_iPlayerData[iClient][PLAYTIME] = 0;
+		g_iPlayerSessionData[iClient][PLAYTIME] = GetTime();
 		iLen--;
 	}
 
-	g_iPlayerPosition[iClient] = 0;
 	g_fPlayerSessionPoints[iClient]	= g_fPlayerPoints[iClient] = DEFAULT_POINTS;
 	for (int i = 0; i < iLen; ++i)
 	{
 		g_iPlayerSessionData[iClient][i] = g_iPlayerData[iClient][i] = 0;
 	}
-
+	
+	g_iPlayerPosition[iClient] = 0;
 	g_iPlayerRanks[iClient] = 0;
 	g_sRankName[iClient][0] = 0;
 }

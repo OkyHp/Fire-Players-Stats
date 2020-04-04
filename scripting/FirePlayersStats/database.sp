@@ -258,6 +258,31 @@ void SQL_Callback_CreateRanks(Database hDatabase, DBResultSet hResult, const cha
 	}
 }
 
+Action CommandResetAllStats(int iClient, int iArgs) 
+{ 
+	if (g_hDatabase)
+	{
+		for (int i = MaxClients + 1; --i;)
+		{
+			if (g_bStatsLoad[i])
+			{
+				ResetData(i, true);
+			}
+		}
+
+		char szQuery[256];
+		g_hDatabase.Format(SZF(szQuery), "DELETE `s`, `w` \
+			FROM \
+				`fps_servers_stats` AS `s` \
+				INNER JOIN `fps_weapons_stats` AS `w` ON `s`.`server_id` = `w`.`server_id` \
+			WHERE \
+				`s`.`server_id` = %i;", g_iServerID);
+		FPS_Debug("CommandResetAllStats >> Query: %s", szQuery)
+		g_hDatabase.Query(SQL_Default_Callback, szQuery, 4);
+	}
+	return Plugin_Handled;
+}
+
 // Load ranks settings
 void LoadRanksSettings()
 {
@@ -290,7 +315,7 @@ void SQL_Callback_LoadRanks(Database hDatabase, DBResultSet hResult, const char[
 
 		if (!g_iRanksCount)
 		{
-			LogError("[FPS] No rank! Add them using 'sm_fps_create_default_ranks' or manually.");
+			LogError("[FPS] Ranks not found! Add them using 'sm_fps_create_default_ranks' or manually.");
 		}
 
 		FPS_Debug("SQL_Callback_LoadRanks >> Ranks count: %i", g_iRanksCount)
@@ -399,11 +424,31 @@ void SavePlayerData(int iClient)
 				g_hWeaponsData[iClient].GetArray((i+1), SZF(iArray));
 
 				g_hDatabase.Format(SZF(szQuery), "REPLACE INTO `fps_weapons_stats` ( \
-						`account_id`, `server_id`, `weapon`, `kills`, `shoots`, \
-						`hits_head`, `hits_neck`, `hits_chest`, `hits_stomach`, \
-						`hits_left_arm`, `hits_right_arm`, `hits_left_leg`, `hits_right_leg`, `headshots` \
+						`account_id`, `server_id`, `weapon`, \
+						`kills`, \
+						`shoots`, \
+						`hits_head`, \
+						`hits_neck`, \
+						`hits_chest`, \
+						`hits_stomach`, \
+						`hits_left_arm`, \
+						`hits_right_arm`, \
+						`hits_left_leg`, \
+						`hits_right_leg`, \
+						`headshots` \
 					) VALUES ( \
-						'%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i' \
+						'%i', '%i', '%s', \
+						`kills` + '%i', \
+						`shoots` + '%i', \
+						`hits_head` + '%i', \
+						`hits_neck` + '%i', \
+						`hits_chest` + '%i', \
+						`hits_stomach` + '%i', \
+						`hits_left_arm` + '%i', \
+						`hits_right_arm` + '%i', \
+						`hits_left_leg` + '%i', \
+						`hits_right_leg` + '%i', \
+						`headshots` + '%i' \
 					);", g_iPlayerAccountID[iClient], g_iServerID, szWeapon, iArray[W_KILLS], iArray[W_SHOOTS], 
 					iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
 					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS]

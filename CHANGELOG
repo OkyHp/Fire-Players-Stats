@@ -94,4 +94,5 @@
 		Optimization of individual sections of code (thanks Someone & Wend4r).
 		Added cvar sm_fps_info_message, responsible for displaying totals by points.
 		Fixed back button in information sub-items,
-		Database query optimization (thanks Wend4r).
+		Database query optimization (thanks by Wend4r).
+		Added command sm_fps_reset_all_stats.

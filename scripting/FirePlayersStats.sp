@@ -129,6 +129,7 @@ public void OnPluginStart()
 
 	RegAdminCmd("sm_fps_create_default_ranks", CommandCreateRanks, ADMFLAG_ROOT, "Создание настройки рангов. \
 	\n0 - Стандартные ранги (18 lvl). 1 - Ранги опасной зоны (15 lvl). 2 - Фейсит ранги (10 lvl).");
+	RegAdminCmd("sm_fps_reset_all_stats", CommandResetAllStats, ADMFLAG_ROOT, "Сбросить всю статистику для текущего сервера.");
 
 
 	ConVar Convar;
