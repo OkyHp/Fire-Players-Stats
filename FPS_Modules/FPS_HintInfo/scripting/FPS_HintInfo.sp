@@ -6,13 +6,17 @@
 #include <FirePlayersStats>
 #include <FPS_HintInfo>
 
+#undef REQUIRE_PLUGIN
+#include <mapchooser>
+
 int		g_iHintType,
 		g_iPlayerLevel[MAXPLAYERS+1],
 		g_iPlayerPosition[MAXPLAYERS+1],
 		g_iPlayersCount,
 		m_iObserverMode,
 		m_hObserverTarget;
-bool	g_bHintState[MAXPLAYERS+1];
+bool	g_bHintState[MAXPLAYERS+1],
+		g_bMapChooser;
 float	g_fPlayerPoints[MAXPLAYERS+1];
 char	g_sPlayerRank[MAXPLAYERS+1][64];
 Handle	g_hCookie;
@@ -31,7 +35,8 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 {
 	if(GetEngineVersion() != Engine_CSGO)
 	{
-		return APLRes_Failure;
+		strcopy(szError, iErr_max, "This plugin works only on CS:GO!");
+		return APLRes_SilentFailure;
 	}
 
 	CreateNative("FPS_HintInfo_GetState", Native_FPSHintInfo_GetState);
@@ -78,8 +83,7 @@ public void OnPluginStart()
 		FPS_OnFPSStatsLoaded();
 	}
 
-	HookEvent("spec_target_updated", Event_TargetUpdate);
-	HookEvent("spec_mode_updated", Event_TargetUpdate);
+	AddCommandListener(UpdateSpec, "spec_player");
 
 	ConVar Convar;
 	(Convar = CreateConVar(
@@ -97,6 +101,24 @@ public void OnPluginStart()
 void ChangeCvar_HintType(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iHintType = Convar.IntValue;
+}
+
+void SetLibState(const char[] szName, bool bValue)
+{
+	if (!strcmp(szName, "mapchooser"))
+	{
+		g_bMapChooser = bValue;
+	}
+}
+
+public void OnLibraryAdded(const char[] szName)
+{
+	SetLibState(szName, true);
+}
+
+public void OnLibraryRemoved(const char[] szName)
+{
+	SetLibState(szName, false);
 }
 
 public void OnMapStart()
@@ -200,6 +222,11 @@ void GetPlayerLevel(int iClient, int iLevel)
 
 void SendHintMessage(int iClient)
 {
+	if (g_bMapChooser && !CanMapChooserStartVote())
+	{
+		return;
+	}
+
 	if (g_bHintState[iClient] && FPS_ClientLoaded(iClient) && GetEntData(iClient, m_iObserverMode) != 6)
 	{
 		static int iTarget;
@@ -216,13 +243,13 @@ void SendHintMessage(int iClient)
 	}
 }
 
-void Event_TargetUpdate(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+Action UpdateSpec(int iClient, const char[] szCommand, int iArg)
 {
-	int iClient = CID(hEvent.GetInt("userid"));
 	if (iClient)
 	{
 		SendHintMessage(iClient);
 	}
+	return Plugin_Continue;
 }
 
 Action TimerUpdateHint(Handle hTimer)
