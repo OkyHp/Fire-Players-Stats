@@ -233,7 +233,7 @@ void SavePlayerData(int iClient, bool bReset = false)
 		}
 
 		char szQuery[1024];
-		g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_maps` ( \
+		g_hDatabase.Format(SZF(szQuery), "REPLACE INTO `fps_maps` ( \
 				`account_id`, `server_id`, `name_map`, `countplays`, `kills`, \
 				`deaths`, `assists`, `rounds_overall`, `rounds_t`, `rounds_ct`, \
 				`bomb_planted`, `bomb_defused`, `hostage_rescued`, `hostage_killed`, `playtime` \
