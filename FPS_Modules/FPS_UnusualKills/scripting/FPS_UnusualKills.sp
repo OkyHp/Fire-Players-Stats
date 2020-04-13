@@ -106,7 +106,7 @@ public Plugin myinfo =
 {
 	name = "FPS Unusual Kills", 
 	author = "Wend4r, OkyHp", 
-	version = "1.0.1",
+	version = "1.0.2",
 	url = "Discord: Wend4r#0001 | VK: vk.com/wend4r"
 }
 
