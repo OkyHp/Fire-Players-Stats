@@ -7,7 +7,7 @@
 
 public Plugin myinfo = 
 {
-	name = "[FPS] Vip Boost",
+	name = "[FPS] Vip Points Boost",
 	author = "Designed (Discord: .Designed#7985)",
 	version = "1.0.0",
 }
