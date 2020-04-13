@@ -5,9 +5,6 @@
 #include <vip_core>
 #include <FirePlayersStats>
 
-#define DEFAULT 0
-#define STATS	1
-
 int			g_iVipQuota,
 			g_iPos[MAXPLAYERS+1];
 bool		g_bIsVip[MAXPLAYERS+1];
@@ -57,6 +54,16 @@ public void VIP_OnVIPClientRemoved(int iClient, const char[] szReason, int iAdmi
 	g_bIsVip[iClient] = false;
 }
 
+public void OnClientDisconnect(int iClient)
+{
+	g_iPos[iClient] = -1;
+}
+
+public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
+{
+	g_iPos[iClient] = iPosition;
+}
+
 Action TimerCheckVip(Handle hTimer, any iUserID)
 {
 	int iClient = GetClientOfUserId(iUserID);
@@ -84,14 +91,4 @@ Action TimerCheckVip(Handle hTimer, any iUserID)
 		}
 	}
 	return Plugin_Stop;
-}
-
-public void OnClientDisconnect(int iClient)
-{
-	g_iPos[iClient] = -1;
-}
-
-public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
-{
-	g_iPos[iClient] = iPosition;
 }
