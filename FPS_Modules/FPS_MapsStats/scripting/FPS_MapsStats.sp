@@ -36,7 +36,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Maps Stats",
 	author	=	"OkyHp",
-	version	=	"1.0.0",
+	version	=	"1.0.1",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -238,27 +238,10 @@ void SavePlayerData(int iClient, bool bReset = false)
 				`deaths`, `assists`, `rounds_overall`, `rounds_t`, `rounds_ct`, \
 				`bomb_planted`, `bomb_defused`, `hostage_rescued`, `hostage_killed`, `playtime` \
 			) \
-			VALUES \
-				('%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i') ON DUPLICATE KEY \
-			UPDATE \
-				`countplays` = '%i', \
-				`kills` = '%i', \
-				`deaths` = '%i', \
-				`assists` = '%i', \
-				`rounds_overall` = '%i', \
-				`rounds_t` = '%i', \
-				`rounds_ct` = '%i', \
-				`bomb_planted` = '%i', \
-				`bomb_defused` = '%i', \
-				`hostage_rescued` = '%i', \
-				`hostage_killed` = '%i', \
-				`playtime` = '%i';", 
+			VALUES ( \
+				'%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i' \
+			);", 
 			g_iPlayerData[iClient][ACCOUNT_ID], FPS_GetID(FPS_SERVER_ID), g_sCurrentMap,
-
-			g_iPlayerData[iClient][PLAYED_ON_MAP], g_iPlayerData[iClient][MAP_KILLS], g_iPlayerData[iClient][MAP_DEATHS], 
-			g_iPlayerData[iClient][MAP_ASSISTS], g_iPlayerData[iClient][MAP_ROUNDS_OVARALL], g_iPlayerData[iClient][MAP_ROUNDS_T],
-			g_iPlayerData[iClient][MAP_ROUNDS_CT], g_iPlayerData[iClient][BOMB_PLANTED], g_iPlayerData[iClient][BOMB_DEFUSED],
-			g_iPlayerData[iClient][HOSTAGE_KILLED], g_iPlayerData[iClient][HOSTAGE_RESCUED], iPlayTime,
 
 			g_iPlayerData[iClient][PLAYED_ON_MAP], g_iPlayerData[iClient][MAP_KILLS], g_iPlayerData[iClient][MAP_DEATHS], 
 			g_iPlayerData[iClient][MAP_ASSISTS], g_iPlayerData[iClient][MAP_ROUNDS_OVARALL], g_iPlayerData[iClient][MAP_ROUNDS_T],
