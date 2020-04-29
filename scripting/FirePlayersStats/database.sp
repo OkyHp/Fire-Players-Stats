@@ -351,12 +351,17 @@ void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult, const 
 	if (hResult.FetchRow())
 	{
 		g_fPlayerSessionPoints[iClient] = g_fPlayerPoints[iClient] = hResult.FetchFloat(0);
+		FPS_Debug("SQL_Callback_LoadPlayerData >> %N >> points: %f", iClient, g_fPlayerSessionPoints[iClient])
+
 		for (int i = 0; i < sizeof(g_iPlayerData[]); ++i)
 		{
 			g_iPlayerSessionData[iClient][i] = g_iPlayerData[iClient][i] = hResult.FetchInt(i+1);
-		}
 
-		FPS_Debug("SQL_Callback_LoadPlayerData >> %N: points: %f | kills: %i, deaths: %i, assists: %i, round_max_kills: %i, round_win: %i, round_lose: %i, playtime: %i", iClient, g_fPlayerPoints[iClient], g_iPlayerData[iClient][KILLS], g_iPlayerData[iClient][DEATHS], g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], g_iPlayerData[iClient][ROUND_WIN], g_iPlayerData[iClient][ROUND_LOSE], g_iPlayerData[iClient][PLAYTIME])
+			#if DEBUG == 1
+				static const char szDebug[][] = {"kills", "deaths", "assists", "round_max_kills", "round_win", "round_lose", "playtime"};
+				FPS_Debug("SQL_Callback_LoadPlayerData >> %N >> %s: %i", iClient, szDebug[i], g_iPlayerData[iClient][i])
+			#endif
+		}
 	}
 	else
 	{

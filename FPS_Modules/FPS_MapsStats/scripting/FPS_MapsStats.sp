@@ -1,11 +1,25 @@
+/**
+ *	v1.0.2 -	Add debug;
+ *				Slight logic optimization.
+ */
+
 #pragma semicolon 1
 #pragma newdecls required
 
 #include <sourcemod>
 #include <FirePlayersStats>
 
+#define DEBUG			0	// Enable/Disable debug mod
+
 #if FPS_INC_VER != 153
 	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 153"
+#endif
+
+#if DEBUG == 1
+	char g_sLogPath[256];
+	#define FPS_Debug(%0)	LogToFile(g_sLogPath, %0);
+#else
+	#define FPS_Debug(%0)
 #endif
 
 int			g_iPlayerData[MAXPLAYERS+1][13],
@@ -36,7 +50,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Maps Stats",
 	author	=	"OkyHp",
-	version	=	"1.0.1",
+	version	=	"1.0.2",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -46,6 +60,10 @@ public void OnPluginStart()
 	{
 		SetFailState("[FPS] Maps Stats: This plugin works only on CS:GO");
 	}
+
+	#if DEBUG == 1
+		BuildPath(Path_SM, SZF(g_sLogPath), "logs/FirePlayersStats.log");
+	#endif
 
 	HookEvent("player_death", 		Event_PlayerDeath);
 	HookEvent("round_end",			Event_RoundEnd);
@@ -69,6 +87,7 @@ public void OnPluginStart()
 
 public void FPS_OnDatabaseLostConnection()
 {
+	FPS_Debug("FPS_OnDatabaseLostConnection >> %i", view_as<int>(g_hDatabase))
 	if (g_hDatabase)
 	{
 		delete g_hDatabase;
@@ -115,6 +134,7 @@ public void FPS_OnDatabaseConnected(Database hDatabase)
 			}
 		}
 	}
+	FPS_Debug("FPS_OnDatabaseConnected >> %i", view_as<int>(g_hDatabase))
 }
 
 void SQL_Callback_CreateTable(Database hDatabase, DBResultSet hResult, const char[] szError, any data)
@@ -198,6 +218,7 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 		for (int i = sizeof(g_iPlayerData[]) - 1; i--;)
 		{
 			g_iPlayerData[iClient][i] = hResult.FetchInt(i);
+			FPS_Debug("SQL_Callback_LoadPlayerData >> %N >> %i", iClient, g_iPlayerData[iClient][i])
 		}
 	}
 }
@@ -247,6 +268,7 @@ void SavePlayerData(int iClient, bool bReset = false)
 			g_iPlayerData[iClient][MAP_ASSISTS], g_iPlayerData[iClient][MAP_ROUNDS_OVARALL], g_iPlayerData[iClient][MAP_ROUNDS_T],
 			g_iPlayerData[iClient][MAP_ROUNDS_CT], g_iPlayerData[iClient][BOMB_PLANTED], g_iPlayerData[iClient][BOMB_DEFUSED],
 			g_iPlayerData[iClient][HOSTAGE_KILLED], g_iPlayerData[iClient][HOSTAGE_RESCUED], iPlayTime);
+		FPS_Debug("SavePlayerData >> %N >> %s", iClient, szQuery)
 		g_hDatabase.Query(SQL_Default_Callback, szQuery, 3);
 	}
 }
@@ -524,6 +546,7 @@ int Handler_TopMapmenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 						WHERE `m`.`kills` != 0 AND `server_id` = %i AND `name_map` = '%s' ORDER BY `m`.`kills` DESC LIMIT 10", 
 						FPS_GetID(FPS_SERVER_ID), g_sCurrentMap);
 				}
+				FPS_Debug("Handler_TopMapmenu (%i) >> %N >> %s", iItem, iClient, szQuery)
 				g_hDatabase.Query(SQL_Callback_TopData, szQuery, UID(iClient) << 4 | iItem);
 			}
 		}
@@ -620,20 +643,5 @@ void GetCurrentMapEx(char[] szMapBuffer, int iSize)
 {
 	char szBuffer[256];
 	GetCurrentMap(szBuffer, sizeof szBuffer);
-	int iIndex = -1, iLen = strlen(szBuffer);
-	
-	for(int i = 0; i < iLen; i++)
-	{
-		if(FindCharInString(szBuffer[i], '/') != -1 || FindCharInString(szBuffer[i], '\\') != -1)
-		{
-			if(i != iLen - 1)
-			{
-				iIndex = i;
-			}
-			continue;
-		}
-		break;
-	}
-
-	strcopy(szMapBuffer, iSize, szBuffer[iIndex+1]);
+	strcopy(szMapBuffer, iSize, szBuffer[FindCharInString(szBuffer, '/', true) + 1]);
 }
