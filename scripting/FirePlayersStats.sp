@@ -264,6 +264,7 @@ public void OnClientPutInServer(int iClient)
 		if (iAccountID)
 		{
 			g_iPlayerAccountID[iClient] = iAccountID;
+			g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS] = 0; // (not used var) for blocked accrual of experience to connected player
 			g_hWeaponsData[iClient] = new ArrayList(64);
 			LoadPlayerData(iClient);
 		}

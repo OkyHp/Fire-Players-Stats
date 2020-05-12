@@ -396,7 +396,7 @@ void SavePlayerData(int iClient)
 				`account_id`, `steam_id`, `nickname`, `ip` \
 			) \
 			VALUES ( \
-				'%i', '%s', '%s', '%s' \
+				%u, '%s', '%s', '%s' \
 			);", g_iPlayerAccountID[iClient], szAuth, szName, szIp
 		);
 		FPS_Debug("SavePlayerData >> Query#1: %s", szQuery)
@@ -408,7 +408,7 @@ void SavePlayerData(int iClient)
 				`round_lose`,`playtime`,`lastconnect` \
 			) \
 			VALUES ( \
-				%i, %i, %f, %i, %i, %i, %i, %i, %i, %i, %i, %i \
+				%u, %i, %f, %i, %i, %i, %i, %i, %i, %i, %i, %i \
 			);", g_iPlayerAccountID[iClient], g_iServerID, g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], g_iPlayerData[iClient][KILLS],
 			g_iPlayerData[iClient][DEATHS], g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], g_iPlayerData[iClient][ROUND_WIN],
 			g_iPlayerData[iClient][ROUND_LOSE], FPS_GetPlayedTime(iClient), g_iPlayerSessionData[iClient][PLAYTIME]
@@ -433,19 +433,19 @@ void SavePlayerData(int iClient)
 						`hits_head`, `hits_neck`, `hits_chest`, `hits_stomach`, \
 						`hits_left_arm`, `hits_right_arm`, `hits_left_leg`, `hits_right_leg`, `headshots` \
 					) VALUES \
-						('%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i') ON DUPLICATE KEY \
+						(%u, %i, '%s', %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
 					UPDATE \
-						`kills` = `kills` + '%i', \
-						`shoots` = `shoots` + '%i', \
-						`hits_head` = `hits_head` + '%i', \
-						`hits_neck` = `hits_neck` + '%i', \
-						`hits_chest` = `hits_chest` + '%i', \
-						`hits_stomach` = `hits_stomach` + '%i', \
-						`hits_left_arm` = `hits_left_arm` + '%i', \
-						`hits_right_arm` = `hits_right_arm` + '%i', \
-						`hits_left_leg` = `hits_left_leg` + '%i', \
-						`hits_right_leg` = `hits_right_leg` + '%i', \
-						`headshots` = `headshots` + '%i';", 
+						`kills` = `kills` + %i, \
+						`shoots` = `shoots` + %i, \
+						`hits_head` = `hits_head` + %i, \
+						`hits_neck` = `hits_neck` + %i, \
+						`hits_chest` = `hits_chest` + %i, \
+						`hits_stomach` = `hits_stomach` + %i, \
+						`hits_left_arm` = `hits_left_arm` + %i, \
+						`hits_right_arm` = `hits_right_arm` + %i, \
+						`hits_left_leg` = `hits_left_leg` + %i, \
+						`hits_right_leg` = `hits_right_leg` + %i, \
+						`headshots` = `headshots` + %i;", 
 					g_iPlayerAccountID[iClient], g_iServerID, szWeapon, iArray[W_KILLS], iArray[W_SHOOTS], 
 					iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
 					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS], 
