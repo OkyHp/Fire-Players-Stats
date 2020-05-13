@@ -24,6 +24,7 @@
 		"en"		"[ {1} ] \nPoints: {2} \nLevel: {3} \nRank: {4}  \nPosition: {5}/{6}"
 		"ru"		"[ {1} ] \nПоинты: {2} \nУровень: {3} \nРанг: {4} \nМесто: {5}/{6}"
 		"ua"		"[ {1} ] \nПоінти: {2} \nРівень: {3} \nРанг: {4} \nМісце: {5}/{6}"
+		"tr"		"[ {1} ] \nPuan: {2} \nSeviye: {3} \nRütbe: {4}  \nSıralama: {5}/{6}"
 	}
 	// "MiniDataTitleNoRanks"
 	// {
@@ -38,12 +39,14 @@
 		"en"		"Back"
 		"ru"		"Назад"
 		"ua"		"Назад"
+		"tr"		"Geri"
 	}
 	"Exit"
 	{
 		"en"		"Exit"
 		"ru"		"Выход"
 		"ua"		"Вихід"
+		"tr"		"Kapat"
 	}
 
 	"Points"
@@ -51,18 +54,21 @@
 		"en"		"Points"
 		"ru"		"п."
 		"ua"		"п."
+		"tr"		"Puan"
 	}
 	"Hours"
 	{
 		"en"		"h."
 		"ru"		"ч."
 		"ua"		"г."
+		"tr"		"sa."
 	}
 	"Kills"
 	{
 		"en"		"Kills"
 		"ru"		"уб."
 		"ua"		"вб."
+		"tr"		"Öldürme"
 	}
 
 	"NoPlayers"
@@ -70,12 +76,14 @@
 		"en"		"No players"
 		"ru"		"Нет игроков"
 		"ua"		"Немає гравців"
+		"tr"		"Oyuncu yok"
 	}
 	"NoRanks"
 	{
 		"en"		"No ranks"
 		"ru"		"Нет рангов"
 		"ua"		"Немає рангів"
+		"tr"		"Sıralama yok"
 	}
 
 	// ------------------------------------
@@ -84,6 +92,7 @@
 		"en"		"Fire Players Stats | Main Menu"
 		"ru"		"Fire Players Stats | Главное меню"
 		"ua"		"Fire Players Stats | Головне меню"
+		"tr"		"Fire Players Stats | Mariaclan İstatistikler"
 	}
 
 	// ------------------------------------
@@ -92,24 +101,28 @@
 		"en"		"Player stats"
 		"ru"		"Статистика игрока"
 		"ua"		"Статистика гравця"
+		"tr"		"Oyuncu İstatistikleri"
 	}
 	"GeneralStats"
 	{
 		"en"		"General stats"
 		"ru"		"Общая статистика"
 		"ua"		"Загальна статистика"
+		"tr"		"Genel İstatistikler"
 	}
 	"SessionStats"
 	{
 		"en"		"Session stats"
 		"ru"		"Статистика за сессию"
 		"ua"		"Статистика за сесію"
+		"tr"		"Geçici İstatistikler"
 	}
 	"ResetPlayerStats"
 	{
 		"en"		"Reset my stats"
 		"ru"		"Сбросить мою статистику"
 		"ua"		"Стерти мою статистику"
+		"tr"		"İstatiklerimi sıfırla"
 	}
 
 	// ------------------------------------
@@ -119,36 +132,42 @@
 		"en"		"[ {1} ] \nAttention, information is updated periodically"
 		"ru"		"[ {1} ] \nВнимание, информация обновляется через определенное время"
 		"ua"		"[ {1} ] \nУвага, інформація оновлюеться через певний час"
+		"tr"		"[ {1} ] \nDikkat, sistem periyodik olarak güncellenir."
 	}
 	"ListsOfTops"
 	{
 		"en"		"Available lists"
 		"ru"		"Списки топов"
 		"ua"		"Списки топів"
+		"tr"		"Mevcut listeler"
 	}
 	"TopPoints"
 	{
 		"en"		"Top Players by Points"
 		"ru"		"Лучшие игроки по очкам"
 		"ua"		"Кращі гравці по очкам"
+		"tr"		"En çok puana sahip oyuncular"
 	}
 	"TopKDR"
 	{
 		"en"		"Top players by KDR"
 		"ru"		"Лучшие игроки по KDR"
 		"ua"		"Кращі гравці по KDR"
+		"tr"		"En yüksek KDR'a sahip oyuncular"
 	}
 	"TopTime"
 	{
 		"en"		"Top Players by play time"
 		"ru"		"Игроки с наибольшим наигранным временем"
 		"ua"		"Гравці з найбільшим награним часом"
+		"tr"		"En çok zaman geçiren oyuncular"
 	}
 	"TopClutch"
 	{
 		"en"		"Top players by Most Kills per Round"
 		"ru"		"Игроки с наибольшим количеством убийств за раунд"
 		"ua"		"Гравці з найбільшою кількістю вбивств за раунд"
+		"tr"		"Tur başına en çok kill alan oyuncular"
 	}
 
 	// ------------------------------------
@@ -157,6 +176,7 @@
 		"en"		"Rank Information"
 		"ru"		"Информация о рангах"
 		"ua"		"Інформація про ранги"
+		"tr"		"Sıralama bilgileri"
 	}
 
 	// ------------------------------------
@@ -165,6 +185,7 @@
 		"en"		"Stats Information"
 		"ru"		"Информация о статистике"
 		"ua"		"Інформація про статистику"
+		"tr"		"İstatistik bilgileri"
 	}
 
 	// ------------------------------------
@@ -174,6 +195,7 @@
 		"en"		"Points: {1} \nKills: {2} \nDeaths: {3} \nKDR: {4} \nAssists: {5} \nMaximum kills per round: {6} \nRounds played: {7} \nWon rounds: {8} \nLost rounds: {9} \nPlayed time: {10} h"
 		"ru"		"Поинты: {1} \nУбийств: {2} \nСмертей: {3} \nKDR: {4} \nАссистов: {5} \nМаксимум убийств за раунд: {6} \nРаундов сыграно: {7} \nВыиграно: {8} \nПроиграно: {9} \nНаигранное время: {10} ч"
 		"ua"		"Поінти: {1} \nВбивств: {2} \nСмертей: {3} \nKDR: {4} \nАсистів: {5} \nМаксимум вбивств за раунд: {6} \nРаундів відіграно: {7} \nВиграно: {8} \nПрограно: {9} \nНаграний час: {10} г"
+		"tr"		"Puanlar: {1} \nÖldürmeler: {2} \nÖlümler: {3} \nKDR: {4} \nAsistler: {5} \nTur başına en fazla kill alma: {6} \nOynadığın tur: {7} \nKazandığın tur: {8} \nKaybettiğin tur: {9} \nOynadığın zaman: {10} sa"
 	}
 	"PlayerSessionData"
 	{
@@ -181,6 +203,7 @@
 		"en"		"Points: {1} \nKills: {2} \nDeaths: {3} \nKDR: {4} \nAssists: {5} \nRounds played: {6} \nWon rounds: {7} \nLost rounds: {8}"
 		"ru"		"Поинты: {1} \nУбийств: {2} \nСмертей: {3} \nKDR: {4} \nАссистов: {5} \nРаундов сыграно: {6} \nВыиграно: {7} \nПроиграно: {8}"
 		"ua"		"Поінти: {1} \nВбивств: {2} \nСмертей: {3} \nKDR: {4} \nАсистів: {5} \nРаундів відіграно: {6} \nВиграно: {7} \nПрограно: {8}"
+		"tr"		"Puan: {1} \nÖldürmer: {2} \nÖlüm: {3} \nKDR: {4} \nAsist: {5} \nOynanmış tur: {6} \nKazanılan tur: {7} \nKaybedilen tur: {8}"
 	}
 
 	// ------------------------------------
@@ -190,6 +213,7 @@
 		"en"		"[ {1} ] \nRank is determined by how well you play.\n \nAdditional points for:"
 		"ru"		"[ {1} ] \nВ зависимости от того, насколько хорошо вы играете будет зависит ваше звание.\n \nДополнительные поинты за:"
 		"ua"		"[ {1} ] \nВ залежності від того, наскільки гарно ви граете буде залежить ваше звання.\n \nДодаткові поінти за:"
+		"tr"		"[ {1} ] \nSıralama, ne kadar iyi oynadığınıza ve rütbenize göre belirlenir.\n \nEkstra puanlar:"
 	}
 	"fps_headshot"
 	{
@@ -211,6 +235,7 @@
 		"en"		"Suicide: {1}"
 		"ru"		"Суицид: {1}"
 		"ua"		"Самогубство: {1}"
+		"tr"		"İntihar: {1}"
 	}
 	"fps_teamkill"
 	{
@@ -225,6 +250,7 @@
 		"en"		"Win round: {1}"
 		"ru"		"Победу в раунде: {1}"
 		"ua"		"Перемога в раунді: {1}"
+		"tr"		"Kazanılan tur: {1}"
 	}
 	"fps_loseround"
 	{
@@ -232,6 +258,7 @@
 		"en"		"Lose round: {1}"
 		"ru"		"Проигрыш в раунде: {1}"
 		"ua"		"Програш в раунді: {1}"
+		"tr"		"Kaybedilen tur: {1}"
 	}
 	"fps_mvpround"
 	{
@@ -239,6 +266,7 @@
 		"en"		"MVP: {1}"
 		"ru"		"MVP: {1}"
 		"ua"		"MVP: {1}"
+		"tr"		"EDO: {1}"
 	}
 	"fps_bombplanted"
 	{
@@ -246,6 +274,7 @@
 		"en"		"Bomb planted: {1}"
 		"ru"		"Установку бомбы: {1}"
 		"ua"		"Встановлення бомби: {1}"
+		"tr"		"Bomba kurma: {1}"
 	}
 	"fps_bombdefused"
 	{
@@ -253,6 +282,7 @@
 		"en"		"Bomb defused: {1}"
 		"ru"		"Деактивацию бомбы: {1}"
 		"ua"		"Деактивацію бомби: {1}"
+		"tr"		"Bomba çözmek: {1}"
 	}
 	"fps_bombdropped"
 	{
@@ -260,6 +290,7 @@
 		"en"		"Bomb dropped: {1}"
 		"ru"		"Потерю бомбы: {1}"
 		"ua"		"Втрата бомби: {1}"
+		"tr"		"Bomba düşürmek: {1}"
 	}
 	"fps_bombpickup"
 	{
@@ -267,6 +298,7 @@
 		"en"		"Picking up bomb: {1}"
 		"ru"		"Подбор бомбы: {1}"
 		"ua"		"Підбір бомби: {1}"
+		"tr"		"Bomba almak: {1}"
 	}
 	"fps_hostagekilled"
 	{
@@ -274,6 +306,7 @@
 		"en"		"Hostages killed: {1}"
 		"ru"		"Убиство заложника: {1}"
 		"ua"		"Вбивство заручника: {1}"
+		"tr"		"Rehine öldürmek: {1}"
 	}
 	"fps_hostagerescued"
 	{
@@ -281,6 +314,7 @@
 		"en"		"Hostage rescued: {1}"
 		"ru"		"Спасение заложника: {1}"
 		"ua"		"Спасіння заручника: {1}"
+		"tr"		"Rehine kurtarmark: {1}"
 	}
 	"fps_double_kill"
 	{
@@ -315,18 +349,21 @@
 		"en"		"Statistics Resetting will be available in {1} h"
 		"ru"		"Сброс статистики будет доступен через {1} ч"
 		"ua"		"Стерти статистику можна буде через {1} г"
+		"tr"		"İstatistik sıfırlama işlemi {1} sa"
 	}
 	"AreYouSureResetStats"
 	{
 		"en"		"Are you sure you want to reset your statistics?"
 		"ru"		"Вы уверены, что хотите сбросить статистику?"
 		"ua"		"Ви впевнені, що хочете стерти вашу статистику?"
+		"tr"		"İstatistiklerini sıfırlamak istediğine emin misin?"
 	}
 	"YesImSure"
 	{
 		"en"		"Yes, I'm Sure"
 		"ru"		"Да, я уверен"
 		"ua"		"Так, я впевнений"
+		"tr"		"Evet, eminim"
 	}
 
 	// ------------------------------------
@@ -335,6 +372,7 @@
 		"en"		"Additionally"
 		"ru"		"Дополнительно"
 		"ua"		"Додатково"
+		"tr"		"Ekstra Menü"
 	}
 
 	// Chat -------------------------------
@@ -343,6 +381,7 @@
 		"en"		"Error loading data!"
 		"ru"		"Ошибка загрузки данных"
 		"ua"		"Помилка загрузки даних"
+		"tr"		"Yüklerken bir hata oluştu!"
 	}
 
 	"YourStatsReset"
@@ -350,6 +389,7 @@
 		"en"		"Your statistics have been reset"
 		"ru"		"Ваша статистика обнулена"
 		"ua"		"Ваша статистика обнулена"
+		"tr"		"İstatistiklerin sıfırlandı."
 	}
 
 	"RankUpped"
@@ -358,6 +398,7 @@
 		"en"		"Ranked up: {GREEN}{1}"
 		"ru"		"Ранг повышен: {GREEN}{1}"
 		"ua"		"Ранг підвищений: {GREEN}{1}"
+		"tr"		"Rütbe atlandı: {GREEN}{1}"
 	}
 	"RankDowned"
 	{
@@ -365,6 +406,7 @@
 		"en"		"Ranked down: {RED}{1}"
 		"ru"		"Ранг понижен: {RED}{1}"
 		"ua"		"Ранг знижений: {RED}{1}"
+		"tr"		"Rütbe düşüldü: {RED}{1}"
 	}
 	"CalibrationCompleted"
 	{
@@ -372,6 +414,7 @@
 		"en"		"Rank Calibration completed, your rank is {OLIVE}{1}"
 		"ru"		"Калибровка завершена с рангом {OLIVE}{1}"
 		"ua"		"Калібрування завершено з рангом {OLIVE}{1}"
+		"tr"		"Rütbe kalibrasyonu tamamlandı, rütben: {OLIVE}{1}"
 	}
 
 	"ShowMePosition"
@@ -380,6 +423,7 @@
 		"en"		"You are in {RED}{1} {DEFAULT}place out of {BLUE}{2}{DEFAULT}, with {GREEN}{3} {DEFAULT}points and KDR: {OLIVE}{4}"
 		"ru"		"Вы на {RED}{1} {DEFAULT}месте из {BLUE}{2}{DEFAULT}, с {GREEN}{3} {DEFAULT}очками и KDR: {OLIVE}{4}"
 		"ua"		"Ви на {RED}{1} {DEFAULT}місці з {BLUE}{2}{DEFAULT}, з {GREEN}{3} {DEFAULT}поінтами та KDR: {OLIVE}{4}"
+		"tr"		"{BLUE}{2}{DEFAULT} kişi içerisinde {RED}{1}{DEFAULT}.'sin. Puanın: {GREEN}{3}{DEFAULT} ve KDR: {OLIVE}{4}"
 	}
 	"ShowPlayerPosition"
 	{
@@ -387,6 +431,7 @@
 		"en"		"Player {GREEN}{1} {DEFAULT}in {RED}{2} {DEFAULT}place out of {BLUE}{3}{DEFAULT}, with {GREEN}{4} {DEFAULT}points and KDR: {OLIVE}{5}"
 		"ru"		"Игрок {GREEN}{1} {DEFAULT} на {RED}{2} {DEFAULT}месте из {BLUE}{3}{DEFAULT}, с {GREEN}{4} {DEFAULT}очками и KDR: {OLIVE}{5}"
 		"ua"		"Гравець {GREEN}{1} {DEFAULT}на {RED}{2} {DEFAULT}місці з {BLUE}{3}{DEFAULT}, з {GREEN}{4} {DEFAULT}поінтами та KDR: {OLIVE}{5}"
+		"tr"		"{RED}{1}{DEFAULT}, {BLUE}{2}{DEFAULT} kişi içerisinde {BLUE}{3}{DEFAULT}. Puanı: {GREEN}{4}{DEFAULT} ve KDR: {OLIVE}{5}"
 	}
 
 	"PrintPoints"
@@ -395,6 +440,7 @@
 		"en"		"Your points: {OLIVE}{1}{DEFAULT}"
 		"ru"		"Ваши поинты: {OLIVE}{1}{DEFAULT}"
 		"ua"		"Ваші поінти: {OLIVE}{1}{DEFAULT}"
+		"tr"		"Puanın: {OLIVE}{1}{DEFAULT}"
 	}
 
 	"ResultOfRoundPositive"
@@ -403,6 +449,7 @@
 		"en"		"Result for this round: {GREEN}+{1}{DEFAULT}"
 		"ru"		"Итог за этот раунд: {GREEN}+{1}{DEFAULT}"
 		"ua"		"Підсумок за цей раунд: {GREEN}+{1}{DEFAULT}"
+		"tr"		"Bu tur için değerlendirme: {GREEN}+{1}{DEFAULT}"
 	}
 
 	"ResultOfRoundNegative"
@@ -411,6 +458,7 @@
 		"en"		"Result for this round: {RED}{1}{DEFAULT}"
 		"ru"		"Итог за этот раунд: {RED}{1}{DEFAULT}"
 		"ua"		"Підсумок за цей раунд: {RED}{1}{DEFAULT}"
+		"tr"		"Bu tur için değerlendirme: {RED}{1}{DEFAULT}"
 	}
 
 	"ResultOfLifetimePositive"
@@ -419,6 +467,7 @@
 		"en"		"Result for this lifetime: {GREEN}+{1}{DEFAULT}"
 		"ru"		"Результат за эту жизнь: {GREEN}+{1}{DEFAULT}"
 		"ua"		"Результат за це життя: {GREEN}+{1}{DEFAULT}"
+		"tr"		"Genel için değerlendirme: {GREEN}+{1}{DEFAULT}"
 	}
 
 	"ResultOfLifetimeNegative"
@@ -427,6 +476,7 @@
 		"en"		"Result for this lifetime: {RED}{1}{DEFAULT}"
 		"ru"		"Результат за эту жизнь: {RED}{1}{DEFAULT}"
 		"ua"		"Результат за це життя: {RED}{1}{DEFAULT}"
+		"tr"		"Genel için değerlendirme: {RED}+{1}{DEFAULT}"
 	}
 
 	"AdditionalPointsPositive"
@@ -435,6 +485,7 @@
 		"en"		"Additional points: {GREEN}+{1}{DEFAULT}"
 		"ru"		"Дополнительные поинты: {GREEN}+{1}{DEFAULT}"
 		"ua"		"Додаткові поінти: {GREEN}+{1}{DEFAULT}"
+		"tr"		"Ek puanlar: {GREEN}+{1}{DEFAULT}"
 	}
 
 	"AdditionalPointsNegative"
@@ -443,6 +494,7 @@
 		"en"		"Additional points: {RED}{1}{DEFAULT}"
 		"ru"		"Дополнительные поинты: {RED}{1}{DEFAULT}"
 		"ua"		"Додаткові поінти: {RED}{1}{DEFAULT}"
+		"tr"		"Ek puanlar: {RED}{1}{DEFAULT}"
 	}
 
 	"WinRound"
@@ -450,6 +502,7 @@
 		"en"		"for win round"
 		"ru"		"за победу в раунде"
 		"ua"		"за перемогу в раунді"
+		"tr"		"Kazanılan tur"
 	}
 
 	"LoseRound"
@@ -457,6 +510,7 @@
 		"en"		"for lose round"
 		"ru"		"за проигрыш раунда"
 		"ua"		"за програш у раунді"
+		"tr"		"Kaybedilen tur"
 	}
 
 	"StatsWarmupBlocked"
@@ -464,6 +518,7 @@
 		"en"		"Stats disabled on warm-up"
 		"ru"		"Статистика отключена на разминке"
 		"ua"		"Статистика відключена на розминці"
+		"tr"		"İstatistikler ısınma turunda kapalıdır!"
 	}
 
 	"NoPlayersForStatsWork"
@@ -472,5 +527,6 @@
 		"en"		"Statistics need a minimum of {GREEN}{1} {DEFAULT}players."
 		"ru"		"Для работы статистики нужно минимум {GREEN}{1} {DEFAULT}игрока."
 		"ua"		"Для роботи статистики необхідно мінімум {GREEN}{1} {DEFAULT}гравці."
+		"tr"		"İstatistiklerin kaydedilmesi için minimum  {GREEN}{1} {DEFAULT}oyuncu oynamalıdır."
 	}
 }
