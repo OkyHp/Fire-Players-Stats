@@ -1,6 +1,7 @@
 /**
  *	v1.0.2 -	Add debug;
  *				Slight logic optimization.
+ *	v1.0.3 -	Add check reset stas cvar.
  */
 
 #pragma semicolon 1
@@ -23,7 +24,8 @@
 #endif
 
 int			g_iPlayerData[MAXPLAYERS+1][13],
-			g_iMapSessionTime[MAXPLAYERS+1];
+			g_iMapSessionTime[MAXPLAYERS+1],
+			g_iResetStatsTime;
 char		g_sCurrentMap[256];
 Database	g_hDatabase;
 
@@ -50,7 +52,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Maps Stats",
 	author	=	"OkyHp",
-	version	=	"1.0.2",
+	version	=	"1.0.3",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -125,14 +127,6 @@ public void FPS_OnDatabaseConnected(Database hDatabase)
 					UNIQUE(`account_id`, `server_id`, `name_map`) \
 				) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		}
-
-		for (int i = MaxClients+1; --i;)
-		{
-			if (FPS_ClientLoaded(i))
-			{
-				FPS_OnClientLoaded(i, 0.0);
-			}
-		}
 	}
 	FPS_Debug("FPS_OnDatabaseConnected >> %i", view_as<int>(g_hDatabase))
 }
@@ -150,6 +144,14 @@ void SQL_Callback_CreateTable(Database hDatabase, DBResultSet hResult, const cha
 		g_hDatabase.Query(SQL_Default_Callback, "SET CHARSET 'utf8mb4'", 2);
 		g_hDatabase.SetCharset("utf8mb4");
 	}
+
+	for (int i = MaxClients + 1; --i;)
+	{
+		if (FPS_ClientLoaded(i))
+		{
+			FPS_OnClientLoaded(i, 0.0);
+		}
+	}
 }
 
 void SQL_Default_Callback(Database hDatabase, DBResultSet hResult, const char[] szError, any QueryID)
@@ -164,6 +166,15 @@ public void FPS_OnFPSStatsLoaded()
 {
 	FPS_AddFeature(g_sFeature[0], FPS_STATS_MENU, OnItemSelectStatsMenu, OnItemDisplayStatsMenu);
 	FPS_AddFeature(g_sFeature[1], FPS_TOP_MENU, OnItemSelectTopMenu, OnItemDisplayTopMenu);
+
+	ConVar Convar;
+	(Convar = FindConVar("sm_fps_reset_stats_time")).AddChangeHook(ChangeCvar_ResetStatsTime);
+	ChangeCvar_ResetStatsTime(Convar, NULL_STRING, NULL_STRING);
+}
+
+void ChangeCvar_ResetStatsTime(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_iResetStatsTime = Convar.IntValue;
 }
 
 public void OnPluginEnd()
@@ -174,7 +185,7 @@ public void OnPluginEnd()
 		FPS_RemoveFeature(g_sFeature[1]);
 	}
 
-	for (int i = MaxClients+1; --i;)
+	for (int i = MaxClients + 1; --i;)
 	{
 		OnClientDisconnect(i);
 	}
@@ -399,9 +410,22 @@ void StatsMapMenu(int iClient)
 		szSubData);
 	hPanel.DrawText(szBuffer);
 
-	FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsByMaps");
 	hPanel.CurrentKey = 1;
-	hPanel.DrawItem(szBuffer);
+	if (g_iResetStatsTime)
+	{
+		int iPlayedTime = FPS_GetPlayedTime(iClient);
+		if (iPlayedTime < g_iResetStatsTime)
+		{
+			float fResult = float(g_iResetStatsTime - iPlayedTime);
+			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsLock", fResult > 0 ? (fResult / 60 / 60) : 0.0);
+			hPanel.DrawText(szBuffer);
+		}
+		else
+		{
+			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsByMaps");
+			hPanel.DrawItem(szBuffer);
+		}
+	}
 
 	FormatEx(SZF(szBuffer), "%t", "Back");
 	hPanel.CurrentKey = 7;

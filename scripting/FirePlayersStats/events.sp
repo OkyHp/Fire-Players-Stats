@@ -301,7 +301,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 
 				for (int i = MaxClients + 1; --i;)
 				{
-					if (g_bStatsLoad[i] && g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] && (iTeam = GetClientTeam(i)) > 1)
+					if (g_bStatsLoad[i] && g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] == 1 && (iTeam = GetClientTeam(i)) > 1)
 					{
 						if (iMaxRoundsKills[i] > g_iPlayerData[i][MAX_ROUNDS_KILLS])
 						{

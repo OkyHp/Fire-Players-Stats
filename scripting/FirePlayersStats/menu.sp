@@ -256,6 +256,8 @@ int Handler_PanelResetStats(Menu hPanel, MenuAction action, int iClient, int iOp
 		{
 			ResetData(iClient, true);
 			SavePlayerData(iClient);
+			CallForward_OnFPSResetGeneralStats(iClient);
+			
 			FPS_PrintToChat(iClient, "%t", "YourStatsReset");
 			PlayItemSelectSound(iClient, false);
 		}
@@ -508,9 +510,13 @@ void ShowStatsInfoMenu(int iClient)
 					++i;
 				#endif
 
-				g_hWeaponsConfigKV.GetSectionName(SZF(szParam));
-				FormatEx(SZF(szBuffer), "%t", szParam, g_hWeaponsConfigKV.GetFloat(NULL_STRING, 0.0));
-				hMenu.AddItem(NULL_STRING, szBuffer, ITEMDRAW_DISABLED);
+				float fPoints = g_hWeaponsConfigKV.GetFloat(NULL_STRING, 0.0);
+				if (fPoints)
+				{
+					g_hWeaponsConfigKV.GetSectionName(SZF(szParam));
+					FormatEx(SZF(szBuffer), "%t", szParam, fPoints);
+					hMenu.AddItem(NULL_STRING, szBuffer, ITEMDRAW_DISABLED);
+				}
 			} while (g_hWeaponsConfigKV.GotoNextKey(false));
 		}
 	}

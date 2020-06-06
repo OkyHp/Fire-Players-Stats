@@ -32,7 +32,7 @@ bool CheckDatabaseConnection(const char[] szErrorTag, const char[] szError, Hand
 
 			delete g_hDatabase;
 			CallForward_OnFPSDatabaseLostConnection();
-			CreateTimer(g_fDBRetryConnTime, Timer_DatabaseRetryConn, _, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(g_fDBRetryConnTime, Timer_DatabaseRetryConn);
 		}
 		return false;
 	}
@@ -47,7 +47,7 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 		if (StrContains(szError, "Can't connect to MySQL server", false) != -1)
 		{
 			FPS_Debug("OnDatabaseConnect >> Can't connect to MySQL server")
-			CreateTimer(g_fDBRetryConnTime, Timer_DatabaseRetryConn, _, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(g_fDBRetryConnTime, Timer_DatabaseRetryConn);
 		}
 		return;
 	}

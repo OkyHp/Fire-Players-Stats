@@ -129,10 +129,10 @@
 	"TopTitle"
 	{
 		"#format"	"{1:t}"
-		"en"		"[ {1} ] \nAttention, information is updated periodically"
-		"ru"		"[ {1} ] \nВнимание, информация обновляется через определенное время"
-		"ua"		"[ {1} ] \nУвага, інформація оновлюеться через певний час"
-		"tr"		"[ {1} ] \nDikkat, sistem periyodik olarak güncellenir."
+		"en"		"[ {1} ] \nInformation is updated periodically!"
+		"ru"		"[ {1} ] \nИнформация обновляется через определенное время!"
+		"ua"		"[ {1} ] \nІнформація оновлюеться через певний час!"
+		"tr"		"[ {1} ] \nSistem periyodik olarak güncellenir!"
 	}
 	"ListsOfTops"
 	{

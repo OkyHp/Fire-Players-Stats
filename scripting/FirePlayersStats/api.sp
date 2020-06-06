@@ -1,13 +1,14 @@
-// Forvards
-static Handle	g_hGlobalForvard_OnFPSStatsLoaded,
-				g_hGlobalForvard_OnFPSDatabaseConnected,
-				g_hGlobalForvard_OnFPSDatabaseLostConnection,
-				g_hGlobalForvard_OnFPSClientLoaded,
-				g_hGlobalForvard_OnFPSPointsChangePre,
-				g_hGlobalForvard_OnFPSPointsChange,
-				g_hGlobalForvard_OnFPSPlayerPosition,
-				g_hGlobalForvard_OnFPSSecondDataUpdated,
-				g_hGlobalForvard_OnFPSLevelChange;
+// Forwards
+static Handle	g_hGlobalForward_OnFPSStatsLoaded,
+				g_hGlobalForward_OnFPSDatabaseConnected,
+				g_hGlobalForward_OnFPSDatabaseLostConnection,
+				g_hGlobalForward_OnFPSClientLoaded,
+				g_hGlobalForward_OnFPSPointsChangePre,
+				g_hGlobalForward_OnFPSPointsChange,
+				g_hGlobalForward_OnFPSPlayerPosition,
+				g_hGlobalForward_OnFPSSecondDataUpdated,
+				g_hGlobalForward_OnFPSLevelChange,
+				g_hGlobalForward_OnFPSResetGeneralStats;
 
 // For print natives
 #define CSGO_COL_COUNT		16
@@ -27,39 +28,40 @@ static const char g_sColorsC[CSGO_COL_COUNT][] = {
 
 void CreateGlobalForwards()
 {
-	g_hGlobalForvard_OnFPSStatsLoaded				= CreateGlobalForward("FPS_OnFPSStatsLoaded",			ET_Ignore);
-	g_hGlobalForvard_OnFPSDatabaseConnected			= CreateGlobalForward("FPS_OnDatabaseConnected",		ET_Ignore,	Param_Cell);
-	g_hGlobalForvard_OnFPSDatabaseLostConnection	= CreateGlobalForward("FPS_OnDatabaseLostConnection",	ET_Ignore);
-	g_hGlobalForvard_OnFPSClientLoaded				= CreateGlobalForward("FPS_OnClientLoaded",				ET_Ignore,	Param_Cell, Param_Cell);
-	g_hGlobalForvard_OnFPSPointsChangePre			= CreateGlobalForward("FPS_OnPointsChangePre",			ET_Hook,	Param_Cell, Param_Cell, Param_Cell, Param_FloatByRef, Param_FloatByRef);
-	g_hGlobalForvard_OnFPSPointsChange				= CreateGlobalForward("FPS_OnPointsChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Float, Param_Float);
-	g_hGlobalForvard_OnFPSPlayerPosition			= CreateGlobalForward("FPS_PlayerPosition",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
-	g_hGlobalForvard_OnFPSSecondDataUpdated			= CreateGlobalForward("FPS_OnSecondDataUpdated",		ET_Ignore);
-	g_hGlobalForvard_OnFPSLevelChange				= CreateGlobalForward("FPS_OnLevelChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
+	g_hGlobalForward_OnFPSStatsLoaded				= CreateGlobalForward("FPS_OnFPSStatsLoaded",			ET_Ignore);
+	g_hGlobalForward_OnFPSDatabaseConnected			= CreateGlobalForward("FPS_OnDatabaseConnected",		ET_Ignore,	Param_Cell);
+	g_hGlobalForward_OnFPSDatabaseLostConnection	= CreateGlobalForward("FPS_OnDatabaseLostConnection",	ET_Ignore);
+	g_hGlobalForward_OnFPSClientLoaded				= CreateGlobalForward("FPS_OnClientLoaded",				ET_Ignore,	Param_Cell, Param_Cell);
+	g_hGlobalForward_OnFPSPointsChangePre			= CreateGlobalForward("FPS_OnPointsChangePre",			ET_Hook,	Param_Cell, Param_Cell, Param_Cell, Param_FloatByRef, Param_FloatByRef);
+	g_hGlobalForward_OnFPSPointsChange				= CreateGlobalForward("FPS_OnPointsChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Float, Param_Float);
+	g_hGlobalForward_OnFPSPlayerPosition			= CreateGlobalForward("FPS_PlayerPosition",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
+	g_hGlobalForward_OnFPSSecondDataUpdated			= CreateGlobalForward("FPS_OnSecondDataUpdated",		ET_Ignore);
+	g_hGlobalForward_OnFPSLevelChange				= CreateGlobalForward("FPS_OnLevelChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
+	g_hGlobalForward_OnFPSResetGeneralStats			= CreateGlobalForward("FPS_OnResetGeneralStats",		ET_Ignore,	Param_Cell);
 }
 
 void CallForward_OnFPSStatsLoaded()
 {
-	Call_StartForward(g_hGlobalForvard_OnFPSStatsLoaded);
+	Call_StartForward(g_hGlobalForward_OnFPSStatsLoaded);
 	Call_Finish();
 }
 
 void CallForward_OnFPSDatabaseConnected()
 {
-	Call_StartForward(g_hGlobalForvard_OnFPSDatabaseConnected);
+	Call_StartForward(g_hGlobalForward_OnFPSDatabaseConnected);
 	Call_PushCell(g_hDatabase);
 	Call_Finish();
 }
 
 void CallForward_OnFPSDatabaseLostConnection()
 {
-	Call_StartForward(g_hGlobalForvard_OnFPSDatabaseLostConnection);
+	Call_StartForward(g_hGlobalForward_OnFPSDatabaseLostConnection);
 	Call_Finish();
 }
 
 void CallForward_OnFPSClientLoaded(int iClient, float fPoints)
 {
-	Call_StartForward(g_hGlobalForvard_OnFPSClientLoaded);
+	Call_StartForward(g_hGlobalForward_OnFPSClientLoaded);
 	Call_PushCell(iClient);
 	Call_PushCell(fPoints);
 	Call_Finish();
@@ -68,7 +70,7 @@ void CallForward_OnFPSClientLoaded(int iClient, float fPoints)
 Action CallForward_OnFPSPointsChangePre(int iAttacker, int iVictim, Event hEvent, float& fAddPointsAttacker, float& fAddPointsVictim)
 {
 	Action Result = Plugin_Continue;
-	Call_StartForward(g_hGlobalForvard_OnFPSPointsChangePre);
+	Call_StartForward(g_hGlobalForward_OnFPSPointsChangePre);
 	Call_PushCell(iAttacker);
 	Call_PushCell(iVictim);
 	Call_PushCell(hEvent);
@@ -80,7 +82,7 @@ Action CallForward_OnFPSPointsChangePre(int iAttacker, int iVictim, Event hEvent
 
 void CallForward_OnFPSPointsChange(int iAttacker, int iVictim, float fPointsAttacker, float fPointsVictim)
 {
-	Call_StartForward(g_hGlobalForvard_OnFPSPointsChange);
+	Call_StartForward(g_hGlobalForward_OnFPSPointsChange);
 	Call_PushCell(iAttacker);
 	Call_PushCell(iVictim);
 	Call_PushFloat(fPointsAttacker);
@@ -90,7 +92,7 @@ void CallForward_OnFPSPointsChange(int iAttacker, int iVictim, float fPointsAtta
 
 void CallForward_OnFPSLevelChange(int iClient, int iOldLevel, int iNewLevel)
 {
-	Call_StartForward(g_hGlobalForvard_OnFPSLevelChange);
+	Call_StartForward(g_hGlobalForward_OnFPSLevelChange);
 	Call_PushCell(iClient);
 	Call_PushCell(iOldLevel);
 	Call_PushCell(iNewLevel);
@@ -99,7 +101,7 @@ void CallForward_OnFPSLevelChange(int iClient, int iOldLevel, int iNewLevel)
 
 void CallForward_OnFPSPlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
-	Call_StartForward(g_hGlobalForvard_OnFPSPlayerPosition);
+	Call_StartForward(g_hGlobalForward_OnFPSPlayerPosition);
 	Call_PushCell(iClient);
 	Call_PushCell(iPosition);
 	Call_PushCell(iPlayersCount);
@@ -108,7 +110,14 @@ void CallForward_OnFPSPlayerPosition(int iClient, int iPosition, int iPlayersCou
 
 void CallForward_OnFPSSecondDataUpdated()
 {
-	Call_StartForward(g_hGlobalForvard_OnFPSSecondDataUpdated);
+	Call_StartForward(g_hGlobalForward_OnFPSSecondDataUpdated);
+	Call_Finish();
+}
+
+void CallForward_OnFPSResetGeneralStats(int iClient)
+{
+	Call_StartForward(g_hGlobalForward_OnFPSResetGeneralStats);
+	Call_PushCell(iClient);
 	Call_Finish();
 }
 
