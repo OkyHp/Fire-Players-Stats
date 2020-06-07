@@ -495,6 +495,7 @@ int Handler_PanelResetStatsByMaps(Menu hPanel, MenuAction action, int iClient, i
 		if (iOption != 7 && iOption != 9 && g_hDatabase)
 		{
 			ResetPlayerStats(iClient);
+			FPS_PrintToChat(iClient, "%t", "YourStatsReset");
 			PlayItemSelectSound(iClient, false);
 		}
 		else
@@ -515,7 +516,6 @@ void ResetPlayerStats(int iClient)
 		g_iPlayerData[iClient][i] = 0;
 	}
 	SavePlayerData(iClient, true);
-	FPS_PrintToChat(iClient, "%t", "YourStatsReset");
 }
 
 public void FPS_OnResetGeneralStats(int iClient)
