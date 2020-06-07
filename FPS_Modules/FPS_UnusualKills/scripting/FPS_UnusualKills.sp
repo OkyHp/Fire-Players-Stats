@@ -603,7 +603,6 @@ int Handler_PanelResetStatsByMaps(Menu hPanel, MenuAction action, int iClient, i
 		if (iOption != 7 && iOption != 9 && g_hDatabase)
 		{
 			ResetPlayerStats(iClient);
-			FPS_PrintToChat(iClient, "%t", "YourStatsReset");
 			PlayItemSelectSound(iClient, false);
 		}
 		else
@@ -636,6 +635,8 @@ void ResetPlayerStats(int iClient)
 		sColumns[strlen(sColumns)-2] = '\0';
 		FormatEx(sQuery, sizeof(sQuery), SQL_SavePlayer, sColumns, g_iPlayerAccountID[iClient], FPS_GetID(FPS_SERVER_ID));
 		g_hDatabase.Query(SQL_Default_Callback, sQuery, 5);
+
+		FPS_PrintToChat(iClient, "%t", "YourStatsReset");
 	}
 }
 
@@ -649,7 +650,7 @@ public void FPS_OnFPSResetAllStats()
 			{
 				for (int u = MAX_UKTYPES; u--;)
 				{
-					g_iUK[i][u] = 0;	
+					g_iUK[i][u] = 0;
 				}
 			}
 		}
