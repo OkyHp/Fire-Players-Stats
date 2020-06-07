@@ -42,7 +42,7 @@ public void __pl_fire_players_stats_SetNTVOptional()
 }
 #endif
 
-#define FPS_INC_VER				153
+#define FPS_INC_VER				154
 #define UID(%0)					GetClientUserId(%0)
 #define CID(%0)					GetClientOfUserId(%0)
 #define SZF(%0)					%0, sizeof(%0)
@@ -157,6 +157,21 @@ forward void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount);
  *	@noreturn
 */
 forward void FPS_OnSecondDataUpdated();
+
+/**
+ *	Вызывается при обнулении статистики для игрока.
+ *
+ *	@param iClient			Индекс игрока.
+ *	@noreturn
+*/
+forward void FPS_OnResetGeneralStats(int iClient);
+
+/**
+ *	Вызывается при обнулении всей статистики.
+ *
+ *	@noreturn
+*/
+forward void FPS_OnFPSResetAllStats();
 
 
 

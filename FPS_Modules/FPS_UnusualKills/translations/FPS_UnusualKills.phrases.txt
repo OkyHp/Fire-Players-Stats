@@ -231,4 +231,11 @@
 		"ua"			"TOP-10 вбивств останнім патроном"
 		"tr"			"En çok son mermi vuruşu yapan 10 oyuncu"
 	}
+
+	"ResetPlayerStatsByUnusualKills"
+	{
+		"en"		"Reset my stat by unusual kills"
+		"ru"		"Сбросить мою статистику по необычным убийствам"
+		"ua"		"Стерти мою статистику по незвичайних вбивствах"
+	}
 }

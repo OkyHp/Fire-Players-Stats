@@ -2,6 +2,7 @@
  *	v1.0.2 -	Add debug;
  *				Slight logic optimization.
  *	v1.0.3 -	Add check reset stas cvar.
+ *				Added reset stats, when resetting general stats for player or all players.
  */
 
 #pragma semicolon 1
@@ -12,8 +13,8 @@
 
 #define DEBUG			0	// Enable/Disable debug mod
 
-#if FPS_INC_VER != 153
-	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 153"
+#if FPS_INC_VER != 154
+	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 154"
 #endif
 
 #if DEBUG == 1
@@ -493,13 +494,7 @@ int Handler_PanelResetStatsByMaps(Menu hPanel, MenuAction action, int iClient, i
 	{
 		if (iOption != 7 && iOption != 9 && g_hDatabase)
 		{
-			for (int i = sizeof(g_iPlayerData[]) - 1; i--;)
-			{
-				g_iPlayerData[iClient][i] = 0;
-			}
-			SavePlayerData(iClient, true);
-			FPS_PrintToChat(iClient, "%t", "YourStatsReset");
-			PlayItemSelectSound(iClient, false);
+			ResetPlayerStats(iClient);
 		}
 		else
 		{
@@ -509,6 +504,40 @@ int Handler_PanelResetStatsByMaps(Menu hPanel, MenuAction action, int iClient, i
 			}
 			PlayItemSelectSound(iClient, true);
 		}
+	}
+}
+
+void ResetPlayerStats(int iClient)
+{
+	for (int i = sizeof(g_iPlayerData[]) - 1; i--;)
+	{
+		g_iPlayerData[iClient][i] = 0;
+	}
+	SavePlayerData(iClient, true);
+	FPS_PrintToChat(iClient, "%t", "YourStatsReset");
+	PlayItemSelectSound(iClient, false);
+}
+
+public void FPS_OnResetGeneralStats(int iClient)
+{
+	ResetPlayerStats(iClient);
+}
+
+public void FPS_OnFPSResetAllStats()
+{
+	if (g_hDatabase)
+	{
+		for (int i = MaxClients + 1; --i;)
+		{
+			if (FPS_ClientLoaded(i))
+			{
+				ResetPlayerStats(i);
+			}
+		}
+
+		char szQuery[128];
+		FormatEx(szQuery, sizeof(szQuery), "DELETE FROM `fps_maps` WHERE `server_id` = %i", FPS_GetID(FPS_SERVER_ID));
+		g_hDatabase.Query(SQL_Default_Callback, szQuery, 4);
 	}
 }
 
@@ -571,7 +600,7 @@ int Handler_TopMapmenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 						FPS_GetID(FPS_SERVER_ID), g_sCurrentMap);
 				}
 				FPS_Debug("Handler_TopMapmenu (%i) >> %N >> %s", iItem, iClient, szQuery)
-				g_hDatabase.Query(SQL_Callback_TopData, szQuery, UID(iClient) << 4 | iItem);
+				g_hDatabase.Query(SQL_Callback_TopData, szQuery, UID(iClient) << 16 | iItem);
 			}
 		}
 	}
@@ -585,7 +614,7 @@ public void SQL_Callback_TopData(Database hDatabase, DBResultSet hResult, const 
 		return;
 	}
 
-	int	iClient = CID(iData >> 4);
+	int	iClient = CID(iData >>> 16);
 	if (!iClient)
 	{
 		return;

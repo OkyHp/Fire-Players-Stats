@@ -279,6 +279,8 @@ Action CommandResetAllStats(int iClient, int iArgs)
 				`s`.`server_id` = %i;", g_iServerID);
 		FPS_Debug("CommandResetAllStats >> Query: %s", szQuery)
 		g_hDatabase.Query(SQL_Default_Callback, szQuery, 4);
+
+		CallForward_OnFPSResetAllStats();
 	}
 	return Plugin_Handled;
 }

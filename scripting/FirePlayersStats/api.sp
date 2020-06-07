@@ -8,7 +8,8 @@ static Handle	g_hGlobalForward_OnFPSStatsLoaded,
 				g_hGlobalForward_OnFPSPlayerPosition,
 				g_hGlobalForward_OnFPSSecondDataUpdated,
 				g_hGlobalForward_OnFPSLevelChange,
-				g_hGlobalForward_OnFPSResetGeneralStats;
+				g_hGlobalForward_OnFPSResetGeneralStats,
+				g_hGlobalForward_OnFPSResetAllStats;
 
 // For print natives
 #define CSGO_COL_COUNT		16
@@ -38,6 +39,7 @@ void CreateGlobalForwards()
 	g_hGlobalForward_OnFPSSecondDataUpdated			= CreateGlobalForward("FPS_OnSecondDataUpdated",		ET_Ignore);
 	g_hGlobalForward_OnFPSLevelChange				= CreateGlobalForward("FPS_OnLevelChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
 	g_hGlobalForward_OnFPSResetGeneralStats			= CreateGlobalForward("FPS_OnResetGeneralStats",		ET_Ignore,	Param_Cell);
+	g_hGlobalForward_OnFPSResetAllStats				= CreateGlobalForward("FPS_OnFPSResetAllStats",			ET_Ignore);
 }
 
 void CallForward_OnFPSStatsLoaded()
@@ -118,6 +120,12 @@ void CallForward_OnFPSResetGeneralStats(int iClient)
 {
 	Call_StartForward(g_hGlobalForward_OnFPSResetGeneralStats);
 	Call_PushCell(iClient);
+	Call_Finish();
+}
+
+void CallForward_OnFPSResetAllStats()
+{
+	Call_StartForward(g_hGlobalForward_OnFPSResetAllStats);
 	Call_Finish();
 }
 
