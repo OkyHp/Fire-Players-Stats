@@ -8,7 +8,8 @@ int			g_iServerID,
 			g_iSaveInterval,
 			g_iInfoMessage;
 bool		g_bShowStatsEveryone,
-			g_bBlockStatsOnWarmup;
+			g_bBlockStatsOnWarmup,
+			g_bResetModulesStats;
 float		g_fDBRetryConnTime,
 			g_fCoeff,
 			g_fExtraPoints[18];
@@ -102,6 +103,12 @@ void SetCvars()
 		_, true, 0.0
 	)).AddChangeHook(ChangeCvar_ResetStatsTime);
 	ChangeCvar_ResetStatsTime(Convar, NULL_STRING, NULL_STRING);
+
+	Convar = CreateConVar(
+		"sm_fps_reset_modules_stats",		"0", 
+		"Разрешить модулям дополнительной статистики обнулять только свои данные, независимо от основной статистики", 
+		_, true, 0.0, true, 1.0
+	);
 
 	(Convar = CreateConVar(
 		"sm_fps_show_stats_everyone",		"1", 
