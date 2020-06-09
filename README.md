@@ -44,7 +44,7 @@
 ## Requirements
 
   - [**Sourcemod 1.10+**](https://www.sourcemod.net/downloads.php?branch=stable)
-  - [**SteamWorks**](http://users.alliedmods.net/~kyles/builds/SteamWorks/)
+  - [**SteamWorks (Optional)**](https://users.alliedmods.net/~kyles/builds/SteamWorks/)
 
 ## Installation
 
