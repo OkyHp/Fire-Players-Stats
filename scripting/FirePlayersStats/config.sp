@@ -8,8 +8,7 @@ int			g_iServerID,
 			g_iSaveInterval,
 			g_iInfoMessage;
 bool		g_bShowStatsEveryone,
-			g_bBlockStatsOnWarmup,
-			g_bResetModulesStats;
+			g_bBlockStatsOnWarmup;
 float		g_fDBRetryConnTime,
 			g_fCoeff,
 			g_fExtraPoints[18];
