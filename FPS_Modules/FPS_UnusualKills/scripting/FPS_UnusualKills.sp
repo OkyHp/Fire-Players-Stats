@@ -68,7 +68,8 @@ FROM \
 WHERE `u`.`server_id` = %i ORDER BY `u`.`%s` DESC LIMIT 10;"
 
 bool  	g_bOPKill,
-		g_bShowItem[MAX_UKTYPES];
+		g_bShowItem[MAX_UKTYPES],
+		g_bResetModuleStats;
 
 int 	g_iPlayerAccountID[MAXPLAYERS+1],
 		g_iExp[MAX_UKTYPES],
@@ -185,6 +186,8 @@ public void FPS_OnFPSStatsLoaded()
 	ConVar Convar;
 	(Convar = FindConVar("sm_fps_reset_stats_time")).AddChangeHook(ChangeCvar_ResetStatsTime);
 	ChangeCvar_ResetStatsTime(Convar, NULL_STRING, NULL_STRING);
+	(Convar = FindConVar("sm_fps_reset_modules_stats")).AddChangeHook(ChangeCvar_ResetModuleStats);
+	ChangeCvar_ResetModuleStats(Convar, NULL_STRING, NULL_STRING);
 
 	for (int i = 1; i <= MaxClients; ++i)
 	{
@@ -198,6 +201,11 @@ public void FPS_OnFPSStatsLoaded()
 void ChangeCvar_ResetStatsTime(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iResetStatsTime = Convar.IntValue;
+}
+
+void ChangeCvar_ResetModuleStats(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_bResetModuleStats = Convar.BoolValue;
 }
 
 public void OnPluginEnd()
@@ -520,7 +528,7 @@ void UnusualKillMenu(int iClient)
 	hPanel.DrawText(sBuffer);
 
 	hPanel.CurrentKey = 1;
-	if (g_iResetStatsTime)
+	if (g_bResetModuleStats && g_iResetStatsTime)
 	{
 		int iPlayedTime = FPS_GetPlayedTime(iClient);
 		if (iPlayedTime < g_iResetStatsTime)

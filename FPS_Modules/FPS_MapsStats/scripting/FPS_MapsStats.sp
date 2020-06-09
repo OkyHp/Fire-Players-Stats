@@ -27,6 +27,7 @@
 int			g_iPlayerData[MAXPLAYERS+1][13],
 			g_iMapSessionTime[MAXPLAYERS+1],
 			g_iResetStatsTime;
+bool		g_bResetModuleStats;
 char		g_sCurrentMap[256];
 Database	g_hDatabase;
 
@@ -171,11 +172,18 @@ public void FPS_OnFPSStatsLoaded()
 	ConVar Convar;
 	(Convar = FindConVar("sm_fps_reset_stats_time")).AddChangeHook(ChangeCvar_ResetStatsTime);
 	ChangeCvar_ResetStatsTime(Convar, NULL_STRING, NULL_STRING);
+	(Convar = FindConVar("sm_fps_reset_modules_stats")).AddChangeHook(ChangeCvar_ResetModuleStats);
+	ChangeCvar_ResetModuleStats(Convar, NULL_STRING, NULL_STRING);
 }
 
 void ChangeCvar_ResetStatsTime(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iResetStatsTime = Convar.IntValue;
+}
+
+void ChangeCvar_ResetModuleStats(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_bResetModuleStats = Convar.BoolValue;
 }
 
 public void OnPluginEnd()
@@ -412,7 +420,7 @@ void StatsMapMenu(int iClient)
 	hPanel.DrawText(szBuffer);
 
 	hPanel.CurrentKey = 1;
-	if (g_iResetStatsTime)
+	if (g_bResetModuleStats && g_iResetStatsTime)
 	{
 		int iPlayedTime = FPS_GetPlayedTime(iClient);
 		if (iPlayedTime < g_iResetStatsTime)
