@@ -4,6 +4,8 @@
 #include <sourcemod>
 #include <sdktools>
 #include <FirePlayersStats>
+
+#undef REQUIRE_EXTENSIONS
 #include <SteamWorks>
 
 #if FPS_INC_VER != 154
@@ -34,7 +36,9 @@ int			g_iPlayerData[MAXPLAYERS+1][7],
 			g_iPlayerAccountID[MAXPLAYERS+1],
 			g_iPlayerPosition[MAXPLAYERS+1],
 			g_iPlayersCount,
-			g_iGameType[2];
+			g_iGameType[2],
+			g_iServerIP,
+			g_iServerPort;
 float		g_fPlayerPoints[MAXPLAYERS+1],
 			g_fPlayerSessionPoints[MAXPLAYERS+1];
 bool		g_bStatsLoaded,
@@ -110,12 +114,6 @@ public void OnPluginStart()
 		BuildPath(Path_SM, SZF(g_sLogPath), "logs/FirePlayersStats.log");
 	#endif
 
-	SetCvars();
-	CreateGlobalForwards();
-	DatabaseConnect();
-	HookEvents();
-	SetCommands();
-
 	g_hItems = new ArrayList(ByteCountToCells(128));
 	g_hRanks = new ArrayList(ByteCountToCells(64));
 
@@ -139,6 +137,15 @@ public void OnPluginStart()
 	ChangeCvar_GameType(Convar, NULL_STRING, NULL_STRING);
 	(Convar = FindConVar("game_mode")).AddChangeHook(ChangeCvar_GameMode);
 	ChangeCvar_GameMode(Convar, NULL_STRING, NULL_STRING);
+
+	g_iServerIP		= FindConVar("hostip").IntValue;
+	g_iServerPort	= FindConVar("hostport").IntValue;
+
+	SetCvars();
+	CreateGlobalForwards();
+	HookEvents();
+	SetCommands();
+	DatabaseConnect();
 }
 
 void ChangeCvar_TeammatesAreEnemies(ConVar Convar, const char[] oldValue, const char[] newValue)
@@ -156,23 +163,13 @@ void ChangeCvar_GameMode(ConVar Convar, const char[] oldValue, const char[] newV
 	g_iGameType[1] = Convar.IntValue;
 }
 
-public void OnAllPluginsLoaded()
-{
-	g_bStatsLoaded = true;
-	CallForward_OnFPSStatsLoaded();
-}
-
 public void OnMapStart()
 {
-	LoadTopData();
 	LoadRanksSettings();
+	LoadTopData();
+	UpdateServerData();
 
 	GetCurrentMapEx(SZF(g_sMap));
-
-	if (CanTestFeatures() && GetFeatureStatus(FeatureType_Native, "SteamWorks_CreateHTTPRequest") == FeatureStatus_Available)
-	{
-		SteamWorks_SteamServersConnected();
-	}
 	
 	if (g_iGameType[0] == 1 && g_iGameType[1] == 2 && g_iSaveInterval)
 	{
@@ -212,19 +209,16 @@ Action TimerSaveStats(Handle hTimer)
 public void SteamWorks_SteamServersConnected()
 {
 	int iIP[4];
-	if (SteamWorks_GetPublicIP(iIP)) // && iIP[0] && iIP[1] && iIP[2] && iIP[3]
+	if (SteamWorks_GetPublicIP(iIP))
 	{
-		int		iPort = FindConVar("hostport").IntValue;
-		char	szIP[24],
-				szBuffer[256];
-		FormatEx(SZF(szIP), "%i.%i.%i.%i", iIP[0], iIP[1], iIP[2], iIP[3]);
+		char szBuffer[256];
 		Handle hRequest = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, "http://stats.tibari.ru/api/v1/add_server");
-		FormatEx(SZF(szBuffer), "key=c30facaa6f64ce25357e7c5ed1685afd&ip=%s&port=%i&version=%s&sm=%s", szIP, iPort, PLUGIN_VERSION, SOURCEMOD_VERSION);
+		FormatEx(SZF(szBuffer), "key=c30facaa6f64ce25357e7c5ed1685afd&ip=%i.%i.%i.%i&port=%i&version=%s&sm=%s", 
+			iIP[0], iIP[1], iIP[2], iIP[3], g_iServerPort, PLUGIN_VERSION, SOURCEMOD_VERSION
+		);
 		SteamWorks_SetHTTPRequestRawPostBody(hRequest, "application/x-www-form-urlencoded", SZF(szBuffer));
 		SteamWorks_SetHTTPCallbacks(hRequest, OnTransferComplete);
 		SteamWorks_SendHTTPRequest(hRequest);
-
-		UpdateServerData(szIP, iPort);
 	}
 }
 

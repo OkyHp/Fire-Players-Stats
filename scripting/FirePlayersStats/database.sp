@@ -57,10 +57,10 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 	g_hDatabase = hDatabase;
 	CallForward_OnFPSDatabaseConnected();
 
-	static bool bFirstConnect;
-	if (!bFirstConnect)
+	if (!g_bStatsLoaded)
 	{
-		bFirstConnect = true;
+		g_bStatsLoaded = true;
+		CallForward_OnFPSStatsLoaded();
 
 		Transaction hTxn = new Transaction();
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_players` ( \
@@ -123,8 +123,9 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		g_hDatabase.Execute(hTxn, SQL_TxnSuccess_CreateTable, SQL_TxnFailure_CreateTable);
 
-		LoadTopData();
 		LoadRanksSettings();
+		LoadTopData();
+		UpdateServerData();
 
 		for (int i = MaxClients + 1; --i;)
 		{
@@ -595,7 +596,7 @@ void SQL_Callback_PlayerPosition(Database hDatabase, DBResultSet hResult, const 
 	}
 }
 
-void UpdateServerData(char[] szIP, int iPort)
+void UpdateServerData()
 {
 	if (g_hDatabase)
 	{
@@ -607,14 +608,16 @@ void UpdateServerData(char[] szIP, int iPort)
 			g_hDatabase.Format(SZF(szQuery), "REPLACE INTO `fps_servers` ( \
 				`id`, `server_name`, `settings_rank_id`, `settings_points_id`, `server_ip` \
 			) VALUES ( \
-				%i, '%s', %i, %i, '%s:%i' \
-			);", g_iServerID, szServerName, g_iRanksID, 1, szIP, iPort);
+				%i, '%s', %i, %i, '%i.%i.%i.%i:%i' \
+			);", g_iServerID, szServerName, g_iRanksID, 1, 
+			g_iServerIP >>> 24, g_iServerIP >> 16 & 255, g_iServerIP >> 8 & 255, g_iServerIP & 255, g_iServerPort);
 		#else
 			g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers` ( \
 				`id`, `server_name`, `settings_rank_id`, `settings_points_id`, `server_ip` \
-			) VALUES ( %i, '%s', %i, %i, '%s:%i' ) ON DUPLICATE KEY UPDATE \
+			) VALUES ( %i, '%s', %i, %i, '%i.%i.%i.%i:%i' ) ON DUPLICATE KEY UPDATE \
 				`id` = %i, `server_name` = '%s', `settings_rank_id` = %i, `settings_points_id` = %i;", 
-			g_iServerID, szServerName, g_iRanksID, 1, szIP, iPort,
+			g_iServerID, szServerName, g_iRanksID, 1, 
+			g_iServerIP >>> 24, g_iServerIP >> 16 & 255, g_iServerIP >> 8 & 255, g_iServerIP & 255, g_iServerPort,
 			g_iServerID, szServerName, g_iRanksID, 1);
 		#endif
 

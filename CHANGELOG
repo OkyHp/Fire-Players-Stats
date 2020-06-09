@@ -100,3 +100,5 @@
 		Fixed message display when changing teams from observers to T/CT.
 		In information menu, an item with 0 points will be hidden.
 		Add forvard FPS_OnResetGeneralStats and FPS_OnFPSResetAllStats.
+		SteamWorks extension is now optional.
+		
