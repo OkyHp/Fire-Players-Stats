@@ -13,14 +13,14 @@
 		"en"		"Top by maps"
 		"ru"		"Топ по картам"
 		"ua"		"Топ по картам"
-		"tr"		"Haritaların en iyileri"
+		"tr"		"Harita Sıralamaları"
 	}
 	"MapTop_PlayerKills"
 	{
 		"en"		"TOP-10 maps by kills"
 		"ru"		"TOP-10 карт по убийствам"
 		"ua"		"TOP-10 карт по вбивствам"
-		"tr"		"En çok oyuncu öldürülen 10 harita"
+		"tr"		"TOP-10 Harita Kill Sırası"
 	}
 	"MapTop_All"
 	{
@@ -28,7 +28,7 @@
 		"en"		"TOP-10 killers on map: {1}"
 		"ru"		"TOP-10 убийц на карте: {1}"
 		"ua"		"TOP-10 вбивць на мапі: {1}"
-		"tr"		"Haritalarda en çok oyuncu öldüren 10 oyuncu"
+		"tr"		"TOP-10 Killer: {1}"
 	}
 	"MapStatistics"
 	{
@@ -36,7 +36,7 @@
 		"en"		"Played on map: {1} times ({2} h.) \nWin Rate on map: {3} %% \nRounds overall played: {4} \nRounds won for T: {5} \nRounds won for CT: {6} \nKills: {7} \nDeaths: {8} \nKDR: {9} \n{10}"
 		"ru"		"Сыграно на карте: {1} раз ({2} ч.) \nВинрейт на карте: {3} %% \nВсего раундов сыграно: {4} \nВыигранные раунды за T: {5} \nВыигранные раунды за CT: {6} \nУбийств: {7} \nСмертей: {8} \nKDR: {9} \n{10}"
 		"ua"		"Зіграно на мапі: {1} раз ({2} г.). \nВРейтинг виграшу на карті: {3} %% \nВсього раундів зіграно: {4} \nВиграні раунди за T: {5} \nВиграні раунди за CT: {6} \nВбивств: {7} \nСмертей: {8} \nKDR: {9} \n{10}"
-		"tr"		"Haritada oynanan süre: {1} times ({2} s.) \nHaritada kazanma oranı: {3} %% \nOynanan tur sayısı: {4} \nT takımında kazanılan tur sayısı: {5} \nCT takımında kazanılan tur sayısı: {6} \nÖldürme: {7} \nÖlüm: {8} \nKDR: {9} \n{10}"
+		"tr"		"Harita Oynandı: {1} kez ({2} saat) \nKazanma Oranı: {3} %% \nOynanan Roundlar: {4} \nT Kazanılan Round: {5} \nCT Kazanılan Round: {6} \nÖldürme: {7} \nÖlme: {8} \nKDA: {9} \n{10}"
 	}
 	"MapStatistics_Cs"
 	{
@@ -44,7 +44,7 @@
 		"en"		"Hostage rescued: {1} \nHostage killed: {2}"
 		"ru"		"Заложников спасено: {1} \nЗаложников убито: {2}"
 		"ua"		"Заручників врятовано: {1} \nзаручників вбито: {2}"
-		// "tr"		""
+		"tr"		"Hostage rescued: {1} \nHostage killed: {2}"
 	}
 	"MapStatistics_De"
 	{
@@ -52,7 +52,7 @@
 		"en"		"Bomb planted: {1} \nBomb defused: {2}"
 		"ru"		"Бомб установлено: {1} \nБомб разминировано: {2}"
 		"ua"		"Бомб встановлено: {1} \nбомб разміновано: {2}"
-		// "tr"		""
+		"tr"		"Bomba Plant: {1} \nBomba Defuse: {2}"
 	}
 	"MapStatistics_Custom"
 	{
@@ -60,7 +60,7 @@
 		"en"		"Rounds won \nRounds for CT: {1} \nRounds for T: {2}"
 		"ru"		"Выигранные раунды \nРаундов за КТ: {1} \nРаундов за Т: {2}"
 		"ua"		"Виграні раунди \nРаундів за КТ: {1} \nРаундів за Т: {2}"
-		// "tr"		""
+		"tr"		"Round Kazanıdlı \nCT: {1} \nT: {2}"
 	}
 	"NoData"
 	{
@@ -74,6 +74,6 @@
 		"en"		"Reset my stat by maps"
 		"ru"		"Сбросить мою статистику по картам"
 		"ua"		"Стерти мою статистику по картам"
-		"tr"		"Harita istatistiklerimi sıfırla"
+		"tr"		"Harita verilerimi sıfırla"
 	}
 }

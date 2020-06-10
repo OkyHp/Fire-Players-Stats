@@ -461,7 +461,7 @@ public Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, fl
 						{
 							if(g_iExpMode == 1 && g_iExp[iType] > 0)
 							{
-								FPS_PrintToChat(iAttacker, "%t [ %t ]", "AdditionalPointsPositive", float(g_iExp[iType]), g_sNameUK[iType]);
+								FPS_PrintToChat(iAttacker, "%t", "AdditionalPointsPositive", float(g_iExp[iType]), g_sNameUK[iType]);
 							}
 
 							if (g_iExpMode)
