@@ -71,7 +71,7 @@ public void OnPluginStart()
 	#endif
 
 	HookEvent("player_death", 		Event_PlayerDeath);
-	HookEvent("round_end",			Event_RoundEnd);
+	HookEvent("round_end",			Event_RoundEnd,		EventHookMode_Pre);
 
 	HookEvent("bomb_planted",		Event_OtherAction);
 	HookEvent("bomb_defused",		Event_OtherAction);
@@ -319,15 +319,16 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 	}
 }
 
-void Event_RoundEnd(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+Action Event_RoundEnd(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 {
 	if (FPS_StatsActive())
 	{
-		int iWinTeam = GetEventInt(hEvent, "winner"),
+		int iWinTeam = hEvent.GetInt("winner"),
 			iTeam;
+			
 		if (iWinTeam > 1)
 		{
-			for(int i = MaxClients+1; --i;)
+			for(int i = MaxClients + 1; --i;)
 			{
 				if (!g_iPlayerData[i][ACCOUNT_ID])
 				{
@@ -338,10 +339,11 @@ void Event_RoundEnd(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				if(iTeam > 1)
 				{
 					g_iPlayerData[i][MAP_ROUNDS_OVARALL]++;
-				}
-				if (iTeam == iWinTeam)
-				{
-					g_iPlayerData[i][MAP_ASSISTS + iWinTeam]++;
+
+					if (iTeam == iWinTeam)
+					{
+						g_iPlayerData[i][MAP_ASSISTS + iWinTeam]++;
+					}
 				}
 			}
 		}
