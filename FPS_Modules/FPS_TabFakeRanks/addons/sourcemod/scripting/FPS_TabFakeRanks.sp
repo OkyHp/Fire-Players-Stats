@@ -1,3 +1,8 @@
+/**
+ *	v1.3.1 -	Optimization of work. Possible load reduced.
+ *				Now when deleting key "0" in "custom_ranks" calibration icon will not be set.
+ */
+
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -23,7 +28,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Tab Fake Ranks",
 	author	=	"OkyHp, Wend4r",
-	version	=	"1.3.0",
+	version	=	"1.3.1",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -35,6 +40,9 @@ public void OnPluginStart()
 	}
 
 	m_iCompetitiveRanking = FindSendPropInfo("CCSPlayerResource", "m_iCompetitiveRanking");
+
+	HookEvent("round_prestart",			Event_UpdateRanks, EventHookMode_PostNoCopy);
+	HookEvent("player_connect_full",	Event_UpdateRanks, EventHookMode_PostNoCopy);
 
 	if (FPS_StatsLoad())
 	{
@@ -83,7 +91,7 @@ public Action VIP_OnFeatureToggle(int iClient, const char[] szFeature, VIP_Toggl
 
 public void FPS_OnFPSStatsLoaded()
 {
-	for (int i = 1; i <= MaxClients; ++i)
+	for (int i = MaxClients + 1; --i;)
 	{
 		if (FPS_ClientLoaded(i))
 		{
@@ -116,7 +124,7 @@ void GetPlayerData(int iClient, int iLevel)
 				g_iPlayerRanks[iClient] = g_hConfig.GetNum(szBuffer);
 				return;
 			}
-			g_iPlayerRanks[iClient] = g_hConfig.GetNum("0", g_iRanksIndex[3]);
+			g_iPlayerRanks[iClient] = g_hConfig.GetNum("0", 0);
 		}
 		return;
 	}
@@ -147,7 +155,6 @@ public void OnMapStart()
 	// Custom download
 	if (g_iRanksType > 2)
 	{
-		g_hConfig.Rewind();
 		if (g_hConfig.JumpToKey("custom_ranks") && g_hConfig.GotoFirstSubKey(false))
 		{
 			do {
@@ -165,8 +172,7 @@ public void OnMapStart()
 			iMax = g_iRanksIndex[g_iRanksType] + g_iRanksIndex[g_iRanksType + 6] + 1;
 		while(i < iMax)
 		{
-			RanksAddToDownloads(i);
-			++i;
+			RanksAddToDownloads(i++);
 		}
 	}
 }
@@ -183,7 +189,7 @@ void RanksAddToDownloads(const int iRanks)
 
 public void OnThinkPost(int iEntity)
 {
-	for (int i = 1; i <= MaxClients; ++i)
+	for (int i = MaxClients + 1; --i;)
 	{
 		if(FPS_ClientLoaded(i))
 		{
@@ -196,15 +202,18 @@ public void OnThinkPost(int iEntity)
 	}
 }
 
-public void OnPlayerRunCmdPost(int iClient, int iButtons)
+void Event_UpdateRanks(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 {
-	static int iOldButtons[MAXPLAYERS+1];
-
-	if(iButtons & IN_SCORE && !(iOldButtons[iClient] & IN_SCORE))
+	int iPlayersCount,
+		iPlayers[MAXPLAYERS+1];
+	for (int i = MaxClients + 1; --i;)
 	{
-		StartMessageOne("ServerRankRevealAll", iClient, USERMSG_BLOCKHOOKS);
-		EndMessage();
+		if(FPS_ClientLoaded(i))
+		{
+			iPlayers[iPlayersCount++] = i;
+		}
 	}
 
-	iOldButtons[iClient] = iButtons;
+	StartMessage("ServerRankRevealAll", iPlayers, iPlayersCount, USERMSG_BLOCKHOOKS);
+	EndMessage();
 }
