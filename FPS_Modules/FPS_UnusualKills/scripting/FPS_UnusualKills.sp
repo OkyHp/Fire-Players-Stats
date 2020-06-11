@@ -305,7 +305,7 @@ void LoadSettings()
 	{
 		g_hProhibitedWeapons = new ArrayList(64);
 
-		BuildPath(Path_SM, sPath, sizeof(sPath), "configs/levels_ranks/UnusualKills.ini");
+		BuildPath(Path_SM, sPath, sizeof(sPath), "configs/FirePlayersStats/unusual_kills.ini");
 	}
 
 	if(!hKv.ImportFromFile(sPath))
@@ -314,7 +314,13 @@ void LoadSettings()
 	}
 	hKv.GotoFirstSubKey();
 
+	// hKv.Rewind();
+	// char szBuffer[10000];
+	// hKv.ExportToString(szBuffer, sizeof(szBuffer));
+	// LogError(">> %s", szBuffer);
+
 	hKv.Rewind();
+
 	hKv.JumpToKey("Settings");	/**/
 
 	g_iExpMode = hKv.GetNum("Exp_Mode", 2);
