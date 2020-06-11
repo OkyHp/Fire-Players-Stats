@@ -41,8 +41,8 @@ public void OnPluginStart()
 
 	m_iCompetitiveRanking = FindSendPropInfo("CCSPlayerResource", "m_iCompetitiveRanking");
 
-	HookEvent("round_prestart",			Event_UpdateRanks, EventHookMode_PostNoCopy);
-	HookEvent("player_connect_full",	Event_UpdateRanks, EventHookMode_PostNoCopy);
+	HookEvent("round_prestart",			view_as<EventHook>(UpdateRanks), EventHookMode_PostNoCopy);
+	HookEvent("player_connect_full",	view_as<EventHook>(UpdateRanks), EventHookMode_PostNoCopy);
 
 	if (FPS_StatsLoad())
 	{
@@ -202,7 +202,7 @@ public void OnThinkPost(int iEntity)
 	}
 }
 
-void Event_UpdateRanks(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+void UpdateRanks()
 {
 	int iPlayersCount,
 		iPlayers[MAXPLAYERS+1];
