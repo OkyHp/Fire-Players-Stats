@@ -123,8 +123,8 @@ public void FPS_OnDatabaseConnected(Database hDatabase)
 					`rounds_ct`			int				NOT NULL DEFAULT 0, \
 					`bomb_planted`		int				NOT NULL DEFAULT 0, \
 					`bomb_defused`		int				NOT NULL DEFAULT 0, \
-					`hostage_rescued`	int				NOT NULL DEFAULT 0, \
 					`hostage_killed`	int				NOT NULL DEFAULT 0, \
+					`hostage_rescued`	int				NOT NULL DEFAULT 0, \
 					`playtime`			int				NOT NULL DEFAULT 0, \
 					PRIMARY KEY (`id`), \
 					UNIQUE(`account_id`, `server_id`, `name_map`) \
@@ -214,7 +214,7 @@ public void FPS_OnClientLoaded(int iClient, float fPoints)
 			char szQuery[512];
 			g_hDatabase.Format(SZF(szQuery), "SELECT \
 					`countplays`, `kills`, `deaths`, `assists`, `rounds_overall`, `rounds_t`, \
-					`rounds_ct`, `bomb_planted`, `bomb_defused`, `hostage_rescued`, `hostage_killed`, `playtime` \
+					`rounds_ct`, `bomb_planted`, `bomb_defused`, `hostage_killed`, `hostage_rescued`, `playtime` \
 				FROM `fps_maps` WHERE `server_id` = '%i' AND `account_id` = '%i' AND `name_map` = '%s' LIMIT 1", 
 				FPS_GetID(FPS_SERVER_ID), g_iPlayerData[iClient][ACCOUNT_ID], g_sCurrentMap);
 			g_hDatabase.Query(SQL_Callback_LoadPlayerData, szQuery, UID(iClient));
@@ -278,7 +278,7 @@ void SavePlayerData(int iClient, bool bReset = false)
 		g_hDatabase.Format(SZF(szQuery), "REPLACE INTO `fps_maps` ( \
 				`account_id`, `server_id`, `name_map`, `countplays`, `kills`, \
 				`deaths`, `assists`, `rounds_overall`, `rounds_t`, `rounds_ct`, \
-				`bomb_planted`, `bomb_defused`, `hostage_rescued`, `hostage_killed`, `playtime` \
+				`bomb_planted`, `bomb_defused`, `hostage_killed`, `hostage_rescued`, `playtime` \
 			) \
 			VALUES ( \
 				'%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i' \
@@ -391,18 +391,10 @@ void StatsMapMenu(int iClient)
 			szSubData[128];
 	if (g_sCurrentMap[2] == '_')
 	{
-		static const char szTranslation[][] = {"MapStatistics_De", "MapStatistics_Cs"};
-
-		int iIndex[2] = {-1, ...};
 		switch (g_sCurrentMap[0])
 		{
-			case 'd': iIndex[0]++, iIndex[1] = 8;
-			case 'c': iIndex[0]+=2, iIndex[1] = 10;
-		}
-
-		if (iIndex[0] != -1)
-		{
-			FormatEx(SZF(szSubData), "%t", szTranslation[iIndex[0]], g_iPlayerData[iClient][iIndex[1]], g_iPlayerData[iClient][++iIndex[1]]);
+			case 'd': FormatEx(SZF(szSubData), "%t", "MapStatistics_De", g_iPlayerData[iClient][BOMB_PLANTED], g_iPlayerData[iClient][BOMB_DEFUSED]);
+			case 'c': FormatEx(SZF(szSubData), "%t", "MapStatistics_Cs", g_iPlayerData[iClient][HOSTAGE_KILLED], g_iPlayerData[iClient][HOSTAGE_RESCUED]);
 		}
 	}
 
