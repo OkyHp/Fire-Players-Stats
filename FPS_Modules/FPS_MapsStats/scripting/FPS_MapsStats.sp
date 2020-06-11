@@ -238,7 +238,7 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 	{
 		for (int i = sizeof(g_iPlayerData[]); --i;)
 		{
-			g_iPlayerData[iClient][i] = hResult.FetchInt(i);
+			g_iPlayerData[iClient][i] = hResult.FetchInt(i - 1);
 			FPS_Debug("SQL_Callback_LoadPlayerData >> %N >> %i", iClient, g_iPlayerData[iClient][i])
 		}
 	}
@@ -409,7 +409,7 @@ void StatsMapMenu(int iClient)
 
 	FormatEx(SZF(szBuffer), "%t\n ", "MapStatistics",
 		g_iPlayerData[iClient][PLAYED_ON_MAP], 
-		(g_iPlayerData[iClient][MAP_TIME] ? (float(g_iPlayerData[iClient][MAP_TIME]) / 60.0 / 60.0) : 0.0),
+		(g_iPlayerData[iClient][MAP_TIME] ? (float(g_iPlayerData[iClient][MAP_TIME]) / 3600.0) : 0.0),
 		(100.0 / float(g_iPlayerData[iClient][MAP_ROUNDS_OVARALL])) * float(g_iPlayerData[iClient][MAP_ROUNDS_T] + g_iPlayerData[iClient][MAP_ROUNDS_CT]),
 		g_iPlayerData[iClient][MAP_ROUNDS_OVARALL],
 		g_iPlayerData[iClient][MAP_ROUNDS_T],
@@ -427,7 +427,7 @@ void StatsMapMenu(int iClient)
 		if (iPlayedTime < g_iResetStatsTime)
 		{
 			float fResult = float(g_iResetStatsTime - iPlayedTime);
-			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsLock", fResult > 0 ? (fResult / 60 / 60) : 0.0);
+			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsLock", fResult > 0 ? (fResult / 3600.0) : 0.0);
 			hPanel.DrawText(szBuffer);
 		}
 		else
