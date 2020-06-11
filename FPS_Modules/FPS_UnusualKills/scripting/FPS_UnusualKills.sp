@@ -317,7 +317,7 @@ void LoadSettings()
 	hKv.Rewind();
 	hKv.JumpToKey("Settings");	/**/
 
-	g_iExpMode = hKv.GetNum("Exp_Mode", 1);
+	g_iExpMode = hKv.GetNum("Exp_Mode", 2);
 
 	hKv.GetString("ProhibitedWeapons", sBuffer, sizeof(sBuffer), "hegrenade,molotov,incgrenade");
 	ExplodeInArrayList(sBuffer, g_hProhibitedWeapons);
@@ -457,17 +457,14 @@ public Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, fl
 					{
 						FormatEx(sColumns[strlen(sColumns)], sizeof(sColumns), "`%s` = %d, ", g_sNameUK[iType], ++g_iUK[iAttacker][iType]);
 
-						if(g_iExp[iType])
+						if (g_iExpMode && g_iExp[iType] > 0)
 						{
-							if(g_iExpMode == 1 && g_iExp[iType] > 0)
+							if(g_iExpMode == 1)
 							{
 								FPS_PrintToChat(iAttacker, "%t", "AdditionalPointsPositive", float(g_iExp[iType]), g_sNameUK[iType]);
 							}
 
-							if (g_iExpMode)
-							{
-								fAddPointsAttacker += float(g_iExp[iType]);
-							}
+							fAddPointsAttacker += float(g_iExp[iType]);
 						}
 					}
 				}
