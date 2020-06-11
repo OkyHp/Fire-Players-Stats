@@ -3,6 +3,7 @@
  *				Slight logic optimization.
  *	v1.0.3 -	Add check reset stas cvar.
  *				Added reset stats, when resetting general stats for player or all players.
+ *				Fixed error with receiving data.
  */
 
 #pragma semicolon 1
@@ -235,7 +236,7 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 	int iClient = CID(iUserID);
 	if (iClient && hResult.FetchRow())
 	{
-		for (int i = sizeof(g_iPlayerData[]) - 1; i--;)
+		for (int i = sizeof(g_iPlayerData[]); --i;)
 		{
 			g_iPlayerData[iClient][i] = hResult.FetchInt(i);
 			FPS_Debug("SQL_Callback_LoadPlayerData >> %N >> %i", iClient, g_iPlayerData[iClient][i])
