@@ -1,3 +1,7 @@
+/**
+ *	v1.1.4 -	Fixed display of information of the previous player.
+ */
+
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -27,7 +31,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Hint Info",
 	author	=	"OkyHp",
-	version	=	"1.1.3",
+	version	=	"1.1.4",
 	url		=	"Discord: OkyHek#2441"
 };
 
@@ -247,9 +251,18 @@ Action UpdateSpec(int iClient, const char[] szCommand, int iArg)
 {
 	if (iClient)
 	{
-		SendHintMessage(iClient);
+		RequestFrame(UpdateSpecNext, GetClientUserId(iClient));
 	}
 	return Plugin_Continue;
+}
+
+void UpdateSpecNext(any iUserID)
+{
+	int iClient = GetClientOfUserId(iUserID);
+	if (iClient)
+	{
+		SendHintMessage(iClient);
+	}
 }
 
 Action TimerUpdateHint(Handle hTimer)

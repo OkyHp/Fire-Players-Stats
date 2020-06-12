@@ -1,6 +1,9 @@
 /**
  *	v1.0.2 -	Add debug;
  *				Slight logic optimization.
+ *	v1.0.3 -	Add check reset stas cvar.
+ *				Added reset stats, when resetting general stats for player or all players.
+ *				Fixed error with receiving data.
  */
 
 #pragma semicolon 1
@@ -11,8 +14,8 @@
 
 #define DEBUG			0	// Enable/Disable debug mod
 
-#if FPS_INC_VER != 153
-	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 153"
+#if FPS_INC_VER != 154
+	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 154"
 #endif
 
 #if DEBUG == 1
@@ -23,7 +26,9 @@
 #endif
 
 int			g_iPlayerData[MAXPLAYERS+1][13],
-			g_iMapSessionTime[MAXPLAYERS+1];
+			g_iMapSessionTime[MAXPLAYERS+1],
+			g_iResetStatsTime;
+bool		g_bResetModuleStats;
 char		g_sCurrentMap[256];
 Database	g_hDatabase;
 
@@ -50,7 +55,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Maps Stats",
 	author	=	"OkyHp",
-	version	=	"1.0.2",
+	version	=	"1.0.3",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -66,7 +71,7 @@ public void OnPluginStart()
 	#endif
 
 	HookEvent("player_death", 		Event_PlayerDeath);
-	HookEvent("round_end",			Event_RoundEnd);
+	HookEvent("round_end",			Event_RoundEnd,		EventHookMode_Pre);
 
 	HookEvent("bomb_planted",		Event_OtherAction);
 	HookEvent("bomb_defused",		Event_OtherAction);
@@ -118,20 +123,12 @@ public void FPS_OnDatabaseConnected(Database hDatabase)
 					`rounds_ct`			int				NOT NULL DEFAULT 0, \
 					`bomb_planted`		int				NOT NULL DEFAULT 0, \
 					`bomb_defused`		int				NOT NULL DEFAULT 0, \
-					`hostage_rescued`	int				NOT NULL DEFAULT 0, \
 					`hostage_killed`	int				NOT NULL DEFAULT 0, \
+					`hostage_rescued`	int				NOT NULL DEFAULT 0, \
 					`playtime`			int				NOT NULL DEFAULT 0, \
 					PRIMARY KEY (`id`), \
 					UNIQUE(`account_id`, `server_id`, `name_map`) \
 				) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
-		}
-
-		for (int i = MaxClients+1; --i;)
-		{
-			if (FPS_ClientLoaded(i))
-			{
-				FPS_OnClientLoaded(i, 0.0);
-			}
 		}
 	}
 	FPS_Debug("FPS_OnDatabaseConnected >> %i", view_as<int>(g_hDatabase))
@@ -150,6 +147,14 @@ void SQL_Callback_CreateTable(Database hDatabase, DBResultSet hResult, const cha
 		g_hDatabase.Query(SQL_Default_Callback, "SET CHARSET 'utf8mb4'", 2);
 		g_hDatabase.SetCharset("utf8mb4");
 	}
+
+	for (int i = MaxClients + 1; --i;)
+	{
+		if (FPS_ClientLoaded(i))
+		{
+			FPS_OnClientLoaded(i, 0.0);
+		}
+	}
 }
 
 void SQL_Default_Callback(Database hDatabase, DBResultSet hResult, const char[] szError, any QueryID)
@@ -164,6 +169,22 @@ public void FPS_OnFPSStatsLoaded()
 {
 	FPS_AddFeature(g_sFeature[0], FPS_STATS_MENU, OnItemSelectStatsMenu, OnItemDisplayStatsMenu);
 	FPS_AddFeature(g_sFeature[1], FPS_TOP_MENU, OnItemSelectTopMenu, OnItemDisplayTopMenu);
+
+	ConVar Convar;
+	(Convar = FindConVar("sm_fps_reset_stats_time")).AddChangeHook(ChangeCvar_ResetStatsTime);
+	ChangeCvar_ResetStatsTime(Convar, NULL_STRING, NULL_STRING);
+	(Convar = FindConVar("sm_fps_reset_modules_stats")).AddChangeHook(ChangeCvar_ResetModuleStats);
+	ChangeCvar_ResetModuleStats(Convar, NULL_STRING, NULL_STRING);
+}
+
+void ChangeCvar_ResetStatsTime(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_iResetStatsTime = Convar.IntValue;
+}
+
+void ChangeCvar_ResetModuleStats(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_bResetModuleStats = Convar.BoolValue;
 }
 
 public void OnPluginEnd()
@@ -174,7 +195,7 @@ public void OnPluginEnd()
 		FPS_RemoveFeature(g_sFeature[1]);
 	}
 
-	for (int i = MaxClients+1; --i;)
+	for (int i = MaxClients + 1; --i;)
 	{
 		OnClientDisconnect(i);
 	}
@@ -193,7 +214,7 @@ public void FPS_OnClientLoaded(int iClient, float fPoints)
 			char szQuery[512];
 			g_hDatabase.Format(SZF(szQuery), "SELECT \
 					`countplays`, `kills`, `deaths`, `assists`, `rounds_overall`, `rounds_t`, \
-					`rounds_ct`, `bomb_planted`, `bomb_defused`, `hostage_rescued`, `hostage_killed`, `playtime` \
+					`rounds_ct`, `bomb_planted`, `bomb_defused`, `hostage_killed`, `hostage_rescued`, `playtime` \
 				FROM `fps_maps` WHERE `server_id` = '%i' AND `account_id` = '%i' AND `name_map` = '%s' LIMIT 1", 
 				FPS_GetID(FPS_SERVER_ID), g_iPlayerData[iClient][ACCOUNT_ID], g_sCurrentMap);
 			g_hDatabase.Query(SQL_Callback_LoadPlayerData, szQuery, UID(iClient));
@@ -215,9 +236,9 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 	int iClient = CID(iUserID);
 	if (iClient && hResult.FetchRow())
 	{
-		for (int i = sizeof(g_iPlayerData[]) - 1; i--;)
+		for (int i = sizeof(g_iPlayerData[]); --i;)
 		{
-			g_iPlayerData[iClient][i] = hResult.FetchInt(i);
+			g_iPlayerData[iClient][i] = hResult.FetchInt(i - 1);
 			FPS_Debug("SQL_Callback_LoadPlayerData >> %N >> %i", iClient, g_iPlayerData[iClient][i])
 		}
 	}
@@ -257,7 +278,7 @@ void SavePlayerData(int iClient, bool bReset = false)
 		g_hDatabase.Format(SZF(szQuery), "REPLACE INTO `fps_maps` ( \
 				`account_id`, `server_id`, `name_map`, `countplays`, `kills`, \
 				`deaths`, `assists`, `rounds_overall`, `rounds_t`, `rounds_ct`, \
-				`bomb_planted`, `bomb_defused`, `hostage_rescued`, `hostage_killed`, `playtime` \
+				`bomb_planted`, `bomb_defused`, `hostage_killed`, `hostage_rescued`, `playtime` \
 			) \
 			VALUES ( \
 				'%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i' \
@@ -298,15 +319,16 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 	}
 }
 
-void Event_RoundEnd(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+Action Event_RoundEnd(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 {
 	if (FPS_StatsActive())
 	{
-		int iWinTeam = GetEventInt(hEvent, "winner"),
+		int iWinTeam = hEvent.GetInt("winner"),
 			iTeam;
+			
 		if (iWinTeam > 1)
 		{
-			for(int i = MaxClients+1; --i;)
+			for(int i = MaxClients + 1; --i;)
 			{
 				if (!g_iPlayerData[i][ACCOUNT_ID])
 				{
@@ -317,10 +339,11 @@ void Event_RoundEnd(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				if(iTeam > 1)
 				{
 					g_iPlayerData[i][MAP_ROUNDS_OVARALL]++;
-				}
-				if (iTeam == iWinTeam)
-				{
-					g_iPlayerData[i][MAP_ASSISTS + iWinTeam]++;
+
+					if (iTeam == iWinTeam)
+					{
+						g_iPlayerData[i][MAP_ASSISTS + iWinTeam]++;
+					}
 				}
 			}
 		}
@@ -368,18 +391,10 @@ void StatsMapMenu(int iClient)
 			szSubData[128];
 	if (g_sCurrentMap[2] == '_')
 	{
-		static const char szTranslation[][] = {"MapStatistics_De", "MapStatistics_Cs"};
-
-		int iIndex[2] = {-1, ...};
 		switch (g_sCurrentMap[0])
 		{
-			case 'd': iIndex[0]++, iIndex[1] = 8;
-			case 'c': iIndex[0]+=2, iIndex[1] = 10;
-		}
-
-		if (iIndex[0] != -1)
-		{
-			FormatEx(SZF(szSubData), "%t", szTranslation[iIndex[0]], g_iPlayerData[iClient][iIndex[1]], g_iPlayerData[iClient][++iIndex[1]]);
+			case 'd': FormatEx(SZF(szSubData), "%t", "MapStatistics_De", g_iPlayerData[iClient][BOMB_PLANTED], g_iPlayerData[iClient][BOMB_DEFUSED]);
+			case 'c': FormatEx(SZF(szSubData), "%t", "MapStatistics_Cs", g_iPlayerData[iClient][HOSTAGE_KILLED], g_iPlayerData[iClient][HOSTAGE_RESCUED]);
 		}
 	}
 
@@ -388,7 +403,7 @@ void StatsMapMenu(int iClient)
 
 	FormatEx(SZF(szBuffer), "%t\n ", "MapStatistics",
 		g_iPlayerData[iClient][PLAYED_ON_MAP], 
-		(g_iPlayerData[iClient][MAP_TIME] ? (float(g_iPlayerData[iClient][MAP_TIME]) / 60.0 / 60.0) : 0.0),
+		(g_iPlayerData[iClient][MAP_TIME] ? (float(g_iPlayerData[iClient][MAP_TIME]) / 3600.0) : 0.0),
 		(100.0 / float(g_iPlayerData[iClient][MAP_ROUNDS_OVARALL])) * float(g_iPlayerData[iClient][MAP_ROUNDS_T] + g_iPlayerData[iClient][MAP_ROUNDS_CT]),
 		g_iPlayerData[iClient][MAP_ROUNDS_OVARALL],
 		g_iPlayerData[iClient][MAP_ROUNDS_T],
@@ -399,9 +414,22 @@ void StatsMapMenu(int iClient)
 		szSubData);
 	hPanel.DrawText(szBuffer);
 
-	FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsByMaps");
 	hPanel.CurrentKey = 1;
-	hPanel.DrawItem(szBuffer);
+	if (g_bResetModuleStats && g_iResetStatsTime)
+	{
+		int iPlayedTime = FPS_GetPlayedTime(iClient);
+		if (iPlayedTime < g_iResetStatsTime)
+		{
+			float fResult = float(g_iResetStatsTime - iPlayedTime);
+			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsLock", fResult > 0 ? (fResult / 3600.0) : 0.0);
+			hPanel.DrawText(szBuffer);
+		}
+		else
+		{
+			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsByMaps");
+			hPanel.DrawItem(szBuffer);
+		}
+	}
 
 	FormatEx(SZF(szBuffer), "%t", "Back");
 	hPanel.CurrentKey = 7;
@@ -469,11 +497,7 @@ int Handler_PanelResetStatsByMaps(Menu hPanel, MenuAction action, int iClient, i
 	{
 		if (iOption != 7 && iOption != 9 && g_hDatabase)
 		{
-			for (int i = sizeof(g_iPlayerData[]) - 1; i--;)
-			{
-				g_iPlayerData[iClient][i] = 0;
-			}
-			SavePlayerData(iClient, true);
+			ResetPlayerStats(iClient);
 			FPS_PrintToChat(iClient, "%t", "YourStatsReset");
 			PlayItemSelectSound(iClient, false);
 		}
@@ -485,6 +509,41 @@ int Handler_PanelResetStatsByMaps(Menu hPanel, MenuAction action, int iClient, i
 			}
 			PlayItemSelectSound(iClient, true);
 		}
+	}
+}
+
+void ResetPlayerStats(int iClient)
+{
+	for (int i = sizeof(g_iPlayerData[]) - 1; i--;)
+	{
+		g_iPlayerData[iClient][i] = 0;
+	}
+	SavePlayerData(iClient, true);
+}
+
+public void FPS_OnResetGeneralStats(int iClient)
+{
+	ResetPlayerStats(iClient);
+}
+
+public void FPS_OnFPSResetAllStats()
+{
+	if (g_hDatabase)
+	{
+		for (int i = MaxClients + 1; --i;)
+		{
+			if (FPS_ClientLoaded(i))
+			{
+				for (int u = sizeof(g_iPlayerData[]) - 1; u--;)
+				{
+					g_iPlayerData[i][u] = 0;
+				}
+			}
+		}
+
+		char szQuery[128];
+		FormatEx(szQuery, sizeof(szQuery), "DELETE FROM `fps_maps` WHERE `server_id` = %i", FPS_GetID(FPS_SERVER_ID));
+		g_hDatabase.Query(SQL_Default_Callback, szQuery, 4);
 	}
 }
 
@@ -547,7 +606,7 @@ int Handler_TopMapmenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 						FPS_GetID(FPS_SERVER_ID), g_sCurrentMap);
 				}
 				FPS_Debug("Handler_TopMapmenu (%i) >> %N >> %s", iItem, iClient, szQuery)
-				g_hDatabase.Query(SQL_Callback_TopData, szQuery, UID(iClient) << 4 | iItem);
+				g_hDatabase.Query(SQL_Callback_TopData, szQuery, UID(iClient) << 16 | iItem);
 			}
 		}
 	}
@@ -561,7 +620,7 @@ public void SQL_Callback_TopData(Database hDatabase, DBResultSet hResult, const 
 		return;
 	}
 
-	int	iClient = CID(iData >> 4);
+	int	iClient = CID(iData >>> 16);
 	if (!iClient)
 	{
 		return;

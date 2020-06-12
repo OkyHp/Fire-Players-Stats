@@ -209,7 +209,7 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 		if (g_iInfoMessage == 2)
 		{
 			float fPoints = g_fPlayerPoints[iVictim] - fRoundPlayerPoints[iVictim];
-			FPS_PrintToChat(iVictim, "%t [ %t ]", "PrintPoints", g_fPlayerPoints[iVictim], fPoints > 0.0 ? "ResultOfLifetimePositive" : "ResultOfLifetimeNegative", fPoints);
+			FPS_PrintToChat(iVictim, "%t", fPoints > 0.0 ? "ResultOfLifetimePositive" : "ResultOfLifetimeNegative", g_fPlayerPoints[iVictim], fPoints);
 		}
 	}
 }
@@ -301,7 +301,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 
 				for (int i = MaxClients + 1; --i;)
 				{
-					if (g_bStatsLoad[i] && g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] && (iTeam = GetClientTeam(i)) > 1)
+					if (g_bStatsLoad[i] && g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] == 1 && (iTeam = GetClientTeam(i)) > 1)
 					{
 						if (iMaxRoundsKills[i] > g_iPlayerData[i][MAX_ROUNDS_KILLS])
 						{
@@ -316,7 +316,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 								g_fPlayerPoints[i] += g_fExtraPoints[CFG_WIN_ROUND];
 								if (g_iInfoMessage == 2)
 								{
-									FPS_PrintToChat(i, "%t [ %t ]", "AdditionalPointsPositive", g_fExtraPoints[CFG_WIN_ROUND], "WinRound");
+									FPS_PrintToChat(i, "%t", "AdditionalPointsPositive", g_fExtraPoints[CFG_WIN_ROUND], "WinRound");
 								}
 							}
 							else
@@ -325,7 +325,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 								g_fPlayerPoints[i] += g_fExtraPoints[CFG_LOSE_ROUND];
 								if (g_iInfoMessage == 2)
 								{
-									FPS_PrintToChat(i, "%t [ %t ]", "AdditionalPointsNegative", -g_fExtraPoints[CFG_LOSE_ROUND], "LoseRound");
+									FPS_PrintToChat(i, "%t", "AdditionalPointsNegative", g_fExtraPoints[CFG_LOSE_ROUND], "LoseRound");
 								}
 							}
 							
@@ -335,7 +335,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 						if (g_iInfoMessage == 1)
 						{
 							float fPoints = g_fPlayerPoints[i] - fRoundPlayerPoints[i];
-							FPS_PrintToChat(i, "%t [ %t ]", "PrintPoints", g_fPlayerPoints[i], fPoints > 0.0 ? "ResultOfRoundPositive" : "ResultOfRoundNegative", fPoints);
+							FPS_PrintToChat(i, "%t", fPoints > 0.0 ? "ResultOfRoundPositive" : "ResultOfRoundNegative", g_fPlayerPoints[i], fPoints);
 						}
 
 						if (bSave)

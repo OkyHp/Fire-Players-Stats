@@ -32,7 +32,7 @@ bool CheckDatabaseConnection(const char[] szErrorTag, const char[] szError, Hand
 
 			delete g_hDatabase;
 			CallForward_OnFPSDatabaseLostConnection();
-			CreateTimer(g_fDBRetryConnTime, Timer_DatabaseRetryConn, _, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(g_fDBRetryConnTime, Timer_DatabaseRetryConn);
 		}
 		return false;
 	}
@@ -47,7 +47,7 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 		if (StrContains(szError, "Can't connect to MySQL server", false) != -1)
 		{
 			FPS_Debug("OnDatabaseConnect >> Can't connect to MySQL server")
-			CreateTimer(g_fDBRetryConnTime, Timer_DatabaseRetryConn, _, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(g_fDBRetryConnTime, Timer_DatabaseRetryConn);
 		}
 		return;
 	}
@@ -57,10 +57,10 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 	g_hDatabase = hDatabase;
 	CallForward_OnFPSDatabaseConnected();
 
-	static bool bFirstConnect;
-	if (!bFirstConnect)
+	if (!g_bStatsLoaded)
 	{
-		bFirstConnect = true;
+		g_bStatsLoaded = true;
+		CallForward_OnFPSStatsLoaded();
 
 		Transaction hTxn = new Transaction();
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_players` ( \
@@ -123,8 +123,9 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		g_hDatabase.Execute(hTxn, SQL_TxnSuccess_CreateTable, SQL_TxnFailure_CreateTable);
 
-		LoadTopData();
 		LoadRanksSettings();
+		LoadTopData();
+		UpdateServerData();
 
 		for (int i = MaxClients + 1; --i;)
 		{
@@ -279,6 +280,8 @@ Action CommandResetAllStats(int iClient, int iArgs)
 				`s`.`server_id` = %i;", g_iServerID);
 		FPS_Debug("CommandResetAllStats >> Query: %s", szQuery)
 		g_hDatabase.Query(SQL_Default_Callback, szQuery, 4);
+
+		CallForward_OnFPSResetAllStats();
 	}
 	return Plugin_Handled;
 }
@@ -396,7 +399,7 @@ void SavePlayerData(int iClient)
 				`account_id`, `steam_id`, `nickname`, `ip` \
 			) \
 			VALUES ( \
-				'%i', '%s', '%s', '%s' \
+				%u, '%s', '%s', '%s' \
 			);", g_iPlayerAccountID[iClient], szAuth, szName, szIp
 		);
 		FPS_Debug("SavePlayerData >> Query#1: %s", szQuery)
@@ -408,7 +411,7 @@ void SavePlayerData(int iClient)
 				`round_lose`,`playtime`,`lastconnect` \
 			) \
 			VALUES ( \
-				%i, %i, %f, %i, %i, %i, %i, %i, %i, %i, %i, %i \
+				%u, %i, %f, %i, %i, %i, %i, %i, %i, %i, %i, %i \
 			);", g_iPlayerAccountID[iClient], g_iServerID, g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], g_iPlayerData[iClient][KILLS],
 			g_iPlayerData[iClient][DEATHS], g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], g_iPlayerData[iClient][ROUND_WIN],
 			g_iPlayerData[iClient][ROUND_LOSE], FPS_GetPlayedTime(iClient), g_iPlayerSessionData[iClient][PLAYTIME]
@@ -433,19 +436,19 @@ void SavePlayerData(int iClient)
 						`hits_head`, `hits_neck`, `hits_chest`, `hits_stomach`, \
 						`hits_left_arm`, `hits_right_arm`, `hits_left_leg`, `hits_right_leg`, `headshots` \
 					) VALUES \
-						('%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i') ON DUPLICATE KEY \
+						(%u, %i, '%s', %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
 					UPDATE \
-						`kills` = `kills` + '%i', \
-						`shoots` = `shoots` + '%i', \
-						`hits_head` = `hits_head` + '%i', \
-						`hits_neck` = `hits_neck` + '%i', \
-						`hits_chest` = `hits_chest` + '%i', \
-						`hits_stomach` = `hits_stomach` + '%i', \
-						`hits_left_arm` = `hits_left_arm` + '%i', \
-						`hits_right_arm` = `hits_right_arm` + '%i', \
-						`hits_left_leg` = `hits_left_leg` + '%i', \
-						`hits_right_leg` = `hits_right_leg` + '%i', \
-						`headshots` = `headshots` + '%i';", 
+						`kills` = `kills` + %i, \
+						`shoots` = `shoots` + %i, \
+						`hits_head` = `hits_head` + %i, \
+						`hits_neck` = `hits_neck` + %i, \
+						`hits_chest` = `hits_chest` + %i, \
+						`hits_stomach` = `hits_stomach` + %i, \
+						`hits_left_arm` = `hits_left_arm` + %i, \
+						`hits_right_arm` = `hits_right_arm` + %i, \
+						`hits_left_leg` = `hits_left_leg` + %i, \
+						`hits_right_leg` = `hits_right_leg` + %i, \
+						`headshots` = `headshots` + %i;", 
 					g_iPlayerAccountID[iClient], g_iServerID, szWeapon, iArray[W_KILLS], iArray[W_SHOOTS], 
 					iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
 					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS], 
@@ -593,7 +596,7 @@ void SQL_Callback_PlayerPosition(Database hDatabase, DBResultSet hResult, const 
 	}
 }
 
-void UpdateServerData(char[] szIP, int iPort)
+void UpdateServerData()
 {
 	if (g_hDatabase)
 	{
@@ -605,14 +608,16 @@ void UpdateServerData(char[] szIP, int iPort)
 			g_hDatabase.Format(SZF(szQuery), "REPLACE INTO `fps_servers` ( \
 				`id`, `server_name`, `settings_rank_id`, `settings_points_id`, `server_ip` \
 			) VALUES ( \
-				%i, '%s', %i, %i, '%s:%i' \
-			);", g_iServerID, szServerName, g_iRanksID, 1, szIP, iPort);
+				%i, '%s', %i, %i, '%i.%i.%i.%i:%i' \
+			);", g_iServerID, szServerName, g_iRanksID, 1, 
+			g_iServerIP >>> 24, g_iServerIP >> 16 & 255, g_iServerIP >> 8 & 255, g_iServerIP & 255, g_iServerPort);
 		#else
 			g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers` ( \
 				`id`, `server_name`, `settings_rank_id`, `settings_points_id`, `server_ip` \
-			) VALUES ( %i, '%s', %i, %i, '%s:%i' ) ON DUPLICATE KEY UPDATE \
+			) VALUES ( %i, '%s', %i, %i, '%i.%i.%i.%i:%i' ) ON DUPLICATE KEY UPDATE \
 				`id` = %i, `server_name` = '%s', `settings_rank_id` = %i, `settings_points_id` = %i;", 
-			g_iServerID, szServerName, g_iRanksID, 1, szIP, iPort,
+			g_iServerID, szServerName, g_iRanksID, 1, 
+			g_iServerIP >>> 24, g_iServerIP >> 16 & 255, g_iServerIP >> 8 & 255, g_iServerIP & 255, g_iServerPort,
 			g_iServerID, szServerName, g_iRanksID, 1);
 		#endif
 

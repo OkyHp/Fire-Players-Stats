@@ -98,3 +98,10 @@
 		Added command sm_fps_reset_all_stats.
 1.5.4 - Slight logic optimization.
 		Fixed message display when changing teams from observers to T/CT.
+		In information menu, an item with 0 points will be hidden.
+		Add forvard FPS_OnResetGeneralStats and FPS_OnFPSResetAllStats.
+		SteamWorks extension is now optional.
+		Add cvar sm_fps_reset_modules_stats.
+		Editing messages about points received. 
+		Added Turkish language support.
+		Add native FPS_GetPlayersCount.
