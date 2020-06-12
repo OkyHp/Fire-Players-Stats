@@ -37,6 +37,7 @@ public void __pl_fire_players_stats_SetNTVOptional()
 	MarkNativeAsOptional("FPS_GetID");
 	MarkNativeAsOptional("FPS_GetPosition");
 	MarkNativeAsOptional("FPS_GetPlayersCount");
+	MarkNativeAsOptional("FPS_GetAllRanks");
 	MarkNativeAsOptional("FPS_PrintToChat");
 	MarkNativeAsOptional("FPS_PrintToChatAll");
 }
@@ -381,6 +382,15 @@ native int FPS_GetPosition(int iClient);
  *	@return					Количество игроков.
 */
 native int FPS_GetPlayersCount();
+
+/**
+ *	Получает массив (не копию!) с рангами для конкретного сервера.
+ *	Массив содержит в себе по порядку ПОИНТЫ и НАЗВАНИЕ для ранга, по порядку, от большего к меньшему.
+ *	Пример: 1.4000 2.Global 3.3600 4.Supreme ...
+ *
+ *	@return					Массив с рангами.
+*/
+native ArrayList FPS_GetAllRanks();
 
 /**
  *	Выводит игроку сообщение в чат с префиксом (квар sm_fps_chat_prefix).

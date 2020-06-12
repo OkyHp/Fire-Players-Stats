@@ -152,9 +152,9 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 	CreateNative("FPS_GetPoints",				Native_FPS_GetPoints);
 	CreateNative("FPS_GetStatsData",			Native_FPS_GetStatsData);
 	CreateNative("FPS_IsCalibration",			Native_FPS_IsCalibration);
-
 	CreateNative("FPS_GetPosition",				Native_FPS_GetPosition);
 	CreateNative("FPS_GetPlayersCount",			Native_FPS_GetPlayersCount);
+	CreateNative("FPS_GetAllRanks",				Native_FPS_GetAllRanks);
 
 	// Menu
 	CreateNative("FPS_AddFeature",				Native_FPS_AddFeature);
@@ -412,6 +412,12 @@ int Native_FPS_GetPosition(Handle hPlugin, int iNumParams)
 int Native_FPS_GetPlayersCount(Handle hPlugin, int iNumParams)
 {
 	return g_iPlayersCount;
+}
+
+// ArrayList FPS_GetAllRanks();
+int Native_FPS_GetAllRanks(Handle hPlugin, int iNumParams)
+{
+	return view_as<int>(g_hRanks);
 }
 
 // void FPS_PrintToChat(int iClient, const char[] szMessage, any ...)

@@ -104,3 +104,4 @@
 		Add cvar sm_fps_reset_modules_stats.
 		Editing messages about points received. 
 		Added Turkish language support.
+		Add native FPS_GetPlayersCount.
