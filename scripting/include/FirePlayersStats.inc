@@ -37,12 +37,13 @@ public void __pl_fire_players_stats_SetNTVOptional()
 	MarkNativeAsOptional("FPS_GetID");
 	MarkNativeAsOptional("FPS_GetPosition");
 	MarkNativeAsOptional("FPS_GetPlayersCount");
+	MarkNativeAsOptional("FPS_GetAllRanks");
 	MarkNativeAsOptional("FPS_PrintToChat");
 	MarkNativeAsOptional("FPS_PrintToChatAll");
 }
 #endif
 
-#define FPS_INC_VER				153
+#define FPS_INC_VER				154
 #define UID(%0)					GetClientUserId(%0)
 #define CID(%0)					GetClientOfUserId(%0)
 #define SZF(%0)					%0, sizeof(%0)
@@ -157,6 +158,21 @@ forward void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount);
  *	@noreturn
 */
 forward void FPS_OnSecondDataUpdated();
+
+/**
+ *	Вызывается при обнулении статистики для игрока.
+ *
+ *	@param iClient			Индекс игрока.
+ *	@noreturn
+*/
+forward void FPS_OnResetGeneralStats(int iClient);
+
+/**
+ *	Вызывается при обнулении всей статистики.
+ *
+ *	@noreturn
+*/
+forward void FPS_OnFPSResetAllStats();
 
 
 
@@ -366,6 +382,15 @@ native int FPS_GetPosition(int iClient);
  *	@return					Количество игроков.
 */
 native int FPS_GetPlayersCount();
+
+/**
+ *	Получает массив (не копию!) с рангами для конкретного сервера.
+ *	Массив содержит в себе по порядку ПОИНТЫ и НАЗВАНИЕ для ранга, от большего к меньшему.
+ *	Пример: 1.4000 2.Global 3.3600 4.Supreme ...
+ *
+ *	@return					Массив с рангами.
+*/
+native ArrayList FPS_GetAllRanks();
 
 /**
  *	Выводит игроку сообщение в чат с префиксом (квар sm_fps_chat_prefix).

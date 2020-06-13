@@ -103,6 +103,12 @@ void SetCvars()
 	)).AddChangeHook(ChangeCvar_ResetStatsTime);
 	ChangeCvar_ResetStatsTime(Convar, NULL_STRING, NULL_STRING);
 
+	Convar = CreateConVar(
+		"sm_fps_reset_modules_stats",		"0", 
+		"Разрешить модулям дополнительной статистики обнулять только свои данные, независимо от основной статистики", 
+		_, true, 0.0, true, 1.0
+	);
+
 	(Convar = CreateConVar(
 		"sm_fps_show_stats_everyone",		"1", 
 		"Показывать статистику игрока всем при использовании команд просмотра позиции (sm_pos) (1 - Да / 0 - Нет)", 

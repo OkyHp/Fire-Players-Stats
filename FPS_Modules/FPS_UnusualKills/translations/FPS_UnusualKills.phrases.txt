@@ -1,64 +1,67 @@
 "Phrases"
 {
-	"AdditionalPoints"
-	{
-		"en"			"Additional points"
-		"ru"			"Дополнительные поинты"
-		"ua"			"Додаткові поінти"
-	}
 	"op"
 	{
-		"en"			"for first kill"
-		"ru"			"за первое убийство"
-		"ua"			"за перше вбивство"
+		"en"			"For first kill"
+		"ru"			"За первое убийство"
+		"ua"			"За перше вбивство"
+		"tr"			"Ilk kan için"
 	}
 	"penetrated"
 	{
-		"en"			"for killing through an obstacle"
-		"ru"			"за убийство через препятствие"
-		"ua"			"за вбивство через перешкоду"
+		"en"			"For killing through an obstacle"
+		"ru"			"За убийство через препятствие"
+		"ua"			"За вбивство через перешкоду"
+		"tr"			"Zor öldürme için"
 	}
 	"no_scope"
 	{
-		"en"			"for killing by no scope"
-		"ru"			"за убийство без прицела"
-		"ua"			"за вбивство без прицілу"
+		"en"			"For killing by no scope"
+		"ru"			"За убийство без прицела"
+		"ua"			"За вбивство без прицілу"
+		"tr"			"Noscope için"
 	}
 	"run"
 	{
-		"en"			"for killing on run"
-		"ru"			"за убийство на бегу"
-		"ua"			"за вбивство на бігу"
+		"en"			"For killing on run"
+		"ru"			"За убийство на бегу"
+		"ua"			"За вбивство на бігу"
+		"tr"			"Koşarak vurulduğu için"
 	}
 	"jump"
 	{
-		"en"			"for killing in jump"
-		"ru"			"за убийство в прыжке"
-		"ua"			"за вбивство в стрибку"
+		"en"			"For killing in jump"
+		"ru"			"За убийство в прыжке"
+		"ua"			"За вбивство в стрибку"
+		"tr"			"Zıplayarak vurulduğu için"
 	}
 	"flash"
 	{
-		"en"			"for killing, being blinded flashbang"
-		"ru"			"за убийство, будучи ослепленным флешкой"
-		"ua"			"за вбивство, будучи засліпленим флешкою"
+		"en"			"For killing, being blinded flashbang"
+		"ru"			"За убийство, будучи ослепленным флешкой"
+		"ua"			"За вбивство, будучи засліпленим флешкою"
+		"tr"			"Körken vurulduğu için"
 	}
 	"smoke"
 	{
-		"en"			"for killing being in smoke"
-		"ru"			"за убийство в дым"
-		"ua"			"за вбивство в дим"
+		"en"			"For killing being in smoke"
+		"ru"			"За убийство в дым"
+		"ua"			"За вбивство в дим"
+		"tr"			"Smokedan vurulduğu için"
 	}
 	"whirl"
 	{
-		"en"			"for killing by with reversal"
-		"ru"			"за убийство с разворота"
-		"ua"			"за вбивство з розвороту"
+		"en"			"For killing by with reversal"
+		"ru"			"За убийство с разворота"
+		"ua"			"За вбивство з розвороту"
+		"tr"			"Dönerek vurulduğu için"
 	}
 	"last_clip"
 	{
-		"en"			"for killing by with a last clip"
-		"ru"			"за убийство последним патроном"
-		"ua"			"за вбивство останнім патроном"
+		"en"			"For killing by with a last clip"
+		"ru"			"За убийство последним патроном"
+		"ua"			"За вбивство останнім патроном"
+		"tr"			"Son mermi ile vurulduğu için"
 	}
 
 	// MENU ------------
@@ -68,6 +71,7 @@
 		"en"			"Statistics on unusual kills"
 		"ru"			"Cтатистика по необычным убийствам"
 		"ua"			"Cтатистика незвичайних вбивств"
+		"tr"			"Efsane Öldürmeler"
 	}
 	"Menu_op"
 	{
@@ -75,6 +79,7 @@
 		"en"			"Open killing: {1} ({2}%%)"
 		"ru"			"Первых убийств: {1} ({2}%%)"
 		"ua"			"Перше вбивств: {1} ({2}%%)"
+		"tr"			"İlk Kan: {1} ({2}%%)"
 	}
 	"Menu_penetrated"
 	{
@@ -82,6 +87,7 @@
 		"en"			"Penetrates: {1} ({2}%%)"
 		"ru"			"Прострелов: {1} ({2}%%)"
 		"ua"			"За простріл: {1} ({2}%%)"
+		"tr"			"Zorlu: {1} ({2}%%)"
 	}
 	"Menu_no_scope"
 	{
@@ -89,6 +95,7 @@
 		"en"			"NoScopes: {1} ({2}%%)"
 		"ru"			"Без прицела: {1} ({2}%%)"
 		"ua"			"Перше вбивство: {1} ({2}%%)"
+		"tr"			"NoScope: {1} ({2}%%)"
 	}
 	"Menu_run"
 	{
@@ -96,6 +103,7 @@
 		"en"			"On the run: {1} ({2}%%)"
 		"ru"			"На бегу: {1} ({2}%%)"
 		"ua"			"На бігу: {1} ({2}%%)"
+		"tr"			"Koşarak: {1} ({2}%%)"
 	}
 	"Menu_jump"
 	{
@@ -103,6 +111,7 @@
 		"en"			"A jump: {1} ({2}%%)"
 		"ru"			"В прыжке: {1} ({2}%%)"
 		"ua"			"В стрибку: {1} ({2}%%)"
+		"tr"			"Zıplayarak: {1} ({2}%%)"
 	}
 	"Menu_flash"
 	{
@@ -110,6 +119,7 @@
 		"en"			"A light grenade: {1} ({2}%%)"
 		"ru"			"С ослеплением от световой гранаты: {1} ({2}%%)"
 		"ua"			"З осліпленням від светової гранати: {1} ({2}%%)"
+		"tr"			"Körken: {1} ({2}%%)"
 	}
 	"Menu_smoke"
 	{
@@ -117,6 +127,7 @@
 		"en"			"In the smoke: {1} ({2}%%)"
 		"ru"			"В дым: {1} ({2}%%)"
 		"ua"			"В дим: {1} ({2}%%)"
+		"tr"			"Smokeda: {1} ({2}%%)"
 	}
 	"Menu_whirl"
 	{
@@ -124,6 +135,7 @@
 		"en"			"With a reversal: {1} ({2}%%)"
 		"ru"			"С разворота: {1} ({2}%%)"
 		"ua"			"З розвороту: {1} ({2}%%)"
+		"tr"			"Dönerek: {1} ({2}%%)"
 	}
 	"Menu_last_clip"
 	{
@@ -131,6 +143,7 @@
 		"en"			"Last clip: {1} ({2}%%)"
 		"ru"			"Последним патроном: {1} ({2}%%)"
 		"ua"			"Останнім патроном: {1} ({2}%%)"
+		"tr"			"Son Mermi: {1} ({2}%%)"
 	}
 	
 	"UnusualKillsTop"
@@ -138,6 +151,7 @@
 		"en"			"Top on unusual kills"
 		"ru"			"Top по необычным убийствам"
 		"ua"			"Top по незвичайних вбивствах"
+		"tr"			"Efsane Öldürme Sıralaması"
 	}
 	"Top_Open"
 	{
@@ -145,59 +159,77 @@
 		"en"			"{1} - {2} kills - {3}"
 		"ru"			"{1} - {2} Киллов - {3}"
 		"ua"			"{1} - {2} Вбивств - {3}"
+		"tr"			"{1} - {2} öldürme - {3}"
 	}
 	"Top_op"
 	{
 		"en"			"TOP-10 by open kills"
 		"ru"			"TOP-10 по первым убийствам"
 		"ua"			"TOP-10 перших вбивств"
+		"tr"			"TOP-10 İlk Kan"
 	}
 	"Top_penetrated"
 	{
 		"en"			"TOP-10 by penetration kills"
 		"ru"			"TOP-10 по убийствам с прострелом"
 		"ua"			"TOP-10 вбивств за простріл"
+		"tr"			"TOP-10 Zorlu Öldürme"
 	}
 	"Top_no_scope"
 	{
 		"en"			"TOP-10 by NoScope kills"
 		"ru"			"TOP-10 по убийствам без прицела"
 		"ua"			"TOP-10 вбивств без прицілу"
+		"tr"			"TOP-10 NoScope"
 	}
 	"Top_run"
 	{
 		"en"			"TOP-10 by run kills"
 		"ru"			"TOP-10 по убийствам на бегу"
 		"ua"			"TOP-10 вбивств на бігу"
+		"tr"			"TOP-10 Koşarak"
 	}
 	"Top_jump"
 	{
 		"en"			"TOP-10 by jump kills"
 		"ru"			"TOP-10 по убийствам в прыжке"
 		"ua"			"TOP-10 вбивств в стрибку"
+		"tr"			"TOP-10 Zıplayarak"
 	}
 	"Top_flash"
 	{
 		"en"			"TOP-10 by light grenade kills"
 		"ru"			"TOP-10 по убийствам с ослеплением от световой гранаты"
 		"ua"			"TOP-10 вбивств з осліпленням від світлової гранати"
+		"tr"			"TOP-10 Körken"
 	}
 	"Top_smoke"
 	{
 		"en"			"TOP-10 by in the smoke kills"
 		"ru"			"TOP-10 по убийствам в дым"
 		"ua"			"TOP-10 вбивств в дим"
+		"tr"			"TOP-10 Smokedan"
 	}
 	"Top_whirl"
 	{
 		"en"			"TOP-10 by with a reversal kills"
 		"ru"			"TOP-10 по убийствам с разворота"
 		"ua"			"TOP-10 вбивств з розвороту"
+		"tr"			"TOP-10 Dönerek"
 	}
 	"Top_last_clip"
 	{
 		"en"			"TOP-10 by last clip kills"
 		"ru"			"TOP-10 по убийствам последним патроном"
 		"ua"			"TOP-10 вбивств останнім патроном"
+		"tr"			"TOP-10 Son Mermi"
+	}
+
+	"ResetPlayerStatsByUnusualKills"
+	{
+		"en"			"Reset my stat by unusual kills"
+		"ru"			"Сбросить мою статистику по необычным убийствам"
+		"ua"			"Стерти мою статистику по незвичайних вбивствах"
+		// "tr"			""
 	}
 }

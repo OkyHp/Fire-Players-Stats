@@ -1,56 +1,56 @@
 ![](https://assets.gitlab-static.net/uploads/-/system/project/avatar/13095639/FPS_Icon.png)
-# Fire Players Stats - Плагин статистики для серверов
+# Fire Players Stats - Statistics plugin for CS:GO servers
 
-## Информация о статистике:
+## Statistics Information:
 
- - Поддержка только **CS:GO**.
- - Статистика работает на основе формулы **ELO [Levels Ranks](https://github.com/levelsranks/levels-ranks-core)**. Суть его в том, что вы получаете 1000 очков опыт и после калибровки среднее звание. В зависимости от того, насколько хорошо вы играете зависит ваше звание.
- - Статистика работает только с **MySQL** и рассчитана на работу с **[WEB Interface](https://hlmod.ru/resources/levels-ranks-actual-adaptive-web.1291/)** для LR, который адаптирован под FPS!
- - Количество рангов не ограничено. Настройка производится через команду **sm_fps_create_default_ranks** или в ручную, отправив SQL запрос.
- - Совмещенная база данных для нескольких серверов (по принципу випки от Рико) с нормальной структурой.
- - Статистика по оружию хранится в отдельной таблице, из-за чего при выходе нового оружия изменять плагин и БД не придется.
- - Статистика пытается исправить превосходство новых игроков перед старыми при расчете поинтов.
- - КиллСтрик: Начисление дополнительных поинтов идет в течении 10 сек после убийства, после чего идет обнуление.
- - Возможна установка лимита на обнуление статистики по времени для пользователя.
- - Информация о полученных/потерянных поинтах выводится только в конце раунда, подводя итог раунда.
- - Значения поинтов хранится в float.
- - Плагин поддерживает возможность сделать перевод рангов.
- - Плагин поддерживает бонус за убиство с кокретного оружия с учетом карты (Можно указывать разный для разных карт).
+ - Support only **CS:GO**.
+ - Statistics work based on **ELO [Levels Ranks](https://github.com/levelsranks/levels-ranks-core)** formula. Its essence is that you get 1000 experience points and after calibration average rank. Depending on how well you play, your rank depends.
+ - Statistics only works with **MySQL** and is designed to work with **[WEB Interface](https://hlmod.ru/resources/levels-ranks-actual-adaptive-web.1291/)** that has FPS support!
+ - Ranks number of is not limited. Setup is done through the command **sm_fps_create_default_ranks** or manually by sending an SQL query.
+ - Combined database for several servers with a normal structure.
+ - Weapon statistics are stored in separate table, because of which, when new weapon is released, it is not necessary to change the plugin and database.
+ - Statistics is trying to fix the superiority of new players over old ones when calculating points. This is calibration function!
+ - KillStrick: Additional points are credited within 10 seconds after the kill, after which there is a reset.
+ - It's possible to set limit for resetting time statistics for the user.
+ - Information on gained/lost points is displayed only at the end of the round or player die.
+ - Point values ​​are stored in float.
+ - Plugin supports ability to make rank transfers.
+ - Plugin supports bonus for killing with particular weapon taking into account map (You can specify different for different maps).
 
-### Важно понимать, что статистика по функционалу очень схожа с ЛР, ибо та бралась за основу, но плагин писался полностью с нуля! Он лишен возможных болячек ЛРа, но может иметь свой букетик!
+### It's important to understand that statistics on functionality are very similar to LR, because it was taken as a basis, but plugin was written completely from scratch! He is deprived of possible problems of LR, but may have new ones!
 
 <!-- <details><summary>Меню плагина</summary> </details> -->
 
- [**_Список модулей к статистике_**](https://gitlab.com/OkyHp/fire-players-stats/tree/master/FPS_Modules)
+ [**_List of modules for statistics_**](https://gitlab.com/OkyHp/fire-players-stats/tree/master/FPS_Modules)
 
- > Спасибо за идеии в реализации: [Разработчикам LR](https://github.com/orgs/levelsranks/people), [Someone](https://hlmod.ru/members/someone.73313/).
+ > Thanks for the implementation ideas: [Разработчикам LR](https://github.com/orgs/levelsranks/people), [Someone](https://hlmod.ru/members/someone.73313/).
 
-## Команды плагина:
+## Plugin Commands:
 
-### Для игроков:
+### For players:
 
-**_sm_pos_**, **_sm_position_** - Позиция игрока на сервере. \
-**_sm_stats_**, **sm_rank**, **sm_fps** - Главное меню статистики. \
-**_sm_top_** - Список доступных топов. При использовании аргументов points, kdr, time, clutch открывается соответственный топ.​
+**_sm_pos_**, **_sm_position_** - Player Position on Server. \
+**_sm_stats_**, **sm_rank**, **sm_fps** - Statistics main menu. \
+**_sm_top_** - List of available tops. Using the points, kdr, time, clutch arguments opens the corresponding top.​
 
-### Для администратора:
+### For admin:
 
-**_sm_fps_create_default_ranks_** - Создание настройки рангов.\
-	⋅⋅⋅ **0** - Стандартные ранги CS:GO Competitive (18 lvl)\
- 	⋅⋅⋅ **1** - Ранги опасной зоны (15 lvl)\
- 	⋅⋅⋅ **2** - Фейсит ранги (10 lvl)
-**sm_fps_reset_all_stats** - Сброс всей статистики сервера.
+**_sm_fps_create_default_ranks_** - Creating default rank preset.\
+	⋅⋅⋅ **0** - Default CS:GO Competitive ranks (18 lvl)\
+ 	⋅⋅⋅ **1** - Danger Zone Ranks (15 lvl)\
+ 	⋅⋅⋅ **2** - Facet ranks (10 lvl)
+**sm_fps_reset_all_stats** - Reset all server statistics.
 
-## Требования
+## Requirements
 
-  - [**Sourcemod 1.9+**](https://www.sourcemod.net/downloads.php?branch=stable)
-  - [**SteamWorks**](http://users.alliedmods.net/~kyles/builds/SteamWorks/)
+  - [**Sourcemod 1.10+**](https://www.sourcemod.net/downloads.php?branch=stable)
+  - [**SteamWorks (Optional)**](https://users.alliedmods.net/~kyles/builds/SteamWorks/)
 
-## Установка
+## Installation
 
- 1. Скачайте актуальную версию с репозитория.
- 2. Поместите содержимое архива по нужным директориям.
- 4. Добавьте секцию с вашими настройками БД в `addons/sourcemod/configs/databases.cfg`:
+ 1. Download current version from repository..
+ 2. Place contents of archive in desired directories on server.
+ 4. Add a section with your database settings to `addons/sourcemod/configs/databases.cfg`:
 	```
 	"fire_players_stats"
 	{
@@ -62,12 +62,12 @@
 		"port"				"3306"
 	}
 	```
- 5. Запустите сервер, чтобы плагин создал нужные таблицы в БД.
- 6. Введите команду `sm_fps_create_default_ranks`, чтобы использовать предустановленные настройки.\
- 		**0** - Стандартные ранги CS:GO Competitive (18 lvl),\
- 		**1** - Ранги опасной зоны (15 lvl),\
- 		**2** - Фейсит ранги (10 lvl),
- 	<details><summary>Или загрузите настройку рангов в ручную, отправив SQL запрос в БД, предварительно откорректировав его под ваши нужды:</summary>
+ 5. Start server so that plugin creates necessary tables in database..
+ 6. Enter the `sm_fps_create_default_ranks` command to use default ranks preset.\
+ 		**0** - Default CS:GO Competitive ranks (18 lvl),\
+ 		**1** - Danger Zone Ranks (15 lvl),\
+ 		**2** - Facet ranks (10 lvl),
+ 	<details><summary>Or load rank settings manually by sending an SQL query to database, having previously adjusted it to your needs:</summary>
 
 	```sql
 	INSERT INTO `fps_ranks` (`rank_id`, `rank_name`, `points`) 
@@ -94,5 +94,5 @@
 
 	</details>
 
-**Тема на [HLMOD](https://hlmod.ru/resources/fire-players-stats.1232/)**.
-**[Discord server](https://discord.gg/M82xN4y)**.
+**Topic on [HLMOD](https://hlmod.ru/resources/fire-players-stats.1232/)**.
+**[Support | Discord server](https://discord.gg/M82xN4y)**.
