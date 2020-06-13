@@ -175,6 +175,11 @@ public void OnMapStart()
 	{
 		CreateTimer(float(g_iSaveInterval * 60), TimerSaveStats, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	}
+
+	if (CanTestFeatures() && GetFeatureStatus(FeatureType_Native, "SteamWorks_CreateHTTPRequest") == FeatureStatus_Available)
+	{
+		SteamWorks_SteamServersConnected();
+	}
 }
 
 Action TimerSaveStats(Handle hTimer)
