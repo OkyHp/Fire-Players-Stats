@@ -1,5 +1,8 @@
-![](https://assets.gitlab-static.net/uploads/-/system/project/avatar/13095639/FPS_Icon.png)
+
 # Fire Players Stats - Statistics plugin for CS:GO servers
+<img src="/uploads/91cfd35389a4853d8e4827adde647b9e/FPS_Menus.png"  height="260">
+<img src="https://assets.gitlab-static.net/uploads/-/system/project/avatar/13095639/FPS_BigLogo.png"  height="260">
+<img src="/uploads/7aadd04ef32f11f9a1c9b66bef1d2c28/FPS_ChatMessages.png"  height="260">
 
 ## Statistics Information:
 
@@ -23,7 +26,7 @@
 
  [**_List of modules for statistics_**](https://gitlab.com/OkyHp/fire-players-stats/tree/master/FPS_Modules)
 
- > Thanks for the implementation ideas: [Разработчикам LR](https://github.com/orgs/levelsranks/people), [Someone](https://hlmod.ru/members/someone.73313/).
+ > Thanks for the implementation ideas: [Someone](https://hlmod.ru/members/someone.73313/), [Wend4r](https://hlmod.ru/members/wend4r.105753/), [M0st1ce](https://hlmod.ru/members/m0st1ce.95027/).
 
 ## Plugin Commands:
 
