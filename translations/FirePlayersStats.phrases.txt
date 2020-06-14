@@ -423,7 +423,7 @@
 	{
 		"#format"	"{1:N},{2:i},{3:i},{4:.2f},{5:.2f}"
 		"en"		"Player {GREEN}{1} {DEFAULT}in {RED}{2} {DEFAULT}place out of {BLUE}{3}{DEFAULT}, with {GREEN}{4} {DEFAULT}points and KDR: {OLIVE}{5}"
-		"ru"		"Игрок {GREEN}{1} {DEFAULT} на {RED}{2} {DEFAULT}месте из {BLUE}{3}{DEFAULT}, с {GREEN}{4} {DEFAULT}очками и KDR: {OLIVE}{5}"
+		"ru"		"Игрок {GREEN}{1} {DEFAULT}на {RED}{2} {DEFAULT}месте из {BLUE}{3}{DEFAULT}, с {GREEN}{4} {DEFAULT}очками и KDR: {OLIVE}{5}"
 		"ua"		"Гравець {GREEN}{1} {DEFAULT}на {RED}{2} {DEFAULT}місці з {BLUE}{3}{DEFAULT}, з {GREEN}{4} {DEFAULT}поінтами та KDR: {OLIVE}{5}"
 		"tr"		"{RED}{1}{DEFAULT}, {BLUE}{2}{DEFAULT} kişi içerisinde {BLUE}{3}{DEFAULT}. Puanı: {GREEN}{4}{DEFAULT} ve KDR: {OLIVE}{5}"
 	}
