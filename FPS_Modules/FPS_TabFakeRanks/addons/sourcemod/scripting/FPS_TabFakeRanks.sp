@@ -1,6 +1,5 @@
 /**
- *	v1.3.1 -	Optimization of work. Possible load reduced.
- *				Now when deleting key "0" in "custom_ranks" calibration icon will not be set.
+ *	v1.3.1 -	Now when deleting key "0" in "custom_ranks" calibration icon will not be set.
  */
 
 #pragma semicolon 1
@@ -40,9 +39,6 @@ public void OnPluginStart()
 	}
 
 	m_iCompetitiveRanking = FindSendPropInfo("CCSPlayerResource", "m_iCompetitiveRanking");
-
-	HookEvent("round_prestart",			Event_UpdateRanks, EventHookMode_PostNoCopy);
-	HookEvent("player_connect_full",	Event_UpdateRanks, EventHookMode_PostNoCopy);
 
 	if (FPS_StatsLoad())
 	{
@@ -202,18 +198,15 @@ public void OnThinkPost(int iEntity)
 	}
 }
 
-void Event_UpdateRanks(Event hEvent, const char[] sEvName, bool bDontBroadcast)
+public void OnPlayerRunCmdPost(int iClient, int iButtons)
 {
-	int iPlayersCount,
-		iPlayers[MAXPLAYERS+1];
-	for (int i = MaxClients + 1; --i;)
+	static int iOldButtons[MAXPLAYERS+1];
+
+	if(iButtons & IN_SCORE && !(iOldButtons[iClient] & IN_SCORE))
 	{
-		if(FPS_ClientLoaded(i))
-		{
-			iPlayers[iPlayersCount++] = i;
-		}
+		StartMessageOne("ServerRankRevealAll", iClient, USERMSG_BLOCKHOOKS);
+		EndMessage();
 	}
 
-	StartMessage("ServerRankRevealAll", iPlayers, iPlayersCount, USERMSG_BLOCKHOOKS);
-	EndMessage();
+	iOldButtons[iClient] = iButtons;
 }
