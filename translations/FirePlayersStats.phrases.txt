@@ -457,7 +457,7 @@
 
 	"ResultOfLifetimePositive"
 	{
-		"#format"	"{1:.2f}"
+		"#format"	"{1:.2f},{2:.2f}"
 		"en"		"Result for this lifetime: {OLIVE}{1} {DEFAULT}( {GREEN}+{2} {DEFAULT})"
 		"ru"		"Результат за эту жизнь: {OLIVE}{1} {DEFAULT}( {GREEN}+{2} {DEFAULT})"
 		"ua"		"Результат за це життя: {OLIVE}{1} {DEFAULT}( {GREEN}+{2} {DEFAULT})"
@@ -466,7 +466,7 @@
 
 	"ResultOfLifetimeNegative"
 	{
-		"#format"	"{1:.2f}"
+		"#format"	"{1:.2f},{2:.2f}"
 		"en"		"Result for this lifetime: {OLIVE}{1} {DEFAULT}( {RED}{2} {DEFAULT})"
 		"ru"		"Результат за эту жизнь: {OLIVE}{1} {DEFAULT}( {RED}{2} {DEFAULT})"
 		"ua"		"Результат за це життя: {OLIVE}{1} {DEFAULT}( {RED}{2} {DEFAULT})"
