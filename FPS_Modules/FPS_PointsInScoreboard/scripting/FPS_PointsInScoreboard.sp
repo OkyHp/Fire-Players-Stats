@@ -7,7 +7,7 @@
 
 public Plugin myinfo =
 {
-	name	=	"[FPS] Points In Score Panel",
+	name	=	"[FPS] Points In Scoreboard",
 	author	=	"OkyHp",
 	version	=	"1.0.0",
 	url		=	"OkyHek#2441"
