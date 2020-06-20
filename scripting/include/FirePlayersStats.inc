@@ -402,7 +402,7 @@ native ArrayList FPS_GetAllRanks();
 native void FPS_PrintToChat(int iClient, const char[] szMessage, any ...);
 
 /**
- *	Print message in chat with prefix for all player (cvar sm_fps_chat_prefix).
+ *	Print message in chat with prefix for all players (cvar sm_fps_chat_prefix).
  *
  *	@param szMessage			Message formatting rules.
  *	@param ...					Formatting parameters.
