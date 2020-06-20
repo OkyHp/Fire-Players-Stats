@@ -61,9 +61,9 @@ enum StatsData
 
 enum FeatureMenus
 {
-	FPS_STATS_MENU = 0,	// Секция меню статистики
-	FPS_TOP_MENU,		// Секция меню списка топов
-	FPS_ADVANCED_MENU	// Секция дополнительного меню
+	FPS_STATS_MENU = 0,	// Statistics menu section
+	FPS_TOP_MENU,		// TOP menu section
+	FPS_ADVANCED_MENU	// Additional menu section
 };
 
 enum StatsID
@@ -73,7 +73,7 @@ enum StatsID
 };
 
 /**
- *	Вызывается когда ядро/статистика загрузилась.
+ *	Called when the core/statistics are loaded.
  *
  *	@noparams
  *	@noreturn
@@ -81,15 +81,15 @@ enum StatsID
 forward void FPS_OnFPSStatsLoaded();
 
 /**
- *	Вызывается когда было установлено сеединение с БД.
+ *	Called when database connection has been established.
  *
- *	@param hDatabase	Хендл базы данных.
+ *	@param hDatabase		Database handle.
  *	@noreturn
 */
 forward void FPS_OnDatabaseConnected(Database hDatabase);
 
 /**
- *	Вызывается когда сеединение с БД было разорвано.
+ *	Called when database connection has been lost.
  *
  *	@noparams
  *	@noreturn
@@ -97,62 +97,62 @@ forward void FPS_OnDatabaseConnected(Database hDatabase);
 forward void FPS_OnDatabaseLostConnection();
 
 /**
- *	Вызывается когда данные игрока были загружены.
+ *	Called when player data has been loaded.
  *
- *	@param iClient		Индекс игрока.
- *	@param fPoints		Количество поинтов у игрока.
+ *	@param iClient			Player index.
+ *	@param fPoints			Player points.
  *	@noreturn
 */
 forward void FPS_OnClientLoaded(int iClient, float fPoints);
 
 /**
- *	Вызывается перед установкой поинтов игроку.
+ *	Called before setting points to player.
  *
- *	@param iAttacker			Индекс убийцы.
- *	@param iVictim				Индекс жертвы.
- *	@param hEvent				Хендл события.
- *	@param fAddPointsAttacker	Количество добавляемых поинтов у убийцы.
- *	@param fAddPointsVictim		Количество отнимаемых поинтов у жертвы.
- *	@return						Plugin_Stop или Plugin_Handled  - запретит выдачу опыта (не влияет на статистику по оружию и доп очки!);
- 								Plugin_Continue  - разрешит выдачу опыта без изменений;
- 								Plugin_Changed - разрешит переключение опыта на fAddPointsAttacker и fAddPointsVictim.
+ *	@param iAttacker			Attacker index.
+ *	@param iVictim				Victim index.
+ *	@param hEvent				Event handle.
+ *	@param fAddPointsAttacker	Count of add points for killing.
+ *	@param fAddPointsVictim		Count of deduct points for killing.
+ *	@return						Plugin_Stop or Plugin_Handled - Block give of experience points for player. Does not affect weapon statistics and extra points;
+ 								Plugin_Continue - Allow issuance of experience unchanged;
+ 								Plugin_Changed - Allow issuance of experience with change fAddPointsAttacker and fAddPointsVictim.
 
 */
 forward Action FPS_OnPointsChangePre(int iAttacker, int iVictim, Event hEvent, float &fAddPointsAttacker, float &fAddPointsVictim);
 
 /**
- *	Вызывается после установкой поинтов игроку.
+ *	Called after setting points to player.
  *
- *	@param iAttacker			Индекс убийцы.
- *	@param iVictim				Индекс жертвы.
- *	@param fPointsAttacker		Количество поинтов у убийцы (общее).
- *	@param fPointsVictim		Количество поинтов у жертвы (общее).
+ *	@param iAttacker			Attacker index.
+ *	@param iVictim				Victim index.
+ *	@param fPointsAttacker		Count of attacker points.
+ *	@param fPointsVictim		Count of victim points.
  *	@noreturn
 */
 forward void FPS_OnPointsChange(int iAttacker, int iVictim, float fPointsAttacker, float fPointsVictim);
 
 /**
- *	Вызывается после изменения уровня.
+ *	Called after level change.
  *
- *	@param iClient		Индекс игрока.
- *	@param iOldLevel	Старый уровень игрока.
- *	@param iNewLevel	Новый уровень игрока.
+ *	@param iClient				Player index.
+ *	@param iOldLevel			Old player level.
+ *	@param iNewLevel			New player level.
  *	@noreturn
 */
 forward void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel);
 
 /**
- *	Вызывается после получения позиции игрока.
+ *	Called after receiving player’s position.
  *
- *	@param iClient			Индекс игрока.
- *	@param iPosition		Текущая позиция игрока.
- *	@param iPlayersCount	Всего игроков.
+ *	@param iClient				Player index.
+ *	@param iPosition			Player's current position.
+ *	@param iPlayersCount		All players count.
  *	@noreturn
 */
 forward void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount);
 
 /**
- *	Вызывается при обновлении данных в топе и т.д., после сохранения статистики.
+ *	Called when updating data in top, etc., after saving statistics.
  *
  *	@noparams
  *	@noreturn
@@ -160,15 +160,15 @@ forward void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount);
 forward void FPS_OnSecondDataUpdated();
 
 /**
- *	Вызывается при обнулении статистики для игрока.
+ *	Called when resetting statistics for a player.
  *
- *	@param iClient			Индекс игрока.
+ *	@param iClient				Индекс игрока.
  *	@noreturn
 */
 forward void FPS_OnResetGeneralStats(int iClient);
 
 /**
- *	Вызывается при обнулении всей статистики.
+ *	Called when all statistics are reset.
  *
  *	@noreturn
 */
@@ -177,146 +177,145 @@ forward void FPS_OnFPSResetAllStats();
 
 
 /**
- *	Получает статус ядра/статистики
+ *	Get state core/stats
  *
  *	@noparams
- *	@return				true - Загружено.
- * 						false - Не загружено.
+ *	@return						true - Loaded.
+ * 								false - Not loaded.
 */
 native bool FPS_StatsLoad();
 
 /**
- *	Получает Handle базы данных. После работы необходимо закрыть с помощью CloseHandle() или delete.
+ *	Get database handle. After use, you must close handle using CloseHandle() or delete.
  *
  *	@noparams
- *	@return				Хендл базы данных.
+ *	@return						Database handle.
 */
 native Database FPS_GetDatabase();
 
 /**
- *	Получение статуса игрока.
+ *	Get player state.
  *
- *	@param iClient		Индекс игрока.
- *	@return				true - Данные игрока загружены.
- * 						false - Данные игрока не загружены.
+ *	@param iClient				Player index.
+ *	@return						true - Player data is loaded.
+ * 								false - Player data is not load.
 */
 native bool FPS_ClientLoaded(int iClient);
 
 /**
- *	Перезагрузить данные игрока.
+ *	Relaod player data.
  *
- *	@param iClient		Индекс игрока.
+ *	@param iClient				Player index.
  *	@noreturn
 */
 native void FPS_ClientReloadData(int iClient);
 
 /**
- *	Отключить работу статистики на 1 раунд. 
- *  Используйте только после события конца раунда и не позже события начала нового раунда.
+ *	Disable statistics for 1 round.
+ *  Use only after event of end round and no later than event of beginning new round.
  *
  *	@noreturn
 */
 native void FPS_DisableStatisPerRound();
 
 /**
- *	Получить количетсво наигранного времени. 
+ *	Get played time for player.
  *
- *	@param iClient		Индекс игрока.
- *	@return				Наигранное время в секундах.
+ *	@param iClient				Player index.
+ *	@return						Played time.
 */
 native int FPS_GetPlayedTime(int iClient);
 
 /**
- *	Получить количетсво поинтов/очков у игрока.
+ *	Get player points count.
  *
- *	@param iClient		Индекс игрока.
- *	@param bSession		Количетсво поинтов за текущую сессию.
- *	@return				Количетсво поинтов/очков у игрока.
+ *	@param iClient				Player index.
+ *	@param bSession				Get data for game session.
+ *	@return						Player points count.
 */
 native float FPS_GetPoints(int iClient, bool bSession = false);
 
 /**
- *	Получить текущий уровень/ранг.
+ *	Get current level.
  *
- *	@param iClient				Индекс игрока.
- *	@return						Текущий ранг.
+ *	@param iClient				Player index.
+ *	@return						Current level.
 */
 native int FPS_GetLevel(int iClient);
 
 /**
- *	Получить текущий ранг и/или название ранга.
+ *	Get current rank.
  *
- *	@param iClient				Индекс игрока.
- *	@param szBufferLevelName	Буфер для записи названия ранга.
- *	@param iMaxLength			Максимальный размер буфера.
+ *	@param iClient				Player index.
+ *	@param szBufferLevelName	Buffer to record rank name.
+ *	@param iMaxLength			Buffer size.
  *	@noreturn
 */
 native void FPS_GetRanks(int iClient, char[] szBufferRank, int iMaxLength);
 
 /**
- *	Получить количетсво всех рангов. Получает значение при старте карты.
+ *	Get all ranks count. Gets value at start of map.
  *
- *	@return						Количетсво всех рангов.
+ *	@return						All ranks count.
 */
 native int FPS_GetMaxRanks();
 
 /**
- *	Получить данные игрока
+ *	Get player data
  *
- *	@param iClient				Индекс игрока.
- *	@param eData				Тип получаемых данных. Примичание, данные MAX_ROUNDS_KILLS за сессию не 
- 								имеет смысла хранить, из-за чего, ядро хранит в нем свои данные!
- *	@param bSession				Получить данные за сессию.
- *	@return						Запрашиваемые данные.
+ *	@param iClient				Player index.
+ *	@param eData				Type of data to receive. Don't use MAX_ROUNDS_KILLS, it`s service variable!
+ *	@param bSession				Get data for game session.
+ *	@return						Player data.
 */
 native int FPS_GetStatsData(int iClient, StatsData eData, bool bSession = false);
 
 /**
- *	Получить стату калибровки.
+ *	Get calibration status.
  *
- *	@param iClient		Индекс игрока.
- *	@return				true - Игрок калибруется.
- * 						false - Игрок уже откалиброван.
+ *	@param iClient				Player index.
+ *	@return						true - Player is calibrating.
+ * 								false - Player is calibrated.
 */
 native bool FPS_IsCalibration(int iClient);
 
 /////////////////////////////////////////////////////////////////////////////////
 
 /**
- *	Вызывается, при нажатии пункта.
+ *	Called when an item is pressed.
  *
- *	@param iClient			Индекс игрока.
- *	@return					true - Вернет обратно в секцию.
+ *	@param iClient				Player index.
+ *	@return						true - Returns back to main section.
 */
 typedef FPS_ItemSelectCallback		= function bool (int iClient);
 
 /**
- *	Вызывается, при отображении пункта.
+ *	Called when item is displayed.
  *
- *	@param iClient			Индекс игрока.
- *	@param szDisplay		Буфер с названием пункта.
- *	@param iMaxLength		Размер буфера.
- *	@return					true - Установит новое название с szDisplay.
+ *	@param iClient				Player index.
+ *	@param szDisplay			Buffer with name of item.
+ *	@param iMaxLength			Buffer size.
+ *	@return						true - Set new name with szDisplay.
 */
 typedef FPS_ItemDisplayCallback		= function bool (int iClient, char[] szDisplay, int iMaxLength);
 
 /**
- *	Вызывается, при обращении к пункту.
+ *	Called when accessing an item.
  *
- *	@param iClient			Индекс игрока.
- *	@param iStyle			Текущий стиль пункта.
- *	@return					Новый стиль для пункта (ITEMDRAW_DEFAULT, ITEMDRAW_DISABLED, ITEMDRAW_RAWLINE).
+ *	@param iClient				Player index.
+ *	@param iStyle				Current item style.
+ *	@return						New style for item (ITEMDRAW_DEFAULT, ITEMDRAW_DISABLED, ITEMDRAW_RAWLINE).
 */
 typedef FPS_ItemDrawCallback		= function int (int iClient, int iStyle);
 
 /**
- *	Добавляет новую функцию
+ *	Add new custom function.
  *
- *	@param szFeature		Название функции.
- *	@param eType			Секция меню для добавления.
- *	@param OnItemSelect		Обратный вызов при нажатии пункта.
- *	@param OnItemDisplay	Обратный вызов при отображении пункта.
- *	@param OnItemDraw		Обратный вызов при обращении к пункту.
+ *	@param szFeature			Function name.
+ *	@param eType				Menu section to add.
+ *	@param OnItemSelect			Callback when click an item.
+ *	@param OnItemDisplay		Callback when displaying an item.
+ *	@param OnItemDraw			Callback when accessing an item.
  *	@noreturn
 */
 native void FPS_AddFeature(const char[]					szFeature,
@@ -326,87 +325,87 @@ native void FPS_AddFeature(const char[]					szFeature,
 							FPS_ItemDrawCallback		OnItemDraw		= INVALID_FUNCTION);
 
 /**
- *	Удаляет функцию
+ *	Delete custom function.
  *
- *	@param szFeature		Название функции.
+ *	@param szFeature			Function name.
  *	@noreturn
 */
 native void FPS_RemoveFeature(const char[] szFeature);
 
 /**
- *	Получает статус функции
+ *	Get custom function state
  *
- *	@param szFeature		Название функции.
- *	@return					true - Существует.
- * 							false - Не существует.
+ *	@param szFeature			Function name.
+ *	@return						true - Exist.
+ * 								false - Not exist.
 */
 native bool FPS_IsExistFeature(const char[] szFeature);
 
 /**
- *	Открывает секцию статистики
+ *	Open statistics section
  *
- *	@param iClient			Индекс игрока.
- *	@param eType			Секция меню. -1 - Откроет главное меню статистики (Относится толкьо к этому нативу!).
- *	@param iPage			Страница меню для открытия (GetMenuSelectionPosition()).
+ *	@param iClient				Player index.
+ *	@param eType				Section menu. -1 - Open main menu of statistics (only applies to this native!).
+ *	@param iPage				Menu page to open (GetMenuSelectionPosition()).
  *	@noreturn
 */
 native void FPS_MoveToMenu(int iClient, FeatureMenus eType, int iPage = 0);
 
 /**
- *	Получает статус, работает ли статистика (Ведет сбор данных и начисляет ли поинты).
+ *	Gets status of whether statistics are working (collects data and calculates points).
  *
- *	@return					true - Работает.
- * 							false - Отключена в данный момент.
+ *	@return						true - Working.
+ * 								false - Disable in this moment.
 */
 native bool FPS_StatsActive();
 
 /**
- *	Получает ID.
+ *	Get ID`s.
  *
- *	@param eType			Тип получаемого ID.
- *	@return					ID.
+ *	@param eType				Type ID.
+ *	@return						ID.
 */
 native int FPS_GetID(StatsID eType);
 
 /**
- *	Получает текущую позицию игрока.
+ *	Get current player position.
  *
- *	@param iClient			Индекс игрока.
- *	@return					Позиция.
+ *	@param iClient				Player index.
+ *	@return						Current position.
 */
 native int FPS_GetPosition(int iClient);
 
 /**
- *	Получает количество игроков.
+ *	Gets count players.
  *
- *	@return					Количество игроков.
+ *	@return						Count all players.
 */
 native int FPS_GetPlayersCount();
 
 /**
- *	Получает массив (не копию!) с рангами для конкретного сервера.
- *	Массив содержит в себе по порядку ПОИНТЫ и НАЗВАНИЕ для ранга, от большего к меньшему.
- *	Пример: 1.4000 2.Global 3.3600 4.Supreme ...
+ *	Get array (not copy!) with ranks for current server.
+ *	Array contains, in order, POINTS and TITLE for rank, from larger to smaller.
+ *	Example: 1.4000 2.Global 3.3600 4.Supreme ...
  *
- *	@return					Массив с рангами.
+ *	@return						Array with ranks.
 */
 native ArrayList FPS_GetAllRanks();
 
 /**
- *	Выводит игроку сообщение в чат с префиксом (квар sm_fps_chat_prefix).
+ *	Print message in chat with prefix for player (cvar sm_fps_chat_prefix).
  *
- *	@param iClient			Индекс игрока.
- *	@param szMessage		Правила форматирования сообщение.
- *	@param ...				Параметры форматирования.
+ *	@param iClient				Player index.
+ *	@param szMessage			Message formatting rules.
+ *	@param ...					Formatting parameters.
  *	@noreturn
 */
 native void FPS_PrintToChat(int iClient, const char[] szMessage, any ...);
 
 /**
- *	Выводит всем игрокам сообщение в чат с префиксом (квар sm_fps_chat_prefix).
+ *	Print message in chat with prefix for all player (cvar sm_fps_chat_prefix).
  *
- *	@param szMessage		Правила форматирования сообщение.
- *	@param ...				Параметры форматирования.
+ *	@param szMessage			Message formatting rules.
+ *	@param ...					Formatting parameters.
  *	@noreturn
 */
 native void FPS_PrintToChatAll(const char[] szMessage, any ...);
