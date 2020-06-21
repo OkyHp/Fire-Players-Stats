@@ -129,7 +129,7 @@
 	}
 	"ListsOfTops"
 	{
-		"en"		"Available lists"
+		"en"		"TOP lists"
 		"ru"		"Списки топов"
 		"ua"		"Списки топів"
 		"tr"		"Mevcut Sıralamalar"
