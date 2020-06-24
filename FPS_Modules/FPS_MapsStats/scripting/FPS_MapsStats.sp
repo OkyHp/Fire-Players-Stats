@@ -542,7 +542,7 @@ public void FPS_OnFPSResetAllStats()
 		}
 
 		char szQuery[128];
-		FormatEx(szQuery, sizeof(szQuery), "DELETE FROM `fps_maps` WHERE `server_id` = %i", FPS_GetID(FPS_SERVER_ID));
+		g_hDatabase.Format(SZF(szQuery), "DELETE FROM `fps_maps` WHERE `server_id` = %i", FPS_GetID(FPS_SERVER_ID));
 		g_hDatabase.Query(SQL_Default_Callback, szQuery, 4);
 	}
 }
