@@ -29,7 +29,7 @@ static const char g_sFeature[] = "FPS_HintInfo";
 
 public Plugin myinfo =
 {
-	name	=	"FPS Hint Info",
+	name	=	"[FPS] Hint Info",
 	author	=	"OkyHp",
 	version	=	"1.1.4",
 	url		=	"Discord: OkyHek#2441"
@@ -91,7 +91,7 @@ public void OnPluginStart()
 
 	ConVar Convar;
 	(Convar = CreateConVar(
-		"sm_fps_hint_type",	"0", 
+		"sm_fps_hint_type",	"1", 
 		"Тип работы плагина. \n0 - Постоянно отображать информацию в хинте. \n1 - Отобразить информацию один раз, при переключении на игрока.", 
 		_, true, 0.0, true, 1.0
 	)).AddChangeHook(ChangeCvar_HintType);
@@ -231,7 +231,7 @@ void SendHintMessage(int iClient)
 		return;
 	}
 
-	if (g_bHintState[iClient] && FPS_ClientLoaded(iClient) && GetEntData(iClient, m_iObserverMode) != 6)
+	if (FPS_ClientLoaded(iClient) && g_bHintState[iClient] && GetEntData(iClient, m_iObserverMode) != 6)
 	{
 		static int iTarget;
 		iTarget = GetEntDataEnt2(iClient, m_hObserverTarget);
