@@ -217,7 +217,7 @@ public void SteamWorks_SteamServersConnected()
 	if (SteamWorks_GetPublicIP(iIP))
 	{
 		char szBuffer[256];
-		Handle hRequest = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, "http://stats.tibari.ru/api/v1/add_server");
+		Handle hRequest = SteamWorks_CreateHTTPRequest(k_EHTTPMethodPOST, "https://stats.tibari.ru/api/v1/add_server");
 		FormatEx(SZF(szBuffer), "key=c30facaa6f64ce25357e7c5ed1685afd&ip=%i.%i.%i.%i&port=%i&version=%s&sm=%s", 
 			iIP[0], iIP[1], iIP[2], iIP[3], g_iServerPort, PLUGIN_VERSION, SOURCEMOD_VERSION
 		);
