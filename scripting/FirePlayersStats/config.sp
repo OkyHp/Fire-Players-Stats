@@ -53,10 +53,10 @@ void LoadConfigKV()
 		int i;
 		do {
 			g_fExtraPoints[i] = g_hWeaponsConfigKV.GetFloat(NULL_STRING, 0.0);
-			#if DEBUG == 1
+			#if DEBUG >= 3
 				static char szBuffer[32];
 				g_hWeaponsConfigKV.GetSectionName(SZF(szBuffer));
-				FPS_Debug("LoadConfigKV >> %s #%i: %f", szBuffer, i, g_fExtraPoints[i])
+				FPS_Debug(3, "%s #%i: %f", szBuffer, i, g_fExtraPoints[i]);
 			#endif
 			i++;
 		} while (g_hWeaponsConfigKV.GotoNextKey(false));

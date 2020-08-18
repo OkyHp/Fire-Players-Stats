@@ -14,7 +14,10 @@
 
 /////////////////////////////////////// PRECOMPILATION SETTINGS ///////////////////////////////////////
 
-#define DEBUG					0		// Enable/Disable debug mod
+#define DEBUG					0		// 0 - Disable debug;
+										// 1 - SQL query debug;
+										// 2 - Action debug;
+										// 3 - Full debug;
 #define USE_STREAK_POINTS		1		// Use streak points in stats
 #define UPDATE_SERVER_IP		0		// 0 - Disable. It is necessary if you use domain instead of IP. 
 #define DEFAULT_POINTS			1000.0	// Not recommended change
@@ -23,11 +26,15 @@
 
 #define PLUGIN_VERSION		"1.5.4"
 
-#if DEBUG == 1
-	char g_sLogPath[256];
-	#define FPS_Debug(%0)	LogToFile(g_sLogPath, %0);
+#if DEBUG != 0
+	char	g_sLogPath[PLATFORM_MAX_PATH];
+	int		g_iBlockWarning;
+	#define FPS_Debug(%0,%1);	g_iBlockWarning = %0; \
+								if(g_iBlockWarning <= DEBUG){ \
+									LogToFile(g_sLogPath, "[VER:%s][LINE:%d][LVL:%s][FUNC:%s] %s", __LINE__, PLUGIN_VERSION, %0, __FUNCTION__, %1); \
+								}
 #else
-	#define FPS_Debug(%0)
+	#define FPS_Debug(%0);
 #endif
 
 // Others vars
@@ -110,8 +117,9 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	#if DEBUG == 1
+	#if DEBUG != 0
 		BuildPath(Path_SM, SZF(g_sLogPath), "logs/FirePlayersStats.log");
+		FPS_Debug(2, "Start plugin");
 	#endif
 
 	g_hItems = new ArrayList(ByteCountToCells(128));
@@ -193,7 +201,7 @@ Action TimerSaveStats(Handle hTimer)
 	{
 		if (g_bStatsLoad[i])
 		{
-			FPS_Debug("Call Save Function (TimerSaveStats) >> %N", i)
+			FPS_Debug(2, "Call Save Function (TimerSaveStats) >> %N", i);
 			SavePlayerData(i);
 		}
 	}
@@ -257,19 +265,15 @@ public void OnClientPutInServer(int iClient)
 {
 	if (iClient && !IsFakeClient(iClient) && !IsClientSourceTV(iClient))
 	{
-		FPS_Debug("Client connected >> %N", iClient)
-
 		int iAccountID = GetSteamAccountID(iClient, true);
 		if (iAccountID)
 		{
+			FPS_Debug(2, "Client connected >> %N", iClient);
+
 			g_iPlayerAccountID[iClient] = iAccountID;
 			g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS] = 0; // (not used var) for blocked accrual of experience to connected player
 			g_hWeaponsData[iClient] = new ArrayList(64);
 			LoadPlayerData(iClient);
-		}
-		else
-		{
-			LogError("GetSteamAccountID >> %N: AccountID not valid %i", iClient, iAccountID);
 		}
 	}
 }

@@ -211,7 +211,7 @@ int Native_FPS_ClientReloadData(Handle hPlugin, int iNumParams)
 	int iClient = GetNativeCell(1);
 	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
 	{
-		FPS_Debug("Native_FPS_ClientReloadData >> LoadStats: %N", iClient)
+		FPS_Debug(2, "LoadStats: %N", iClient);
 		SavePlayerData(iClient);
 		OnClientDisconnect(iClient);
 		LoadPlayerData(iClient);

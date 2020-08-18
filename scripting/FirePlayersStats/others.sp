@@ -38,7 +38,7 @@ void WriteWeaponData(int iClient, char[] szWeapon, int iData, bool bLast = false
 		static int iIndex;
 		if (!bLast && !(iIndex = g_hWeaponsData[iClient].FindString(szWeapon) + 1))
 		{
-			FPS_Debug("WriteWeaponData >> %N >> Weapon '%s' added in array >> Data: %i", iClient, szWeapon, iData)
+			FPS_Debug(2, "%N >> Weapon '%s' added in array >> Data: %i", iClient, szWeapon, iData);
 			g_hWeaponsData[iClient].PushString(szWeapon);
 
 			int iArray[W_SIZE];
@@ -50,7 +50,7 @@ void WriteWeaponData(int iClient, char[] szWeapon, int iData, bool bLast = false
 		if (iIndex)
 		{
 			g_hWeaponsData[iClient].Set(iIndex, (g_hWeaponsData[iClient].Get(iIndex, iData) + 1), iData);
-			FPS_Debug("WriteWeaponData >> %N >> (bLast: %i) Weapon '%s' finded >> Data: %i >> Index: %i >> Source: %i", iClient, bLast, szWeapon, iData, iIndex, g_hWeaponsData[iClient].Get(iIndex, iData))
+			FPS_Debug(2, "%N >> (bLast: %i) Weapon '%s' finded >> Data: %i >> Index: %i >> Source: %i", iClient, bLast, szWeapon, iData, iIndex, g_hWeaponsData[iClient].Get(iIndex, iData));
 		}
 	}
 }
@@ -76,7 +76,7 @@ stock float StreakPoints(int iClient)
 			iStrick[iClient][0]++;
 		}
 		
-		FPS_Debug("StreakPoints >> %N: #%i %f", iClient, iStrick[iClient][0], g_fExtraPoints[iStrick[iClient][0] + 12])
+		FPS_Debug(2, "%N: #%i %f", iClient, iStrick[iClient][0], g_fExtraPoints[iStrick[iClient][0] + 12]);
 
 		return g_fExtraPoints[iStrick[iClient][0] + 12];
 	}
@@ -95,7 +95,7 @@ float GetWeaponExtraPoints(const char[] szWeapon, bool bIsGrenade)
 		if (g_hWeaponsConfigKV.JumpToKey("WeaponCoeff") && ( g_hWeaponsConfigKV.JumpToKey(g_sMap) || g_hWeaponsConfigKV.JumpToKey("default") ))
 		{
 			float fExtPoints = g_hWeaponsConfigKV.GetFloat(szWeapon, 1.0);
-			FPS_Debug("GetWeaponExtraPoints >> %s -> %f", szWeapon, fExtPoints)
+			FPS_Debug(2, "%s -> %f", szWeapon, fExtPoints);
 			return fExtPoints;
 		}
 	}
@@ -134,7 +134,7 @@ void CheckRank(int iClient)
 				}
 
 				g_iPlayerRanks[iClient] = iLevel;
-				FPS_Debug("CheckRank >> %N >> Old lvl: %i | New lvl: %i | Rank name: %s", iClient, (g_iPlayerRanks[iClient] - 1), g_iPlayerRanks[iClient], g_sRankName[iClient])
+				FPS_Debug(2, "%N >> Old lvl: %i | New lvl: %i | Rank name: %s", iClient, (g_iPlayerRanks[iClient] - 1), g_iPlayerRanks[iClient], g_sRankName[iClient]);
 				return;
 			}
 			--iLevel;
@@ -145,7 +145,7 @@ void CheckRank(int iClient)
 // Check grenade
 bool IsGrenade(const char[] szWeapon)
 {
-	// FPS_Debug("IsGrenade >> %s", szWeapon)
+	// FPS_Debug(2, szWeapon);
 	return (szWeapon[0] == 'i' // inferno + incgrenade
 			|| szWeapon[4] == 'y' // decoy
 			|| (szWeapon[0] == 'h' && szWeapon[1] == 'e') // hegrenade + healthshot
@@ -159,7 +159,7 @@ bool IsGrenade(const char[] szWeapon)
 // Check knife
 bool IsKnife(const char[] szWeapon)
 {
-	// FPS_Debug("IsKnife >> %s", szWeapon)
+	// FPS_Debug(2, szWeapon);
 	return (szWeapon[0] == 'k' || szWeapon[2] == 'y');
 }
 
@@ -201,7 +201,7 @@ void AddFeatureItemToMenu(Menu hMenu, FeatureMenus eType)
 		{
 			g_hItems.GetString(i, SZF(szBuffer));
 			hMenu.AddItem(szBuffer, szBuffer);
-			FPS_Debug("AddFeatureItemToMenu >> F_TYPE: %i >> F: %s", eType, szBuffer)
+			FPS_Debug(2, "F_TYPE: %i >> F: %s", eType, szBuffer);
 		}
 	}
 }
@@ -291,6 +291,6 @@ int FeatureHandler(Menu hMenu, MenuAction action, int iClient, int iItem, Featur
 // 	if (!g_iServerID)
 // 	{
 // 		g_iServerID = GetServerSteamAccountId();
-// 		FPS_Debug("GetAutoServerID >> %i", g_iServerID)
+// 		FPS_Debug(2, "%i", g_iServerID);
 // 	}
 // }
