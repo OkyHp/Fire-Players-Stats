@@ -106,3 +106,5 @@
 		Added Turkish language support.
 		Add native FPS_GetPlayersCount.
 1.5.5 - Added debug level.
+		Added cvar sm_fps_ignore_new_players.
+		Now when UPDATE_SERVER_DATA is 0, server name will not be updated.

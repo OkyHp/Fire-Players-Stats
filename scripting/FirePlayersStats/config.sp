@@ -8,7 +8,8 @@ int			g_iServerID,
 			g_iSaveInterval,
 			g_iInfoMessage;
 bool		g_bShowStatsEveryone,
-			g_bBlockStatsOnWarmup;
+			g_bBlockStatsOnWarmup,
+			g_bIgnoreNewPlayers;
 float		g_fDBRetryConnTime,
 			g_fCoeff,
 			g_fExtraPoints[18];
@@ -172,6 +173,13 @@ void SetCvars()
 	)).AddChangeHook(ChangeCvar_InfoMessage);
 	ChangeCvar_InfoMessage(Convar, NULL_STRING, NULL_STRING);
 
+	(Convar = CreateConVar(
+		"sm_fps_ignore_new_players",	"1", 
+		"Не выводить некоткалеброваных игроков в списки ТОП-ов. 0 - Отключить",
+		_, true, 0.0, true, 1.0
+	)).AddChangeHook(ChangeCvar_IgnoreNewPlayers);
+	ChangeCvar_IgnoreNewPlayers(Convar, NULL_STRING, NULL_STRING);
+
 	AutoExecConfig(true, "FirePlayersStats");
 
 	LoadConfigKV();
@@ -240,4 +248,9 @@ void ChangeCvar_ChatPrefix(ConVar Convar, const char[] oldValue, const char[] ne
 void ChangeCvar_InfoMessage(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iInfoMessage = Convar.IntValue;
+}
+
+void ChangeCvar_IgnoreNewPlayers(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_bIgnoreNewPlayers = Convar.BoolValue;
 }

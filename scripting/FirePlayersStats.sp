@@ -19,7 +19,7 @@
 										// 2 - Action debug;
 										// 3 - Full debug;
 #define USE_STREAK_POINTS		1		// Use streak points in stats
-#define UPDATE_SERVER_IP		0		// 0 - Disable. It is necessary if you use domain instead of IP. 
+#define UPDATE_SERVER_DATA		0		// 0 - Disable. It is necessary if you use domain instead of IP. 
 #define DEFAULT_POINTS			1000.0	// Not recommended change
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,7 +31,7 @@
 	int		g_iBlockWarning;
 	#define FPS_Debug(%0,%1);	g_iBlockWarning = %0; \
 								if(g_iBlockWarning <= DEBUG){ \
-									LogToFile(g_sLogPath, "[VER:%s][LINE:%d][LVL:%s][FUNC:%s] %s", __LINE__, PLUGIN_VERSION, %0, __FUNCTION__, %1); \
+									LogToFile(g_sLogPath, "[VER:%s][LINE:%d][LVL:%s][FUNC:%s] %s", PLUGIN_VERSION, __LINE__, g_iBlockWarning, __FUNCTION__, %1); \
 								}
 #else
 	#define FPS_Debug(%0);
@@ -251,7 +251,7 @@ int OnTransferComplete(Handle hRequest, bool bFailure, bool bRequestSuccessful, 
 			case 410:	PrintToServer("[FPS Stats] >> Ваша версия Fire Players Stats не поддерживается!");
 			case 413:	PrintToServer("[FPS Stats] >> Не верный размер аргументов");
 			case 429:	return;
-			default:	PrintToServer("[FPS Stats] >> Не известная ошибка: %i", iStatus);								
+			default:	PrintToServer("[FPS Stats] >> Не известная ошибка: %i", iStatus);
 		}
 	}
 }

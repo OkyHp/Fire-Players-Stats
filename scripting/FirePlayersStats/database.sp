@@ -64,32 +64,32 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 
 		Transaction hTxn = new Transaction();
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_players` ( \
-				`account_id`	int				NOT NULL, \
-				`steam_id`		varchar(64)		NOT NULL, \
-				`nickname`		varchar(256)	NOT NULL, \
-				`ip`			varchar(24)		NOT NULL, \
+				`account_id`	int unsigned		NOT NULL, \
+				`steam_id`		varchar(64)			NOT NULL, \
+				`nickname`		varchar(256)		NOT NULL, \
+				`ip`			varchar(24)			NOT NULL, \
 				PRIMARY KEY (`account_id`) \
 			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_servers_stats` ( \
-				`id`				int 		NOT NULL AUTO_INCREMENT, \
-				`account_id`		int			NOT NULL, \
-				`server_id`			int			NOT NULL, \
-				`points`			float		UNSIGNED NOT NULL, \
-				`rank`				int			NOT NULL DEFAULT '0', \
-				`kills`				int			NOT NULL DEFAULT '0', \
-				`deaths`			int			NOT NULL DEFAULT '0', \
-				`assists`			int			NOT NULL DEFAULT '0', \
-				`round_max_kills`	int			NOT NULL DEFAULT '0', \
-				`round_win`			int			NOT NULL DEFAULT '0', \
-				`round_lose`		int			NOT NULL DEFAULT '0', \
-				`playtime`			int			NOT NULL DEFAULT '0', \
-				`lastconnect`		int			NOT NULL DEFAULT '0', \
+				`id`				int unsigned	NOT NULL AUTO_INCREMENT, \
+				`account_id`		int unsigned	NOT NULL, \
+				`server_id`			int				NOT NULL, \
+				`points`			float unsigned	NOT NULL, \
+				`rank`				int				NOT NULL DEFAULT '0', \
+				`kills`				int				NOT NULL DEFAULT '0', \
+				`deaths`			int				NOT NULL DEFAULT '0', \
+				`assists`			int				NOT NULL DEFAULT '0', \
+				`round_max_kills`	int				NOT NULL DEFAULT '0', \
+				`round_win`			int				NOT NULL DEFAULT '0', \
+				`round_lose`		int				NOT NULL DEFAULT '0', \
+				`playtime`			int				NOT NULL DEFAULT '0', \
+				`lastconnect`		int				NOT NULL DEFAULT '0', \
 				PRIMARY KEY (`id`), \
 				UNIQUE(`account_id`, `server_id`) \
 			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_weapons_stats` ( \
-				`id`				int 			NOT NULL AUTO_INCREMENT, \
-				`account_id`		int				NOT NULL, \
+				`id`				int unsigned	NOT NULL AUTO_INCREMENT, \
+				`account_id`		int unsigned	NOT NULL, \
 				`server_id`			int				NOT NULL, \
 				`weapon`			varchar(64)		NOT NULL, \
 				`kills`				int				NOT NULL DEFAULT '0', \
@@ -107,7 +107,7 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 				UNIQUE(`account_id`, `server_id`, `weapon`) \
 			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_servers` ( \
-				`id`					int 			NOT NULL, \
+				`id`					int unsigned	NOT NULL, \
 				`server_name`			varchar(256)	NOT NULL, \
 				`settings_rank_id`		int 			NOT NULL, \
 				`settings_points_id`	int 			NOT NULL, \
@@ -115,7 +115,7 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 				PRIMARY KEY (`id`) \
 			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_ranks` ( \
-				`id`			int 			NOT NULL AUTO_INCREMENT, \
+				`id`			int unsigned	NOT NULL AUTO_INCREMENT, \
 				`rank_id`		int 			NOT NULL, \
 				`rank_name`		varchar(128)	NOT NULL, \
 				`points`		float			UNSIGNED NOT NULL, \
@@ -503,21 +503,22 @@ void LoadTopData()
 {
 	if (g_hDatabase)
 	{
-		char	szQuery[256];
+		int		iIgnore = (g_bIgnoreNewPlayers && g_iCalibrationFixTime ? g_iCalibrationFixTime : 0);
+		char	szQuery[320];
 		Transaction	hTxn = new Transaction();
 
 		g_hDatabase.Format(SZF(szQuery), "SELECT `p`.`nickname`, `s`.`points` \
 			FROM \
 				`fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
-			WHERE `server_id` = %i ORDER BY `points` DESC LIMIT 10;", g_iServerID);
+			WHERE `server_id` = %i AND `playtime` > %i AND `lastconnect` > -1 ORDER BY `points` DESC LIMIT 10;", g_iServerID, iIgnore);
 		FPS_Debug(1, "Query#1 (TopPoints): %s", szQuery);
 		hTxn.AddQuery(szQuery);
 
 		g_hDatabase.Format(SZF(szQuery), "SELECT `p`.`nickname`, TRUNCATE(`s`.`kills` / `s`.`deaths`, 2) AS `kdr` \
 				FROM `fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
-			WHERE `server_id` = %i ORDER BY `kdr` DESC LIMIT 10;", g_iServerID);
+			WHERE `server_id` = %i AND `playtime` > %i AND `lastconnect` > -1 ORDER BY `kdr` DESC LIMIT 10;", g_iServerID, iIgnore);
 		FPS_Debug(1, "Query#2 (TopKRD): %s", szQuery);
 		hTxn.AddQuery(szQuery);
 
@@ -525,7 +526,7 @@ void LoadTopData()
 			FROM \
 				`fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
-			WHERE `server_id` = %i ORDER BY `playtime` DESC LIMIT 10;", g_iServerID);
+			WHERE `server_id` = %i AND `playtime` > %i AND `lastconnect` > -1 ORDER BY `playtime` DESC LIMIT 10;", g_iServerID, iIgnore);
 		FPS_Debug(1, "Query#3 (TopTime): %s", szQuery);
 		hTxn.AddQuery(szQuery);
 
@@ -533,7 +534,7 @@ void LoadTopData()
 			FROM \
 				`fps_servers_stats` AS `s` \
 				INNER JOIN `fps_players` AS `p` ON `p`.`account_id` = `s`.`account_id` \
-			WHERE `server_id` = %i ORDER BY `round_max_kills` DESC, `points` DESC LIMIT 10", g_iServerID);
+			WHERE `server_id` = %i AND `playtime` > %i AND `lastconnect` > -1 ORDER BY `round_max_kills` DESC, `points` DESC LIMIT 10", g_iServerID, iIgnore);
 		FPS_Debug(1, "Query#4 (TopClutch): %s", szQuery);
 		hTxn.AddQuery(szQuery);
 
@@ -604,7 +605,7 @@ void UpdateServerData()
 				szServerName[256];
 		FindConVar("hostname").GetString(SZF(szServerName));
 
-		#if UPDATE_SERVER_IP == 1
+		#if UPDATE_SERVER_DATA == 1
 			g_hDatabase.Format(SZF(szQuery), "REPLACE INTO `fps_servers` ( \
 				`id`, `server_name`, `settings_rank_id`, `settings_points_id`, `server_ip` \
 			) VALUES ( \
@@ -615,13 +616,13 @@ void UpdateServerData()
 			g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_servers` ( \
 				`id`, `server_name`, `settings_rank_id`, `settings_points_id`, `server_ip` \
 			) VALUES ( %i, '%s', %i, %i, '%i.%i.%i.%i:%i' ) ON DUPLICATE KEY UPDATE \
-				`id` = %i, `server_name` = '%s', `settings_rank_id` = %i, `settings_points_id` = %i;", 
+				`id` = %i, `settings_rank_id` = %i, `settings_points_id` = %i;", 
 			g_iServerID, szServerName, g_iRanksID, 1, 
 			g_iServerIP >>> 24, g_iServerIP >> 16 & 255, g_iServerIP >> 8 & 255, g_iServerIP & 255, g_iServerPort,
 			g_iServerID, szServerName, g_iRanksID, 1);
 		#endif
 
-		FPS_Debug(1, "Query (%i): %s", UPDATE_SERVER_IP, szQuery);
+		FPS_Debug(1, "Query (%i): %s", UPDATE_SERVER_DATA, szQuery);
 		g_hDatabase.Query(SQL_Default_Callback, szQuery, 5);
 	}
 }
