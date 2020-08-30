@@ -256,6 +256,7 @@ int Handler_PanelResetStats(Menu hPanel, MenuAction action, int iClient, int iOp
 		{
 			ResetData(iClient, true);
 			SavePlayerData(iClient);
+			CheckRank(iClient);
 			CallForward_OnFPSResetGeneralStats(iClient);
 			
 			FPS_PrintToChat(iClient, "%t", "YourStatsReset");

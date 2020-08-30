@@ -57,7 +57,7 @@ void LoadConfigKV()
 			#if DEBUG >= 3
 				static char szBuffer[32];
 				g_hWeaponsConfigKV.GetSectionName(SZF(szBuffer));
-				FPS_Debug(3, "%s #%i: %f", szBuffer, i, g_fExtraPoints[i]);
+				FPS_Debug(3, "LoadConfigKV", "%s #%i: %f", szBuffer, i, g_fExtraPoints[i]);
 			#endif
 			i++;
 		} while (g_hWeaponsConfigKV.GotoNextKey(false));
