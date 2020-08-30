@@ -59,7 +59,7 @@ public void OnClientDisconnect(int iClient)
 	g_iPos[iClient] = -1;
 }
 
-public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
+public void FPS_OnPlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
 	g_iPos[iClient] = iPosition;
 }

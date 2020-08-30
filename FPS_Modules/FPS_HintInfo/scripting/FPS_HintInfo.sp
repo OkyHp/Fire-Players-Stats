@@ -212,7 +212,7 @@ public void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel)
 	GetPlayerLevel(iClient, iNewLevel);
 }
 
-public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
+public void FPS_OnPlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
 	g_iPlayerPosition[iClient] = iPosition;
 	g_iPlayersCount = iPlayersCount;

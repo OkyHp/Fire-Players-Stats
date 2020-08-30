@@ -83,7 +83,7 @@ public void OnPluginStart()
 
 	if (FPS_StatsLoad())
 	{
-		FPS_OnDatabaseConnected(FPS_GetDatabase());
+		FPS_OnDatabaseConnected();
 		FPS_OnFPSStatsLoaded();
 	}
 
@@ -99,37 +99,34 @@ public void FPS_OnDatabaseLostConnection()
 	}
 }
 
-public void FPS_OnDatabaseConnected(Database hDatabase)
+public void FPS_OnDatabaseConnected()
 {
-	if (hDatabase)
-	{
-		g_hDatabase = hDatabase;
+	g_hDatabase = FPS_GetDatabase();
 
-		static bool bFirstLoad;
-		if (!bFirstLoad)
-		{
-			bFirstLoad = true;
-			g_hDatabase.Query(SQL_Callback_CreateTable, "CREATE TABLE IF NOT EXISTS `fps_maps` ( \
-					`id`				int				NOT NULL AUTO_INCREMENT, \
-					`account_id`		int				NOT NULL, \
-					`server_id`			int				NOT NULL, \
-					`name_map`			varchar(256)	NOT NULL DEFAULT '', \
-					`countplays`		int				NOT NULL DEFAULT 0, \
-					`kills`				int				NOT NULL DEFAULT 0, \
-					`deaths` 			int				NOT NULL DEFAULT 0, \
-					`assists`			int				NOT NULL DEFAULT 0, \
-					`rounds_overall` 	int				NOT NULL DEFAULT 0, \
-					`rounds_t`			int				NOT NULL DEFAULT 0, \
-					`rounds_ct`			int				NOT NULL DEFAULT 0, \
-					`bomb_planted`		int				NOT NULL DEFAULT 0, \
-					`bomb_defused`		int				NOT NULL DEFAULT 0, \
-					`hostage_killed`	int				NOT NULL DEFAULT 0, \
-					`hostage_rescued`	int				NOT NULL DEFAULT 0, \
-					`playtime`			int				NOT NULL DEFAULT 0, \
-					PRIMARY KEY (`id`), \
-					UNIQUE(`account_id`, `server_id`, `name_map`) \
-				) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
-		}
+	static bool bFirstLoad;
+	if (!bFirstLoad)
+	{
+		bFirstLoad = true;
+		g_hDatabase.Query(SQL_Callback_CreateTable, "CREATE TABLE IF NOT EXISTS `fps_maps` ( \
+				`id`				int				NOT NULL AUTO_INCREMENT, \
+				`account_id`		int				NOT NULL, \
+				`server_id`			int				NOT NULL, \
+				`name_map`			varchar(256)	NOT NULL DEFAULT '', \
+				`countplays`		int				NOT NULL DEFAULT 0, \
+				`kills`				int				NOT NULL DEFAULT 0, \
+				`deaths` 			int				NOT NULL DEFAULT 0, \
+				`assists`			int				NOT NULL DEFAULT 0, \
+				`rounds_overall` 	int				NOT NULL DEFAULT 0, \
+				`rounds_t`			int				NOT NULL DEFAULT 0, \
+				`rounds_ct`			int				NOT NULL DEFAULT 0, \
+				`bomb_planted`		int				NOT NULL DEFAULT 0, \
+				`bomb_defused`		int				NOT NULL DEFAULT 0, \
+				`hostage_killed`	int				NOT NULL DEFAULT 0, \
+				`hostage_rescued`	int				NOT NULL DEFAULT 0, \
+				`playtime`			int				NOT NULL DEFAULT 0, \
+				PRIMARY KEY (`id`), \
+				UNIQUE(`account_id`, `server_id`, `name_map`) \
+			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 	}
 	FPS_Debug("FPS_OnDatabaseConnected >> %i", view_as<int>(g_hDatabase))
 }

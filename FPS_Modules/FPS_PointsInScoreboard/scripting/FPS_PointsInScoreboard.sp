@@ -13,7 +13,7 @@ public Plugin myinfo =
 	url		=	"OkyHek#2441"
 };
 
-public void OnMapStart()
+public void OnPluginStart()
 {
 	if (FPS_StatsLoad())
 	{

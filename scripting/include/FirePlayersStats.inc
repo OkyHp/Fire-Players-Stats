@@ -82,14 +82,16 @@ forward void FPS_OnFPSStatsLoaded();
 
 /**
  *	Called when database connection has been established.
+ *	Use native 'FPS_GetDatabase' for get database handle.
  *
- *	@param hDatabase		Database handle.
+ *	@noparams
  *	@noreturn
 */
-forward void FPS_OnDatabaseConnected(Database hDatabase);
+forward void FPS_OnDatabaseConnected();
 
 /**
  *	Called when database connection has been lost.
+ *	Remove existing handle in this event.
  *
  *	@noparams
  *	@noreturn
@@ -149,7 +151,7 @@ forward void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel);
  *	@param iPlayersCount		All players count.
  *	@noreturn
 */
-forward void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount);
+forward void FPS_OnPlayerPosition(int iClient, int iPosition, int iPlayersCount);
 
 /**
  *	Called when updating data in top, etc., after saving statistics.

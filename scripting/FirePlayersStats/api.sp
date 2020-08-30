@@ -30,12 +30,12 @@ static const char g_sColorsC[CSGO_COL_COUNT][] = {
 void CreateGlobalForwards()
 {
 	g_hGlobalForward_OnFPSStatsLoaded				= CreateGlobalForward("FPS_OnFPSStatsLoaded",			ET_Ignore);
-	g_hGlobalForward_OnFPSDatabaseConnected			= CreateGlobalForward("FPS_OnDatabaseConnected",		ET_Ignore,	Param_Cell);
+	g_hGlobalForward_OnFPSDatabaseConnected			= CreateGlobalForward("FPS_OnDatabaseConnected",		ET_Ignore);
 	g_hGlobalForward_OnFPSDatabaseLostConnection	= CreateGlobalForward("FPS_OnDatabaseLostConnection",	ET_Ignore);
 	g_hGlobalForward_OnFPSClientLoaded				= CreateGlobalForward("FPS_OnClientLoaded",				ET_Ignore,	Param_Cell, Param_Cell);
 	g_hGlobalForward_OnFPSPointsChangePre			= CreateGlobalForward("FPS_OnPointsChangePre",			ET_Hook,	Param_Cell, Param_Cell, Param_Cell, Param_FloatByRef, Param_FloatByRef);
 	g_hGlobalForward_OnFPSPointsChange				= CreateGlobalForward("FPS_OnPointsChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Float, Param_Float);
-	g_hGlobalForward_OnFPSPlayerPosition			= CreateGlobalForward("FPS_PlayerPosition",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
+	g_hGlobalForward_OnFPSPlayerPosition			= CreateGlobalForward("FPS_OnPlayerPosition",			ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
 	g_hGlobalForward_OnFPSSecondDataUpdated			= CreateGlobalForward("FPS_OnSecondDataUpdated",		ET_Ignore);
 	g_hGlobalForward_OnFPSLevelChange				= CreateGlobalForward("FPS_OnLevelChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
 	g_hGlobalForward_OnFPSResetGeneralStats			= CreateGlobalForward("FPS_OnResetGeneralStats",		ET_Ignore,	Param_Cell);
@@ -51,7 +51,6 @@ void CallForward_OnFPSStatsLoaded()
 void CallForward_OnFPSDatabaseConnected()
 {
 	Call_StartForward(g_hGlobalForward_OnFPSDatabaseConnected);
-	Call_PushCell(g_hDatabase);
 	Call_Finish();
 }
 

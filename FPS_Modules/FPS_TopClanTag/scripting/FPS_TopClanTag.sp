@@ -99,7 +99,7 @@ void SetClanTag(int iClient)
 	CS_SetClientClanTag(iClient, szBuffer);
 }
 
-public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
+public void FPS_OnPlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
 	g_iPlayerPosition[iClient] = iPosition;
 	SetClanTag(iClient);
