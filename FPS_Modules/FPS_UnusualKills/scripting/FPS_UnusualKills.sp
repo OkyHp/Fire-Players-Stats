@@ -33,8 +33,8 @@
 #define UnusualKill_LastClip (1 << 8)
 
 #define SQL_CreateTable "CREATE TABLE IF NOT EXISTS `fps_unusualkills` (\
-	`id`			int NOT NULL AUTO_INCREMENT, \
-	`account_id`	int NOT NULL, \
+	`id`			int unsigned NOT NULL AUTO_INCREMENT, \
+	`account_id`	int unsigned NOT NULL, \
 	`server_id`		int	NOT NULL, \
 	`op`			int NOT NULL DEFAULT 0, \
 	`penetrated`	int NOT NULL DEFAULT 0, \
@@ -48,7 +48,7 @@
 	PRIMARY KEY (`id`), \
 	UNIQUE(`account_id`, `server_id`) \
 ) CHARSET = utf8mb4 COLLATE utf8mb4_general_ci;"
-#define SQL_CreatePlayer "INSERT INTO `fps_unusualkills` (`account_id`, `server_id`) VALUES ('%i', '%i');"
+#define SQL_CreatePlayer "INSERT INTO `fps_unusualkills` (`account_id`, `server_id`) VALUES ('%u', '%i');"
 #define SQL_LoadPlayer "SELECT \
 	`op`, \
 	`penetrated`, \
@@ -59,8 +59,8 @@
 	`smoke`, \
 	`whirl`, \
 	`last_clip` \
-FROM `fps_unusualkills` WHERE `account_id` = '%i' AND `server_id` = '%i';"
-#define SQL_SavePlayer "UPDATE `fps_unusualkills` SET %s WHERE `account_id` = '%i' AND `server_id` = '%i';"
+FROM `fps_unusualkills` WHERE `account_id` = '%u' AND `server_id` = '%i';"
+#define SQL_SavePlayer "UPDATE `fps_unusualkills` SET %s WHERE `account_id` = '%u' AND `server_id` = '%i';"
 #define SQL_PrintTop "SELECT `p`.`nickname`, `u`.`%s` \
 FROM \
 	`fps_unusualkills` AS `u` \
@@ -122,7 +122,7 @@ public void OnPluginStart()
 
 	if (FPS_StatsLoad())
 	{
-		FPS_OnDatabaseConnected(FPS_GetDatabase());
+		FPS_OnDatabaseConnected();
 		FPS_OnFPSStatsLoaded();
 	}
 
@@ -140,18 +140,15 @@ public void FPS_OnDatabaseLostConnection()
 	}
 }
 
-public void FPS_OnDatabaseConnected(Database hDatabase)
+public void FPS_OnDatabaseConnected()
 {
-	if (hDatabase)
-	{
-		g_hDatabase = hDatabase;
+	g_hDatabase = FPS_GetDatabase();
 
-		static bool bLoaded;
-		if (!bLoaded)
-		{
-			bLoaded = true;
-			g_hDatabase.Query(SQL_Callback_CreateTable, SQL_CreateTable);
-		}
+	static bool bLoaded;
+	if (g_hDatabase && !bLoaded)
+	{
+		bLoaded = true;
+		g_hDatabase.Query(SQL_Callback_CreateTable, SQL_CreateTable);
 	}
 }
 

@@ -104,12 +104,12 @@ public void FPS_OnDatabaseConnected()
 	g_hDatabase = FPS_GetDatabase();
 
 	static bool bFirstLoad;
-	if (!bFirstLoad)
+	if (g_hDatabase && !bFirstLoad)
 	{
 		bFirstLoad = true;
 		g_hDatabase.Query(SQL_Callback_CreateTable, "CREATE TABLE IF NOT EXISTS `fps_maps` ( \
-				`id`				int				NOT NULL AUTO_INCREMENT, \
-				`account_id`		int				NOT NULL, \
+				`id`				int unsigned	NOT NULL AUTO_INCREMENT, \
+				`account_id`		int unsigned	NOT NULL, \
 				`server_id`			int				NOT NULL, \
 				`name_map`			varchar(256)	NOT NULL DEFAULT '', \
 				`countplays`		int				NOT NULL DEFAULT 0, \
@@ -212,7 +212,7 @@ public void FPS_OnClientLoaded(int iClient, float fPoints)
 			g_hDatabase.Format(SZF(szQuery), "SELECT \
 					`countplays`, `kills`, `deaths`, `assists`, `rounds_overall`, `rounds_t`, \
 					`rounds_ct`, `bomb_planted`, `bomb_defused`, `hostage_killed`, `hostage_rescued`, `playtime` \
-				FROM `fps_maps` WHERE `server_id` = '%i' AND `account_id` = '%i' AND `name_map` = '%s' LIMIT 1", 
+				FROM `fps_maps` WHERE `server_id` = '%i' AND `account_id` = '%u' AND `name_map` = '%s' LIMIT 1", 
 				FPS_GetID(FPS_SERVER_ID), g_iPlayerData[iClient][ACCOUNT_ID], g_sCurrentMap);
 			g_hDatabase.Query(SQL_Callback_LoadPlayerData, szQuery, UID(iClient));
 		}
@@ -278,7 +278,7 @@ void SavePlayerData(int iClient, bool bReset = false)
 				`bomb_planted`, `bomb_defused`, `hostage_killed`, `hostage_rescued`, `playtime` \
 			) \
 			VALUES ( \
-				'%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i' \
+				'%u', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i', '%i' \
 			);", 
 			g_iPlayerData[iClient][ACCOUNT_ID], FPS_GetID(FPS_SERVER_ID), g_sCurrentMap,
 
@@ -593,7 +593,7 @@ int Handler_TopMapmenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 				switch(iItem)
 				{
 					case 0: g_hDatabase.Format(SZF(szQuery), "SELECT `name_map`, `kills` FROM `fps_maps` \
-						WHERE `kills` != 0 AND `server_id` = '%i' AND `account_id` = '%i' ORDER BY `kills` DESC LIMIT 10", 
+						WHERE `kills` != 0 AND `server_id` = '%i' AND `account_id` = '%u' ORDER BY `kills` DESC LIMIT 10", 
 						FPS_GetID(FPS_SERVER_ID), g_iPlayerData[iClient][ACCOUNT_ID]);
 					case 1: g_hDatabase.Format(SZF(szQuery), "SELECT `s`.`nickname`, `m`.`kills` \
 						FROM \
