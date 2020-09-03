@@ -175,7 +175,7 @@ void SetCvars()
 
 	(Convar = CreateConVar(
 		"sm_fps_ignore_new_players",	"1", 
-		"Не выводить некоткалеброваных игроков в списки ТОП-ов. 0 - Отключить",
+		"Не выводить неоткалиброванных игроков в списки ТОП-ов. 0 - Отключить",
 		_, true, 0.0, true, 1.0
 	)).AddChangeHook(ChangeCvar_IgnoreNewPlayers);
 	ChangeCvar_IgnoreNewPlayers(Convar, NULL_STRING, NULL_STRING);
