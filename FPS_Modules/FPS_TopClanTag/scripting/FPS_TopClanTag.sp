@@ -1,3 +1,7 @@
+/**
+ *	v1.0.1 -	Update to new API version.
+ */
+
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -16,7 +20,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Top Clan Tag",
 	author	=	"OkyHp",
-	version	=	"1.0.0",
+	version	=	"1.0.1",
 	url		=	"https://dev-source.ru/, https://hlmod.ru/"
 };
 

@@ -1,5 +1,6 @@
 /**
  *	v1.1.4 -	Fixed display of information of the previous player.
+ *	v1.1.5 -	Update to new API version.
  */
 
 #pragma semicolon 1
@@ -31,7 +32,7 @@ public Plugin myinfo =
 {
 	name	=	"[FPS] Hint Info",
 	author	=	"OkyHp",
-	version	=	"1.1.4",
+	version	=	"1.1.5",
 	url		=	"Discord: OkyHek#2441"
 };
 

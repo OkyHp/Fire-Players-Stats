@@ -57,7 +57,7 @@ public Plugin myinfo =
 {
 	name	=	"FPS Maps Stats",
 	author	=	"OkyHp",
-	version	=	"1.0.3",
+	version	=	"1.0.4",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 

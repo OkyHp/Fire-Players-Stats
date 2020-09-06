@@ -2,6 +2,7 @@
  *	v1.0.3 -	Use data from event player_death.
  *				Added menu for reset stats.
  *				Added reset stats, when resetting general stats for player or all players.
+ *	v1.0.4 -	Update to new API version.
  */
 
 #pragma semicolon 1
@@ -96,7 +97,7 @@ public Plugin myinfo =
 {
 	name = "[FPS] Unusual Kills", 
 	author = "Wend4r, OkyHp", 
-	version = "1.0.3 (Original: SR1)",
+	version = "1.0.4", // Original: SR1
 	url = "Discord: Wend4r#0001, OkyHek#2441 | VK: vk.com/wend4r"
 }
 

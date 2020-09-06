@@ -1,6 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+/**
+ *	v1.0.1 -	Change OnMapStart to OnPluginStart.
+ */
+
 #include <sourcemod>
 #include <cstrike>
 #include <FirePlayersStats>
@@ -9,7 +13,7 @@ public Plugin myinfo =
 {
 	name	=	"[FPS] Points In Scoreboard",
 	author	=	"OkyHp",
-	version	=	"1.0.0",
+	version	=	"1.0.1",
 	url		=	"OkyHek#2441"
 };
 
