@@ -4,6 +4,8 @@
  *	v1.0.3 -	Add check reset stas cvar.
  *				Added reset stats, when resetting general stats for player or all players.
  *				Fixed error with receiving data.
+ *	v1.0.4 -	Update to new API version.
+ *				Fixed reset player stats.
  */
 
 #pragma semicolon 1
@@ -216,13 +218,10 @@ public void FPS_OnClientLoaded(int iClient, float fPoints)
 				FPS_GetID(FPS_SERVER_ID), g_iPlayerData[iClient][ACCOUNT_ID], g_sCurrentMap);
 			g_hDatabase.Query(SQL_Callback_LoadPlayerData, szQuery, UID(iClient));
 		}
-		return;
 	}
-
-	LogError("GetSteamAccountID >> %N: AccountID not valid: %i", iClient, iAccountID);
 }
 
-public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
+void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	if (!hResult || szError[0])
 	{
@@ -243,10 +242,7 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 
 public void OnClientDisconnect(int iClient)
 {
-	if (g_iPlayerData[iClient][ACCOUNT_ID])
-	{
-		SavePlayerData(iClient);
-	}
+	SavePlayerData(iClient);
 
 	g_iMapSessionTime[iClient] = 0;
 	for (int i = sizeof(g_iPlayerData[]); i--;)
@@ -262,7 +258,7 @@ public void OnMapStart()
 
 void SavePlayerData(int iClient, bool bReset = false)
 {
-	if (g_hDatabase)
+	if (g_iPlayerData[iClient][ACCOUNT_ID] && g_hDatabase)
 	{
 		int iPlayTime = g_iMapSessionTime[iClient] ? ((GetTime() - g_iMapSessionTime[iClient]) + g_iPlayerData[iClient][MAP_TIME]) : 0;
 
@@ -511,7 +507,7 @@ int Handler_PanelResetStatsByMaps(Menu hPanel, MenuAction action, int iClient, i
 
 void ResetPlayerStats(int iClient)
 {
-	for (int i = sizeof(g_iPlayerData[]) - 1; i--;)
+	for (int i = sizeof(g_iPlayerData[]); --i;)
 	{
 		g_iPlayerData[iClient][i] = 0;
 	}
