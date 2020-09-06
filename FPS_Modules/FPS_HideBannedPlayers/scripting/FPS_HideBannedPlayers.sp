@@ -59,12 +59,19 @@ void UpdatePlayerData(int iClient)
 		int iAccountID = GetSteamAccountID(iClient, true);
 		if (iAccountID)
 		{
-			char szQuery[512];
-			g_hDatabase.Format(SZF(szQuery), "UPDATE `fps_servers_stats` SET `lastconnect` = -1 WHERE `server_id` = %i AND `account_id` = %u;", 
-				FPS_GetID(FPS_SERVER_ID), iAccountID);
-			g_hDatabase.Query(SQL_UpdatePlayerData_Callback, szQuery);
+			CreateTimer(1.0, TimerUpdatePlayerData, iAccountID);
 		}
 	}
+}
+
+Action TimerUpdatePlayerData(Handle hTimer, int iAccountID)
+{
+	char szQuery[512];
+	g_hDatabase.Format(SZF(szQuery), "UPDATE `fps_servers_stats` SET `lastconnect` = -1 WHERE `server_id` = %i AND `account_id` = %u;", 
+		FPS_GetID(FPS_SERVER_ID), iAccountID);
+	g_hDatabase.Query(SQL_UpdatePlayerData_Callback, szQuery);
+
+	return Plugin_Stop;
 }
 
 void SQL_UpdatePlayerData_Callback(Database hDatabase, DBResultSet hResult, const char[] szError, any aData)
