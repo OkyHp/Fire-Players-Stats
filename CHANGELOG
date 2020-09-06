@@ -112,3 +112,4 @@
 		Updated forward FPS_OnDatabaseConnected.
 		Forward FPS_PlayerPosition renamed to FPS_OnPlayerPosition.
 		Added native FPS_SetPoints.
+		Fixed delete inactive players.

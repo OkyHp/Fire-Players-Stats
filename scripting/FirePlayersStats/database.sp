@@ -490,7 +490,8 @@ void DeleteInactivePlayers()
 		g_hDatabase.Format(SZF(szQuery), "DELETE `s`, `w` \
 			FROM \
 				`fps_servers_stats` AS `s` \
-				INNER JOIN `fps_weapons_stats` AS `w` ON `s`.`account_id` = `w`.`account_id` AND `s`.`server_id` = `w`.`server_id` \
+				LEFT JOIN `fps_weapons_stats` AS `w` \
+					ON `s`.`account_id` = `w`.`account_id` AND `s`.`server_id` = `w`.`server_id` \
 			WHERE \
 				`s`.`server_id` = %i AND `s`.`lastconnect` < %i;", g_iServerID, (GetTime() - g_iDeletePlayersTime));
 		FPS_Debug(1, "DeleteInactivePlayers", "Query: %s", szQuery);
