@@ -25,7 +25,7 @@ static char g_sFeature[] = "FakeRanks";
 
 public Plugin myinfo =
 {
-	name	=	"FPS Tab Fake Ranks",
+	name	=	"[FPS] Tab Fake Ranks",
 	author	=	"OkyHp, Wend4r",
 	version	=	"1.3.1",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"

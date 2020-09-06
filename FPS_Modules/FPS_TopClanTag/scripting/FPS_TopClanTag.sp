@@ -18,7 +18,7 @@ bool	g_bVipLoaded;
 
 public Plugin myinfo =
 {
-	name	=	"FPS Top Clan Tag",
+	name	=	"[FPS] Top Clan Tag",
 	author	=	"OkyHp",
 	version	=	"1.0.1",
 	url		=	"https://dev-source.ru/, https://hlmod.ru/"

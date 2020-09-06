@@ -55,7 +55,7 @@ static const char g_sFeature[][] = {"FPS_MapsStats_Menu", "FPS_MapsStats_Top"};
 
 public Plugin myinfo =
 {
-	name	=	"FPS Maps Stats",
+	name	=	"[FPS] Maps Stats",
 	author	=	"OkyHp",
 	version	=	"1.0.4",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"

@@ -16,7 +16,7 @@ KeyValues	g_hConfig;
 
 public Plugin myinfo =
 {
-	name	=	"FPS Vip For Top",
+	name	=	"[FPS] Vip For Top",
 	author	=	"OkyHp",
 	version	=	"1.3.1",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"

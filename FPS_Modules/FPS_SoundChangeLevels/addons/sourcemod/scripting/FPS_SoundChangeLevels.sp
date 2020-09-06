@@ -12,7 +12,7 @@ char g_sSounds[2][256];
 
 public Plugin myinfo =
 {
-	name	=	"FPS Sound Change Levels",
+	name	=	"[FPS] Sound Change Levels",
 	author	=	"OkyHp",
 	version	=	"1.0.1",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
