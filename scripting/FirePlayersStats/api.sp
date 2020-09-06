@@ -149,6 +149,7 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 	// Stats
 	CreateNative("FPS_GetPlayedTime",			Native_FPS_GetPlayedTime);
 	CreateNative("FPS_GetPoints",				Native_FPS_GetPoints);
+	CreateNative("FPS_SetPoints",				Native_FPS_SetPoints);
 	CreateNative("FPS_GetStatsData",			Native_FPS_GetStatsData);
 	CreateNative("FPS_IsCalibration",			Native_FPS_IsCalibration);
 	CreateNative("FPS_GetPosition",				Native_FPS_GetPosition);
@@ -239,6 +240,24 @@ int Native_FPS_GetPoints(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	return view_as<int>(IsValidClient(iClient) && g_bStatsLoad[iClient] ? (!GetNativeCell(2) ? g_fPlayerPoints[iClient] : (g_fPlayerPoints[iClient] - g_fPlayerSessionPoints[iClient])) : DEFAULT_POINTS);
+}
+
+// void FPS_SetPoints(int iClient, float fPoints, bool bOverwrite = false);
+int Native_FPS_SetPoints(Handle hPlugin, int iNumParams)
+{
+	int iClient = GetNativeCell(1);
+	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
+	{
+		float fPoints = GetNativeCell(2);
+		if (!GetNativeCell(3))
+		{
+			g_fPlayerPoints[iClient] += fPoints;
+		}
+		else
+		{
+			g_fPlayerPoints[iClient] = fPoints;
+		}
+	}
 }
 
 // int FPS_GetLevel(int iClient);

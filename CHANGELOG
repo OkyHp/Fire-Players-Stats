@@ -111,3 +111,4 @@
 		Fixed resetting played time when resetting personal statistics.
 		Updated forward FPS_OnDatabaseConnected.
 		Forward FPS_PlayerPosition renamed to FPS_OnPlayerPosition.
+		Added native FPS_SetPoints.
