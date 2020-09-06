@@ -243,7 +243,7 @@ native float FPS_GetPoints(int iClient, bool bSession = false);
  *
  *	@param iClient				Player index.
  *	@param fPoints				Points to be set.
- *	@param bOverwrite			Default: FALSE - added to the current value. Else then overwrite data.
+ *	@param bOverwrite			Default: FALSE - added to current value. Else then overwrite data.
  *	@noreturn
 */
 native void FPS_SetPoints(int iClient, float fPoints, bool bOverwrite = false);
