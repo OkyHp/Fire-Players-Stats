@@ -237,11 +237,11 @@ void SendHintMessage(int iClient)
 		iTarget = GetEntDataEnt2(iClient, m_hObserverTarget);
 		if (iTarget > 0 && iTarget <= MaxClients && FPS_ClientLoaded(iTarget))
 		{
-			int iDeaths = FPS_GetStatsData(iClient, DEATHS);
+			int iDeaths = FPS_GetStatsData(iTarget, DEATHS);
 			PrintHintText(iClient, "%t", "HudMessage", 
 				g_fPlayerPoints[iTarget], 
 				g_iPlayerPosition[iTarget], g_iPlayersCount, 
-				iDeaths ? (float(FPS_GetStatsData(iClient, KILLS) / iDeaths)) : 0.0, 
+				iDeaths ? (float(FPS_GetStatsData(iTarget, KILLS)) / float(iDeaths)) : 0.0, 
 				FindTranslationRank(iClient, g_sPlayerRank[iTarget])
 			);
 		}

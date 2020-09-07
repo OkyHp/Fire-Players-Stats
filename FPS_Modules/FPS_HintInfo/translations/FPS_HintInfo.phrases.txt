@@ -2,7 +2,7 @@
 {
 	"HudMessage"
 	{
-		"#format"	"{1:.2f},{2:i},{3:i},{4:.1f},{5:s}"
+		"#format"	"{1:.2f},{2:i},{3:i},{4:.2f},{5:s}"
 		"en"		"<pre>Points: <font color='#7a1e1e'>{1}</font>\tPosition: <font color='#2e592b'>{2}/{3}</font>\nKDR: <font color='#1e4c7a'>{4}</font>\tRank: <font color='#a65e16'>{5}</font></pre>"
 		"ru"		"<pre>Поинты: <font color='#7a1e1e'>{1}</font>\tПоз.: <font color='#2e592b'>{2}/{3}</font>\nKDR: <font color='#1e4c7a'>{4}</font>\tРанг: <font color='#a65e16'>{5}</font></pre>"
 		"ua"		"<pre>Поінти: <font color='#7a1e1e'>{1}</font>\tПоз.: <font color='#2e592b'>{2}/{3}</font>\nKDR: <font color='#1e4c7a'>{4}</font>\tРанг: <font color='#a65e16'>{5}</font></pre>"
