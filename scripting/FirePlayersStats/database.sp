@@ -620,7 +620,7 @@ void UpdateServerData()
 				`id` = %i, `settings_rank_id` = %i, `settings_points_id` = %i;", 
 			g_iServerID, szServerName, g_iRanksID, 1, 
 			g_iServerIP >>> 24, g_iServerIP >> 16 & 255, g_iServerIP >> 8 & 255, g_iServerIP & 255, g_iServerPort,
-			g_iServerID, szServerName, g_iRanksID, 1);
+			g_iServerID, g_iRanksID, 1);
 		#endif
 
 		FPS_Debug(1, "UpdateServerData", "Query (%i): %s", UPDATE_SERVER_DATA, szQuery);
