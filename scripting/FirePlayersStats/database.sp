@@ -64,17 +64,17 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 
 		Transaction hTxn = new Transaction();
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_players` ( \
-				`account_id`	int unsigned		NOT NULL, \
+				`account_id`	int					NOT NULL, \
 				`steam_id`		varchar(64)			NOT NULL, \
 				`nickname`		varchar(256)		NOT NULL, \
 				`ip`			varchar(24)			NOT NULL, \
 				PRIMARY KEY (`account_id`) \
 			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_servers_stats` ( \
-				`id`				int unsigned	NOT NULL AUTO_INCREMENT, \
-				`account_id`		int unsigned	NOT NULL, \
+				`id`				int				NOT NULL AUTO_INCREMENT, \
+				`account_id`		int				NOT NULL, \
 				`server_id`			int				NOT NULL, \
-				`points`			float unsigned	NOT NULL, \
+				`points`			float			UNSIGNED NOT NULL, \
 				`rank`				int				NOT NULL DEFAULT '0', \
 				`kills`				int				NOT NULL DEFAULT '0', \
 				`deaths`			int				NOT NULL DEFAULT '0', \
@@ -88,8 +88,8 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 				UNIQUE(`account_id`, `server_id`) \
 			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_weapons_stats` ( \
-				`id`				int unsigned	NOT NULL AUTO_INCREMENT, \
-				`account_id`		int unsigned	NOT NULL, \
+				`id`				int				NOT NULL AUTO_INCREMENT, \
+				`account_id`		int				NOT NULL, \
 				`server_id`			int				NOT NULL, \
 				`weapon`			varchar(64)		NOT NULL, \
 				`kills`				int				NOT NULL DEFAULT '0', \
@@ -107,7 +107,7 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 				UNIQUE(`account_id`, `server_id`, `weapon`) \
 			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_servers` ( \
-				`id`					int unsigned	NOT NULL, \
+				`id`					int				NOT NULL, \
 				`server_name`			varchar(256)	NOT NULL, \
 				`settings_rank_id`		int 			NOT NULL, \
 				`settings_points_id`	int 			NOT NULL, \
@@ -115,7 +115,7 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 				PRIMARY KEY (`id`) \
 			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 		hTxn.AddQuery("CREATE TABLE IF NOT EXISTS `fps_ranks` ( \
-				`id`			int unsigned	NOT NULL AUTO_INCREMENT, \
+				`id`			int				NOT NULL AUTO_INCREMENT, \
 				`rank_id`		int 			NOT NULL, \
 				`rank_name`		varchar(128)	NOT NULL, \
 				`points`		float			UNSIGNED NOT NULL, \
@@ -337,7 +337,7 @@ void LoadPlayerData(int iClient)
 			FROM \
 				`fps_servers_stats` \
 			WHERE \
-				`server_id` = %i AND `account_id` = %u LIMIT 1", g_iServerID, g_iPlayerAccountID[iClient]);
+				`server_id` = %i AND `account_id` = %i LIMIT 1", g_iServerID, g_iPlayerAccountID[iClient]);
 		FPS_Debug(1, "LoadPlayerData", "Query: %s", szQuery);
 		g_hDatabase.Query(SQL_Callback_LoadPlayerData, szQuery, UID(iClient));
 	}
@@ -399,7 +399,7 @@ void SavePlayerData(int iClient)
 				`account_id`, `steam_id`, `nickname`, `ip` \
 			) \
 			VALUES ( \
-				%u, '%s', '%s', '%s' \
+				%i, '%s', '%s', '%s' \
 			);", g_iPlayerAccountID[iClient], szAuth, szName, szIp
 		);
 		FPS_Debug(1, "SavePlayerData", "Query#1: %s", szQuery);
@@ -411,7 +411,7 @@ void SavePlayerData(int iClient)
 				`round_lose`,`playtime`,`lastconnect` \
 			) \
 			VALUES ( \
-				%u, %i, %f, %i, %i, %i, %i, %i, %i, %i, %i, %i \
+				%i, %i, %f, %i, %i, %i, %i, %i, %i, %i, %i, %i \
 			);", g_iPlayerAccountID[iClient], g_iServerID, g_fPlayerPoints[iClient], g_iPlayerRanks[iClient], g_iPlayerData[iClient][KILLS],
 			g_iPlayerData[iClient][DEATHS], g_iPlayerData[iClient][ASSISTS], g_iPlayerData[iClient][MAX_ROUNDS_KILLS], g_iPlayerData[iClient][ROUND_WIN],
 			g_iPlayerData[iClient][ROUND_LOSE], FPS_GetPlayedTime(iClient), g_iPlayerSessionData[iClient][PLAYTIME]
@@ -436,7 +436,7 @@ void SavePlayerData(int iClient)
 						`hits_head`, `hits_neck`, `hits_chest`, `hits_stomach`, \
 						`hits_left_arm`, `hits_right_arm`, `hits_left_leg`, `hits_right_leg`, `headshots` \
 					) VALUES \
-						(%u, %i, '%s', %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
+						(%i, %i, '%s', %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
 					UPDATE \
 						`kills` = `kills` + %i, \
 						`shoots` = `shoots` + %i, \
