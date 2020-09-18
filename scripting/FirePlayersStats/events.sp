@@ -49,7 +49,7 @@ void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			{
 				szWeapon = "weapon_knife";
 			}
-			FPS_Debug(2, "Event_WeaponFire", szWeapon[7]);
+			FPS_Debug(2, "Event_WeaponFire", "Weapon: %s", szWeapon[7]);
 			WriteWeaponData(iClient, szWeapon[7], W_SHOOTS);
 		}
 	}
@@ -77,7 +77,7 @@ void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			{
 				szWeapon = "weapon_knife";
 			}
-			FPS_Debug(2, "Event_PlayerHurt", szWeapon[7]);
+			FPS_Debug(2, "Event_PlayerHurt", "Weapon: %s", szWeapon[7]);
 
 			int iHitgroup = hEvent.GetInt("hitgroup");
 			if (iHitgroup != HITGROUP_GENERIC && iHitgroup != HITGROUP_GEAR)
@@ -160,7 +160,7 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			float	fPointsAttacker	= (g_fPlayerPoints[iVictim] / g_fPlayerPoints[iAttacker]) * 5.0,
 					fDiff			= (g_fPlayerPoints[iAttacker] / g_fPlayerPoints[iVictim]) + 0.6,
 					fPointsVictim	= fPointsAttacker * g_fCoeff * (fDiff < 1.0 && FPS_IsCalibration(iAttacker) ? fDiff : 1.0),
-					fExtPoints		= GetWeaponExtraPoints(szWeapon, bIsGrenade),
+					fExtPoints		= (!bIsGrenade && g_hWeaponExtraPoints.GetValue(szWeapon, fExtPoints) ? fExtPoints : 1.0) ,
 					fHeadshot		= bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0,
 					fStreak;
 
@@ -263,7 +263,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			if (g_iGameType[0] == 1 && g_iGameType[1] == 2)
 			{
 				g_bStatsActive = true;
-				FPS_Debug(2, "Event_RoundAction", "Action START >> DM >> true");
+				FPS_Debug(2, "Event_RoundAction", "%s", "Action START >> DM >> true");
 				return;
 			}
 
@@ -385,6 +385,6 @@ void Event_OtherAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 		}
 
 		CheckRank(iClient);
-		FPS_Debug(2, "Event_OtherAction", sEvName);
+		FPS_Debug(2, "Event_OtherAction", "Event: %s", sEvName);
 	}
 }

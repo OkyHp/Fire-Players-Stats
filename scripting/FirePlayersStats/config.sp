@@ -14,7 +14,6 @@ float		g_fDBRetryConnTime,
 			g_fCoeff,
 			g_fExtraPoints[18];
 char		g_sPrefix[64];
-KeyValues	g_hWeaponsConfigKV;
 
 enum
 {
@@ -61,6 +60,48 @@ void LoadConfigKV()
 			#endif
 			i++;
 		} while (g_hWeaponsConfigKV.GotoNextKey(false));
+	}
+}
+
+void GetMapExtraPoints()
+{
+	g_hWeaponExtraPoints.Clear();
+
+	if (g_hWeaponsConfigKV)
+	{
+		g_hWeaponsConfigKV.Rewind();
+		if (!g_hWeaponsConfigKV.JumpToKey("WeaponCoeff"))
+		{
+			LogError("Section 'WeaponCoeff' not found!");
+			return;
+		}
+
+		WriteExtraPointsToArray("default");
+		if (g_sMap[0])
+		{
+			WriteExtraPointsToArray(g_sMap);
+		}
+	}
+}
+
+void WriteExtraPointsToArray(const char[] szSection)
+{
+	FPS_Debug(2, "WriteExtraPointsToArray", "Try jump to '%s'", szSection);
+	if (g_hWeaponsConfigKV.JumpToKey(szSection) && g_hWeaponsConfigKV.GotoFirstSubKey(false))
+	{
+		char szWeapon[32];
+		do {
+			float fPoints = g_hWeaponsConfigKV.GetFloat(NULL_STRING, 0.0);
+			if (fPoints)
+			{
+				g_hWeaponsConfigKV.GetSectionName(SZF(szWeapon));
+				g_hWeaponExtraPoints.SetValue(szWeapon, fPoints, true);
+				FPS_Debug(2, "WriteExtraPointsToArray", "%s -> %f", szWeapon, fPoints);
+			}
+		} while (g_hWeaponsConfigKV.GotoNextKey(false));
+
+		g_hWeaponsConfigKV.GoBack();
+		g_hWeaponsConfigKV.GoBack();
 	}
 }
 

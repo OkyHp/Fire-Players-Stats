@@ -1,6 +1,6 @@
 void DatabaseConnect()
 {
-	FPS_Debug(1, "DatabaseConnect", !g_hDatabase ? "Connect database" : "Error! Handle is valid");
+	FPS_Debug(1, "DatabaseConnect", "%s", !g_hDatabase ? "Connect database" : "Error! Handle is valid");
 	
 	if (!g_hDatabase)
 	{
@@ -46,13 +46,13 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 		LogError("OnDatabaseConnect: %s", szError);
 		if (StrContains(szError, "Can't connect to MySQL server", false) != -1)
 		{
-			FPS_Debug(1, "OnDatabaseConnect", "Can't connect to MySQL server");
+			FPS_Debug(1, "OnDatabaseConnect", "%s", "Can't connect to MySQL server");
 			CreateTimer(g_fDBRetryConnTime, Timer_DatabaseRetryConn);
 		}
 		return;
 	}
 
-	FPS_Debug(1, "OnDatabaseConnect", "Database connected");
+	FPS_Debug(1, "OnDatabaseConnect", "%s", "Database connected");
 
 	g_hDatabase = hDatabase;
 	CallForward_OnFPSDatabaseConnected();
@@ -472,7 +472,7 @@ void SavePlayerData(int iClient)
 
 void SQL_TxnSuccess_UpdateOrInsertPlayerData(Database hDatabase, any Data, int iNumQueries, DBResultSet[] results, any[] QueryData)
 {
-	FPS_Debug(1, "SQL_TxnSuccess_UpdateOrInsertPlayerData", "Success");
+	FPS_Debug(1, "SQL_TxnSuccess_UpdateOrInsertPlayerData", "%s", "Success");
 }
 
 void SQL_TxnFailure_UpdateOrInsertPlayerData(Database hDatabase, any Data, int iNumQueries, const char[] szError, int iFailIndex, any[] QueryData)

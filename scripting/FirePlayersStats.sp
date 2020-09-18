@@ -29,10 +29,10 @@
 #if DEBUG != 0
 	char	g_sLogPath[PLATFORM_MAX_PATH];
 	int		g_iBlockWarning;
-	#define FPS_Debug(%0,%1,%2);	g_iBlockWarning = %0; \
-								if(g_iBlockWarning <= DEBUG){ \
-									LogToFile(g_sLogPath, "[VER:%s][LINE:%d][LVL:%s][FUNC:%s] %s", PLUGIN_VERSION, __LINE__, g_iBlockWarning, %1, %2); \
-								}
+	#define FPS_Debug(%0,%1,%2,%3);	g_iBlockWarning = %0; \
+				if(g_iBlockWarning <= DEBUG){ \
+					LogToFile(g_sLogPath, "[VER:%s][LINE:%d][LVL:%i][FUNC:%s] " ... %2, PLUGIN_VERSION, __LINE__, g_iBlockWarning, %1, %3); \
+				}
 #else
 	#define FPS_Debug(%0);
 #endif
@@ -54,6 +54,12 @@ bool		g_bStatsLoaded,
 			g_bDisableStatisPerRound,
 			g_bTeammatesAreEnemies;
 char		g_sMap[256];
+
+// Points config
+KeyValues	g_hWeaponsConfigKV;
+
+// Extra points for map
+StringMap	g_hWeaponExtraPoints;
 
 // Features
 ArrayList	g_hItems;
@@ -119,11 +125,12 @@ public void OnPluginStart()
 {
 	#if DEBUG != 0
 		BuildPath(Path_SM, SZF(g_sLogPath), "logs/FirePlayersStats.log");
-		FPS_Debug(2, "OnPluginStart", "Start plugin");
+		FPS_Debug(2, "OnPluginStart", "%s", "Start plugin");
 	#endif
 
 	g_hItems = new ArrayList(ByteCountToCells(128));
 	g_hRanks = new ArrayList(ByteCountToCells(64));
+	g_hWeaponExtraPoints = new StringMap();
 
 	LoadTranslations("FirePlayersStats.phrases");
 	char szPath[256];
@@ -173,6 +180,7 @@ void ChangeCvar_GameMode(ConVar Convar, const char[] oldValue, const char[] newV
 
 public void OnMapStart()
 {
+	GetMapExtraPoints();
 	LoadRanksSettings();
 	LoadTopData();
 	UpdateServerData();

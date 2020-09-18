@@ -113,3 +113,4 @@
 		Forward FPS_PlayerPosition renamed to FPS_OnPlayerPosition.
 		Added native FPS_SetPoints.
 		Fixed delete inactive players.
+		Optimized getting value of additional points for weapons.

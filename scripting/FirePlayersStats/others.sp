@@ -86,22 +86,6 @@ stock float StreakPoints(int iClient)
 	return 0.0;
 }
 
-// Set extra points for killing weapons
-float GetWeaponExtraPoints(const char[] szWeapon, bool bIsGrenade)
-{
-	if (g_hWeaponsConfigKV && !bIsGrenade)
-	{
-		g_hWeaponsConfigKV.Rewind();
-		if (g_hWeaponsConfigKV.JumpToKey("WeaponCoeff") && ( g_hWeaponsConfigKV.JumpToKey(g_sMap) || g_hWeaponsConfigKV.JumpToKey("default") ))
-		{
-			float fExtPoints = g_hWeaponsConfigKV.GetFloat(szWeapon, 1.0);
-			FPS_Debug(2, "GetWeaponExtraPoints", "%s -> %f", szWeapon, fExtPoints);
-			return fExtPoints;
-		}
-	}
-	return 1.0;
-}
-
 // Check rank level
 void CheckRank(int iClient)
 {
@@ -145,7 +129,7 @@ void CheckRank(int iClient)
 // Check grenade
 bool IsGrenade(const char[] szWeapon)
 {
-	// FPS_Debug(2, "IsGrenade", szWeapon);
+	// FPS_Debug(2, "IsGrenade", "%s", szWeapon);
 	return (szWeapon[0] == 'i' // inferno + incgrenade
 			|| szWeapon[4] == 'y' // decoy
 			|| (szWeapon[0] == 'h' && szWeapon[1] == 'e') // hegrenade + healthshot
@@ -159,7 +143,7 @@ bool IsGrenade(const char[] szWeapon)
 // Check knife
 bool IsKnife(const char[] szWeapon)
 {
-	// FPS_Debug(2, "IsKnife", szWeapon);
+	// FPS_Debug(2, "IsKnife", "%s", szWeapon);
 	return (szWeapon[0] == 'k' || szWeapon[2] == 'y');
 }
 
