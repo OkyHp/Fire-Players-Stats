@@ -8,12 +8,12 @@ int			g_iServerID,
 			g_iSaveInterval,
 			g_iInfoMessage;
 bool		g_bShowStatsEveryone,
-			g_bBlockStatsOnWarmup;
+			g_bBlockStatsOnWarmup,
+			g_bIgnoreNewPlayers;
 float		g_fDBRetryConnTime,
 			g_fCoeff,
 			g_fExtraPoints[18];
 char		g_sPrefix[64];
-KeyValues	g_hWeaponsConfigKV;
 
 enum
 {
@@ -53,13 +53,55 @@ void LoadConfigKV()
 		int i;
 		do {
 			g_fExtraPoints[i] = g_hWeaponsConfigKV.GetFloat(NULL_STRING, 0.0);
-			#if DEBUG == 1
+			#if DEBUG >= 3
 				static char szBuffer[32];
 				g_hWeaponsConfigKV.GetSectionName(SZF(szBuffer));
-				FPS_Debug("LoadConfigKV >> %s #%i: %f", szBuffer, i, g_fExtraPoints[i])
+				FPS_Debug(3, "LoadConfigKV", "%s #%i: %f", szBuffer, i, g_fExtraPoints[i]);
 			#endif
 			i++;
 		} while (g_hWeaponsConfigKV.GotoNextKey(false));
+	}
+}
+
+void GetMapExtraPoints()
+{
+	g_hWeaponExtraPoints.Clear();
+
+	if (g_hWeaponsConfigKV)
+	{
+		g_hWeaponsConfigKV.Rewind();
+		if (!g_hWeaponsConfigKV.JumpToKey("WeaponCoeff"))
+		{
+			LogError("Section 'WeaponCoeff' not found!");
+			return;
+		}
+
+		WriteExtraPointsToArray("default");
+		if (g_sMap[0])
+		{
+			WriteExtraPointsToArray(g_sMap);
+		}
+	}
+}
+
+void WriteExtraPointsToArray(const char[] szSection)
+{
+	FPS_Debug(2, "WriteExtraPointsToArray", "Try jump to '%s'", szSection);
+	if (g_hWeaponsConfigKV.JumpToKey(szSection) && g_hWeaponsConfigKV.GotoFirstSubKey(false))
+	{
+		char szWeapon[32];
+		do {
+			float fPoints = g_hWeaponsConfigKV.GetFloat(NULL_STRING, 0.0);
+			if (fPoints)
+			{
+				g_hWeaponsConfigKV.GetSectionName(SZF(szWeapon));
+				g_hWeaponExtraPoints.SetValue(szWeapon, fPoints, true);
+				FPS_Debug(2, "WriteExtraPointsToArray", "%s -> %f", szWeapon, fPoints);
+			}
+		} while (g_hWeaponsConfigKV.GotoNextKey(false));
+
+		g_hWeaponsConfigKV.GoBack();
+		g_hWeaponsConfigKV.GoBack();
 	}
 }
 
@@ -172,6 +214,13 @@ void SetCvars()
 	)).AddChangeHook(ChangeCvar_InfoMessage);
 	ChangeCvar_InfoMessage(Convar, NULL_STRING, NULL_STRING);
 
+	(Convar = CreateConVar(
+		"sm_fps_ignore_new_players",	"1", 
+		"Не выводить неоткалиброванных игроков в списки ТОП-ов. 0 - Отключить",
+		_, true, 0.0, true, 1.0
+	)).AddChangeHook(ChangeCvar_IgnoreNewPlayers);
+	ChangeCvar_IgnoreNewPlayers(Convar, NULL_STRING, NULL_STRING);
+
 	AutoExecConfig(true, "FirePlayersStats");
 
 	LoadConfigKV();
@@ -240,4 +289,9 @@ void ChangeCvar_ChatPrefix(ConVar Convar, const char[] oldValue, const char[] ne
 void ChangeCvar_InfoMessage(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iInfoMessage = Convar.IntValue;
+}
+
+void ChangeCvar_IgnoreNewPlayers(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_bIgnoreNewPlayers = Convar.BoolValue;
 }

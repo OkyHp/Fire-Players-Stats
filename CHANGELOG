@@ -105,3 +105,12 @@
 		Editing messages about points received. 
 		Added Turkish language support.
 		Add native FPS_GetPlayersCount.
+1.5.5 - Added debug level.
+		Added cvar sm_fps_ignore_new_players.
+		Now when UPDATE_SERVER_DATA is 0, server name will not be updated.
+		Fixed resetting played time when resetting personal statistics.
+		Updated forward FPS_OnDatabaseConnected.
+		Forward FPS_PlayerPosition renamed to FPS_OnPlayerPosition.
+		Added native FPS_SetPoints.
+		Fixed delete inactive players.
+		Optimized getting value of additional points for weapons.

@@ -1,3 +1,7 @@
+/**
+ *	v1.0.1 -	Update to new API version.
+ */
+
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -14,9 +18,9 @@ bool	g_bVipLoaded;
 
 public Plugin myinfo =
 {
-	name	=	"FPS Top Clan Tag",
+	name	=	"[FPS] Top Clan Tag",
 	author	=	"OkyHp",
-	version	=	"1.0.0",
+	version	=	"1.0.1",
 	url		=	"https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -99,7 +103,7 @@ void SetClanTag(int iClient)
 	CS_SetClientClanTag(iClient, szBuffer);
 }
 
-public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
+public void FPS_OnPlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
 	g_iPlayerPosition[iClient] = iPosition;
 	SetClanTag(iClient);

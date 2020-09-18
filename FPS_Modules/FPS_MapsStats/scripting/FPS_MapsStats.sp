@@ -4,6 +4,8 @@
  *	v1.0.3 -	Add check reset stas cvar.
  *				Added reset stats, when resetting general stats for player or all players.
  *				Fixed error with receiving data.
+ *	v1.0.4 -	Update to new API version.
+ *				Fixed reset player stats.
  */
 
 #pragma semicolon 1
@@ -14,8 +16,8 @@
 
 #define DEBUG			0	// Enable/Disable debug mod
 
-#if FPS_INC_VER != 154
-	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 154"
+#if FPS_INC_VER != 155
+	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 155"
 #endif
 
 #if DEBUG == 1
@@ -53,9 +55,9 @@ static const char g_sFeature[][] = {"FPS_MapsStats_Menu", "FPS_MapsStats_Top"};
 
 public Plugin myinfo =
 {
-	name	=	"FPS Maps Stats",
+	name	=	"[FPS] Maps Stats",
 	author	=	"OkyHp",
-	version	=	"1.0.3",
+	version	=	"1.0.4",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -83,7 +85,7 @@ public void OnPluginStart()
 
 	if (FPS_StatsLoad())
 	{
-		FPS_OnDatabaseConnected(FPS_GetDatabase());
+		FPS_OnDatabaseConnected();
 		FPS_OnFPSStatsLoaded();
 	}
 
@@ -99,37 +101,34 @@ public void FPS_OnDatabaseLostConnection()
 	}
 }
 
-public void FPS_OnDatabaseConnected(Database hDatabase)
+public void FPS_OnDatabaseConnected()
 {
-	if (hDatabase)
-	{
-		g_hDatabase = hDatabase;
+	g_hDatabase = FPS_GetDatabase();
 
-		static bool bFirstLoad;
-		if (!bFirstLoad)
-		{
-			bFirstLoad = true;
-			g_hDatabase.Query(SQL_Callback_CreateTable, "CREATE TABLE IF NOT EXISTS `fps_maps` ( \
-					`id`				int				NOT NULL AUTO_INCREMENT, \
-					`account_id`		int				NOT NULL, \
-					`server_id`			int				NOT NULL, \
-					`name_map`			varchar(256)	NOT NULL DEFAULT '', \
-					`countplays`		int				NOT NULL DEFAULT 0, \
-					`kills`				int				NOT NULL DEFAULT 0, \
-					`deaths` 			int				NOT NULL DEFAULT 0, \
-					`assists`			int				NOT NULL DEFAULT 0, \
-					`rounds_overall` 	int				NOT NULL DEFAULT 0, \
-					`rounds_t`			int				NOT NULL DEFAULT 0, \
-					`rounds_ct`			int				NOT NULL DEFAULT 0, \
-					`bomb_planted`		int				NOT NULL DEFAULT 0, \
-					`bomb_defused`		int				NOT NULL DEFAULT 0, \
-					`hostage_killed`	int				NOT NULL DEFAULT 0, \
-					`hostage_rescued`	int				NOT NULL DEFAULT 0, \
-					`playtime`			int				NOT NULL DEFAULT 0, \
-					PRIMARY KEY (`id`), \
-					UNIQUE(`account_id`, `server_id`, `name_map`) \
-				) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
-		}
+	static bool bFirstLoad;
+	if (g_hDatabase && !bFirstLoad)
+	{
+		bFirstLoad = true;
+		g_hDatabase.Query(SQL_Callback_CreateTable, "CREATE TABLE IF NOT EXISTS `fps_maps` ( \
+				`id`				int				NOT NULL AUTO_INCREMENT, \
+				`account_id`		int				NOT NULL, \
+				`server_id`			int				NOT NULL, \
+				`name_map`			varchar(256)	NOT NULL DEFAULT '', \
+				`countplays`		int				NOT NULL DEFAULT 0, \
+				`kills`				int				NOT NULL DEFAULT 0, \
+				`deaths` 			int				NOT NULL DEFAULT 0, \
+				`assists`			int				NOT NULL DEFAULT 0, \
+				`rounds_overall` 	int				NOT NULL DEFAULT 0, \
+				`rounds_t`			int				NOT NULL DEFAULT 0, \
+				`rounds_ct`			int				NOT NULL DEFAULT 0, \
+				`bomb_planted`		int				NOT NULL DEFAULT 0, \
+				`bomb_defused`		int				NOT NULL DEFAULT 0, \
+				`hostage_killed`	int				NOT NULL DEFAULT 0, \
+				`hostage_rescued`	int				NOT NULL DEFAULT 0, \
+				`playtime`			int				NOT NULL DEFAULT 0, \
+				PRIMARY KEY (`id`), \
+				UNIQUE(`account_id`, `server_id`, `name_map`) \
+			) ENGINE = InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;");
 	}
 	FPS_Debug("FPS_OnDatabaseConnected >> %i", view_as<int>(g_hDatabase))
 }
@@ -219,13 +218,10 @@ public void FPS_OnClientLoaded(int iClient, float fPoints)
 				FPS_GetID(FPS_SERVER_ID), g_iPlayerData[iClient][ACCOUNT_ID], g_sCurrentMap);
 			g_hDatabase.Query(SQL_Callback_LoadPlayerData, szQuery, UID(iClient));
 		}
-		return;
 	}
-
-	LogError("GetSteamAccountID >> %N: AccountID not valid: %i", iClient, iAccountID);
 }
 
-public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
+void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	if (!hResult || szError[0])
 	{
@@ -246,10 +242,7 @@ public void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult,
 
 public void OnClientDisconnect(int iClient)
 {
-	if (g_iPlayerData[iClient][ACCOUNT_ID])
-	{
-		SavePlayerData(iClient);
-	}
+	SavePlayerData(iClient);
 
 	g_iMapSessionTime[iClient] = 0;
 	for (int i = sizeof(g_iPlayerData[]); i--;)
@@ -265,7 +258,7 @@ public void OnMapStart()
 
 void SavePlayerData(int iClient, bool bReset = false)
 {
-	if (g_hDatabase)
+	if (g_iPlayerData[iClient][ACCOUNT_ID] && g_hDatabase)
 	{
 		int iPlayTime = g_iMapSessionTime[iClient] ? ((GetTime() - g_iMapSessionTime[iClient]) + g_iPlayerData[iClient][MAP_TIME]) : 0;
 
@@ -514,7 +507,7 @@ int Handler_PanelResetStatsByMaps(Menu hPanel, MenuAction action, int iClient, i
 
 void ResetPlayerStats(int iClient)
 {
-	for (int i = sizeof(g_iPlayerData[]) - 1; i--;)
+	for (int i = sizeof(g_iPlayerData[]); --i;)
 	{
 		g_iPlayerData[iClient][i] = 0;
 	}

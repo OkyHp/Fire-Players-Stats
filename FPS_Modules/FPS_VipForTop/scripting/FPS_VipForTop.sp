@@ -1,3 +1,7 @@
+/**
+ *	v1.3.1 -	Update to new API version.
+ */
+
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -12,9 +16,9 @@ KeyValues	g_hConfig;
 
 public Plugin myinfo =
 {
-	name	=	"FPS Vip For Top",
+	name	=	"[FPS] Vip For Top",
 	author	=	"OkyHp",
-	version	=	"1.3.0",
+	version	=	"1.3.1",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -59,7 +63,7 @@ public void OnClientDisconnect(int iClient)
 	g_iPos[iClient] = -1;
 }
 
-public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
+public void FPS_OnPlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
 	g_iPos[iClient] = iPosition;
 }

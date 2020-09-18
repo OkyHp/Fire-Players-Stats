@@ -8,7 +8,7 @@
 
 public Plugin myinfo =
 {
-	name	=	"FPS Credits For Rank",
+	name	=	"[FPS] Credits For Rank",
 	author	=	"OkyHp",
 	version	=	"1.0.1",
 	url		=	"https://dev-source.ru/, https://hlmod.ru/"

@@ -8,26 +8,33 @@
 #undef REQUIRE_EXTENSIONS
 #include <SteamWorks>
 
-#if FPS_INC_VER != 154
-	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 154"
+#if FPS_INC_VER != 155
+	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 155"
 #endif
 
 /////////////////////////////////////// PRECOMPILATION SETTINGS ///////////////////////////////////////
 
-#define DEBUG					0		// Enable/Disable debug mod
+#define DEBUG					0		// 0 - Disable debug;
+										// 1 - SQL query debug;
+										// 2 - Action debug;
+										// 3 - Full debug;
 #define USE_STREAK_POINTS		1		// Use streak points in stats
-#define UPDATE_SERVER_IP		0		// 0 - Disable. It is necessary if you use domain instead of IP. 
+#define UPDATE_SERVER_DATA		0		// 0 - Disable. It is necessary if you use domain instead of IP. 
 #define DEFAULT_POINTS			1000.0	// Not recommended change
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define PLUGIN_VERSION		"1.5.4"
+#define PLUGIN_VERSION		"1.5.5"
 
-#if DEBUG == 1
-	char g_sLogPath[256];
-	#define FPS_Debug(%0)	LogToFile(g_sLogPath, %0);
+#if DEBUG != 0
+	char	g_sLogPath[PLATFORM_MAX_PATH];
+	int		g_iBlockWarning;
+	#define FPS_Debug(%0,%1,%2,%3);	g_iBlockWarning = %0; \
+				if(g_iBlockWarning <= DEBUG){ \
+					LogToFile(g_sLogPath, "[VER:%s][LINE:%d][LVL:%i][FUNC:%s] " ... %2, PLUGIN_VERSION, __LINE__, g_iBlockWarning, %1, %3); \
+				}
 #else
-	#define FPS_Debug(%0)
+	#define FPS_Debug(%0);
 #endif
 
 // Others vars
@@ -47,6 +54,12 @@ bool		g_bStatsLoaded,
 			g_bDisableStatisPerRound,
 			g_bTeammatesAreEnemies;
 char		g_sMap[256];
+
+// Points config
+KeyValues	g_hWeaponsConfigKV;
+
+// Extra points for map
+StringMap	g_hWeaponExtraPoints;
 
 // Features
 ArrayList	g_hItems;
@@ -110,12 +123,14 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	#if DEBUG == 1
+	#if DEBUG != 0
 		BuildPath(Path_SM, SZF(g_sLogPath), "logs/FirePlayersStats.log");
+		FPS_Debug(2, "OnPluginStart", "%s", "Start plugin");
 	#endif
 
 	g_hItems = new ArrayList(ByteCountToCells(128));
 	g_hRanks = new ArrayList(ByteCountToCells(64));
+	g_hWeaponExtraPoints = new StringMap();
 
 	LoadTranslations("FirePlayersStats.phrases");
 	char szPath[256];
@@ -165,6 +180,7 @@ void ChangeCvar_GameMode(ConVar Convar, const char[] oldValue, const char[] newV
 
 public void OnMapStart()
 {
+	GetMapExtraPoints();
 	LoadRanksSettings();
 	LoadTopData();
 	UpdateServerData();
@@ -193,7 +209,7 @@ Action TimerSaveStats(Handle hTimer)
 	{
 		if (g_bStatsLoad[i])
 		{
-			FPS_Debug("Call Save Function (TimerSaveStats) >> %N", i)
+			FPS_Debug(2, "TimerSaveStats", "Call Save Function (TimerSaveStats) >> %N", i);
 			SavePlayerData(i);
 		}
 	}
@@ -243,7 +259,7 @@ int OnTransferComplete(Handle hRequest, bool bFailure, bool bRequestSuccessful, 
 			case 410:	PrintToServer("[FPS Stats] >> Ваша версия Fire Players Stats не поддерживается!");
 			case 413:	PrintToServer("[FPS Stats] >> Не верный размер аргументов");
 			case 429:	return;
-			default:	PrintToServer("[FPS Stats] >> Не известная ошибка: %i", iStatus);								
+			default:	PrintToServer("[FPS Stats] >> Не известная ошибка: %i", iStatus);
 		}
 	}
 }
@@ -257,19 +273,15 @@ public void OnClientPutInServer(int iClient)
 {
 	if (iClient && !IsFakeClient(iClient) && !IsClientSourceTV(iClient))
 	{
-		FPS_Debug("Client connected >> %N", iClient)
-
 		int iAccountID = GetSteamAccountID(iClient, true);
 		if (iAccountID)
 		{
+			FPS_Debug(2, "OnClientPutInServer", "Client connected >> %N", iClient);
+
 			g_iPlayerAccountID[iClient] = iAccountID;
 			g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS] = 0; // (not used var) for blocked accrual of experience to connected player
 			g_hWeaponsData[iClient] = new ArrayList(64);
 			LoadPlayerData(iClient);
-		}
-		else
-		{
-			LogError("GetSteamAccountID >> %N: AccountID not valid %i", iClient, iAccountID);
 		}
 	}
 }

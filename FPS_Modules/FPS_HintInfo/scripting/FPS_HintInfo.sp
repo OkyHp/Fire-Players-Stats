@@ -1,5 +1,7 @@
 /**
  *	v1.1.4 -	Fixed display of information of the previous player.
+ *	v1.1.5 -	Update to new API version.
+ *				Player LVL changed to KDR.
  */
 
 #pragma semicolon 1
@@ -14,7 +16,6 @@
 #include <mapchooser>
 
 int		g_iHintType,
-		g_iPlayerLevel[MAXPLAYERS+1],
 		g_iPlayerPosition[MAXPLAYERS+1],
 		g_iPlayersCount,
 		m_iObserverMode,
@@ -31,7 +32,7 @@ public Plugin myinfo =
 {
 	name	=	"[FPS] Hint Info",
 	author	=	"OkyHp",
-	version	=	"1.1.4",
+	version	=	"1.1.5",
 	url		=	"Discord: OkyHek#2441"
 };
 
@@ -198,7 +199,7 @@ public bool OnItemDisplay(int iClient, char[] szDisplay, int iMaxLength)
 public void FPS_OnClientLoaded(int iClient, float fPoints)
 {
 	g_fPlayerPoints[iClient] = fPoints;
-	GetPlayerLevel(iClient, FPS_GetLevel(iClient));
+	GetPlayerLevel(iClient);
 }
 
 public void FPS_OnPointsChange(int iAttacker, int iVictim, float fPointsAttacker, float fPointsVictim)
@@ -209,18 +210,17 @@ public void FPS_OnPointsChange(int iAttacker, int iVictim, float fPointsAttacker
 
 public void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel)
 {
-	GetPlayerLevel(iClient, iNewLevel);
+	GetPlayerLevel(iClient);
 }
 
-public void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount)
+public void FPS_OnPlayerPosition(int iClient, int iPosition, int iPlayersCount)
 {
 	g_iPlayerPosition[iClient] = iPosition;
 	g_iPlayersCount = iPlayersCount;
 }
 
-void GetPlayerLevel(int iClient, int iLevel)
+void GetPlayerLevel(int iClient)
 {
-	g_iPlayerLevel[iClient] = iLevel;
 	FPS_GetRanks(iClient, g_sPlayerRank[iClient], sizeof(g_sPlayerRank[]));
 }
 
@@ -237,10 +237,11 @@ void SendHintMessage(int iClient)
 		iTarget = GetEntDataEnt2(iClient, m_hObserverTarget);
 		if (iTarget > 0 && iTarget <= MaxClients && FPS_ClientLoaded(iTarget))
 		{
+			int iDeaths = FPS_GetStatsData(iTarget, DEATHS);
 			PrintHintText(iClient, "%t", "HudMessage", 
 				g_fPlayerPoints[iTarget], 
 				g_iPlayerPosition[iTarget], g_iPlayersCount, 
-				g_iPlayerLevel[iTarget], 
+				iDeaths ? (float(FPS_GetStatsData(iTarget, KILLS)) / float(iDeaths)) : 0.0, 
 				FindTranslationRank(iClient, g_sPlayerRank[iTarget])
 			);
 		}

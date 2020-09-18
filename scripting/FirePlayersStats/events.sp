@@ -49,7 +49,7 @@ void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			{
 				szWeapon = "weapon_knife";
 			}
-			FPS_Debug("----->> Event_WeaponFire >>----- %s", szWeapon[7])
+			FPS_Debug(2, "Event_WeaponFire", "Weapon: %s", szWeapon[7]);
 			WriteWeaponData(iClient, szWeapon[7], W_SHOOTS);
 		}
 	}
@@ -77,7 +77,7 @@ void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			{
 				szWeapon = "weapon_knife";
 			}
-			FPS_Debug("----->> Event_PlayerHurt >>----- %s", szWeapon[7])
+			FPS_Debug(2, "Event_PlayerHurt", "Weapon: %s", szWeapon[7]);
 
 			int iHitgroup = hEvent.GetInt("hitgroup");
 			if (iHitgroup != HITGROUP_GENERIC && iHitgroup != HITGROUP_GEAR)
@@ -128,7 +128,7 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			{
 				g_fPlayerPoints[iAttacker] += g_fExtraPoints[CFG_TEAMKILL];
 				CheckRank(iAttacker);
-				FPS_Debug("Event_PlayerDeath >> TeamKill >> Attacker: %f", g_fPlayerPoints[iAttacker])
+				FPS_Debug(2, "Event_PlayerDeath", "TeamKill >> Attacker: %f", g_fPlayerPoints[iAttacker]);
 				return;
 			}
 
@@ -154,13 +154,13 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 					WriteWeaponData(iAttacker, szWeapon, W_HEADSHOTS, true);
 				}
 
-				FPS_Debug("Event_Death >> Weapon: %s >> HS: %i", szWeapon, bHeadshot)
+				FPS_Debug(2, "Event_PlayerDeath", "Weapon: %s >> HS: %i", szWeapon, bHeadshot);
 			}
 
 			float	fPointsAttacker	= (g_fPlayerPoints[iVictim] / g_fPlayerPoints[iAttacker]) * 5.0,
 					fDiff			= (g_fPlayerPoints[iAttacker] / g_fPlayerPoints[iVictim]) + 0.6,
 					fPointsVictim	= fPointsAttacker * g_fCoeff * (fDiff < 1.0 && FPS_IsCalibration(iAttacker) ? fDiff : 1.0),
-					fExtPoints		= GetWeaponExtraPoints(szWeapon, bIsGrenade),
+					fExtPoints		= (!bIsGrenade && g_hWeaponExtraPoints.GetValue(szWeapon, fExtPoints) ? fExtPoints : 1.0) ,
 					fHeadshot		= bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0,
 					fStreak;
 
@@ -169,8 +169,8 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			#endif
 
 			fPointsAttacker	= (fPointsAttacker * fExtPoints) + fHeadshot + fStreak;
-			FPS_Debug("Event_PlayerDeath >> Points Data: \n ----->> EP: %f \n ----->> HS: %f \n ----->> ST: %f \n ----->> DF: %f", fExtPoints, fHeadshot, fStreak, fDiff)
-			FPS_Debug("Event_PlayerDeath >> Points >> Attacker (%N): %f / Victim (%N): %f", iAttacker, fPointsAttacker, iVictim, fPointsVictim)
+			FPS_Debug(2, "Event_PlayerDeath", "Points Data: \n ----->> EP: %f \n ----->> HS: %f \n ----->> ST: %f \n ----->> DF: %f", fExtPoints, fHeadshot, fStreak, fDiff);
+			FPS_Debug(2, "Event_PlayerDeath", "Points >> Attacker (%N): %f / Victim (%N): %f", iAttacker, fPointsAttacker, iVictim, fPointsVictim);
 
 			ResetIfLessZero(fPointsAttacker);
 			ResetIfLessZero(fPointsVictim);
@@ -188,7 +188,7 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				{
 					g_fPlayerPoints[iAttacker] += fAddPointsAttacker;
 					g_fPlayerPoints[iVictim] -= fAddPointsVictim;
-					FPS_Debug("Event_PlayerDeath >> Points Pre Changed >> Attacker (%N): %f / Victim (%N): %f", iAttacker, fAddPointsAttacker, iVictim, fAddPointsVictim)
+					FPS_Debug(2, "Event_PlayerDeath", "Points Pre Changed >> Attacker (%N): %f / Victim (%N): %f", iAttacker, fAddPointsAttacker, iVictim, fAddPointsVictim);
 				}
 				default:
 				{
@@ -263,7 +263,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			if (g_iGameType[0] == 1 && g_iGameType[1] == 2)
 			{
 				g_bStatsActive = true;
-				FPS_Debug("Event_RoundAction (s) >> DM >> true")
+				FPS_Debug(2, "Event_RoundAction", "%s", "Action START >> DM >> true");
 				return;
 			}
 
@@ -273,7 +273,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				FPS_PrintToChatAll("%t", "NoPlayersForStatsWork", g_iMinPlayers);
 			}
 
-			FPS_Debug("Event_RoundAction (s) >> Stats %s", g_bStatsActive ? "ON" : "OFF")
+			FPS_Debug(2, "Event_RoundAction", "Action START >> Stats %s", g_bStatsActive ? "ON" : "OFF");
 		}
 		case 'm':
 		{
@@ -286,7 +286,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 					CheckRank(iClient);
 				}
 
-				FPS_Debug("Event_RoundAction (m) >> MVP: %N", iClient)
+				FPS_Debug(2, "Event_RoundAction", "Action MVP >> MVP: %N", iClient);
 			}
 		}
 		case 'e':
@@ -340,7 +340,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 
 						if (bSave)
 						{
-							FPS_Debug("Call Save Function >> %N | %i", i, iSave)
+							FPS_Debug(2, "Event_RoundAction", "Action END >> Call Save Function >> %N | %i", i, iSave);
 							SavePlayerData(i);
 						}
 					}
@@ -359,7 +359,6 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 					CallForward_OnFPSSecondDataUpdated();
 				}
 
-				FPS_Debug("Event_RoundAction (e) >> ----------------")
 			}
 		}
 	}
@@ -386,6 +385,6 @@ void Event_OtherAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 		}
 
 		CheckRank(iClient);
-		FPS_Debug("Event_OtherAction >> %s", sEvName)
+		FPS_Debug(2, "Event_OtherAction", "Event: %s", sEvName);
 	}
 }

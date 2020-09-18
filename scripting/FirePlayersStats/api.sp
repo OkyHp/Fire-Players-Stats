@@ -30,12 +30,12 @@ static const char g_sColorsC[CSGO_COL_COUNT][] = {
 void CreateGlobalForwards()
 {
 	g_hGlobalForward_OnFPSStatsLoaded				= CreateGlobalForward("FPS_OnFPSStatsLoaded",			ET_Ignore);
-	g_hGlobalForward_OnFPSDatabaseConnected			= CreateGlobalForward("FPS_OnDatabaseConnected",		ET_Ignore,	Param_Cell);
+	g_hGlobalForward_OnFPSDatabaseConnected			= CreateGlobalForward("FPS_OnDatabaseConnected",		ET_Ignore);
 	g_hGlobalForward_OnFPSDatabaseLostConnection	= CreateGlobalForward("FPS_OnDatabaseLostConnection",	ET_Ignore);
 	g_hGlobalForward_OnFPSClientLoaded				= CreateGlobalForward("FPS_OnClientLoaded",				ET_Ignore,	Param_Cell, Param_Cell);
 	g_hGlobalForward_OnFPSPointsChangePre			= CreateGlobalForward("FPS_OnPointsChangePre",			ET_Hook,	Param_Cell, Param_Cell, Param_Cell, Param_FloatByRef, Param_FloatByRef);
 	g_hGlobalForward_OnFPSPointsChange				= CreateGlobalForward("FPS_OnPointsChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Float, Param_Float);
-	g_hGlobalForward_OnFPSPlayerPosition			= CreateGlobalForward("FPS_PlayerPosition",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
+	g_hGlobalForward_OnFPSPlayerPosition			= CreateGlobalForward("FPS_OnPlayerPosition",			ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
 	g_hGlobalForward_OnFPSSecondDataUpdated			= CreateGlobalForward("FPS_OnSecondDataUpdated",		ET_Ignore);
 	g_hGlobalForward_OnFPSLevelChange				= CreateGlobalForward("FPS_OnLevelChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
 	g_hGlobalForward_OnFPSResetGeneralStats			= CreateGlobalForward("FPS_OnResetGeneralStats",		ET_Ignore,	Param_Cell);
@@ -51,7 +51,6 @@ void CallForward_OnFPSStatsLoaded()
 void CallForward_OnFPSDatabaseConnected()
 {
 	Call_StartForward(g_hGlobalForward_OnFPSDatabaseConnected);
-	Call_PushCell(g_hDatabase);
 	Call_Finish();
 }
 
@@ -150,6 +149,7 @@ public APLRes AskPluginLoad2(Handle hMyself, bool bLate, char[] szError, int iEr
 	// Stats
 	CreateNative("FPS_GetPlayedTime",			Native_FPS_GetPlayedTime);
 	CreateNative("FPS_GetPoints",				Native_FPS_GetPoints);
+	CreateNative("FPS_SetPoints",				Native_FPS_SetPoints);
 	CreateNative("FPS_GetStatsData",			Native_FPS_GetStatsData);
 	CreateNative("FPS_IsCalibration",			Native_FPS_IsCalibration);
 	CreateNative("FPS_GetPosition",				Native_FPS_GetPosition);
@@ -211,7 +211,7 @@ int Native_FPS_ClientReloadData(Handle hPlugin, int iNumParams)
 	int iClient = GetNativeCell(1);
 	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
 	{
-		FPS_Debug("Native_FPS_ClientReloadData >> LoadStats: %N", iClient)
+		FPS_Debug(2, "Native_FPS_ClientReloadData", "LoadStats: %N", iClient);
 		SavePlayerData(iClient);
 		OnClientDisconnect(iClient);
 		LoadPlayerData(iClient);
@@ -240,6 +240,24 @@ int Native_FPS_GetPoints(Handle hPlugin, int iNumParams)
 {
 	int iClient = GetNativeCell(1);
 	return view_as<int>(IsValidClient(iClient) && g_bStatsLoad[iClient] ? (!GetNativeCell(2) ? g_fPlayerPoints[iClient] : (g_fPlayerPoints[iClient] - g_fPlayerSessionPoints[iClient])) : DEFAULT_POINTS);
+}
+
+// void FPS_SetPoints(int iClient, float fPoints, bool bOverwrite = false);
+int Native_FPS_SetPoints(Handle hPlugin, int iNumParams)
+{
+	int iClient = GetNativeCell(1);
+	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
+	{
+		float fPoints = GetNativeCell(2);
+		if (!GetNativeCell(3))
+		{
+			g_fPlayerPoints[iClient] += fPoints;
+		}
+		else
+		{
+			g_fPlayerPoints[iClient] = fPoints;
+		}
+	}
 }
 
 // int FPS_GetLevel(int iClient);

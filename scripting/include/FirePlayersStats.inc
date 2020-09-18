@@ -24,6 +24,7 @@ public void __pl_fire_players_stats_SetNTVOptional()
 	MarkNativeAsOptional("FPS_DisableStatisPerRound");
 	MarkNativeAsOptional("FPS_GetPlayedTime");
 	MarkNativeAsOptional("FPS_GetPoints");
+	MarkNativeAsOptional("FPS_SetPoints");
 	MarkNativeAsOptional("FPS_GetLevel");
 	MarkNativeAsOptional("FPS_GetRanks");
 	MarkNativeAsOptional("FPS_GetMaxRanks");
@@ -43,7 +44,7 @@ public void __pl_fire_players_stats_SetNTVOptional()
 }
 #endif
 
-#define FPS_INC_VER				154
+#define FPS_INC_VER				155
 #define UID(%0)					GetClientUserId(%0)
 #define CID(%0)					GetClientOfUserId(%0)
 #define SZF(%0)					%0, sizeof(%0)
@@ -82,14 +83,16 @@ forward void FPS_OnFPSStatsLoaded();
 
 /**
  *	Called when database connection has been established.
+ *	Use native 'FPS_GetDatabase' for get database handle.
  *
- *	@param hDatabase		Database handle.
+ *	@noparams
  *	@noreturn
 */
-forward void FPS_OnDatabaseConnected(Database hDatabase);
+forward void FPS_OnDatabaseConnected();
 
 /**
  *	Called when database connection has been lost.
+ *	Remove existing handle in this event.
  *
  *	@noparams
  *	@noreturn
@@ -149,7 +152,7 @@ forward void FPS_OnLevelChange(int iClient, int iOldLevel, int iNewLevel);
  *	@param iPlayersCount		All players count.
  *	@noreturn
 */
-forward void FPS_PlayerPosition(int iClient, int iPosition, int iPlayersCount);
+forward void FPS_OnPlayerPosition(int iClient, int iPosition, int iPlayersCount);
 
 /**
  *	Called when updating data in top, etc., after saving statistics.
@@ -234,6 +237,16 @@ native int FPS_GetPlayedTime(int iClient);
  *	@return						Player points count.
 */
 native float FPS_GetPoints(int iClient, bool bSession = false);
+
+/**
+ *	Set player points.
+ *
+ *	@param iClient				Player index.
+ *	@param fPoints				Points to be set.
+ *	@param bOverwrite			Default: FALSE - added to current value. Else then overwrite data.
+ *	@noreturn
+*/
+native void FPS_SetPoints(int iClient, float fPoints, bool bOverwrite = false);
 
 /**
  *	Get current level.

@@ -2,6 +2,7 @@
  *	v1.0.3 -	Use data from event player_death.
  *				Added menu for reset stats.
  *				Added reset stats, when resetting general stats for player or all players.
+ *	v1.0.4 -	Update to new API version.
  */
 
 #pragma semicolon 1
@@ -16,8 +17,8 @@
 	#error This plugin can only compile on SourceMod 1.10!
 #endif
 
-#if FPS_INC_VER != 154
-	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 154"
+#if FPS_INC_VER != 155
+	#error "FirePlayersStats.inc is outdated and not suitable for compilation! Version required: 155"
 #endif
 
 #define MAX_UKTYPES 9
@@ -96,7 +97,7 @@ public Plugin myinfo =
 {
 	name = "[FPS] Unusual Kills", 
 	author = "Wend4r, OkyHp", 
-	version = "1.0.3 (Original: SR1)",
+	version = "1.0.4", // Original: SR1
 	url = "Discord: Wend4r#0001, OkyHek#2441 | VK: vk.com/wend4r"
 }
 
@@ -122,7 +123,7 @@ public void OnPluginStart()
 
 	if (FPS_StatsLoad())
 	{
-		FPS_OnDatabaseConnected(FPS_GetDatabase());
+		FPS_OnDatabaseConnected();
 		FPS_OnFPSStatsLoaded();
 	}
 
@@ -140,18 +141,15 @@ public void FPS_OnDatabaseLostConnection()
 	}
 }
 
-public void FPS_OnDatabaseConnected(Database hDatabase)
+public void FPS_OnDatabaseConnected()
 {
-	if (hDatabase)
-	{
-		g_hDatabase = hDatabase;
+	g_hDatabase = FPS_GetDatabase();
 
-		static bool bLoaded;
-		if (!bLoaded)
-		{
-			bLoaded = true;
-			g_hDatabase.Query(SQL_Callback_CreateTable, SQL_CreateTable);
-		}
+	static bool bLoaded;
+	if (g_hDatabase && !bLoaded)
+	{
+		bLoaded = true;
+		g_hDatabase.Query(SQL_Callback_CreateTable, SQL_CreateTable);
 	}
 }
 

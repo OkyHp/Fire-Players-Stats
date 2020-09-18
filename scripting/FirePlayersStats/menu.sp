@@ -108,7 +108,7 @@ void ShowMainStatsMenu(int iClient, int iPage = 0)
 		if (iPlayedTime < g_iResetStatsTime)
 		{
 			float fResult = float(g_iResetStatsTime - iPlayedTime);
-			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsLock", fResult > 0 ? (fResult / 60 / 60) : 0.0);
+			FormatEx(SZF(szBuffer), "%t\n ", "ResetPlayerStatsLock", fResult > 0 ? (fResult / 3600.0) : 0.0);
 			hMenu.AddItem(">", szBuffer, ITEMDRAW_DISABLED);
 		}
 		else
@@ -256,6 +256,7 @@ int Handler_PanelResetStats(Menu hPanel, MenuAction action, int iClient, int iOp
 		{
 			ResetData(iClient, true);
 			SavePlayerData(iClient);
+			CheckRank(iClient);
 			CallForward_OnFPSResetGeneralStats(iClient);
 			
 			FPS_PrintToChat(iClient, "%t", "YourStatsReset");
