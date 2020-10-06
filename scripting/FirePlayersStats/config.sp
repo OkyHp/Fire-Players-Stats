@@ -166,7 +166,7 @@ void SetCvars()
 	ChangeCvar_BlockStatsOnWarmup(Convar, NULL_STRING, NULL_STRING);
 
 	(Convar = CreateConVar(
-		"sm_fps_clean_players_time",		"14", 
+		"sm_fps_clean_players_time",		"30", 
 		"Через сколько дней удалить данные игрока. 0 - Отключить"
 	)).AddChangeHook(ChangeCvar_DeletePlayersTime);
 	ChangeCvar_DeletePlayersTime(Convar, NULL_STRING, NULL_STRING);
@@ -263,7 +263,7 @@ void ChangeCvar_BlockStatsOnWarmup(ConVar Convar, const char[] oldValue, const c
 
 void ChangeCvar_DeletePlayersTime(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
-	g_iDeletePlayersTime = Convar.IntValue * 24 * 60 * 60;
+	g_iDeletePlayersTime = Convar.IntValue * 86400;
 }
 
 void ChangeCvar_EloCoeff(ConVar Convar, const char[] oldValue, const char[] newValue)
