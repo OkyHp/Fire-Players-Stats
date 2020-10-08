@@ -55,12 +55,11 @@ void WriteWeaponData(int iClient, char[] szWeapon, int iData, bool bLast = false
 	}
 }
 
-// Reset if less zero
-void ResetIfLessZero(float &fValue)
+void CheckValidPoints(float &fValue)
 {
-	if (fValue < 0.0)
+	if (fValue < 100.0)
 	{
-		fValue = 0.0;
+		fValue = 100.0;
 	}
 }
 
