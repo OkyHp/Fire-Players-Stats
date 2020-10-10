@@ -157,8 +157,8 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				FPS_Debug(2, "Event_PlayerDeath", "Weapon: %s >> HS: %i", szWeapon, bHeadshot);
 			}
 
-			CheckValidPoints(g_fPlayerPoints[iAttacker]);
-			CheckValidPoints(g_fPlayerPoints[iVictim]);
+			CheckValidPoints(g_fPlayerPoints[iAttacker], 100.0);
+			CheckValidPoints(g_fPlayerPoints[iVictim], 100.0);
 
 			float	fPointsAttacker	= (g_fPlayerPoints[iVictim] / g_fPlayerPoints[iAttacker]) * 5.0,
 					fDiff			= (g_fPlayerPoints[iAttacker] / g_fPlayerPoints[iVictim]) + 0.6,
@@ -175,8 +175,8 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			FPS_Debug(2, "Event_PlayerDeath", "Points Data: \n ----->> EP: %f \n ----->> HS: %f \n ----->> ST: %f \n ----->> DF: %f", fExtPoints, fHeadshot, fStreak, fDiff);
 			FPS_Debug(2, "Event_PlayerDeath", "Points >> Attacker (%N): %f / Victim (%N): %f", iAttacker, fPointsAttacker, iVictim, fPointsVictim);
 
-			CheckValidPoints(fPointsAttacker);
-			CheckValidPoints(fPointsVictim);
+			CheckValidPoints(fPointsAttacker, 0.0);
+			CheckValidPoints(fPointsVictim, 0.0);
 
 			float	fAddPointsAttacker = fPointsAttacker,
 					fAddPointsVictim = fPointsVictim;

@@ -55,11 +55,11 @@ void WriteWeaponData(int iClient, char[] szWeapon, int iData, bool bLast = false
 	}
 }
 
-void CheckValidPoints(float &fValue)
+void CheckValidPoints(float &fValue, const float fMinValue)
 {
-	if (fValue < 100.0)
+	if (fValue < fMinValue)
 	{
-		fValue = 100.0;
+		fValue = fMinValue;
 	}
 }
 
