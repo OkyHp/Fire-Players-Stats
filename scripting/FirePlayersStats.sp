@@ -24,7 +24,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define PLUGIN_VERSION		"1.5.5"
+#define PLUGIN_VERSION		"1.5.6-DEV"
 
 #if DEBUG != 0
 	char	g_sLogPath[PLATFORM_MAX_PATH];
@@ -286,7 +286,7 @@ public void OnClientPutInServer(int iClient)
 	}
 }
 
-public void OnClientDisconnect(int iClient)
+public void OnClientDisconnect_Post(int iClient)
 {
 	if (g_bStatsLoad[iClient])
 	{

@@ -213,7 +213,7 @@ int Native_FPS_ClientReloadData(Handle hPlugin, int iNumParams)
 	{
 		FPS_Debug(2, "Native_FPS_ClientReloadData", "LoadStats: %N", iClient);
 		SavePlayerData(iClient);
-		OnClientDisconnect(iClient);
+		OnClientDisconnect_Post(iClient);
 		LoadPlayerData(iClient);
 	}
 }

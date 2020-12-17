@@ -131,7 +131,7 @@ void OnDatabaseConnect(Database hDatabase, const char[] szError, any Data)
 		{
 			if (IsClientInGame(i) && !IsFakeClient(i) && !IsClientSourceTV(i))
 			{
-				OnClientDisconnect(i);
+				OnClientDisconnect_Post(i);
 				LoadPlayerData(i);
 			}
 		}
