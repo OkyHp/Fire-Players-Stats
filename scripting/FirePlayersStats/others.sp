@@ -2,6 +2,7 @@
 void ResetData(int iClient, bool bResetStats = false)
 {
 	int iLen = sizeof(g_iPlayerData[]);
+	
 	if (!bResetStats)
 	{
 		g_iPlayerAccountID[iClient] = 0;
