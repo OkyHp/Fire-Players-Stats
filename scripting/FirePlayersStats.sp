@@ -196,6 +196,8 @@ public void OnMapStart()
 	{
 		SteamWorks_SteamServersConnected();
 	}
+
+	DeleteInactivePlayers();
 }
 
 Action TimerSaveStats(Handle hTimer)
@@ -262,11 +264,6 @@ int OnTransferComplete(Handle hRequest, bool bFailure, bool bRequestSuccessful, 
 			default:	PrintToServer("[FPS Stats] >> Не известная ошибка: %i", iStatus);
 		}
 	}
-}
-
-public void OnMapEnd()
-{
-	DeleteInactivePlayers();
 }
 
 public void OnClientPutInServer(int iClient)
