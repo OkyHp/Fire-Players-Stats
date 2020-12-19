@@ -224,7 +224,7 @@ public void OnPluginEnd()
 
 	for (int i = MaxClients + 1; --i;)
 	{
-		OnClientDisconnect_Post(i);
+		OnClientDisconnect(i);
 	}
 }
 
@@ -268,7 +268,7 @@ void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult, const 
 	}
 }
 
-public void OnClientDisconnect_Post(int iClient)
+public void OnClientDisconnect(int iClient)
 {
 	SavePlayerData(iClient);
 

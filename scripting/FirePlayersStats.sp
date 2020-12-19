@@ -118,7 +118,7 @@ public Plugin myinfo =
 	name	=	"Fire Players Stats",
 	author	=	"OkyHp",
 	version	=	PLUGIN_VERSION,
-	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
+	url		=	"https://blackflash.ru/, https://discord.gg/M82xN4y"
 };
 
 public void OnPluginStart()
@@ -283,8 +283,10 @@ public void OnClientPutInServer(int iClient)
 	}
 }
 
-public void OnClientDisconnect_Post(int iClient)
+public void OnClientDisconnect(int iClient)
 {
+	CallForward_OnFPSClientDisconnect(iClient);
+	
 	if (g_bStatsLoad[iClient])
 	{
 		SavePlayerData(iClient);

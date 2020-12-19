@@ -3,6 +3,7 @@ static Handle	g_hGlobalForward_OnFPSStatsLoaded,
 				g_hGlobalForward_OnFPSDatabaseConnected,
 				g_hGlobalForward_OnFPSDatabaseLostConnection,
 				g_hGlobalForward_OnFPSClientLoaded,
+				g_hGlobalForward_OnFPSClientDisconnect,
 				g_hGlobalForward_OnFPSPointsChangePre,
 				g_hGlobalForward_OnFPSPointsChange,
 				g_hGlobalForward_OnFPSPlayerPosition,
@@ -33,6 +34,7 @@ void CreateGlobalForwards()
 	g_hGlobalForward_OnFPSDatabaseConnected			= CreateGlobalForward("FPS_OnDatabaseConnected",		ET_Ignore);
 	g_hGlobalForward_OnFPSDatabaseLostConnection	= CreateGlobalForward("FPS_OnDatabaseLostConnection",	ET_Ignore);
 	g_hGlobalForward_OnFPSClientLoaded				= CreateGlobalForward("FPS_OnClientLoaded",				ET_Ignore,	Param_Cell, Param_Cell);
+	g_hGlobalForward_OnFPSClientDisconnect			= CreateGlobalForward("FPS_OnClientDisconnect",			ET_Ignore,	Param_Cell);
 	g_hGlobalForward_OnFPSPointsChangePre			= CreateGlobalForward("FPS_OnPointsChangePre",			ET_Hook,	Param_Cell, Param_Cell, Param_Cell, Param_FloatByRef, Param_FloatByRef);
 	g_hGlobalForward_OnFPSPointsChange				= CreateGlobalForward("FPS_OnPointsChange",				ET_Ignore,	Param_Cell, Param_Cell, Param_Float, Param_Float);
 	g_hGlobalForward_OnFPSPlayerPosition			= CreateGlobalForward("FPS_OnPlayerPosition",			ET_Ignore,	Param_Cell, Param_Cell, Param_Cell);
@@ -65,6 +67,13 @@ void CallForward_OnFPSClientLoaded(int iClient, float fPoints)
 	Call_StartForward(g_hGlobalForward_OnFPSClientLoaded);
 	Call_PushCell(iClient);
 	Call_PushCell(fPoints);
+	Call_Finish();
+}
+
+void CallForward_OnFPSClientDisconnect(int iClient)
+{
+	Call_StartForward(g_hGlobalForward_OnFPSClientDisconnect);
+	Call_PushCell(iClient);
 	Call_Finish();
 }
 
@@ -212,7 +221,7 @@ int Native_FPS_ClientReloadData(Handle hPlugin, int iNumParams)
 	if (IsValidClient(iClient) && g_bStatsLoad[iClient])
 	{
 		FPS_Debug(2, "Native_FPS_ClientReloadData", "LoadStats: %N", iClient);
-		OnClientDisconnect_Post(iClient);
+		OnClientDisconnect(iClient);
 		LoadPlayerData(iClient);
 	}
 }

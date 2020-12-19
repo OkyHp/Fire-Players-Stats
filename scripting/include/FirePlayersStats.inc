@@ -109,6 +109,14 @@ forward void FPS_OnDatabaseLostConnection();
 forward void FPS_OnClientLoaded(int iClient, float fPoints);
 
 /**
+ *	Called when player disconnects before clearing his data from memory.
+ *
+ *	@param iClient			Player index.
+ *	@noreturn
+*/
+forward void FPS_OnClientDisconnect(int iClient);
+
+/**
  *	Called before setting points to player.
  *
  *	@param iAttacker			Attacker index.

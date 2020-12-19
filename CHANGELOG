@@ -114,5 +114,5 @@
 		Added native FPS_SetPoints.
 		Fixed delete inactive players.
 		Optimized getting value of additional points for weapons.
-1.5.6 - Resetting data when player is disconnected is performed at the last stage.
+1.5.6 - Added forward FPS_OnClientDisconnect.
 
