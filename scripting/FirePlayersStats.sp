@@ -81,6 +81,7 @@ char		g_sRankName[MAXPLAYERS+1][64];
 ArrayList	g_hRanks;
 
 // Weapons stats vars
+StringMap	g_hWeaponsName[MAXPLAYERS+1];
 ArrayList	g_hWeaponsData[MAXPLAYERS+1];
 
 enum
@@ -277,6 +278,7 @@ public void OnClientPutInServer(int iClient)
 
 			g_iPlayerAccountID[iClient] = iAccountID;
 			g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS] = 0; // (not used var) for blocked accrual of experience to connected player
+			g_hWeaponsName[iClient] = new StringMap();
 			g_hWeaponsData[iClient] = new ArrayList(64);
 			LoadPlayerData(iClient);
 		}
@@ -290,6 +292,11 @@ public void OnClientDisconnect(int iClient)
 	if (g_bStatsLoad[iClient])
 	{
 		SavePlayerData(iClient);
+	}
+
+	if (g_hWeaponsName[iClient])
+	{
+		delete g_hWeaponsName[iClient];
 	}
 
 	if (g_hWeaponsData[iClient])

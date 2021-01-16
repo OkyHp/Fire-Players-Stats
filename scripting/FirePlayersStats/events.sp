@@ -36,7 +36,7 @@ void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 	if (g_bStatsActive)
 	{
 		int iClient = CID(hEvent.GetInt("userid"));
-		if (!iClient || !g_bStatsLoad[iClient] || !g_hWeaponsData[iClient])
+		if (!iClient || !g_bStatsLoad[iClient] || !IsValidWeaponArrays(iClient))
 		{
 			return;
 		}
@@ -60,7 +60,7 @@ void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 	if (g_bStatsActive)
 	{
 		int iAttacker = CID(hEvent.GetInt("attacker"));
-		if (!iAttacker || CID(hEvent.GetInt("userid")) == iAttacker || !g_bStatsLoad[iAttacker] || !g_hWeaponsData[iAttacker])
+		if (!iAttacker || CID(hEvent.GetInt("userid")) == iAttacker || !g_bStatsLoad[iAttacker] || !IsValidWeaponArrays(iAttacker))
 		{
 			return;
 		}
@@ -141,7 +141,7 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			bool	bHeadshot = hEvent.GetBool("headshot"),
 					bIsGrenade = IsGrenade(szWeapon);
 
-			if (g_hWeaponsData[iAttacker] && !bIsGrenade)
+			if (!bIsGrenade && IsValidWeaponArrays(iAttacker))
 			{
 				if (IsKnife(szWeapon))
 				{

@@ -420,49 +420,60 @@ void SavePlayerData(int iClient)
 		hTxn.AddQuery(szQuery);
 
 		// Save weapons stats
-		if (g_hWeaponsData[iClient])
+		if (IsValidWeaponArrays(iClient))
 		{
-			int		iSize = g_hWeaponsData[iClient].Length,
+			int		iSize = g_hWeaponsName[iClient].Size,
+					iIndex,
 					iArray[W_SIZE];
 			char	szWeapon[32];
-			for (int i = 0; i < iSize; i += 2)
+
+			if (iSize)
 			{
-				g_hWeaponsData[iClient].GetString(i, SZF(szWeapon));
-				FPS_Debug(1, "SavePlayerData", "Weapon '%s' finded >> Index: %i", szWeapon, i);
-				g_hWeaponsData[iClient].GetArray((i+1), SZF(iArray));
+				StringMapSnapshot hSnapshot = g_hWeaponsName[iClient].Snapshot();
+				
+				for (int i = 0; i < iSize; ++i)
+				{
+					hSnapshot.GetKey(i, SZF(szWeapon));
+					g_hWeaponsName[iClient].GetValue(szWeapon, iIndex);
+					g_hWeaponsData[iClient].GetArray(iIndex, SZF(iArray));
+					FPS_Debug(1, "SavePlayerData", "Weapon '%s' finded >> Index: %i", szWeapon, iIndex);
 
-				g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_weapons_stats` ( \
-						`account_id`, `server_id`, `weapon`, `kills`, `shoots`, \
-						`hits_head`, `hits_neck`, `hits_chest`, `hits_stomach`, \
-						`hits_left_arm`, `hits_right_arm`, `hits_left_leg`, `hits_right_leg`, `headshots` \
-					) VALUES \
-						(%i, %i, '%s', %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
-					UPDATE \
-						`kills` = `kills` + %i, \
-						`shoots` = `shoots` + %i, \
-						`hits_head` = `hits_head` + %i, \
-						`hits_neck` = `hits_neck` + %i, \
-						`hits_chest` = `hits_chest` + %i, \
-						`hits_stomach` = `hits_stomach` + %i, \
-						`hits_left_arm` = `hits_left_arm` + %i, \
-						`hits_right_arm` = `hits_right_arm` + %i, \
-						`hits_left_leg` = `hits_left_leg` + %i, \
-						`hits_right_leg` = `hits_right_leg` + %i, \
-						`headshots` = `headshots` + %i;", 
-					g_iPlayerAccountID[iClient], g_iServerID, szWeapon, iArray[W_KILLS], iArray[W_SHOOTS], 
-					iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
-					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS], 
-					iArray[W_KILLS], iArray[W_SHOOTS], iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
-					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS]);
+					g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_weapons_stats` ( \
+							`account_id`, `server_id`, `weapon`, `kills`, `shoots`, \
+							`hits_head`, `hits_neck`, `hits_chest`, `hits_stomach`, \
+							`hits_left_arm`, `hits_right_arm`, `hits_left_leg`, `hits_right_leg`, `headshots` \
+						) VALUES \
+							(%i, %i, '%s', %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
+						UPDATE \
+							`kills` = `kills` + %i, \
+							`shoots` = `shoots` + %i, \
+							`hits_head` = `hits_head` + %i, \
+							`hits_neck` = `hits_neck` + %i, \
+							`hits_chest` = `hits_chest` + %i, \
+							`hits_stomach` = `hits_stomach` + %i, \
+							`hits_left_arm` = `hits_left_arm` + %i, \
+							`hits_right_arm` = `hits_right_arm` + %i, \
+							`hits_left_leg` = `hits_left_leg` + %i, \
+							`hits_right_leg` = `hits_right_leg` + %i, \
+							`headshots` = `headshots` + %i;", 
+						g_iPlayerAccountID[iClient], g_iServerID, szWeapon, iArray[W_KILLS], iArray[W_SHOOTS], 
+						iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
+						iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS], 
+						iArray[W_KILLS], iArray[W_SHOOTS], iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
+						iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS]);
 
-				#if DEBUG >= 1
-					int u;
-					FPS_Debug(1, "SavePlayerData", "WeaponQuery #%i: %s", ++u, szQuery);
-				#endif
+					#if DEBUG >= 1
+						int u;
+						FPS_Debug(1, "SavePlayerData", "WeaponQuery #%i: %s", ++u, szQuery);
+					#endif
 
-				hTxn.AddQuery(szQuery);
+					hTxn.AddQuery(szQuery);
+				}
+
+				delete hSnapshot;
 			}
 
+			g_hWeaponsName[iClient].Clear();
 			g_hWeaponsData[iClient].Clear();
 		}
 

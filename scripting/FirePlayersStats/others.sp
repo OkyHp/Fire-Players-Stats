@@ -1,7 +1,7 @@
 // Reset vars data for player
 void ResetData(int iClient, bool bResetStats = false)
 {
-	int iLen = sizeof(g_iPlayerData[]);
+	// int iLen = sizeof(g_iPlayerData[]);
 	
 	if (!bResetStats)
 	{
@@ -10,18 +10,21 @@ void ResetData(int iClient, bool bResetStats = false)
 	}
 	else
 	{
+		if (g_hWeaponsName[iClient])
+		{
+			delete g_hWeaponsName[iClient];
+		}
+		
 		if (g_hWeaponsData[iClient])
 		{
 			g_hWeaponsData[iClient].Clear();
 		}
 
-		// g_iPlayerData[iClient][PLAYTIME] = 0;
-		// g_iPlayerSessionData[iClient][PLAYTIME] = GetTime();
-		iLen--;
+		// iLen--;
 	}
 
 	g_fPlayerSessionPoints[iClient]	= g_fPlayerPoints[iClient] = DEFAULT_POINTS;
-	for (int i = 0; i < iLen; ++i)
+	for (int i = 0; i < sizeof(g_iPlayerData[]); ++i)
 	{
 		g_iPlayerSessionData[iClient][i] = g_iPlayerData[iClient][i] = 0;
 	}
@@ -31,29 +34,28 @@ void ResetData(int iClient, bool bResetStats = false)
 	g_sRankName[iClient][0] = 0;
 }
 
+bool IsValidWeaponArrays(int iClient)
+{
+	return g_hWeaponsName[iClient] && g_hWeaponsData[iClient];
+}
+
 // Weapons stats
 void WriteWeaponData(int iClient, char[] szWeapon, int iData, bool bLast = false)
 {
-	if (g_hWeaponsData[iClient])
+	static int iIndex;
+	if (!bLast && !g_hWeaponsName[iClient].GetValue(szWeapon, iIndex))
 	{
-		static int iIndex;
-		if (!bLast && !(iIndex = g_hWeaponsData[iClient].FindString(szWeapon) + 1))
-		{
-			FPS_Debug(2, "WriteWeaponData", "%N >> Weapon '%s' added in array >> Data: %i", iClient, szWeapon, iData);
-			g_hWeaponsData[iClient].PushString(szWeapon);
+		int iArray[W_SIZE];
+		iArray[iData]++;
+		iIndex = g_hWeaponsData[iClient].PushArray(SZF(iArray));
 
-			int iArray[W_SIZE];
-			iArray[iData]++;
-			iIndex = g_hWeaponsData[iClient].PushArray(SZF(iArray));
-			return;
-		}
-
-		if (iIndex)
-		{
-			g_hWeaponsData[iClient].Set(iIndex, (g_hWeaponsData[iClient].Get(iIndex, iData) + 1), iData);
-			FPS_Debug(2, "WriteWeaponData", "%N >> (bLast: %i) Weapon '%s' finded >> Data: %i >> Index: %i >> Source: %i", iClient, bLast, szWeapon, iData, iIndex, g_hWeaponsData[iClient].Get(iIndex, iData));
-		}
+		g_hWeaponsName[iClient].SetValue(szWeapon, iIndex);
+		FPS_Debug(2, "WriteWeaponData", "%N >> Weapon '%s' added in array >> Data: %i", iClient, szWeapon, iData);
+		return;
 	}
+
+	g_hWeaponsData[iClient].Set(iIndex, (g_hWeaponsData[iClient].Get(iIndex, iData) + 1), iData);
+	FPS_Debug(2, "WriteWeaponData", "%N >> (bLast: %i) Weapon '%s' finded >> Data: %i >> Index: %i >> Source: %i", iClient, bLast, szWeapon, iData, iIndex, g_hWeaponsData[iClient].Get(iIndex, iData));
 }
 
 void CheckValidPoints(float &fValue, const float fMinValue)

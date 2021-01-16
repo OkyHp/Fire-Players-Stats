@@ -115,4 +115,5 @@
 		Fixed delete inactive players.
 		Optimized getting value of additional points for weapons.
 1.5.6 - Added forward FPS_OnClientDisconnect.
-
+		Optimized statistics collection for weapons.
+		When clearing personal statistics, played time is cleared.
