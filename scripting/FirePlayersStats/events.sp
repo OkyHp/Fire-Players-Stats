@@ -249,16 +249,19 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				return;
 			}
 			
-			int iPlayers;
+			int iPlayers,
+				iTeam;
 			for (int i = MaxClients + 1; --i;)
 			{
 				if (g_bStatsLoad[i])
 				{
 					iMaxRoundsKills[i] = 0;
-					if (GetClientTeam(i) > 1)
+
+					iTeam = GetClientTeam(i);
+					if (iTeam > 1)
 					{
 						++iPlayers;
-						g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] = 1;
+						g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] = iTeam;
 					}
 				}
 			}
@@ -304,7 +307,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 
 				for (int i = MaxClients + 1; --i;)
 				{
-					if (g_bStatsLoad[i] && g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] == 1 && (iTeam = GetClientTeam(i)) > 1)
+					if (g_bStatsLoad[i] && g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] && (iTeam = GetClientTeam(i)) == g_iPlayerSessionData[i][MAX_ROUNDS_KILLS])
 					{
 						if (iMaxRoundsKills[i] > g_iPlayerData[i][MAX_ROUNDS_KILLS])
 						{
