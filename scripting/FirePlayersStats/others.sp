@@ -51,7 +51,7 @@ void OnWeaponSwitchPost(int iClient, int iWeapon)
 			g_hWeaponsData[iClient].GetArray(iIndex, SZF(iArray));
 			for (int i = 0; i < sizeof(g_iPlayerWeaponData[]); ++i)
 			{
-				g_iPlayerWeaponData[iClient][i] = iArray[i];
+				g_iPlayerWeaponData[iClient][i] += iArray[i];
 			}
 
 			FPS_Debug(2, "OnWeaponSwitchPost", "%N >> Weapon '%i' finded. Index: %i", iClient, g_iPlayerActiveWeapon[iClient], iIndex);
