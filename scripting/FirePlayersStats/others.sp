@@ -1,61 +1,108 @@
 // Reset vars data for player
 void ResetData(int iClient, bool bResetStats = false)
 {
-	// int iLen = sizeof(g_iPlayerData[]);
-	
 	if (!bResetStats)
 	{
 		g_iPlayerAccountID[iClient] = 0;
 		g_bStatsLoad[iClient] = false;
-	}
-	else
-	{
-		if (g_hWeaponsName[iClient])
-		{
-			delete g_hWeaponsName[iClient];
-		}
-		
+
 		if (g_hWeaponsData[iClient])
 		{
-			g_hWeaponsData[iClient].Clear();
+			delete g_hWeaponsData[iClient];
 		}
-
-		// iLen--;
+	}
+	else if (g_hWeaponsData[iClient])
+	{
+		g_hWeaponsData[iClient].Clear();
 	}
 
 	g_fPlayerSessionPoints[iClient]	= g_fPlayerPoints[iClient] = DEFAULT_POINTS;
 	for (int i = 0; i < sizeof(g_iPlayerData[]); ++i)
 	{
-		g_iPlayerSessionData[iClient][i] = g_iPlayerData[iClient][i] = 0;
+		g_iPlayerData[iClient][i] = 0;
+		g_iPlayerSessionData[iClient][i] = 0;
 	}
 	
 	g_iPlayerPosition[iClient] = 0;
 	g_iPlayerRanks[iClient] = 0;
 	g_sRankName[iClient][0] = 0;
+
+	g_iPlayerActiveWeapon[iClient] = CSWeapon_NONE;
+	for (int i = 0; i < sizeof(g_iPlayerWeaponData[]); ++i)
+	{
+		g_iPlayerWeaponData[iClient][i] = 0;
+	}
 }
 
-bool IsValidWeaponArrays(int iClient)
+bool IsValidWeaponBuffer(int iClient)
 {
-	return g_hWeaponsName[iClient] && g_hWeaponsData[iClient];
+	return g_hWeaponsData[iClient] && g_iPlayerActiveWeapon[iClient];
 }
 
 // Weapons stats
-void WriteWeaponData(int iClient, char[] szWeapon, int iData, bool bLast = false)
+void OnWeaponSwitchPost(int iClient, int iWeapon)
 {
-	static int iIndex;
-	if (!bLast && !g_hWeaponsName[iClient].GetValue(szWeapon, iIndex))
+	if (g_iPlayerActiveWeapon[iClient] != CSWeapon_NONE)
 	{
-		int iArray[W_SIZE];
-		iArray[iData]++;
-		iIndex = g_hWeaponsData[iClient].PushArray(SZF(iArray));
+		int iIndex = g_hWeaponsData[iClient].FindValue(g_iPlayerActiveWeapon[iClient], W_ID);
+		if (iIndex != -1) 
+		{
+			int iArray[W_SIZE];
+			g_hWeaponsData[iClient].GetArray(iIndex, SZF(iArray));
+			for (int i = 0; i < sizeof(g_iPlayerWeaponData[]); ++i)
+			{
+				g_iPlayerWeaponData[iClient][i] = iArray[i];
+			}
 
-		g_hWeaponsName[iClient].SetValue(szWeapon, iIndex);
-		FPS_Debug(2, "WriteWeaponData", "%N >> Weapon '%s' added in array >> Data: %i", iClient, szWeapon, iData);
-		return;
+			FPS_Debug(2, "OnWeaponSwitchPost", "%N >> Weapon '%i' finded. Index: %i", iClient, g_iPlayerActiveWeapon[iClient], iIndex);
+			g_hWeaponsData[iClient].SetArray(iIndex, g_iPlayerWeaponData[iClient], sizeof(g_iPlayerWeaponData[]));
+		}
+		else
+		{
+			FPS_Debug(2, "OnWeaponSwitchPost", "%N >> Weapon '%i' added in array", iClient, g_iPlayerActiveWeapon[iClient]);
+			g_hWeaponsData[iClient].PushArray(g_iPlayerWeaponData[iClient], sizeof(g_iPlayerWeaponData[]));
+		}
+	}
+	
+	for (int i = 0; i < sizeof(g_iPlayerWeaponData[]); ++i)
+	{
+		g_iPlayerWeaponData[iClient][i] = 0;
 	}
 
-	g_hWeaponsData[iClient].Set(iIndex, (g_hWeaponsData[iClient].Get(iIndex, iData) + 1), iData);
-	FPS_Debug(2, "WriteWeaponData", "%N >> (bLast: %i) Weapon '%s' finded >> Data: %i >> Index: %i >> Source: %i", iClient, bLast, szWeapon, iData, iIndex, g_hWeaponsData[iClient].Get(iIndex, iData));
+	CSWeaponID iAcitiveWeapon = CS_ItemDefIndexToID(GetEntData(iWeapon, g_iDefinitionIndex));
+	if (iAcitiveWeapon == CSWeapon_HEGRENADE 
+		|| iAcitiveWeapon == CSWeapon_SMOKEGRENADE 
+		|| iAcitiveWeapon == CSWeapon_FLASHBANG 
+		|| iAcitiveWeapon == CSWeapon_MOLOTOV
+		|| iAcitiveWeapon == CSWeapon_DECOY
+		|| iAcitiveWeapon == CSWeapon_INCGRENADE)
+	{
+		g_iPlayerActiveWeapon[iClient] = CSWeapon_NONE;
+	}
+	else if (iAcitiveWeapon >= CSWeapon_BAYONET
+		|| iAcitiveWeapon == CSWeapon_KNIFE_GG 
+		|| iAcitiveWeapon == CSWeapon_KNIFE_T 
+		|| iAcitiveWeapon == CSWeapon_KNIFE_GHOST)
+	{
+		g_iPlayerActiveWeapon[iClient] = CSWeapon_KNIFE;
+	}
+	else
+	{
+		g_iPlayerActiveWeapon[iClient] = iAcitiveWeapon;
+	}
+}
+
+// Check grenade
+bool IsGrenade(const char[] szWeapon)
+{
+	return (szWeapon[0] == 'i' // inferno + incgrenade
+			|| szWeapon[4] == 'y' // decoy
+			|| (szWeapon[0] == 'h' && szWeapon[1] == 'e') // hegrenade + healthshot
+			|| (szWeapon[0] == 'f' && szWeapon[1] == 'l') // flashbang
+			|| (szWeapon[0] == 'm' && szWeapon[1] == 'o') // molotov
+			|| (szWeapon[0] == 's' && szWeapon[1] == 'm') // smokegren
+			|| (szWeapon[0] == 't' && szWeapon[2] == 'g') // tagrenade
+		);
 }
 
 void CheckValidPoints(float &fValue, const float fMinValue)
@@ -126,27 +173,6 @@ void CheckRank(int iClient)
 			--iLevel;
 		}
 	}
-}
-
-// Check grenade
-bool IsGrenade(const char[] szWeapon)
-{
-	// FPS_Debug(2, "IsGrenade", "%s", szWeapon);
-	return (szWeapon[0] == 'i' // inferno + incgrenade
-			|| szWeapon[4] == 'y' // decoy
-			|| (szWeapon[0] == 'h' && szWeapon[1] == 'e') // hegrenade + healthshot
-			|| (szWeapon[0] == 'f' && szWeapon[1] == 'l') // flashbang
-			|| (szWeapon[0] == 'm' && szWeapon[1] == 'o') // molotov
-			|| (szWeapon[0] == 's' && szWeapon[1] == 'm') // smokegren
-			|| (szWeapon[0] == 't' && szWeapon[2] == 'g') // tagrenade
-		);
-}
-
-// Check knife
-bool IsKnife(const char[] szWeapon)
-{
-	// FPS_Debug(2, "IsKnife", "%s", szWeapon);
-	return (szWeapon[0] == 'k' || szWeapon[2] == 'y');
 }
 
 // Play menu sounds

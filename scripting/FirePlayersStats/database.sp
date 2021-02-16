@@ -420,24 +420,19 @@ void SavePlayerData(int iClient)
 		hTxn.AddQuery(szQuery);
 
 		// Save weapons stats
-		if (IsValidWeaponArrays(iClient))
+		if (IsValidWeaponBuffer(iClient))
 		{
-			int		iSize = g_hWeaponsName[iClient].Size,
-					iIndex,
+			int		iSize = g_hWeaponsData[iClient].Length,
 					iArray[W_SIZE];
 			char	szWeapon[32];
 
 			if (iSize)
 			{
-				StringMapSnapshot hSnapshot = g_hWeaponsName[iClient].Snapshot();
-				
 				for (int i = 0; i < iSize; ++i)
 				{
-					hSnapshot.GetKey(i, SZF(szWeapon));
-					g_hWeaponsName[iClient].GetValue(szWeapon, iIndex);
-					g_hWeaponsData[iClient].GetArray(iIndex, SZF(iArray));
-					FPS_Debug(1, "SavePlayerData", "Weapon '%s' finded >> Index: %i", szWeapon, iIndex);
-
+					g_hWeaponsData[iClient].GetArray(i, SZF(iArray));
+					CS_WeaponIDToAlias(view_as<CSWeaponID>(iArray[W_ID]), SZF(szWeapon));
+					
 					g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_weapons_stats` ( \
 							`account_id`, `server_id`, `weapon`, `kills`, `shoots`, \
 							`hits_head`, `hits_neck`, `hits_chest`, `hits_stomach`, \
@@ -470,11 +465,8 @@ void SavePlayerData(int iClient)
 					hTxn.AddQuery(szQuery);
 				}
 
-				delete hSnapshot;
+				g_hWeaponsData[iClient].Clear();
 			}
-
-			g_hWeaponsName[iClient].Clear();
-			g_hWeaponsData[iClient].Clear();
 		}
 
 		g_hDatabase.Execute(hTxn, SQL_TxnSuccess_UpdateOrInsertPlayerData, SQL_TxnFailure_UpdateOrInsertPlayerData);
