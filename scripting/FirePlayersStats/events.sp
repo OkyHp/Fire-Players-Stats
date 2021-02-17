@@ -40,7 +40,7 @@ void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 		{
 			char szWeapon[32];
 			hEvent.GetString("weapon", SZF(szWeapon));
-			if (!IsGrenade(szWeapon[7]))
+			if (!IsGrenade(szWeapon[7]) && g_iPlayerActiveWeapon[iClient] != CSWeapon_KNIFE)
 			{
 				g_iPlayerWeaponData[iClient][W_SHOOTS]++;
 			}

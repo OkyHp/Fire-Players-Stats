@@ -299,6 +299,7 @@ public void OnClientDisconnect(int iClient)
 	
 	if (g_bStatsLoad[iClient])
 	{
+		SaveWeaponStatsInArray(iClient);
 		SavePlayerData(iClient);
 	}
 

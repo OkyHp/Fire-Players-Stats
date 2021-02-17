@@ -431,6 +431,7 @@ void SavePlayerData(int iClient)
 				for (int i = 0; i < iSize; ++i)
 				{
 					g_hWeaponsData[iClient].GetArray(i, SZF(iArray));
+					FPS_Debug(1, "SavePlayerData", "CSWeaponID: %i | Size: %i", iArray[W_ID], iSize);
 					CS_WeaponIDToAlias(view_as<CSWeaponID>(iArray[W_ID]), SZF(szWeapon));
 					
 					g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_weapons_stats` ( \

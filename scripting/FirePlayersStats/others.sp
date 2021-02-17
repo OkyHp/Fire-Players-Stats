@@ -34,22 +34,23 @@ void ResetData(int iClient, bool bResetStats = false)
 	}
 }
 
+// Weapons stats
 bool IsValidWeaponBuffer(int iClient)
 {
 	return g_hWeaponsData[iClient] && g_iPlayerActiveWeapon[iClient];
 }
 
-// Weapons stats
-void OnWeaponSwitchPost(int iClient, int iWeapon)
+void SaveWeaponStatsInArray(int iClient)
 {
 	if (g_iPlayerActiveWeapon[iClient] != CSWeapon_NONE)
 	{
+		g_iPlayerWeaponData[iClient][W_ID] = view_as<int>(g_iPlayerActiveWeapon[iClient]);
 		int iIndex = g_hWeaponsData[iClient].FindValue(g_iPlayerActiveWeapon[iClient], W_ID);
 		if (iIndex != -1) 
 		{
 			int iArray[W_SIZE];
 			g_hWeaponsData[iClient].GetArray(iIndex, SZF(iArray));
-			for (int i = 0; i < sizeof(g_iPlayerWeaponData[]); ++i)
+			for (int i = 1; i < sizeof(g_iPlayerWeaponData[]); ++i)
 			{
 				g_iPlayerWeaponData[iClient][i] += iArray[i];
 			}
@@ -63,11 +64,16 @@ void OnWeaponSwitchPost(int iClient, int iWeapon)
 			g_hWeaponsData[iClient].PushArray(g_iPlayerWeaponData[iClient], sizeof(g_iPlayerWeaponData[]));
 		}
 	}
-	
+
 	for (int i = 0; i < sizeof(g_iPlayerWeaponData[]); ++i)
 	{
 		g_iPlayerWeaponData[iClient][i] = 0;
 	}
+}
+
+void OnWeaponSwitchPost(int iClient, int iWeapon)
+{
+	SaveWeaponStatsInArray(iClient);
 
 	CSWeaponID iAcitiveWeapon = CS_ItemDefIndexToID(GetEntData(iWeapon, g_iDefinitionIndex));
 	if (iAcitiveWeapon == CSWeapon_HEGRENADE 
