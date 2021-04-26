@@ -346,7 +346,7 @@ void LoadPlayerData(int iClient)
 void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	int iClient = CID(iUserID);
-	if (!iClient || !CheckDatabaseConnection("SQL_Callback_LoadPlayerData", szError, hResult))
+	if (!iClient || !IsClientInGame(iClient) || !CheckDatabaseConnection("SQL_Callback_LoadPlayerData", szError, hResult))
 	{
 		return;
 	}
@@ -593,9 +593,9 @@ void GetPlayerPosition(int iClient)
 void SQL_Callback_PlayerPosition(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	int iClient = CID(iUserID);
-	if (iClient && CheckDatabaseConnection("SQL_Callback_PlayerPosition", szError, hResult))
+	if (iClient && IsClientInGame(iClient) && CheckDatabaseConnection("SQL_Callback_PlayerPosition", szError, hResult))
 	{
-		g_iPlayerPosition[iClient] = hResult.FetchRow() ? hResult.FetchInt(0) : 0;
+		g_iPlayerPosition[iClient] = hResult.FetchRow() ? hResult.FetchInt(0) : -1;
 		FPS_Debug(1, "SQL_Callback_PlayerPosition", "%N: position: %i / %i", iClient, g_iPlayerPosition[iClient], g_iPlayersCount);
 
 		CallForward_OnFPSPlayerPosition(iClient, g_iPlayerPosition[iClient], g_iPlayersCount);
