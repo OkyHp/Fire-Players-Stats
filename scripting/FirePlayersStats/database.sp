@@ -631,3 +631,14 @@ void UpdateServerData()
 		g_hDatabase.Query(SQL_Default_Callback, szQuery, 5);
 	}
 }
+
+void DeleteWeaponsStats(int iClient)
+{
+	if (g_hDatabase)
+	{
+		char szQuery[256];
+		g_hDatabase.Format(SZF(szQuery), "DELETE FROM `fps_weapons_stats` WHERE `server_id` = %i AND `account_id` = %i;", g_iServerID, g_iPlayerAccountID[iClient]);
+		FPS_Debug(1, "DeleteWeaponsStats", "Query: %s", szQuery);
+		g_hDatabase.Query(SQL_Default_Callback, szQuery, 6);
+	}
+}

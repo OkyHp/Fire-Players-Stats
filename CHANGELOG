@@ -118,3 +118,4 @@
 		Optimized statistics collection for weapons.
 		When clearing personal statistics, played time is cleared.
 		Fixed possible abuse of experience.
+		Fixed deleting player statistics on weapons when resetting it through menu.
