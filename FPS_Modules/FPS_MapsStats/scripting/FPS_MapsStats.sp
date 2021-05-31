@@ -6,6 +6,7 @@
  *				Fixed error with receiving data.
  *	v1.0.4 -	Update to new API version.
  *				Fixed reset player stats.
+ *	v1.0.5 -	Added removal of inactive players.
  */
 
 #pragma semicolon 1
@@ -29,7 +30,8 @@
 
 int			g_iPlayerData[MAXPLAYERS+1][13],
 			g_iMapSessionTime[MAXPLAYERS+1],
-			g_iResetStatsTime;
+			g_iResetStatsTime,
+			g_iDeletePlayersTime;
 bool		g_bResetModuleStats;
 char		g_sCurrentMap[256];
 Database	g_hDatabase;
@@ -57,7 +59,7 @@ public Plugin myinfo =
 {
 	name	=	"[FPS] Maps Stats",
 	author	=	"OkyHp",
-	version	=	"1.0.4",
+	version	=	"1.0.5",
 	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
 };
 
@@ -164,16 +166,42 @@ void SQL_Default_Callback(Database hDatabase, DBResultSet hResult, const char[] 
 	}
 }
 
+void DeleteInactivePlayers()
+{
+	if (g_iDeletePlayersTime && g_hDatabase)
+	{
+		char szQuery[256];
+		g_hDatabase.Format(SZF(szQuery), "DELETE `m` \
+			FROM `fps_maps` AS `m` \
+			WHERE NOT EXISTS ( \
+				SELECT NULL \
+				FROM `fps_servers_stats` AS `s` \
+				WHERE \
+					`s`.`account_id` = `m`.`account_id` \
+					AND `s`.`server_id` = `m`.`server_id` \
+			) AND `m`.`server_id` = %i;", FPS_GetID(FPS_SERVER_ID));
+		FPS_Debug("DeleteInactivePlayers >> Query: %s", szQuery)
+		g_hDatabase.Query(SQL_Default_Callback, szQuery, 5);
+	}
+}
+
 public void FPS_OnFPSStatsLoaded()
 {
 	FPS_AddFeature(g_sFeature[0], FPS_STATS_MENU, OnItemSelectStatsMenu, OnItemDisplayStatsMenu);
 	FPS_AddFeature(g_sFeature[1], FPS_TOP_MENU, OnItemSelectTopMenu, OnItemDisplayTopMenu);
 
 	ConVar Convar;
+	(Convar = FindConVar("sm_fps_clean_players_time")).AddChangeHook(ChangeCvar_DeletePlayersTime);
+	ChangeCvar_DeletePlayersTime(Convar, NULL_STRING, NULL_STRING);
 	(Convar = FindConVar("sm_fps_reset_stats_time")).AddChangeHook(ChangeCvar_ResetStatsTime);
 	ChangeCvar_ResetStatsTime(Convar, NULL_STRING, NULL_STRING);
 	(Convar = FindConVar("sm_fps_reset_modules_stats")).AddChangeHook(ChangeCvar_ResetModuleStats);
 	ChangeCvar_ResetModuleStats(Convar, NULL_STRING, NULL_STRING);
+}
+
+void ChangeCvar_DeletePlayersTime(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_iDeletePlayersTime = Convar.IntValue * 86400;
 }
 
 void ChangeCvar_ResetStatsTime(ConVar Convar, const char[] oldValue, const char[] newValue)
@@ -254,6 +282,8 @@ public void OnClientDisconnect(int iClient)
 public void OnMapStart()
 {
 	GetCurrentMapEx(g_sCurrentMap, sizeof(g_sCurrentMap));
+
+	DeleteInactivePlayers();
 }
 
 void SavePlayerData(int iClient, bool bReset = false)

@@ -346,7 +346,7 @@ void LoadPlayerData(int iClient)
 void SQL_Callback_LoadPlayerData(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	int iClient = CID(iUserID);
-	if (!iClient || !CheckDatabaseConnection("SQL_Callback_LoadPlayerData", szError, hResult))
+	if (!iClient || !IsClientInGame(iClient) || !CheckDatabaseConnection("SQL_Callback_LoadPlayerData", szError, hResult))
 	{
 		return;
 	}
@@ -420,50 +420,54 @@ void SavePlayerData(int iClient)
 		hTxn.AddQuery(szQuery);
 
 		// Save weapons stats
-		if (g_hWeaponsData[iClient])
+		if (IsValidWeaponBuffer(iClient))
 		{
 			int		iSize = g_hWeaponsData[iClient].Length,
 					iArray[W_SIZE];
 			char	szWeapon[32];
-			for (int i = 0; i < iSize; i += 2)
+
+			if (iSize)
 			{
-				g_hWeaponsData[iClient].GetString(i, SZF(szWeapon));
-				FPS_Debug(1, "SavePlayerData", "Weapon '%s' finded >> Index: %i", szWeapon, i);
-				g_hWeaponsData[iClient].GetArray((i+1), SZF(iArray));
+				for (int i = 0; i < iSize; ++i)
+				{
+					g_hWeaponsData[iClient].GetArray(i, SZF(iArray));
+					FPS_Debug(1, "SavePlayerData", "CSWeaponID: %i | Size: %i", iArray[W_ID], iSize);
+					CS_WeaponIDToAlias(view_as<CSWeaponID>(iArray[W_ID]), SZF(szWeapon));
+					
+					g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_weapons_stats` ( \
+							`account_id`, `server_id`, `weapon`, `kills`, `shoots`, \
+							`hits_head`, `hits_neck`, `hits_chest`, `hits_stomach`, \
+							`hits_left_arm`, `hits_right_arm`, `hits_left_leg`, `hits_right_leg`, `headshots` \
+						) VALUES \
+							(%i, %i, '%s', %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
+						UPDATE \
+							`kills` = `kills` + %i, \
+							`shoots` = `shoots` + %i, \
+							`hits_head` = `hits_head` + %i, \
+							`hits_neck` = `hits_neck` + %i, \
+							`hits_chest` = `hits_chest` + %i, \
+							`hits_stomach` = `hits_stomach` + %i, \
+							`hits_left_arm` = `hits_left_arm` + %i, \
+							`hits_right_arm` = `hits_right_arm` + %i, \
+							`hits_left_leg` = `hits_left_leg` + %i, \
+							`hits_right_leg` = `hits_right_leg` + %i, \
+							`headshots` = `headshots` + %i;", 
+						g_iPlayerAccountID[iClient], g_iServerID, szWeapon, iArray[W_KILLS], iArray[W_SHOOTS], 
+						iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
+						iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS], 
+						iArray[W_KILLS], iArray[W_SHOOTS], iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
+						iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS]);
 
-				g_hDatabase.Format(SZF(szQuery), "INSERT INTO `fps_weapons_stats` ( \
-						`account_id`, `server_id`, `weapon`, `kills`, `shoots`, \
-						`hits_head`, `hits_neck`, `hits_chest`, `hits_stomach`, \
-						`hits_left_arm`, `hits_right_arm`, `hits_left_leg`, `hits_right_leg`, `headshots` \
-					) VALUES \
-						(%i, %i, '%s', %i, %i, %i, %i, %i, %i, %i, %i, %i, %i, %i) ON DUPLICATE KEY \
-					UPDATE \
-						`kills` = `kills` + %i, \
-						`shoots` = `shoots` + %i, \
-						`hits_head` = `hits_head` + %i, \
-						`hits_neck` = `hits_neck` + %i, \
-						`hits_chest` = `hits_chest` + %i, \
-						`hits_stomach` = `hits_stomach` + %i, \
-						`hits_left_arm` = `hits_left_arm` + %i, \
-						`hits_right_arm` = `hits_right_arm` + %i, \
-						`hits_left_leg` = `hits_left_leg` + %i, \
-						`hits_right_leg` = `hits_right_leg` + %i, \
-						`headshots` = `headshots` + %i;", 
-					g_iPlayerAccountID[iClient], g_iServerID, szWeapon, iArray[W_KILLS], iArray[W_SHOOTS], 
-					iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
-					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS], 
-					iArray[W_KILLS], iArray[W_SHOOTS], iArray[W_HITS_HEAD], iArray[W_HITS_NECK], iArray[W_HITS_CHEST], iArray[W_HITS_STOMACH], 
-					iArray[W_HITS_LEFT_ARM], iArray[W_HITS_RIGHT_ARM], iArray[W_HITS_LEFT_LEG], iArray[W_HITS_RIGHT_LEG], iArray[W_HEADSHOTS]);
+					#if DEBUG >= 1
+						int u;
+						FPS_Debug(1, "SavePlayerData", "WeaponQuery #%i: %s", ++u, szQuery);
+					#endif
 
-				#if DEBUG >= 1
-					int u;
-					FPS_Debug(1, "SavePlayerData", "WeaponQuery #%i: %s", ++u, szQuery);
-				#endif
+					hTxn.AddQuery(szQuery);
+				}
 
-				hTxn.AddQuery(szQuery);
+				g_hWeaponsData[iClient].Clear();
 			}
-
-			g_hWeaponsData[iClient].Clear();
 		}
 
 		g_hDatabase.Execute(hTxn, SQL_TxnSuccess_UpdateOrInsertPlayerData, SQL_TxnFailure_UpdateOrInsertPlayerData);
@@ -589,9 +593,9 @@ void GetPlayerPosition(int iClient)
 void SQL_Callback_PlayerPosition(Database hDatabase, DBResultSet hResult, const char[] szError, any iUserID)
 {
 	int iClient = CID(iUserID);
-	if (iClient && CheckDatabaseConnection("SQL_Callback_PlayerPosition", szError, hResult))
+	if (iClient && IsClientInGame(iClient) && CheckDatabaseConnection("SQL_Callback_PlayerPosition", szError, hResult))
 	{
-		g_iPlayerPosition[iClient] = hResult.FetchRow() ? hResult.FetchInt(0) : 0;
+		g_iPlayerPosition[iClient] = hResult.FetchRow() ? hResult.FetchInt(0) : -1;
 		FPS_Debug(1, "SQL_Callback_PlayerPosition", "%N: position: %i / %i", iClient, g_iPlayerPosition[iClient], g_iPlayersCount);
 
 		CallForward_OnFPSPlayerPosition(iClient, g_iPlayerPosition[iClient], g_iPlayersCount);
@@ -625,5 +629,16 @@ void UpdateServerData()
 
 		FPS_Debug(1, "UpdateServerData", "Query (%i): %s", UPDATE_SERVER_DATA, szQuery);
 		g_hDatabase.Query(SQL_Default_Callback, szQuery, 5);
+	}
+}
+
+void DeleteWeaponsStats(int iClient)
+{
+	if (g_hDatabase)
+	{
+		char szQuery[256];
+		g_hDatabase.Format(SZF(szQuery), "DELETE FROM `fps_weapons_stats` WHERE `server_id` = %i AND `account_id` = %i;", g_iServerID, g_iPlayerAccountID[iClient]);
+		FPS_Debug(1, "DeleteWeaponsStats", "Query: %s", szQuery);
+		g_hDatabase.Query(SQL_Default_Callback, szQuery, 6);
 	}
 }

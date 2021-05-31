@@ -3,6 +3,7 @@
  *				Added menu for reset stats.
  *				Added reset stats, when resetting general stats for player or all players.
  *	v1.0.4 -	Update to new API version.
+ *	v1.0.5 -	Added removal of inactive players.
  */
 
 #pragma semicolon 1
@@ -80,7 +81,8 @@ int 	g_iPlayerAccountID[MAXPLAYERS+1],
 		m_iClip1,
 		m_hActiveWeapon,
 		m_vecVelocity,
-		g_iResetStatsTime;
+		g_iResetStatsTime,
+		g_iDeletePlayersTime;
 
 float	g_flRotation[MAXPLAYERS+1],
 		g_flMinLenVelocity = 100.0,
@@ -97,7 +99,7 @@ public Plugin myinfo =
 {
 	name = "[FPS] Unusual Kills", 
 	author = "Wend4r, OkyHp", 
-	version = "1.0.4", // Original: SR1
+	version = "1.0.5", // Original: SR1
 	url = "Discord: Wend4r#0001, OkyHek#2441 | VK: vk.com/wend4r"
 }
 
@@ -182,6 +184,8 @@ public void FPS_OnFPSStatsLoaded()
 	FPS_AddFeature(g_sFeature[1], FPS_TOP_MENU, OnItemSelectTop, OnItemDisplayTop);
 
 	ConVar Convar;
+	(Convar = FindConVar("sm_fps_clean_players_time")).AddChangeHook(ChangeCvar_DeletePlayersTime);
+	ChangeCvar_DeletePlayersTime(Convar, NULL_STRING, NULL_STRING);
 	(Convar = FindConVar("sm_fps_reset_stats_time")).AddChangeHook(ChangeCvar_ResetStatsTime);
 	ChangeCvar_ResetStatsTime(Convar, NULL_STRING, NULL_STRING);
 	(Convar = FindConVar("sm_fps_reset_modules_stats")).AddChangeHook(ChangeCvar_ResetModuleStats);
@@ -196,6 +200,11 @@ public void FPS_OnFPSStatsLoaded()
 	}
 }
 
+void ChangeCvar_DeletePlayersTime(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_iDeletePlayersTime = Convar.IntValue * 86400;
+}
+
 void ChangeCvar_ResetStatsTime(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_iResetStatsTime = Convar.IntValue;
@@ -204,6 +213,29 @@ void ChangeCvar_ResetStatsTime(ConVar Convar, const char[] oldValue, const char[
 void ChangeCvar_ResetModuleStats(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_bResetModuleStats = Convar.BoolValue;
+}
+
+void DeleteInactivePlayers()
+{
+	if (g_iDeletePlayersTime && g_hDatabase)
+	{
+		char szQuery[256];
+		g_hDatabase.Format(SZF(szQuery), "DELETE `u` \
+			FROM `fps_unusualkills` AS `u` \
+			WHERE NOT EXISTS ( \
+				SELECT NULL \
+				FROM `fps_servers_stats` AS `s` \
+				WHERE \
+					`s`.`account_id` = `u`.`account_id` \
+					AND `s`.`server_id` = `u`.`server_id` \
+			) AND `u`.`server_id` = %i;", FPS_GetID(FPS_SERVER_ID));
+		g_hDatabase.Query(SQL_Default_Callback, szQuery, 7);
+	}
+}
+
+public void OnMapStart()
+{
+	DeleteInactivePlayers();
 }
 
 public void OnPluginEnd()

@@ -1,12 +1,12 @@
 #define HITGROUP_GENERIC	0
-#define HITGROUP_HEAD		1
-#define HITGROUP_CHEST		2
-#define HITGROUP_STOMACH	3
-#define HITGROUP_LEFTARM	4
-#define HITGROUP_RIGHTARM	5
-#define HITGROUP_LEFTLEG	6
-#define HITGROUP_RIGHTLEG	7
-#define HITGROUP_NECK		8
+// #define HITGROUP_HEAD		1
+// #define HITGROUP_CHEST		2
+// #define HITGROUP_STOMACH	3
+// #define HITGROUP_LEFTARM	4
+// #define HITGROUP_RIGHTARM	5
+// #define HITGROUP_LEFTLEG	6
+// #define HITGROUP_RIGHTLEG	7
+// #define HITGROUP_NECK		8
 #define HITGROUP_GEAR		10
 
 static int		iMaxRoundsKills[MAXPLAYERS+1];
@@ -36,21 +36,14 @@ void Event_WeaponFire(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 	if (g_bStatsActive)
 	{
 		int iClient = CID(hEvent.GetInt("userid"));
-		if (!iClient || !g_bStatsLoad[iClient] || !g_hWeaponsData[iClient])
+		if (iClient && g_bStatsLoad[iClient] && IsValidWeaponBuffer(iClient))
 		{
-			return;
-		}
-
-		char szWeapon[32];
-		hEvent.GetString("weapon", SZF(szWeapon));
-		if (!IsGrenade(szWeapon[7]))
-		{
-			if (IsKnife(szWeapon[7]))
+			char szWeapon[32];
+			hEvent.GetString("weapon", SZF(szWeapon));
+			if (!IsGrenade(szWeapon[7]) && g_iPlayerActiveWeapon[iClient] != CSWeapon_KNIFE)
 			{
-				szWeapon = "weapon_knife";
+				g_iPlayerWeaponData[iClient][W_SHOOTS]++;
 			}
-			FPS_Debug(2, "Event_WeaponFire", "Weapon: %s", szWeapon[7]);
-			WriteWeaponData(iClient, szWeapon[7], W_SHOOTS);
 		}
 	}
 }
@@ -60,41 +53,17 @@ void Event_PlayerHurt(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 	if (g_bStatsActive)
 	{
 		int iAttacker = CID(hEvent.GetInt("attacker"));
-		if (!iAttacker || CID(hEvent.GetInt("userid")) == iAttacker || !g_bStatsLoad[iAttacker] || !g_hWeaponsData[iAttacker])
+		if (iAttacker && CID(hEvent.GetInt("userid")) != iAttacker && g_bStatsLoad[iAttacker] && IsValidWeaponBuffer(iAttacker))
 		{
-			return;
-		}
-
-		char szWeapon[32];
-		hEvent.GetString("weapon", SZF(szWeapon));
-		if (!IsGrenade(szWeapon))
-		{
-			if (!IsKnife(szWeapon))
+			char szWeapon[32];
+			hEvent.GetString("weapon", SZF(szWeapon));
+			if (!IsGrenade(szWeapon))
 			{
-				GetClientWeapon(iAttacker, SZF(szWeapon));
-			}
-			else
-			{
-				szWeapon = "weapon_knife";
-			}
-			FPS_Debug(2, "Event_PlayerHurt", "Weapon: %s", szWeapon[7]);
-
-			int iHitgroup = hEvent.GetInt("hitgroup");
-			if (iHitgroup != HITGROUP_GENERIC && iHitgroup != HITGROUP_GEAR)
-			{
-				int iHits;
-				switch(iHitgroup)
+				int iHitgroup = hEvent.GetInt("hitgroup");
+				if (iHitgroup != HITGROUP_GENERIC && iHitgroup != HITGROUP_GEAR)
 				{
-					case HITGROUP_HEAD:		iHits = W_HITS_HEAD;
-					case HITGROUP_NECK:		iHits = W_HITS_NECK;
-					case HITGROUP_CHEST:	iHits = W_HITS_CHEST;
-					case HITGROUP_STOMACH:	iHits = W_HITS_STOMACH;
-					case HITGROUP_LEFTARM:	iHits = W_HITS_LEFT_ARM;
-					case HITGROUP_RIGHTARM:	iHits = W_HITS_RIGHT_ARM;
-					case HITGROUP_LEFTLEG:	iHits = W_HITS_LEFT_LEG;
-					case HITGROUP_RIGHTLEG:	iHits = W_HITS_RIGHT_LEG;
+					g_iPlayerWeaponData[iAttacker][W_SHOOTS + iHitgroup]++;
 				}
-				WriteWeaponData(iAttacker, szWeapon[7], iHits);
 			}
 		}
 	}
@@ -141,20 +110,13 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			bool	bHeadshot = hEvent.GetBool("headshot"),
 					bIsGrenade = IsGrenade(szWeapon);
 
-			if (g_hWeaponsData[iAttacker] && !bIsGrenade)
+			if (!bIsGrenade && IsValidWeaponBuffer(iAttacker))
 			{
-				if (IsKnife(szWeapon))
-				{
-					szWeapon = "knife";
-				}
-
-				WriteWeaponData(iAttacker, szWeapon, W_KILLS);
+				g_iPlayerWeaponData[iAttacker][W_KILLS]++;
 				if (bHeadshot)
 				{
-					WriteWeaponData(iAttacker, szWeapon, W_HEADSHOTS, true);
+					g_iPlayerWeaponData[iAttacker][W_HEADSHOTS]++;
 				}
-
-				FPS_Debug(2, "Event_PlayerDeath", "Weapon: %s >> HS: %i", szWeapon, bHeadshot);
 			}
 
 			CheckValidPoints(g_fPlayerPoints[iAttacker], 100.0);
@@ -249,16 +211,23 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				return;
 			}
 			
-			int iPlayers;
+			int iPlayers,
+				iTeam;
 			for (int i = MaxClients + 1; --i;)
 			{
 				if (g_bStatsLoad[i])
 				{
 					iMaxRoundsKills[i] = 0;
-					if (GetClientTeam(i) > 1)
+
+					iTeam = GetClientTeam(i);
+					if (iTeam > 1)
 					{
 						++iPlayers;
-						g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] = 1;
+						g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] = iTeam;
+					}
+					else
+					{
+						g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] = 0;
 					}
 				}
 			}
@@ -304,7 +273,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 
 				for (int i = MaxClients + 1; --i;)
 				{
-					if (g_bStatsLoad[i] && g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] == 1 && (iTeam = GetClientTeam(i)) > 1)
+					if (g_bStatsLoad[i] && g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] && (iTeam = GetClientTeam(i)) == g_iPlayerSessionData[i][MAX_ROUNDS_KILLS])
 					{
 						if (iMaxRoundsKills[i] > g_iPlayerData[i][MAX_ROUNDS_KILLS])
 						{

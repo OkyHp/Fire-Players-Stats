@@ -254,6 +254,7 @@ int Handler_PanelResetStats(Menu hPanel, MenuAction action, int iClient, int iOp
 	{
 		if (iOption != 7 && iOption != 9)
 		{
+			DeleteWeaponsStats(iClient);
 			ResetData(iClient, true);
 			SavePlayerData(iClient);
 			CheckRank(iClient);

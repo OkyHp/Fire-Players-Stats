@@ -17,9 +17,9 @@
 	}
 	"MapTop_PlayerKills"
 	{
-		"en"		"TOP-10 maps by kills"
-		"ru"		"TOP-10 карт по убийствам"
-		"ua"		"TOP-10 карт по вбивствам"
+		"en"		"TOP-10 maps by your kills"
+		"ru"		"TOP-10 карт по вашим убийствам"
+		"ua"		"TOP-10 карт по вашим вбивствам"
 		"tr"		"TOP-10 Harita Kill Sırası"
 	}
 	"MapTop_All"
