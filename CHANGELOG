@@ -119,3 +119,4 @@
 		When clearing personal statistics, played time is cleared.
 		Fixed possible abuse of experience.
 		Fixed deleting player statistics on weapons when resetting it through menu.
+		Hillshot added to ignore in weapon stats.

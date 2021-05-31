@@ -81,7 +81,8 @@ void OnWeaponSwitchPost(int iClient, int iWeapon)
 		|| iAcitiveWeapon == CSWeapon_FLASHBANG 
 		|| iAcitiveWeapon == CSWeapon_MOLOTOV
 		|| iAcitiveWeapon == CSWeapon_DECOY
-		|| iAcitiveWeapon == CSWeapon_INCGRENADE)
+		|| iAcitiveWeapon == CSWeapon_INCGRENADE
+		|| iAcitiveWeapon == CSWeapon_HEALTHSHOT)
 	{
 		g_iPlayerActiveWeapon[iClient] = CSWeapon_NONE;
 	}
