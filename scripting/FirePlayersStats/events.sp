@@ -225,6 +225,10 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 						++iPlayers;
 						g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] = iTeam;
 					}
+					else
+					{
+						g_iPlayerSessionData[i][MAX_ROUNDS_KILLS] = 0;
+					}
 				}
 			}
 
