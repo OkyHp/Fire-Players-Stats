@@ -114,5 +114,9 @@
 		Added native FPS_SetPoints.
 		Fixed delete inactive players.
 		Optimized getting value of additional points for weapons.
-1.5.6 - Resetting data when player is disconnected is performed at the last stage.
-
+1.6.0 - Added forward FPS_OnClientDisconnect.
+		Optimized statistics collection for weapons.
+		When clearing personal statistics, played time is cleared.
+		Fixed possible abuse of experience.
+		Fixed deleting player statistics on weapons when resetting it through menu.
+		Hillshot added to ignore in weapon stats.

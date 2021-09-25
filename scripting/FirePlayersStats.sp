@@ -3,6 +3,8 @@
 
 #include <sourcemod>
 #include <sdktools>
+#include <sdkhooks>
+#include <cstrike>
 #include <FirePlayersStats>
 
 #undef REQUIRE_EXTENSIONS
@@ -24,7 +26,7 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define PLUGIN_VERSION		"1.5.6-DEV"
+#define PLUGIN_VERSION		"1.6.0"
 
 #if DEBUG != 0
 	char	g_sLogPath[PLATFORM_MAX_PATH];
@@ -62,8 +64,6 @@ KeyValues	g_hWeaponsConfigKV;
 StringMap	g_hWeaponExtraPoints;
 
 // Features
-ArrayList	g_hItems;
-
 enum
 {
 	F_MENU_TYPE = 1,
@@ -74,6 +74,8 @@ enum
 	F_COUNT
 }
 
+ArrayList	g_hItems;
+
 // Ranks settings
 int			g_iRanksCount,
 			g_iPlayerRanks[MAXPLAYERS+1];
@@ -81,23 +83,27 @@ char		g_sRankName[MAXPLAYERS+1][64];
 ArrayList	g_hRanks;
 
 // Weapons stats vars
-ArrayList	g_hWeaponsData[MAXPLAYERS+1];
-
 enum
 {
-	W_KILLS = 0,
+	W_ID = 0,
+	W_KILLS,
 	W_SHOOTS,
 	W_HITS_HEAD,
-	W_HITS_NECK,
 	W_HITS_CHEST,
 	W_HITS_STOMACH,
 	W_HITS_LEFT_ARM,
 	W_HITS_RIGHT_ARM,
 	W_HITS_LEFT_LEG,
 	W_HITS_RIGHT_LEG,
+	W_HITS_NECK,
 	W_HEADSHOTS,
 	W_SIZE
 }
+
+int			g_iDefinitionIndex,
+			g_iPlayerWeaponData[MAXPLAYERS+1][W_SIZE];
+CSWeaponID	g_iPlayerActiveWeapon[MAXPLAYERS+1];
+ArrayList	g_hWeaponsData[MAXPLAYERS+1];
 
 // Database vars
 Database	g_hDatabase;
@@ -116,9 +122,9 @@ char		g_sTopData[10][4][64];
 public Plugin myinfo =
 {
 	name	=	"Fire Players Stats",
-	author	=	"OkyHp",
+	author	=	"OkyHp, Someone",
 	version	=	PLUGIN_VERSION,
-	url		=	"https://blackflash.ru/, https://dev-source.ru/, https://hlmod.ru/"
+	url		=	"https://blackflash.ru/, https://discord.gg/M82xN4y"
 };
 
 public void OnPluginStart()
@@ -128,7 +134,9 @@ public void OnPluginStart()
 		FPS_Debug(2, "OnPluginStart", "%s", "Start plugin");
 	#endif
 
-	g_hItems = new ArrayList(ByteCountToCells(128));
+	g_iDefinitionIndex = FindSendPropInfo("CEconEntity", "m_iItemDefinitionIndex");
+
+	g_hItems = new ArrayList(ByteCountToCells(64));
 	g_hRanks = new ArrayList(ByteCountToCells(64));
 	g_hWeaponExtraPoints = new StringMap();
 
@@ -196,6 +204,8 @@ public void OnMapStart()
 	{
 		SteamWorks_SteamServersConnected();
 	}
+
+	DeleteInactivePlayers();
 }
 
 Action TimerSaveStats(Handle hTimer)
@@ -264,11 +274,6 @@ int OnTransferComplete(Handle hRequest, bool bFailure, bool bRequestSuccessful, 
 	}
 }
 
-public void OnMapEnd()
-{
-	DeleteInactivePlayers();
-}
-
 public void OnClientPutInServer(int iClient)
 {
 	if (iClient && !IsFakeClient(iClient) && !IsClientSourceTV(iClient))
@@ -280,22 +285,22 @@ public void OnClientPutInServer(int iClient)
 
 			g_iPlayerAccountID[iClient] = iAccountID;
 			g_iPlayerSessionData[iClient][MAX_ROUNDS_KILLS] = 0; // (not used var) for blocked accrual of experience to connected player
-			g_hWeaponsData[iClient] = new ArrayList(64);
+			g_hWeaponsData[iClient] = new ArrayList(W_SIZE);
+			SDKHook(iClient, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
+
 			LoadPlayerData(iClient);
 		}
 	}
 }
 
-public void OnClientDisconnect_Post(int iClient)
+public void OnClientDisconnect(int iClient)
 {
+	CallForward_OnFPSClientDisconnect(iClient);
+	
 	if (g_bStatsLoad[iClient])
 	{
+		SaveWeaponStatsInArray(iClient);
 		SavePlayerData(iClient);
-	}
-
-	if (g_hWeaponsData[iClient])
-	{
-		delete g_hWeaponsData[iClient];
 	}
 
 	ResetData(iClient);
