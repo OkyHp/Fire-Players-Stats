@@ -1,7 +1,7 @@
 # Fire Players Stats - Statistics plugin for CS:GO servers
-<img src="/uploads/91cfd35389a4853d8e4827adde647b9e/FPS_Menus.png"  height="210">
-<img src="https://assets.gitlab-static.net/uploads/-/system/project/avatar/13095639/FPS_BigLogo.png"  height="210">
-<img src="/uploads/7aadd04ef32f11f9a1c9b66bef1d2c28/FPS_ChatMessages.png"  height="210">
+<img src=""  height="210">
+<img src=""  height="210">
+<img src=""  height="210">
 
 ## Statistics Information:
 
