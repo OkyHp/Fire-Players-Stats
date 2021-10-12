@@ -1,4 +1,4 @@
-name: Release Workflow
+name: Build Workflow
 
 # on:
 #  push:
@@ -30,11 +30,12 @@ jobs:
     - name: --- Verify compiler
       run: |
         which spcomp
-        spcomp -i$includePath -iscripting/include scripting/FirePlayersStats.sp -O2 -v2 -oFirePlayersStats.smx
+        mkdir -p plugins/FirePlayersStats
+        spcomp -i$includePath -iscripting/include scripting/FirePlayersStats.sp -O2 -v2 -oplugins/FirePlayersStats/FirePlayersStats.smx
 
     - name: --- Build project
       run: |
-        zip -rv FirePlayersStats cfg/* configs/* plugins/* scripting/* translations/*
+        zip -rv FirePlayersStats cfg configs plugins scripting translations
     
     - name: --- Release
       uses: softprops/action-gh-release@v1
