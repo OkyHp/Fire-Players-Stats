@@ -1,8 +1,8 @@
 <h1 align="center">Fire Players Stats - Statistics plugin for CS:GO servers</h1>
 <p align="center">
-	<img src="https://github.com/OkyHp/fire-players-stats/blob/master/.gitdata/FPS_Menus.png?raw=true" height="210">
-	<img src="https://github.com/OkyHp/fire-players-stats/blob/master/.gitdata/FPS_BigLogo.png?raw=true" height="210">
-	<img src="https://github.com/OkyHp/fire-players-stats/blob/master/.gitdata/FPS_ChatMessages.png?raw=true" height="210">
+	<img src="https://github.com/OkyHp/fire-players-stats/blob/master/.gitdata/FPS_Menus.png?raw=true" height="180">
+	<img src="https://github.com/OkyHp/fire-players-stats/blob/master/.gitdata/FPS_BigLogo.png?raw=true" height="180">
+	<img src="https://github.com/OkyHp/fire-players-stats/blob/master/.gitdata/FPS_ChatMessages.png?raw=true" height="180">
 </p>
 
 ## Statistics Information:
