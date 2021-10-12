@@ -1,14 +1,11 @@
 name: Build Workflow
 
-# on:
-#  push:
-#    tags:
-#      - '*'
-
 on: 
   push:
     branches:
     - master
+    tags:
+    - '*'
   pull_request:
     branches:
     - master
