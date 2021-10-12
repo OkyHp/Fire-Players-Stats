@@ -1,4 +1,4 @@
-name: Compile plugin
+name: Main Workflow
 
 on: [push]
 
