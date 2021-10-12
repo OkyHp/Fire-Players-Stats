@@ -43,7 +43,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        release_name: Release ${GITHUB_REF/refs\/tags\//}
         body: Release text
         draft: true
         prerelease: false
@@ -55,5 +55,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./FirePlayersStats.zip
-        asset_name: FirePlayersStats.zip
+        asset_name: FirePlayersStats-${GITHUB_REF/refs\/tags\//}.zip
         asset_content_type: application/zip
