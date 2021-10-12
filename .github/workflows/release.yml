@@ -1,9 +1,17 @@
 name: Release Workflow
 
-on:
+#on:
+#  push:
+#    tags:
+#      - '*'
+
+on: 
   push:
-    tags:
-      - '*'
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
 
 jobs:
   run:
@@ -26,7 +34,7 @@ jobs:
 
     - name: --- Build project
       run: |
-        zip --junk-paths FirePlayersStats cfg configs plugins scripting translations
+        zip -rv FirePlayersStats cfg/* configs/* plugins/* scripting/* translations/*
         
     - name: --- Create Release
       id: create_release
