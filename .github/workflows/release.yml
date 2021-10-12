@@ -1,0 +1,39 @@
+name: Release Workflow
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  run:
+    name: Run action
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v1
+    
+    - name: Setup SourcePawn Compiler
+      uses: rumblefrog/setup-sp@master
+      with:
+        version: "1.10.x"
+    
+    - name: Verify compiler
+      run: |
+        which spcomp
+        spcomp -i$includePath -iscripting/include scripting/FirePlayersStats.sp -O2 -v2 -oFirePlayersStats.smx
+        
+    - uses: actions/checkout@v2
+    - name: Build
+      run: cargo build --release
+      
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: FirePlayersStats.smx
+        asset_name: FirePlayersStats.smx
+        tag: ${{ github.ref }}
+        overwrite: true
+        body: "Auto create release"
