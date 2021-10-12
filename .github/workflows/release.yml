@@ -7,7 +7,7 @@ on:
 
 jobs:
   run:
-    name: --- Run action
+    name: Run action
     runs-on: ubuntu-latest
 
     steps:
@@ -24,18 +24,16 @@ jobs:
         which spcomp
         spcomp -i$includePath -iscripting/include scripting/FirePlayersStats.sp -O2 -v2 -oFirePlayersStats.smx
         
-    - uses: actions/checkout@v2
-    - name: --- Build
-      run: |
-        git clone https://github.com/alacritty/alacritty.git
-        cd alacritty
-        cargo build --release
-      
-    - name: --- Upload binaries to release
-      uses: svenstaro/upload-release-action@v2
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: target/release/FirePlayersStats.smx
-        asset_name: FirePlayersStats.smx
-        tag: ${{ github.ref }}
-        overwrite: true
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          Changes in this Release
+          - First Change
+          - Second Change
+        draft: true
+        prerelease: false
