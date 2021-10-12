@@ -20,5 +20,5 @@ jobs:
       run: |
         which spcomp
         echo $includePath
-        spcomp -i$includePath -iscripting/include scripting/FirePlayersStats scripting/FirePlayersStats.sp -O2 -v2 -ooutput/test.smx
+        spcomp -i$includePath -iscripting/include scripting/FirePlayersStats.sp -O2 -v2 -ooutput/test.smx
         echo Plugin version ${{ steps.setup_sp.outputs.plugin-version }}
