@@ -23,6 +23,10 @@ jobs:
       run: |
         which spcomp
         spcomp -i$includePath -iscripting/include scripting/FirePlayersStats.sp -O2 -v2 -oFirePlayersStats.smx
+
+    - name: --- Build project
+      run: |
+        zip --junk-paths FirePlayersStats-${{ secrets.GITHUB_TOKEN }} README.md .gitignore .gitattributes .github
         
     - name: --- Create Release
       uses: actions/create-release@v1
@@ -31,9 +35,16 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
-        body: |
-          Changes in this Release
-          - First Change
-          - Second Change
+        body: Release text
         draft: true
         prerelease: false
+        
+    - name: --- Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./FirePlayersStats-${{ secrets.GITHUB_TOKEN }}.zip
+        asset_name: FirePlayersStats-${{ secrets.GITHUB_TOKEN }}.zip
+        asset_content_type: application/zip
