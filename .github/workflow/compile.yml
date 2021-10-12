@@ -20,11 +20,11 @@ jobs:
       run: |
         which spcomp
         echo $includePath
-        spcomp -i$includePath -iscripting/include scripting/FirePlayersStats.sp -O2 -v2 -oplugins/FirePlayersStats/FirePlayersStats.smx
+        spcomp -i$includePath -iscripting/include scripting/FirePlayersStats.sp -O2 -v2 -oFirePlayersStats.smx
         echo Plugin version ${{ steps.setup_sp.outputs.plugin-version }}
         
     - name: Upload math result for job 2
       uses: actions/upload-artifact@v2
       with:
         name: FirePlayersStats.smx
-        path: plugins/FirePlayersStats/FirePlayersStats.smx
+        path: FirePlayersStats.smx
