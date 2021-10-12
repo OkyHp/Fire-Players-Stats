@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v1
     
     - name: Setup SourcePawn Compiler
@@ -22,3 +22,9 @@ jobs:
         echo $includePath
         spcomp -i$includePath -iscripting/include scripting/FirePlayersStats.sp -O2 -v2 -oplugins/FirePlayersStats/FirePlayersStats.smx
         echo Plugin version ${{ steps.setup_sp.outputs.plugin-version }}
+        
+    - name: Upload math result for job 2
+      uses: actions/upload-artifact@v2
+      with:
+        name: FirePlayersStats.smx
+        path: FirePlayersStats.smx
