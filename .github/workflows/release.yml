@@ -26,7 +26,7 @@ jobs:
 
     - name: --- Build project
       run: |
-        zip --junk-paths FirePlayersStats-${GITHUB_REF/refs\/tags\//} cfg configs plugins scripting translations
+        zip --junk-paths FirePlayersStats cfg configs plugins scripting translations
         
     - name: --- Create Release
       id: create_release
