@@ -3,10 +3,10 @@ name: Main Workflow
 on: 
   push:
     branches:
-     - master
+    - master
   pull_request:
     branches:
-     - master
+    - master
 
 jobs:
   run:
@@ -29,7 +29,7 @@ jobs:
         spcomp -i$includePath -iscripting/include scripting/FirePlayersStats.sp -O2 -v2 -oFirePlayersStats.smx
         echo Plugin version ${{ steps.setup_sp.outputs.plugin-version }}
         
-    - name: Upload math result for job 2
+    - name: Upload result
       uses: actions/upload-artifact@v2
       with:
         name: FirePlayersStats.smx
