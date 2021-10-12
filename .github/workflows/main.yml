@@ -1,0 +1,23 @@
+name: Compile plugin
+
+on: [push]
+
+jobs:
+  run:
+    name: Run action
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    
+    - name: Setup SourcePawn Compiler
+      uses: rumblefrog/setup-sp@master
+      with:
+        version: "1.10.x"
+    
+    - name: Verify compiler
+      run: |
+        which spcomp
+        echo $includePath
+        spcomp -i$includePath scripting/FirePlayersStats.sp -o output/test.smx
+        echo Plugin version ${{ steps.setup_sp.outputs.plugin-version }}
