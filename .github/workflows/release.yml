@@ -1,17 +1,9 @@
 name: Release Workflow
 
-#on:
-#  push:
-#    tags:
-#      - '*'
-
-on: 
-  push:
-    branches:
-    - master
-  pull_request:
-    branches:
-    - master
+on:
+ push:
+   tags:
+     - '*'
 
 jobs:
   run:
@@ -38,7 +30,7 @@ jobs:
     
     - name: --- Release
       uses: softprops/action-gh-release@v1
-      #if: startsWith(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
           FirePlayersStats.zip
