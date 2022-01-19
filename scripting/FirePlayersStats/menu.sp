@@ -6,6 +6,7 @@ void SetCommands()
 	RegConsoleCmd("sm_stats",		CommandFpsMenu);
 	RegConsoleCmd("sm_fps",			CommandFpsMenu);
 	RegConsoleCmd("sm_rank",		CommandFpsMenu);
+	RegConsoleCmd("sm_lvl",			CommandFpsMenu);
 }
 
 Action CommandPosition(int iClient, int iArgs)
