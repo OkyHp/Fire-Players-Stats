@@ -124,7 +124,7 @@ public Plugin myinfo =
 	name	=	"Fire Players Stats",
 	author	=	"OkyHp, Someone",
 	version	=	PLUGIN_VERSION,
-	url		=	"https://blackflash.ru/, https://discord.gg/M82xN4y"
+	url		=	"OkyHek#2441, https://blackflash.pro/, https://discord.gg/M82xN4y"
 };
 
 public void OnPluginStart()
