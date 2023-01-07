@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 void DatabaseConnect()
 {
 	FPS_Debug(1, "DatabaseConnect", "%s", !g_hDatabase ? "Connect database" : "Error! Handle is valid");

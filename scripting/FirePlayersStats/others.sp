@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 // Reset vars data for player
 void ResetData(int iClient, bool bResetStats = false)
 {

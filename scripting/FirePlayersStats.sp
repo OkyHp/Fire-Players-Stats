@@ -26,9 +26,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define PLUGIN_VERSION		"1.6.0"
+#define PLUGIN_VERSION		"1.6.1"
 
-#if DEBUG != 0
+#if DEBUG > 0
 	char	g_sLogPath[PLATFORM_MAX_PATH];
 	int		g_iBlockWarning;
 	#define FPS_Debug(%0,%1,%2,%3);	g_iBlockWarning = %0; \
@@ -268,10 +268,12 @@ int OnTransferComplete(Handle hRequest, bool bFailure, bool bRequestSuccessful, 
 			case 406:	PrintToServer("[FPS Stats] >> Не верный API KEY");
 			case 410:	PrintToServer("[FPS Stats] >> Ваша версия Fire Players Stats не поддерживается!");
 			case 413:	PrintToServer("[FPS Stats] >> Не верный размер аргументов");
-			case 429:	return;
+			case 429:	return 0;
 			default:	PrintToServer("[FPS Stats] >> Не известная ошибка: %i", iStatus);
 		}
 	}
+
+	return 0;
 }
 
 public void OnClientPutInServer(int iClient)

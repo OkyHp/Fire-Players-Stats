@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 #define HITGROUP_GENERIC	0
 // #define HITGROUP_HEAD		1
 // #define HITGROUP_CHEST		2
@@ -19,7 +22,7 @@ void HookEvents()
 	HookEvent("player_death", 		Event_PlayerDeath);
 	HookEvent("player_spawn",		Event_PlayerSpawn);
 
-	HookEvent("round_prestart",		Event_RoundAction, EventHookMode_PostNoCopy);
+	HookEvent("round_poststart",	Event_RoundAction, EventHookMode_PostNoCopy);
 	HookEvent("round_mvp",			Event_RoundAction);
 	HookEvent("round_end",			Event_RoundAction);
 
@@ -125,9 +128,14 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			float	fPointsAttacker	= (g_fPlayerPoints[iVictim] / g_fPlayerPoints[iAttacker]) * 5.0,
 					fDiff			= (g_fPlayerPoints[iAttacker] / g_fPlayerPoints[iVictim]) + 0.6,
 					fPointsVictim	= fPointsAttacker * g_fCoeff * (fDiff < 1.0 && FPS_IsCalibration(iAttacker) ? fDiff : 1.0),
-					fExtPoints		= (!bIsGrenade && g_hWeaponExtraPoints.GetValue(szWeapon, fExtPoints) ? fExtPoints : 1.0) ,
+					fExtPoints		= 1.0,
 					fHeadshot		= bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0,
 					fStreak;
+			
+			if (!bIsGrenade)
+			{
+				g_hWeaponExtraPoints.GetValue(szWeapon, fExtPoints);
+			}
 
 			#if USE_STREAK_POINTS == 1
 				fStreak = StreakPoints(iAttacker);

@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 // Conf vars
 int			g_iServerID,
 			g_iRanksID,
@@ -9,7 +12,8 @@ int			g_iServerID,
 			g_iInfoMessage;
 bool		g_bShowStatsEveryone,
 			g_bBlockStatsOnWarmup,
-			g_bIgnoreNewPlayers;
+			g_bIgnoreNewPlayers,
+			g_bDisableAdditionalMenu;
 float		g_fDBRetryConnTime,
 			g_fCoeff,
 			g_fExtraPoints[18];
@@ -221,6 +225,13 @@ void SetCvars()
 	)).AddChangeHook(ChangeCvar_IgnoreNewPlayers);
 	ChangeCvar_IgnoreNewPlayers(Convar, NULL_STRING, NULL_STRING);
 
+	(Convar = CreateConVar(
+		"sm_fps_disable_additional_menu",	"0", 
+		"Отключить вкладку 'Дополнительно' в главном меню.",
+		_, true, 0.0, true, 1.0
+	)).AddChangeHook(ChangeCvar_DisableAdditionalMenu);
+	ChangeCvar_DisableAdditionalMenu(Convar, NULL_STRING, NULL_STRING);
+
 	AutoExecConfig(true, "FirePlayersStats");
 
 	LoadConfigKV();
@@ -294,4 +305,9 @@ void ChangeCvar_InfoMessage(ConVar Convar, const char[] oldValue, const char[] n
 void ChangeCvar_IgnoreNewPlayers(ConVar Convar, const char[] oldValue, const char[] newValue)
 {
 	g_bIgnoreNewPlayers = Convar.BoolValue;
+}
+
+void ChangeCvar_DisableAdditionalMenu(ConVar Convar, const char[] oldValue, const char[] newValue)
+{
+	g_bDisableAdditionalMenu = Convar.BoolValue;
 }

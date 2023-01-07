@@ -120,3 +120,6 @@
 		Fixed possible abuse of experience.
 		Fixed deleting player statistics on weapons when resetting it through menu.
 		Hillshot added to ignore in weapon stats.
+1.6.1 - Update for SP 1.11.
+		Fixed handler for FPS_DisableStatisPerRound.
+		Add new cvar: sm_fps_disable_additional_menu - Disable additional menu in main stats menu.

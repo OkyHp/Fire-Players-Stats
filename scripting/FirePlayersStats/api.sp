@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 // Forwards
 static Handle	g_hGlobalForward_OnFPSStatsLoaded,
 				g_hGlobalForward_OnFPSDatabaseConnected,
@@ -224,12 +227,16 @@ int Native_FPS_ClientReloadData(Handle hPlugin, int iNumParams)
 		OnClientDisconnect(iClient);
 		LoadPlayerData(iClient);
 	}
+
+	return 0;
 }
 
 // void FPS_DisableStatisPerRound();
 int Native_FPS_DisableStatisPerRound(Handle hPlugin, int iNumParams)
 {
 	g_bDisableStatisPerRound = true;
+
+	return 0;
 }
 
 // int FPS_GetPlayedTime(int iClient);
@@ -240,6 +247,7 @@ int Native_FPS_GetPlayedTime(Handle hPlugin, int iNumParams)
 	{
 		return (GetTime() - g_iPlayerSessionData[iClient][PLAYTIME]) + g_iPlayerData[iClient][PLAYTIME];
 	}
+
 	return 0;
 }
 
@@ -266,6 +274,8 @@ int Native_FPS_SetPoints(Handle hPlugin, int iNumParams)
 			g_fPlayerPoints[iClient] = fPoints;
 		}
 	}
+
+	return 0;
 }
 
 // int FPS_GetLevel(int iClient);
@@ -276,6 +286,7 @@ int Native_FPS_GetLevel(Handle hPlugin, int iNumParams)
 	{
 		return g_iPlayerRanks[iClient];
 	}
+
 	return 0;
 }
 
@@ -287,6 +298,8 @@ int Native_FPS_GetRanks(Handle hPlugin, int iNumParams)
 	{
 		SetNativeString(2, g_sRankName[iClient], GetNativeCell(3), true);
 	}
+
+	return 0;
 }
 
 // int FPS_GetMaxRanks();
@@ -310,6 +323,7 @@ int Native_FPS_GetStatsData(Handle hPlugin, int iNumParams)
 	{
 		return GetNativeCell(3) ? g_iPlayerData[iClient][iData] : g_iPlayerSessionData[iClient][iData];
 	}
+
 	return 0;
 }
 
@@ -375,6 +389,7 @@ int Native_FPS_RemoveFeature(Handle hPlugin, int iNumParams)
 	{
 		ThrowNativeError(SP_ERROR_NATIVE, "[FPS] Empty feature name.");
 	}
+
 	return 0;
 }
 
@@ -407,6 +422,8 @@ int Native_FPS_MoveToMenu(Handle hPlugin, int iNumParams)
 			default: ThrowNativeError(SP_ERROR_NATIVE, "[FPS] Invalid FeatureMenus type!");
 		}
 	}
+
+	return 0;
 }
 
 // bool FPS_StatsActive();
@@ -424,6 +441,7 @@ int Native_FPS_GetID(Handle hPlugin, int iNumParams)
 		case FPS_RANK_ID:	return g_iRanksID;
 		default: ThrowNativeError(SP_ERROR_NATIVE, "[FPS] Invalid StatsID type!");
 	}
+
 	return 0;
 }
 
@@ -478,6 +496,8 @@ int Native_FPS_PrintToChat(Handle hPlugin, int iNumParams)
 		
 		PrintToChat(iClient, g_sCsgoColorsBuff[iLastStart]);
 	}
+
+	return 0;
 }
 
 // void FPS_PrintToChatAll(const char[] szMessage, any ...)
@@ -512,4 +532,6 @@ int Native_FPS_PrintToChatAll(Handle hPlugin, int iNumParams)
 		
 		PrintToChat(iClient, g_sCsgoColorsBuff[iLastStart]);
 	}
+
+	return 0;
 }

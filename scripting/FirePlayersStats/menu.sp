@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 void SetCommands()
 {
 	RegConsoleCmd("sm_pos",			CommandPosition);
@@ -65,8 +68,12 @@ void ShowFpsMenu(int iClient)
 	hMenu.AddItem(NULL_STRING, szBuffer);
 	FormatEx(SZF(szBuffer), "%t", "ListsOfTops");
 	hMenu.AddItem(NULL_STRING, szBuffer);
-	FormatEx(SZF(szBuffer), "%t", "AdditionalMenu");
-	hMenu.AddItem(NULL_STRING, szBuffer);
+
+	if (!g_bDisableAdditionalMenu)
+	{
+		FormatEx(SZF(szBuffer), "%t", "AdditionalMenu");
+		hMenu.AddItem(NULL_STRING, szBuffer);
+	}
 
 	hMenu.ExitButton = true;
 	hMenu.Display(iClient, MENU_TIME_FOREVER);
@@ -87,6 +94,8 @@ int Handler_FpsMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 			}
 		}
 	}
+
+	return 0;
 }
 
 void ShowMainStatsMenu(int iClient, int iPage = 0)
@@ -219,6 +228,8 @@ int Handler_PanelStats(Menu hPanel, MenuAction action, int iClient, int iOption)
 		}
 		PlayItemSelectSound(iClient, true);
 	}
+
+	return 0;
 }
 
 void ResetPlayerStatsMenu(int iClient)
@@ -273,6 +284,8 @@ int Handler_PanelResetStats(Menu hPanel, MenuAction action, int iClient, int iOp
 			PlayItemSelectSound(iClient, true);
 		}
 	}
+
+	return 0;
 }
 
 void ShowMainTopMenu(int iClient, int iPage = 0)
@@ -384,6 +397,8 @@ int Handler_PanelTop(Menu hPanel, MenuAction action, int iClient, int iOption)
 		}
 		PlayItemSelectSound(iClient, true);
 	}
+
+	return 0;
 }
 
 void ShowMainAdditionalMenu(int iClient, int iPage = 0)
@@ -454,6 +469,8 @@ int Handler_InfoMenu(Menu hMenu, MenuAction action, int iClient, int iItem)
 			}
 		}
 	}
+
+	return 0;
 }
 
 void ShowRankInfoMenu(int iClient)
