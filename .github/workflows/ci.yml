@@ -19,28 +19,45 @@ jobs:
     - name: --- Checkout repository
       uses: actions/checkout@v1
     
-    - name: --- Setup SourcePawn Compiler
+    - name: --- Setup SourcePawn Compiler SM 1.10
       uses: rumblefrog/setup-sp@master
       with:
         version: "1.10.x"
     
-    - name: --- Verify compiler
+    - name: --- Verify compiler SM 1.10
       run: |
         which spcomp
         mkdir -p plugins/FirePlayersStats
         spcomp -i$includePath -iscripting/include scripting/FirePlayersStats.sp -O2 -v2 -oplugins/FirePlayersStats/FirePlayersStats.smx
 
     - name: --- Build project
-      if: startsWith(github.ref, 'refs/tags/')
+      #if: startsWith(github.ref, 'refs/tags/')
       run: |
-        zip -rv FirePlayersStats cfg configs plugins scripting translations
+        zip -rv FirePlayersStats_SM_1.10 cfg configs plugins scripting translations
+    
+    - name: --- Setup SourcePawn Compiler SM 1.11
+      uses: rumblefrog/setup-sp@master
+      with:
+        version: "1.11.x"
+    
+    - name: --- Verify compiler SM 1.11
+      run: |
+        which spcomp
+        mkdir -p plugins/FirePlayersStats
+        spcomp -i$includePath -iscripting/include scripting/FirePlayersStats.sp -O2 -v2 -oplugins/FirePlayersStats/FirePlayersStats.smx
+
+    - name: --- Build project
+      # if: startsWith(github.ref, 'refs/tags/')
+      run: |
+        zip -rv FirePlayersStats_SM_1.11 cfg configs plugins scripting translations
     
     - name: --- Release
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
+      # if: startsWith(github.ref, 'refs/tags/')
       with:
         draft: true
         name: Release
         body: Release text
         files: |
-          FirePlayersStats.zip
+          FirePlayersStats_SM_1.10.zip
+          FirePlayersStats_SM_1.11.zip
