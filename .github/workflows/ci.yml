@@ -33,7 +33,7 @@ jobs:
     - name: --- Build project
       if: startsWith(github.ref, 'refs/tags/')
       run: |
-        zip -rv FirePlayersStats_SM_1.10 cfg configs plugins scripting translations
+        zip -rv FirePlayersStats_SM_1_10 cfg configs plugins scripting translations
     
     - name: --- Setup SourcePawn Compiler SM 1.11
       uses: rumblefrog/setup-sp@master
@@ -49,7 +49,7 @@ jobs:
     - name: --- Build project
       if: startsWith(github.ref, 'refs/tags/')
       run: |
-        zip -rv FirePlayersStats_SM_1.11 cfg configs plugins scripting translations
+        zip -rv FirePlayersStats_SM_1_11 cfg configs plugins scripting translations
     
     - name: --- Release
       uses: softprops/action-gh-release@v1
@@ -59,5 +59,5 @@ jobs:
         name: Release
         body: Release text
         files: |
-          FirePlayersStats_SM_1.10.zip
-          FirePlayersStats_SM_1.11.zip
+          FirePlayersStats_SM_1_10.zip
+          FirePlayersStats_SM_1_11.zip
