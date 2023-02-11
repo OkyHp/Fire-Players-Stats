@@ -4,6 +4,7 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"Map statistics {1}"
+		"lv"		"Kartes stati {1}"
 		"ru"		"Статистика карты {1}"
 		"ua"		"Статистика карти {1}"
 		"tr"		"Harita İstatislikleri {1}"
@@ -11,6 +12,7 @@
 	"MapTop_Title"
 	{
 		"en"		"Top by maps"
+		"lv"		"Top pēc spēles kartes"
 		"ru"		"Топ по картам"
 		"ua"		"Топ по картам"
 		"tr"		"Harita Sıralamaları"
@@ -18,6 +20,7 @@
 	"MapTop_PlayerKills"
 	{
 		"en"		"TOP-10 maps by your kills"
+		"lv"		"TOP-10 kartes pēc taviem killiem"
 		"ru"		"TOP-10 карт по вашим убийствам"
 		"ua"		"TOP-10 карт по вашим вбивствам"
 		"tr"		"TOP-10 Harita Kill Sırası"
@@ -26,6 +29,7 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"TOP-10 killers on map: {1}"
+		"lv"		"TOP-10 killeri kartē: {1}"
 		"ru"		"TOP-10 убийц на карте: {1}"
 		"ua"		"TOP-10 вбивць на мапі: {1}"
 		"tr"		"TOP-10 Killer: {1}"
@@ -34,6 +38,7 @@
 	{
 		"#format"	"{1:i},{2:.2f},{3:.2f},{4:i},{5:i},{6:i},{7:i},{8:i},{9:.2f},{10:s}"
 		"en"		"Played on map: {1} times ({2} h.) \nWin Rate on map: {3} %% \nRounds overall played: {4} \nRounds won for T: {5} \nRounds won for CT: {6} \nKills: {7} \nDeaths: {8} \nKDR: {9} \n{10}"
+		"lv"		"Played on map: {1} times ({2} h.) \nWin Rate on map: {3} %% \nRounds overall played: {4} \nRounds won for T: {5} \nRounds won for CT: {6} \nKills: {7} \nDeaths: {8} \nKDR: {9} \n{10}"
 		"ru"		"Сыграно на карте: {1} раз ({2} ч.) \nВинрейт на карте: {3} %% \nВсего раундов сыграно: {4} \nВыигранные раунды за T: {5} \nВыигранные раунды за CT: {6} \nУбийств: {7} \nСмертей: {8} \nKDR: {9} \n{10}"
 		"ua"		"Зіграно на мапі: {1} раз ({2} г.). \nВРейтинг виграшу на карті: {3} %% \nВсього раундів зіграно: {4} \nВиграні раунди за T: {5} \nВиграні раунди за CT: {6} \nВбивств: {7} \nСмертей: {8} \nKDR: {9} \n{10}"
 		"tr"		"Harita Oynandı: {1} kez ({2} saat) \nKazanma Oranı: {3} %% \nOynanan Roundlar: {4} \nT Kazanılan Round: {5} \nCT Kazanılan Round: {6} \nÖldürme: {7} \nÖlme: {8} \nKDA: {9} \n{10}"
@@ -42,6 +47,7 @@
 	{
 		"#format"	"{1:i},{2:i}"
 		"en"		"Hostage killed: {1} \nHostage rescued: {2}"
+		"lv"		"Hostage nogalināti: {1} \nHostage izglābti: {2}"
 		"ru"		"Заложников убито: {1} \nЗаложников спасено: {2}"
 		"ua"		"Заручників вбито: {1} \nЗаручників врятовано: {2}"
 		"tr"		"Hostage killed: {1} \nHostage rescued: {2}"
@@ -50,6 +56,7 @@
 	{
 		"#format"	"{1:i},{2:i}"
 		"en"		"Bomb planted: {1} \nBomb defused: {2}"
+		"lv"		"Spridzekļi uzlikti: {1} \nSpridzekļi atmīnēti: {2}"
 		"ru"		"Бомб установлено: {1} \nБомб разминировано: {2}"
 		"ua"		"Бомб встановлено: {1} \nбомб разміновано: {2}"
 		"tr"		"Bomba Plant: {1} \nBomba Defuse: {2}"
@@ -57,13 +64,15 @@
 	"NoData"
 	{
 		"en"		"No data!"
+		"lv"		"Nav datu!"
 		"ru"		"Нет данных!"
 		"ua"		"Немає даних!"
 		"tr"		"Veri yok!"
 	}
 	"ResetPlayerStatsByMaps"
 	{
-		"en"		"Reset my stat by maps"
+		"en"		"Reset my stats by maps"
+		"lv"		"Restartēt manus kartes status"
 		"ru"		"Сбросить мою статистику по картам"
 		"ua"		"Стерти мою статистику по картам"
 		"tr"		"Harita verilerimi sıfırla"
