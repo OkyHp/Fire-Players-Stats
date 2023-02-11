@@ -128,13 +128,13 @@ void Event_PlayerDeath(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 			float	fPointsAttacker	= (g_fPlayerPoints[iVictim] / g_fPlayerPoints[iAttacker]) * 5.0,
 					fDiff			= (g_fPlayerPoints[iAttacker] / g_fPlayerPoints[iVictim]) + 0.6,
 					fPointsVictim	= fPointsAttacker * g_fCoeff * (fDiff < 1.0 && FPS_IsCalibration(iAttacker) ? fDiff : 1.0),
-					fExtPoints		= 1.0,
 					fHeadshot		= bHeadshot ? g_fExtraPoints[CFG_HEADSHOT] : 0.0,
+					fExtPoints,
 					fStreak;
 			
-			if (!bIsGrenade)
+			if (bIsGrenade || !g_hWeaponExtraPoints.GetValue(szWeapon, fExtPoints))
 			{
-				g_hWeaponExtraPoints.GetValue(szWeapon, fExtPoints);
+				fExtPoints = 1.0;
 			}
 
 			#if USE_STREAK_POINTS == 1
@@ -226,6 +226,7 @@ void Event_RoundAction(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 				if (g_bStatsLoad[i])
 				{
 					iMaxRoundsKills[i] = 0;
+					fRoundPlayerPoints[i] = g_fPlayerPoints[i];
 
 					iTeam = GetClientTeam(i);
 					if (iTeam > 1)
