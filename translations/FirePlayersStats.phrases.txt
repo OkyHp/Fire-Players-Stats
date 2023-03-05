@@ -23,9 +23,9 @@
 		"#format"	"{1:t},{2:.2f},{3:i},{4:s},{5:i},{6:i}"
 		"en"		"[ {1} ] \nPoints: {2} \nLevel: {3} \nRank: {4}  \nPosition: {5}/{6}"
 		"lv"		"[ {1} ] \nPunkti: {2} \nLīmenis: {3} \nRanks: {4}  \nPozīcija: {5}/{6}"
-		"ru"		"[ {1} ] \nPoints: {2} \nLevel: {3} \nRank: {4}  \nPosition: {5}/{6}"
-		"ua"		"[ {1} ] \nPoints: {2} \nLevel: {3} \nRank: {4}  \nPosition: {5}/{6}"
-		"tr"		"[ {1} ] \nPoints: {2} \nLevel: {3} \nRank: {4}  \nPosition: {5}/{6}"
+		"ru"		"[ {1} ] \nПоинты: {2} \nУровень: {3} \nРанг: {4} \nМесто: {5}/{6}"
+		"ua"		"[ {1} ] \nПоінти: {2} \nРівень: {3} \nРанг: {4} \nМісце: {5}/{6}"
+		"tr"		"[ {1} ] \nPuan: {2} \nSeviye: {3} \nRank: {4}  \nSıra: {5}/{6}"
 	}
 
 	"Back"
